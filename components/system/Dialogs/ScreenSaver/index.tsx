@@ -1,8 +1,8 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import StyledScreenSaver from "components/system/Dialogs/ScreenSaver/StyledScreenSaver";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import {
   FOCUSABLE_ELEMENT,
   TRANSITIONS_IN_MILLISECONDS,
@@ -31,9 +31,9 @@ const triggerEvents = [
 ];
 
 const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
-  const { processes: { [id]: { title = "", url = "" } = {} } = {}, close } =
-    useProcesses();
-  const { readFile } = useFileSystem();
+  const { close } = useProcessesActions();
+  const { title = "", url = "" } = useProcess(id);
+  const { readFile } = useFileSystemActions();
   const [srcDoc, setSrcDoc] = useState<Record<string, string>>({});
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const loadScreenSaver = useCallback(

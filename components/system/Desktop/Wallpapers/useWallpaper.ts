@@ -18,8 +18,13 @@ import {
   type WallpaperMessage,
   type WallpaperConfig,
 } from "components/system/Desktop/Wallpapers/types";
-import { useFileSystem } from "contexts/fileSystem";
-import { useSession } from "contexts/session";
+import { useFileSystemActions } from "contexts/fileSystem";
+import {
+  useSessionActions,
+  useSessionLoaded,
+  useWallpaperFit,
+  useWallpaperImage,
+} from "contexts/session";
 import useWorker from "hooks/useWorker";
 import {
   DEFAULT_WALLPAPER,
@@ -52,9 +57,11 @@ const useWallpaper = (
   desktopRef: React.RefObject<HTMLElement | null>
 ): void => {
   const { exists, lstat, readFile, readdir, updateFolder, writeFile } =
-    useFileSystem();
-  const { sessionLoaded, setWallpaper, wallpaperImage, wallpaperFit } =
-    useSession();
+    useFileSystemActions();
+  const { setWallpaper } = useSessionActions();
+  const sessionLoaded = useSessionLoaded();
+  const wallpaperImage = useWallpaperImage();
+  const wallpaperFit = useWallpaperFit();
   const { colors } = useTheme();
   const [wallpaperName] = useMemo(
     () => wallpaperImage.split(" "),

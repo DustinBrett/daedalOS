@@ -6,14 +6,11 @@ import StyledWindow from "components/system/Window/StyledWindow";
 import Titlebar from "components/system/Window/Titlebar";
 import useFocusable from "components/system/Window/useFocusable";
 import useWindowTransitions from "components/system/Window/useWindowTransitions";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useForegroundId } from "contexts/session";
 
 const Window: FC<ComponentProcessProps> = ({ children, id }) => {
-  const {
-    linkElement,
-    processes: { [id]: process },
-  } = useProcesses();
+  const { linkElement } = useProcessesActions();
   const {
     backgroundBlur,
     backgroundColor,
@@ -22,8 +19,8 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
     minimized,
     peekElement,
     title,
-  } = process || {};
-  const { foregroundId } = useSession();
+  } = useProcess(id);
+  const foregroundId = useForegroundId();
   const isForeground = id === foregroundId;
   const { zIndex, ...focusableProps } = useFocusable(id);
   const windowTransitions = useWindowTransitions(id);

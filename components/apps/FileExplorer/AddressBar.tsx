@@ -3,8 +3,8 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GoTo, Refresh } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import useAddressBarContextMenu from "components/apps/FileExplorer/useAddressBarContextMenu";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -14,7 +14,7 @@ import {
 } from "utils/constants";
 import { getExtension, label, notFound } from "utils/functions";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
-import { useSession } from "contexts/session";
+import { useSessionActions } from "contexts/session";
 
 type AddressBarProps = {
   id: string;
@@ -35,17 +35,12 @@ const AddressBar: FCWithRef<HTMLInputElement, AddressBarProps> = ({
   ref: addressBarRef,
 }) => {
   const actionButtonRef = useRef<HTMLButtonElement | null>(null);
-  const {
-    open,
-    url: changeUrl,
-    processes: {
-      [id]: { icon, url = "" },
-    },
-  } = useProcesses();
+  const { open, url: changeUrl } = useProcessesActions();
+  const { icon, url = "" } = useProcess(id);
   const displayName = useMemo(() => basename(url) || ROOT_NAME, [url]);
   const [addressBar, setAddressBar] = useState(displayName);
-  const { exists, stat, updateFolder } = useFileSystem();
-  const { updateRecentFiles } = useSession();
+  const { exists, stat, updateFolder } = useFileSystemActions();
+  const { updateRecentFiles } = useSessionActions();
   const inputing = useMemo(
     () =>
       addressBar !== displayName &&

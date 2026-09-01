@@ -11,16 +11,15 @@ import {
 import useFile from "components/system/Files/FileEntry/useFile";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { type FileActions } from "components/system/Files/FileManager/useFolder";
-import { useFileSystem } from "contexts/fileSystem";
-import { useMenu } from "contexts/menu";
+import { useFileSystemActions, useRootFs } from "contexts/fileSystem";
+import { useMenuActions } from "contexts/menu";
 import {
   type ContextMenuCapture,
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
-import { useProcesses } from "contexts/process";
+import { useProcessesActions, useProcessesRef } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { useSession } from "contexts/session";
-import { useProcessesRef } from "hooks/useProcessesRef";
+import { useAiEnabled, useSessionActions } from "contexts/session";
 import {
   AI_TITLE,
   AUDIO_PLAYLIST_EXTENSIONS,
@@ -83,16 +82,16 @@ const useFileContextMenu = (
   fileManagerId?: string,
   readOnly?: boolean
 ): ContextMenuCapture => {
-  const { close, minimize, open, url: changeUrl } = useProcesses();
+  const { close, minimize, open, url: changeUrl } = useProcessesActions();
   const processesRef = useProcessesRef();
   const {
-    aiEnabled,
     setCursor,
     setForegroundId,
     setIconPositions,
     setWallpaper,
     updateRecentFiles,
-  } = useSession();
+  } = useSessionActions();
+  const aiEnabled = useAiEnabled();
   const baseName = basename(path);
   const isFocusedEntry = useMemo(
     () => focusedEntries.includes(baseName),
@@ -106,11 +105,11 @@ const useFileContextMenu = (
     mapFs,
     moveEntries,
     readFile,
-    rootFs,
     unMapFs,
     updateFolder,
-  } = useFileSystem();
-  const { contextMenu } = useMenu();
+  } = useFileSystemActions();
+  const rootFs = useRootFs();
+  const { contextMenu } = useMenuActions();
   const hasWindowAI = useWindowAI();
   const { openTransferDialog } = useTransferDialog();
   const { onContextMenuCapture, ...contextMenuHandlers } = useMemo(

@@ -6,7 +6,7 @@ import {
 } from "@panzoom/panzoom/dist/src/types";
 import { useCallback, useEffect, useState } from "react";
 import useResizeObserver from "hooks/useResizeObserver";
-import { useProcesses } from "contexts/process";
+import { useProcess } from "contexts/process";
 import useTitle from "components/system/Window/useTitle";
 
 export const panZoomConfig = {
@@ -31,10 +31,7 @@ const usePanZoom = (
   const [panZoom, setPanZoom] = useState<ReturnType<typeof Panzoom>>();
   const { getScale, reset, zoomIn, zoomOut, zoomToPoint, zoomWithWheel } =
     panZoom || {};
-  const {
-    processes: { [id]: process },
-  } = useProcesses();
-  const { closing, componentWindow, url = "" } = process || {};
+  const { closing, componentWindow, url = "" } = useProcess(id);
   const { prependFileToTitle } = useTitle(id);
   const zoomUpdate = useCallback<EventListener>(
     (panZoomEvent) => {

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { isSafari } from "utils/functions";
 
@@ -43,14 +43,20 @@ export type ContextMenuCapture = {
 };
 
 type MenuContextState = {
+  menu: MenuState;
+};
+
+type MenuContextActions = {
   contextMenu: (
     getItems: (event?: CaptureTriggerEvent) => MenuItem[]
   ) => ContextMenuCapture;
-  menu: MenuState;
   setMenu: React.Dispatch<React.SetStateAction<MenuState>>;
 };
 
-const useMenuContextState = (): MenuContextState => {
+const useMenuContextState = (): {
+  actions: MenuContextActions;
+  state: MenuContextState;
+} => {
   const [menu, setMenu] = useState<MenuState>(Object.create(null) as MenuState);
   const touchTimer = useRef<number>(0);
   const touchEvent = useRef<React.TouchEvent>(undefined);
@@ -120,7 +126,10 @@ const useMenuContextState = (): MenuContextState => {
     []
   );
 
-  return { contextMenu, menu, setMenu };
+  const actions = useMemo(() => ({ contextMenu, setMenu }), [contextMenu]);
+  const state = useMemo(() => ({ menu }), [menu]);
+
+  return useMemo(() => ({ actions, state }), [actions, state]);
 };
 
 export default useMenuContextState;

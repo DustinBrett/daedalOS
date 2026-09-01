@@ -9,22 +9,19 @@ import {
   RESTORE_DISABLED,
 } from "components/system/Window/Titlebar/Buttons";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
-import { useMenu } from "contexts/menu";
+import { useMenuActions } from "contexts/menu";
 import {
   type ContextMenuCapture,
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess } from "contexts/process";
+import { useSessionActions } from "contexts/session";
 import { MENU_SEPERATOR } from "utils/constants";
 
 const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
-  const { contextMenu } = useMenu();
+  const { contextMenu } = useMenuActions();
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
-  const {
-    processes: { [id]: process },
-  } = useProcesses();
-  const { setForegroundId } = useSession();
+  const { setForegroundId } = useSessionActions();
   const focusWindow = useCallback(
     () => setForegroundId(id),
     [id, setForegroundId]
@@ -38,7 +35,7 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
     mute,
     muted,
     unmute,
-  } = process || {};
+  } = useProcess(id);
 
   return useMemo(
     () =>

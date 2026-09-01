@@ -15,8 +15,8 @@ import {
 import { type Model } from "components/apps/MonacoEditor/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcessesActions } from "contexts/process";
 import {
   DEFAULT_TEXT_FILE_SAVE_PATH,
   MILLISECONDS_IN_SECOND,
@@ -30,8 +30,8 @@ const useMonaco = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { readFile, updateFolder, writeFile } = useFileSystem();
-  const { argument: setArgument } = useProcesses();
+  const { readFile, updateFolder, writeFile } = useFileSystemActions();
+  const { argument: setArgument } = useProcessesActions();
   const { prependFileToTitle } = useTitle(id);
   const [editor, setEditor] = useState<Monaco.editor.IStandaloneCodeEditor>();
   const [monaco, setMonaco] = useState<typeof Monaco>();

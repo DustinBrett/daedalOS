@@ -1,9 +1,9 @@
 import { basename } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
-import { useProcesses } from "contexts/process";
+import { useProcess } from "contexts/process";
 import { bufferToUrl, haltEvent, loadFiles } from "utils/functions";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 import useTitle from "components/system/Window/useTitle";
 import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 
@@ -13,9 +13,8 @@ const useTic80 = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { processes: { [id]: { closing, libs = [] } = {} } = {} } =
-    useProcesses();
-  const { readFile } = useFileSystem();
+  const { closing, libs = [] } = useProcess(id);
+  const { readFile } = useFileSystemActions();
   const loadedUrl = useRef<string>(undefined);
   const { appendFileToTitle } = useTitle(id);
   const getContentWindow = useIsolatedContentWindow(

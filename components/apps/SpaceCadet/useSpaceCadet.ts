@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
-import { useProcesses } from "contexts/process";
+import { useProcess } from "contexts/process";
 import { haltEvent, loadFiles } from "utils/functions";
 import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
@@ -13,7 +13,7 @@ const useSpaceCadet = ({
   setLoading,
   loading,
 }: ContainerHookProps): void => {
-  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+  const { libs = [] } = useProcess(id);
   const mountEmFs = useEmscriptenMount();
   const getContentWindow = useIsolatedContentWindow(
     id,

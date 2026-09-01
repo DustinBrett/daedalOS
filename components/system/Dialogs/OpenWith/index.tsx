@@ -4,9 +4,9 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 import StyledOpenWith from "components/system/Dialogs/OpenWith/StyledOpenWith";
 import StyledOpenWithList from "components/system/Dialogs/OpenWith/StyledOpenWithList";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
-import { useProcesses } from "contexts/process";
+import { useProcess, useProcessesActions } from "contexts/process";
 import directory from "contexts/process/directory";
-import { useSession } from "contexts/session";
+import { useForegroundId, useSessionActions } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { PREVENT_SCROLL, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
@@ -57,13 +57,10 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
   // attributes and split aria-labelledby's IDREF list
   const primaryLabelId = `openwith-primary-${id}`.replace(/\s/g, "_");
   const otherLabelId = `openwith-other-${id}`.replace(/\s/g, "_");
-  const {
-    closeWithTransition,
-    open,
-    processes: { [id]: process } = {},
-  } = useProcesses();
-  const { foregroundId, setForegroundId, updateRecentFiles } = useSession();
-  const { url } = process || {};
+  const { closeWithTransition, open } = useProcessesActions();
+  const { setForegroundId, updateRecentFiles } = useSessionActions();
+  const foregroundId = useForegroundId();
+  const { url } = useProcess(id);
   const urlExtension = url ? getExtension(url) : "";
   const primaryExtensionProcesses = getProcessByFileExtension(urlExtension);
   const { title: primaryTitle, icon: primaryIcon } =

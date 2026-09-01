@@ -9,8 +9,8 @@ import {
 import StyledControls from "components/apps/PDF/StyledControls";
 import { scales } from "components/apps/PDF/usePDF";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import Button from "styles/common/Button";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
 import { bufferToUrl, isSafari, label } from "utils/functions";
@@ -22,8 +22,8 @@ declare global {
 }
 
 const Controls: FC<ComponentProcessProps> = ({ id }) => {
-  const { readFile } = useFileSystem();
-  const { argument, processes: { [id]: process } = {} } = useProcesses();
+  const { readFile } = useFileSystemActions();
+  const { argument } = useProcessesActions();
   const {
     count = 0,
     page: currentPage = 1,
@@ -32,7 +32,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
     scale = 1,
     subTitle = "",
     url = "",
-  } = process || {};
+  } = useProcess(id);
 
   return (
     <StyledControls role="presentation">

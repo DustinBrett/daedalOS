@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { type Index } from "lunr";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import { type FileSystem } from "browserfs/dist/node/core/file_system";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions, useRootFs } from "contexts/fileSystem";
 import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import SEARCH_EXTENSIONS from "scripts/searchExtensions.json";
 import {
@@ -211,7 +211,8 @@ export const fullSearch = async (
 
 export const useSearch = (searchTerm: string): Index.Result[] => {
   const [results, setResults] = useState([] as Index.Result[]);
-  const { readFile, rootFs } = useFileSystem();
+  const { readFile } = useFileSystemActions();
+  const rootFs = useRootFs();
 
   useEffect(() => {
     const updateResults = async (): Promise<void> => {

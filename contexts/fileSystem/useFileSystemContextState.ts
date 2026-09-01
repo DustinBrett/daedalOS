@@ -1,5 +1,5 @@
 import { basename, dirname, isAbsolute, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   type BFSCallback,
   type FileSystem,
@@ -32,7 +32,7 @@ import useAsyncFs, {
   type ExtendedEmscriptenFileSystem,
   type RootFileSystem,
 } from "contexts/fileSystem/useAsyncFs";
-import { useProcesses } from "contexts/process";
+import { useProcessesActions } from "contexts/process";
 import { type UpdateFiles } from "contexts/session/types";
 import {
   CLIPBOARD_FILE_EXTENSIONS,
@@ -80,7 +80,13 @@ type IFileSystemAccess = {
   };
 };
 
-type FileSystemContextState = AsyncFS & {
+export type FileSystemContextState = {
+  fs?: FSModule;
+  pasteList: FilePasteOperations;
+  rootFs?: RootFileSystem;
+};
+
+type FileSystemContextActions = AsyncFS & {
   addFile: (
     directory: string,
     callback: NewPath,
@@ -97,7 +103,6 @@ type FileSystemContextState = AsyncFS & {
     overwrite?: boolean
   ) => Promise<string>;
   deletePath: (path: string) => Promise<boolean>;
-  fs?: FSModule;
   mapFs: (
     directory: string,
     existingHandle?: FileSystemDirectoryHandle
@@ -111,9 +116,7 @@ type FileSystemContextState = AsyncFS & {
     baseUrl?: string
   ) => Promise<void>;
   moveEntries: (entries: string[]) => void;
-  pasteList: FilePasteOperations;
   removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
-  rootFs?: RootFileSystem;
   setPasteList: React.Dispatch<React.SetStateAction<FilePasteOperations>>;
   unMapFs: (directory: string, hasNoHandle?: boolean) => Promise<void>;
   unMountFs: (url: string) => void;
@@ -126,20 +129,25 @@ type FileSystemContextState = AsyncFS & {
 
 const SYSTEM_DIRECTORIES = new Set(["/OPFS"]);
 
-const useFileSystemContextState = (): FileSystemContextState => {
-  const asyncFs = useAsyncFs();
+const useFileSystemContextState = (): {
+  actions: FileSystemContextActions;
+  state: FileSystemContextState;
+} => {
   const {
     exists,
+    fs,
+    lstat,
     mkdir,
     readdir,
     readFile,
     rename,
     rmdir,
     rootFs,
+    stat,
     unlink,
     writeFile,
-  } = asyncFs;
-  const { closeWithTransition } = useProcesses();
+  } = useAsyncFs();
+  const { closeWithTransition } = useProcessesActions();
   const fsWatchersRef = useRef<FileSystemWatchers>(
     Object.create(null) as FileSystemWatchers
   );
@@ -480,7 +488,7 @@ const useFileSystemContextState = (): FileSystemContextState => {
     },
     [unMountFs, updateFolder]
   );
-  const { openTransferDialog } = useTransferDialog();
+  const { openTransferDialog } = useTransferDialog(readFile);
   const addFile = useCallback(
     (
       directory: string,
@@ -689,26 +697,69 @@ const useFileSystemContextState = (): FileSystemContextState => {
     }
   }, [exists, mapFs, rootFs, updateFolder]);
 
-  return {
-    addFile,
-    addFsWatcher,
-    copyEntries,
-    createPath,
-    deletePath,
-    mapFs,
-    mkdirRecursive,
-    mountEmscriptenFs,
-    mountFs,
-    mountHttpRequestFs,
-    moveEntries,
-    pasteList,
-    removeFsWatcher,
-    setPasteList,
-    unMapFs,
-    unMountFs,
-    updateFolder,
-    ...asyncFs,
-  };
+  const actions = useMemo(
+    () => ({
+      addFile,
+      addFsWatcher,
+      copyEntries,
+      createPath,
+      deletePath,
+      exists,
+      lstat,
+      mapFs,
+      mkdir,
+      mkdirRecursive,
+      mountEmscriptenFs,
+      mountFs,
+      mountHttpRequestFs,
+      moveEntries,
+      readFile,
+      readdir,
+      removeFsWatcher,
+      rename,
+      rmdir,
+      setPasteList,
+      stat,
+      unMapFs,
+      unMountFs,
+      unlink,
+      updateFolder,
+      writeFile,
+    }),
+    [
+      addFile,
+      addFsWatcher,
+      copyEntries,
+      createPath,
+      deletePath,
+      exists,
+      lstat,
+      mapFs,
+      mkdir,
+      mkdirRecursive,
+      mountEmscriptenFs,
+      mountFs,
+      mountHttpRequestFs,
+      moveEntries,
+      readFile,
+      readdir,
+      removeFsWatcher,
+      rename,
+      rmdir,
+      stat,
+      unMapFs,
+      unMountFs,
+      unlink,
+      updateFolder,
+      writeFile,
+    ]
+  );
+  const state = useMemo(
+    () => ({ fs, pasteList, rootFs }),
+    [fs, pasteList, rootFs]
+  );
+
+  return useMemo(() => ({ actions, state }), [actions, state]);
 };
 
 export default useFileSystemContextState;

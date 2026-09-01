@@ -19,10 +19,10 @@ import {
 import { type SkinData, type WebampCI } from "components/apps/Webamp/types";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { hasProcess, useProcess, useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { useSession } from "contexts/session";
+import { useSessionActions, useWindowState } from "contexts/session";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
@@ -49,19 +49,14 @@ const SKIN_DATA_NAME = "webampSkinData.json";
 
 const useWebamp = (id: string): Webamp => {
   const { onClose, onMinimize } = useWindowActions(id);
-  const { setWindowStates, windowStates: { [id]: windowState } = {} } =
-    useSession();
-  const { position } = windowState || {};
-  const {
-    argument,
-    linkElement,
-    processes: { [id]: process },
-    title,
-  } = useProcesses();
-  const { closing, componentWindow } = process || {};
+  const { setWindowStates } = useSessionActions();
+  const { position } = useWindowState(id);
+  const { argument, linkElement, title } = useProcessesActions();
+  const process = useProcess(id);
+  const { closing, componentWindow } = process;
   const webampCI = useRef<WebampCI>(undefined);
   const { createPath, deletePath, exists, readFile, updateFolder } =
-    useFileSystem();
+    useFileSystemActions();
   const { onDrop } = useFileDrop({ id });
   const metadataProviderRef = useRef(0);
   const windowPositionDebounceRef = useRef(0);
@@ -140,7 +135,7 @@ const useWebamp = (id: string): Webamp => {
             element?.addEventListener("dragover", haltEvent);
           });
 
-          if (process) {
+          if (hasProcess(process)) {
             if (!componentWindow) {
               linkElement(id, "componentWindow", containerElement);
             }

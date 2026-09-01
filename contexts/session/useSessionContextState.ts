@@ -3,16 +3,18 @@ import {
   type SetStateAction,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import { type ApiError } from "browserfs/dist/node/core/api_error";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions, useRootFs } from "contexts/fileSystem";
 import {
   type Views,
   type IconPositions,
   type RecentFiles,
+  type SessionContextActions,
   type SessionContextState,
   type SessionData,
   type SortOrders,
@@ -52,9 +54,13 @@ const DEFAULT_SESSION = (
 
 const KEEP_RECENT_FILES_LIST_COUNT = 10;
 
-const useSessionContextState = (): SessionContextState => {
-  const { deletePath, readdir, readFile, rootFs, writeFile, lstat } =
-    useFileSystem();
+const useSessionContextState = (): {
+  actions: SessionContextActions;
+  state: SessionContextState;
+} => {
+  const { deletePath, readdir, readFile, writeFile, lstat } =
+    useFileSystemActions();
+  const rootFs = useRootFs();
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
@@ -162,6 +168,12 @@ const useSessionContextState = (): SessionContextState => {
     []
   );
   const initializedSession = useRef(false);
+  // Read via ref so setAndUpdateIconPositions (and the actions context)
+  // keeps a stable identity across sort changes
+  const sortOrdersRef = useRef(sortOrders);
+
+  sortOrdersRef.current = sortOrders;
+
   const setAndUpdateIconPositions = useCallback(
     async (positions: SetStateAction<IconPositions>): Promise<void> => {
       if (typeof positions === "function") {
@@ -177,26 +189,22 @@ const useSessionContextState = (): SessionContextState => {
         if (desktopGrid instanceof HTMLOListElement) {
           try {
             const { [DESKTOP_PATH]: [desktopFileOrder = []] = [] } =
-              sortOrders || {};
-            const newDesktopSortOrder = {
-              [DESKTOP_PATH]: [
-                [
-                  ...new Set([
-                    ...desktopFileOrder,
-                    ...(await readdir(DESKTOP_PATH)).filter(
-                      (entry) => !SYSTEM_FILES.has(entry)
-                    ),
-                  ]),
-                ],
-              ],
-            } as SortOrders;
+              sortOrdersRef.current || {};
+            const newDesktopFileOrder = [
+              ...new Set([
+                ...desktopFileOrder,
+                ...(await readdir(DESKTOP_PATH)).filter(
+                  (entry) => !SYSTEM_FILES.has(entry)
+                ),
+              ]),
+            ];
 
             return setIconPositions(
               updateIconPositionsIfEmpty(
                 DESKTOP_PATH,
                 desktopGrid,
                 positions,
-                newDesktopSortOrder
+                newDesktopFileOrder
               )
             );
           } catch {
@@ -207,7 +215,7 @@ const useSessionContextState = (): SessionContextState => {
 
       return setIconPositions(positions);
     },
-    [readdir, sortOrders]
+    [readdir]
   );
   const loadingDebounceRef = useRef(0);
 
@@ -404,40 +412,74 @@ const useSessionContextState = (): SessionContextState => {
 
   useEffect(() => setCurrentCloseEffect(closeEffect), [closeEffect]);
 
-  return {
-    aiEnabled,
-    clockSource,
-    closeEffect,
-    cursor,
-    foregroundId,
-    iconPositions,
-    prependToStack,
-    recentFiles,
-    removeFromStack,
-    runHistory,
-    sessionLoaded,
-    setAiEnabled,
-    setClockSource,
-    setCloseEffect,
-    setCursor,
-    setForegroundId,
-    setHaltSession,
-    setIconPositions: setAndUpdateIconPositions,
-    setRunHistory,
-    setSortOrder,
-    setThemeName,
-    setViews,
-    setWallpaper,
-    setWindowStates,
-    sortOrders,
-    stackOrder,
-    themeName,
-    updateRecentFiles,
-    views,
-    wallpaperFit,
-    wallpaperImage,
-    windowStates,
-  };
+  const actions = useMemo(
+    () => ({
+      prependToStack,
+      removeFromStack,
+      setAiEnabled,
+      setClockSource,
+      setCloseEffect,
+      setCursor,
+      setForegroundId,
+      setHaltSession,
+      setIconPositions: setAndUpdateIconPositions,
+      setRunHistory,
+      setSortOrder,
+      setThemeName,
+      setViews,
+      setWallpaper,
+      setWindowStates,
+      updateRecentFiles,
+    }),
+    [
+      prependToStack,
+      removeFromStack,
+      setAndUpdateIconPositions,
+      setSortOrder,
+      setWallpaper,
+      updateRecentFiles,
+    ]
+  );
+  const state = useMemo(
+    () => ({
+      aiEnabled,
+      clockSource,
+      closeEffect,
+      cursor,
+      foregroundId,
+      iconPositions,
+      recentFiles,
+      runHistory,
+      sessionLoaded,
+      sortOrders,
+      stackOrder,
+      themeName,
+      views,
+      wallpaperFit,
+      wallpaperImage,
+      windowStates,
+    }),
+    [
+      aiEnabled,
+      clockSource,
+      closeEffect,
+      cursor,
+      foregroundId,
+      iconPositions,
+      recentFiles,
+      runHistory,
+      sessionLoaded,
+      sortOrders,
+      stackOrder,
+      themeName,
+      views,
+      wallpaperFit,
+      wallpaperImage,
+      windowStates,
+    ]
+  );
+
+  return useMemo(() => ({ actions, state }), [actions, state]);
 };
 
 export default useSessionContextState;

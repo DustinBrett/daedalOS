@@ -11,8 +11,8 @@ import usePanZoom, { panZoomConfig } from "components/apps/Photos/usePanZoom";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { useViewport } from "contexts/viewport";
 import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
@@ -32,12 +32,12 @@ import {
 const { maxScale, minScale } = panZoomConfig;
 
 const Photos: FC<ComponentProcessProps> = ({ id }) => {
-  const { processes: { [id]: process } = {}, url: setUrl } = useProcesses();
-  const { componentWindow, closing = false, url = "" } = process || {};
+  const { url: setUrl } = useProcessesActions();
+  const { componentWindow, closing = false, url = "" } = useProcess(id);
   const [src, setSrc] = useState<Record<string, string>>({});
   const [brokenImage, setBrokenImage] = useState(false);
   const { prependFileToTitle } = useTitle(id);
-  const { readFile, readdir } = useFileSystem();
+  const { readFile, readdir } = useFileSystemActions();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);

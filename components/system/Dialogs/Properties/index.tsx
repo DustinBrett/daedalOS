@@ -9,7 +9,7 @@ import useStats from "components/system/Dialogs/Properties/useStats";
 import StyledButton from "components/system/Dialogs/StyledButton";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import useTitle from "components/system/Window/useTitle";
-import { useProcesses } from "contexts/process";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { haltEvent } from "utils/functions";
 import { PREVENT_SCROLL } from "utils/constants";
 
@@ -35,8 +35,9 @@ export type PropertiesMetaData = {
 };
 
 const Properties: FC<ComponentProcessProps> = ({ id }) => {
-  const { icon: setIcon, processes: { [id]: process } = {} } = useProcesses();
-  const { shortcutPath, url } = process || {};
+  const { icon: setIcon } = useProcessesActions();
+  const process = useProcess(id);
+  const { shortcutPath, url } = process;
   const generalUrl = shortcutPath || url || "";
   const stats = useStats(generalUrl);
   const [{ getIcon, icon, pid }] = useFileInfo(

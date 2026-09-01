@@ -9,7 +9,7 @@ import {
   type ObjectReaders,
   type Operation,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
-import { useProcesses } from "contexts/process";
+import { hasProcess, useProcess, useProcessesActions } from "contexts/process";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
@@ -23,19 +23,15 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   // Process ids can contain paths with spaces, which are invalid in id
   // attributes and split aria-labelledby's IDREF list
   const titleId = `transfer-title-${id}`.replace(/\s/g, "_");
-  const {
-    argument,
-    closeWithTransition,
-    processes: { [id]: process } = {},
-    title,
-  } = useProcesses();
-  const { closing, fileReaders, operation: baseOperation, url } = process || {};
+  const { argument, closeWithTransition, title } = useProcessesActions();
+  const process = useProcess(id);
+  const { closing, fileReaders, operation: baseOperation, url } = process;
   const [currentTransfer, setCurrentTransfer] = useState<[string, File]>();
   const [cd = "", { name = "" } = {}] = currentTransfer || [];
   const [progress, setProgress] = useState<number>(0);
   const currentOperation = useRef<Operation>(undefined);
   const actionName = useMemo(() => {
-    if (closing || !process) return currentOperation.current;
+    if (closing || !hasProcess(process)) return currentOperation.current;
 
     let operation: Operation = "Copying";
     const { operation: objectOperation } =

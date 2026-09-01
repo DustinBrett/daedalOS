@@ -11,7 +11,7 @@ import { useTheme } from "styled-components";
 import { type FileManagerViewNames } from "components/system/Files/Views";
 import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
 import { type FileDrop } from "components/system/Files/FileManager/useFileDrop";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 import useResizeObserver from "hooks/useResizeObserver";
 import { getFormattedSize, haltEvent, label } from "utils/functions";
 import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
@@ -37,7 +37,7 @@ const StatusBar: FC<StatusBarProps> = ({
   setView,
   view,
 }) => {
-  const { exists, lstat, stat } = useFileSystem();
+  const { exists, lstat, stat } = useFileSystemActions();
   const [selectedSize, setSelectedSize] = useState(UNKNOWN_SIZE);
   const [showSelected, setShowSelected] = useState(false);
   const { sizes } = useTheme();

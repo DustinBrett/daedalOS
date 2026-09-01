@@ -4,8 +4,8 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   PACKAGE_DATA,
 } from "utils/constants";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess } from "contexts/process";
+import { useForegroundId } from "contexts/session";
 import {
   isDynamicIcon,
   imageSrc,
@@ -22,13 +22,12 @@ export const useFaviconAndTitle = (): {
 } => {
   const [title, setTitle] = useState(alias);
   const [favIcon, setFavIcon] = useState("");
-  const { foregroundId } = useSession();
-  const { processes: { [foregroundId]: process } = {} } = useProcesses();
+  const foregroundId = useForegroundId();
   const {
     icon: processIcon,
     hideTaskbarEntry,
     title: processTitle,
-  } = process || {};
+  } = useProcess(foregroundId);
   const resetFaviconAndTitle = useCallback((): void => {
     setTitle(alias);
     setFavIcon((currentFavicon) =>

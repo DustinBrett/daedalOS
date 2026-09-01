@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useWindowState } from "contexts/session";
 import { PREVENT_SCROLL, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { haltEvent, loadFiles, pxToNum } from "utils/functions";
 import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
@@ -34,8 +34,7 @@ const useQuake3 = ({
   setLoading,
   loading,
 }: ContainerHookProps): void => {
-  const { closeWithTransition, processes: { [id]: process } = {} } =
-    useProcesses();
+  const { closeWithTransition } = useProcessesActions();
   const {
     componentWindow = undefined,
     defaultSize = {
@@ -44,16 +43,13 @@ const useQuake3 = ({
     },
     libs = [],
     maximized = false,
-  } = process || {};
-  const {
-    windowStates: { [id]: windowState },
-  } = useSession();
+  } = useProcess(id);
   const {
     sizes: { titleBar },
   } = useTheme();
   const wasMaximized = useRef(false);
   const mountEmFs = useEmscriptenMount();
-  const { size } = windowState || {};
+  const { size } = useWindowState(id);
   const focusCanvas = useCallback((focusedWindow: Window) => {
     if (focusedWindow?.ioq3?.canvas) {
       focusedWindow.ioq3.canvas.focus(PREVENT_SCROLL);

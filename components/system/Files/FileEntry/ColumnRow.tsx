@@ -8,7 +8,7 @@ import {
   getFileType,
 } from "components/system/Files/FileEntry/functions";
 import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 import { getExtension, getFormattedSize } from "utils/functions";
 
 type ColumnDataProps = {
@@ -23,7 +23,7 @@ const ColumnRow: FC<{
   path: string;
   stats: Stats;
 }> = ({ columns, isDirectory, path, stats }) => {
-  const { stat } = useFileSystem();
+  const { stat } = useFileSystemActions();
   const { formats } = useTheme();
   const getColumnData = useCallback(async (): Promise<ColumnDataProps> => {
     const fullStats = stats.size === UNKNOWN_SIZE ? await stat(path) : stats;

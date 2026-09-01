@@ -28,9 +28,14 @@ import useSortBy, {
   type SetSortBy,
   type SortByOrder,
 } from "components/system/Files/FileManager/useSortBy";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useFileSystemActions, useFs, usePasteList } from "contexts/fileSystem";
+import { useProcessesActions } from "contexts/process";
+import {
+  useIconPositions,
+  useSessionActions,
+  useSessionLoaded,
+  useSortOrder,
+} from "contexts/session";
 import {
   BASE_ZIP_CONFIG,
   DESKTOP_PATH,
@@ -125,11 +130,9 @@ const useFolder = (
     createPath,
     deletePath,
     exists,
-    fs,
     lstat,
     mkdir,
     mkdirRecursive,
-    pasteList,
     readdir,
     readFile,
     removeFsWatcher,
@@ -138,18 +141,15 @@ const useFolder = (
     stat,
     updateFolder,
     writeFile,
-  } = useFileSystem();
-  const {
-    iconPositions,
-    sessionLoaded,
-    setIconPositions,
-    setSortOrder,
-    sortOrders,
-  } = useSession();
-  const { [directory]: [sortOrder, sortBy, sortAscending] = [] } =
-    sortOrders || {};
+  } = useFileSystemActions();
+  const fs = useFs();
+  const pasteList = usePasteList();
+  const { setIconPositions, setSortOrder } = useSessionActions();
+  const iconPositions = useIconPositions();
+  const sessionLoaded = useSessionLoaded();
+  const [sortOrder, sortBy, sortAscending] = useSortOrder(directory);
   const [currentDirectory, setCurrentDirectory] = useState(directory);
-  const { close, closeProcessesByUrl } = useProcesses();
+  const { close, closeProcessesByUrl } = useProcessesActions();
   const statsWithShortcutInfo = useCallback(
     async (fileName: string, stats: Stats): Promise<FileStat> => {
       if (
@@ -707,7 +707,7 @@ const useFolder = (
             directory,
             event.target as HTMLElement,
             iconPositions,
-            sortOrders,
+            sortOrder,
             { x, y },
             entries,
             setIconPositions,
@@ -738,7 +738,7 @@ const useFolder = (
       readdir,
       setIconPositions,
       setPasteList,
-      sortOrders,
+      sortOrder,
       updateFolder,
     ]
   );

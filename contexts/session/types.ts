@@ -21,7 +21,7 @@ export type WindowStates = Record<string, WindowState>;
 
 export type WallpaperFit = "center" | "fill" | "fit" | "stretch" | "tile";
 
-type SortOrder = [string[], SortBy?, boolean?];
+export type SortOrder = [string[], SortBy?, boolean?];
 
 export type SortOrders = Record<string, SortOrder>;
 
@@ -57,9 +57,13 @@ export type SessionData = {
 
 export type SessionContextState = SessionData & {
   foregroundId: string;
+  sessionLoaded: boolean;
+  stackOrder: string[];
+};
+
+export type SessionContextActions = {
   prependToStack: (id: string) => void;
   removeFromStack: (id: string) => void;
-  sessionLoaded: boolean;
   setAiEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   setClockSource: React.Dispatch<React.SetStateAction<ClockSource>>;
   setCloseEffect: React.Dispatch<React.SetStateAction<string>>;
@@ -78,6 +82,5 @@ export type SessionContextState = SessionData & {
   setViews: React.Dispatch<React.SetStateAction<Views>>;
   setWallpaper: (image: string, fit?: WallpaperFit) => void;
   setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
-  stackOrder: string[];
   updateRecentFiles: (url: string, pid: string, title?: string) => void;
 };

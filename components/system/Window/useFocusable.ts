@@ -1,6 +1,10 @@
 import { useCallback, useLayoutEffect, useMemo } from "react";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess } from "contexts/process";
+import {
+  useForegroundId,
+  useSessionActions,
+  useStackOrder,
+} from "contexts/session";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 
 type Events = {
@@ -19,22 +23,16 @@ const useFocusable = (
   callbackEvents?: Partial<Events>,
   focusElement?: HTMLElement | null
 ): Focusable => {
-  const {
-    foregroundId,
-    prependToStack,
-    setForegroundId,
-    stackOrder = [],
-  } = useSession();
-  const {
-    processes: { [id]: process },
-  } = useProcesses();
+  const { prependToStack, setForegroundId } = useSessionActions();
+  const foregroundId = useForegroundId();
+  const stackOrder = useStackOrder();
   const {
     closing = false,
     componentWindow = focusElement,
     minimized = false,
     taskbarEntry,
     url,
-  } = process || {};
+  } = useProcess(id);
   const zIndex = useMemo(
     () => stackOrder.length + (minimized ? 1 : -stackOrder.indexOf(id)) + 1,
     [id, minimized, stackOrder]

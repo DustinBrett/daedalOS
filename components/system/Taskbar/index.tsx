@@ -16,7 +16,7 @@ import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { CLOCK_CANVAS_BASE_WIDTH, FOCUSABLE_ELEMENT } from "utils/constants";
 import { useWindowAI } from "hooks/useWindowAI";
-import { useSession } from "contexts/session";
+import { useAiEnabled } from "contexts/session";
 
 const AIButton = dynamic(importAIButton);
 const AIChat = dynamic(importAIChat);
@@ -30,7 +30,7 @@ const Taskbar: FC = () => {
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [aiVisible, setAIVisible] = useState(false);
   const [clockWidth, setClockWidth] = useState(CLOCK_CANVAS_BASE_WIDTH);
-  const { aiEnabled } = useSession();
+  const aiEnabled = useAiEnabled();
   const hasWindowAI = useWindowAI();
   const toggleStartMenu = useCallback(
     (showMenu?: boolean): void =>

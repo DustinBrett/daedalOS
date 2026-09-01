@@ -19,8 +19,8 @@ import {
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import {
   AUDIO_FILE_EXTENSIONS,
   DESKTOP_PATH,
@@ -46,13 +46,10 @@ const useVideoPlayer = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { addFile, createPath, readFile, updateFolder } = useFileSystem();
-  const {
-    argument,
-    linkElement,
-    processes: { [id]: { closing = false, componentWindow, libs = [] } = {} },
-    url: setUrl,
-  } = useProcesses();
+  const { addFile, createPath, readFile, updateFolder } =
+    useFileSystemActions();
+  const { argument, linkElement, url: setUrl } = useProcessesActions();
+  const { closing = false, componentWindow, libs = [] } = useProcess(id);
   const { updateWindowSize } = useWindowSize(id);
   const [player, setPlayer] = useState<VideoPlayer>();
   const [ytPlayer, setYtPlayer] = useState<YouTubePlayer>();

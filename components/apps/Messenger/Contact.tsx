@@ -7,7 +7,7 @@ import {
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
-import { useMenu } from "contexts/menu";
+import { useMenuActions } from "contexts/menu";
 import Button from "styles/common/Button";
 import { MENU_SEPERATOR, MILLISECONDS_IN_MINUTE } from "utils/constants";
 import { useIsVisible } from "hooks/useIsVisible";
@@ -39,7 +39,7 @@ const Contact: FC<ContactProps> = ({
   const isVisible = useIsVisible(elementRef);
   const { nip05, picture, userName } = useNostrProfile(pubkey, isVisible);
   const unreadClass = unreadEvent ? "unread" : undefined;
-  const { contextMenu } = useMenu();
+  const { contextMenu } = useMenuActions();
   const { onContextMenuCapture } = useMemo(
     () =>
       contextMenu?.(() => [

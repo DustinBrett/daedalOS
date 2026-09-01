@@ -1,7 +1,7 @@
 import { Rnd } from "react-rnd";
 import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import useRnd from "components/system/Window/RndWindow/useRnd";
-import { useProcesses } from "contexts/process";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
@@ -23,11 +23,8 @@ const reRouteFocus =
   };
 
 const RndWindow: FC<RndWindowProps> = ({ children, id, zIndex }) => {
-  const {
-    linkElement,
-    processes: { [id]: process },
-  } = useProcesses();
-  const { Component, componentWindow, maximized, minimized } = process || {};
+  const { linkElement } = useProcessesActions();
+  const { Component, componentWindow, maximized, minimized } = useProcess(id);
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id);
   const style = useMemo<React.CSSProperties>(

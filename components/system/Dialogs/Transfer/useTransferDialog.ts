@@ -1,7 +1,6 @@
 import { useMemo } from "react";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { useProcessesRef } from "hooks/useProcessesRef";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcessesActions, useProcessesRef } from "contexts/process";
 import { PROCESS_DELIMITER, SHORTCUT_EXTENSION } from "utils/constants";
 import { getExtension } from "utils/functions";
 
@@ -28,10 +27,15 @@ type Dialog = {
   ) => Promise<void>;
 };
 
-const useTransferDialog = (): Dialog => {
-  const { argument, open } = useProcesses();
+const useTransferDialog = (
+  fsReadFile?: (path: string) => Promise<Buffer>
+): Dialog => {
+  const { argument, open } = useProcessesActions();
   const processesRef = useProcessesRef();
-  const { readFile } = useFileSystem();
+  const { readFile: contextReadFile } = useFileSystemActions();
+  // The file system provider uses this dialog above its own context, where
+  // that context read yields nothing, so it passes its readFile directly
+  const readFile = fsReadFile ?? contextReadFile;
 
   return useMemo(
     () => ({

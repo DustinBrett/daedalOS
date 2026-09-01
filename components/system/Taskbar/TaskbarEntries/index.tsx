@@ -14,7 +14,7 @@ type TaskbarEntriesProps = {
 };
 
 const TaskbarEntries: FC<TaskbarEntriesProps> = ({ clockWidth, hasAI }) => {
-  const { processes = {} } = useProcesses();
+  const processes = useProcesses();
 
   return (
     <StyledTaskbarEntries

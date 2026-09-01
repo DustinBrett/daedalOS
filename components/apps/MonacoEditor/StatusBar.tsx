@@ -17,8 +17,8 @@ import {
 import { type Model } from "components/apps/MonacoEditor/types";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess } from "contexts/process";
 import Button from "styles/common/Button";
 import { haltEvent, label } from "utils/functions";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
@@ -26,11 +26,8 @@ import { MILLISECONDS_IN_SECOND } from "utils/constants";
 type NotificationType = "error" | "warning" | "info";
 
 const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
-  const {
-    processes: { [id]: process },
-  } = useProcesses();
-  const { editor, url } = process || {};
-  const { updateFolder, writeFile } = useFileSystem();
+  const { editor, url } = useProcess(id);
+  const { updateFolder, writeFile } = useFileSystemActions();
   const { prependFileToTitle } = useTitle(id);
   const [language, setLanguage] = useState("");
   const [position, setPosition] = useState("Ln 1, Col 1");

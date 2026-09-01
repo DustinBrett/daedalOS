@@ -9,7 +9,7 @@ import {
 } from "utils/constants";
 import { label } from "utils/functions";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { useSession } from "contexts/session";
+import { useSessionActions } from "contexts/session";
 import { useMenuPreload } from "hooks/useMenuPreload";
 
 type AIButtonProps = {
@@ -19,7 +19,7 @@ type AIButtonProps = {
 
 const AIButton: FC<AIButtonProps> = ({ aiVisible, toggleAI }) => {
   const menuPreloadHandler = useMenuPreload(importAIChat);
-  const { removeFromStack } = useSession();
+  const { removeFromStack } = useSessionActions();
   const onClick = (): void => {
     toggleAI();
     if (aiVisible) removeFromStack(AI_WINDOW_ID);

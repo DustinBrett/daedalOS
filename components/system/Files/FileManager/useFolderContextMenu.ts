@@ -7,16 +7,25 @@ import {
   type SortBy,
   type SortByOrder,
 } from "components/system/Files/FileManager/useSortBy";
-import { useFileSystem } from "contexts/fileSystem";
-import { useMenu } from "contexts/menu";
+import {
+  useFileSystemActions,
+  usePasteList,
+  useRootFs,
+} from "contexts/fileSystem";
+import { useMenuActions } from "contexts/menu";
 import {
   type CaptureTriggerEvent,
   type ContextMenuCapture,
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
-import { useProcessesRef } from "hooks/useProcessesRef";
+import { useProcessesActions, useProcessesRef } from "contexts/process";
+import {
+  useCloseEffect,
+  useIconPositions,
+  useSessionActions,
+  useSortOrder,
+  useWallpaperImage,
+} from "contexts/session";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import { CLOSE_EFFECT_NAMES } from "utils/closeEffect";
 import {
@@ -69,27 +78,22 @@ const useFolderContextMenu = (
   isDesktop?: boolean,
   isStartMenu?: boolean
 ): ContextMenuCapture => {
-  const { contextMenu } = useMenu();
+  const { contextMenu } = useMenuActions();
+  const { exists, mapFs, writeFile, updateFolder } = useFileSystemActions();
+  const pasteList = usePasteList();
+  const rootFs = useRootFs();
   const {
-    exists,
-    mapFs,
-    pasteList = {},
-    rootFs,
-    writeFile,
-    updateFolder,
-  } = useFileSystem();
-  const {
-    closeEffect,
-    iconPositions,
     setCloseEffect,
     setForegroundId,
     setWallpaper: setSessionWallpaper,
     setIconPositions,
-    sortOrders,
     updateRecentFiles,
-    wallpaperImage,
-  } = useSession();
-  const { minimize, open } = useProcesses();
+  } = useSessionActions();
+  const closeEffect = useCloseEffect();
+  const iconPositions = useIconPositions();
+  const [desktopSortOrder] = useSortOrder(DESKTOP_PATH);
+  const wallpaperImage = useWallpaperImage();
+  const { minimize, open } = useProcessesActions();
   const updateSorting = useCallback(
     (value: SortBy | "", defaultIsAscending: boolean): void => {
       setIconPositions((currentIconPositions) =>
@@ -202,7 +206,7 @@ const useFolderContextMenu = (
           DESKTOP_PATH,
           event.target as HTMLElement,
           iconPositions,
-          sortOrders,
+          desktopSortOrder,
           { x, y },
           names,
           setIconPositions,
@@ -210,7 +214,7 @@ const useFolderContextMenu = (
         );
       }
     },
-    [exists, iconPositions, isDesktop, setIconPositions, sortOrders]
+    [desktopSortOrder, exists, iconPositions, isDesktop, setIconPositions]
   );
   const newEntry = useCallback(
     async (

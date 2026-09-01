@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { sortFiles } from "components/system/Files/FileManager/functions";
 import { type Files } from "components/system/Files/FileManager/useFolder";
-import { useSession } from "contexts/session";
+import { useSessionActions, useSortOrder } from "contexts/session";
 
 export type SortBy = "date" | "name" | "size" | "type";
 
@@ -15,7 +15,8 @@ const useSortBy = (
   directory: string,
   files?: Files
 ): [SortByOrder, SetSortBy] => {
-  const { setSortOrder, sortOrders } = useSession();
+  const { setSortOrder } = useSessionActions();
+  const sortOrder = useSortOrder(directory);
   const [currentSortBy, setCurrentSortBy] = useState<
     Record<string, SortByOrder>
   >({
@@ -23,8 +24,7 @@ const useSortBy = (
   });
 
   useEffect(() => {
-    const { [directory]: [, sessionSortBy, sessionAscending] = [] } =
-      sortOrders || {};
+    const [, sessionSortBy, sessionAscending] = sortOrder;
 
     if (
       typeof sessionSortBy === "string" &&
@@ -32,7 +32,7 @@ const useSortBy = (
     ) {
       setCurrentSortBy({ [directory]: [sessionSortBy, sessionAscending] });
     }
-  }, [directory, sortOrders]);
+  }, [directory, sortOrder]);
 
   return useMemo(
     () => [

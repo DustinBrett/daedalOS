@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useProcesses } from "contexts/process";
+import { useProcessesActions } from "contexts/process";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
 
 const useCloseOnEscape = (
@@ -8,7 +8,7 @@ const useCloseOnEscape = (
   onKeyDownCapture: React.KeyboardEventHandler<HTMLElement>;
   tabIndex: number;
 } => {
-  const { closeWithTransition } = useProcesses();
+  const { closeWithTransition } = useProcessesActions();
 
   return {
     onKeyDownCapture: useCallback<React.KeyboardEventHandler<HTMLElement>>(

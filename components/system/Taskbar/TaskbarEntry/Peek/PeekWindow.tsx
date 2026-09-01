@@ -11,8 +11,8 @@ import usePeekTransition from "components/system/Taskbar/TaskbarEntry/Peek/usePe
 import useWindowPeek from "components/system/Taskbar/TaskbarEntry/Peek/useWindowPeek";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useSessionActions } from "contexts/session";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, HIGH_PRIORITY_ELEMENT } from "utils/constants";
 import { haltEvent, label, viewWidth } from "utils/functions";
@@ -42,12 +42,9 @@ const Play = memo(() => (
 ));
 
 const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
-  const {
-    minimize,
-    processes: { [id]: process },
-  } = useProcesses();
-  const { pause, paused, play, minimized = false, title = id } = process || {};
-  const { setForegroundId } = useSession();
+  const { minimize } = useProcessesActions();
+  const { pause, paused, play, minimized = false, title = id } = useProcess(id);
+  const { setForegroundId } = useSessionActions();
   const { onClose } = useWindowActions(id);
   const [offsetX, setOffsetX] = useState(0);
   const image = useWindowPeek(id);

@@ -1,13 +1,14 @@
 import { useMemo } from "react";
-import { useMenu } from "contexts/menu";
+import { useMenuActions } from "contexts/menu";
 import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
-import { useSession } from "contexts/session";
+import { useClockSource, useSessionActions } from "contexts/session";
 
 const useClockContextMenu = (
   toggleCalendar: (showCalendar?: boolean) => void
 ): ContextMenuCapture => {
-  const { contextMenu } = useMenu();
-  const { clockSource, setClockSource } = useSession();
+  const { contextMenu } = useMenuActions();
+  const { setClockSource } = useSessionActions();
+  const clockSource = useClockSource();
 
   return useMemo(
     () =>

@@ -9,10 +9,14 @@ import {
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { useSession } from "contexts/session";
+import {
+  useForegroundId,
+  useRunHistory,
+  useSessionActions,
+} from "contexts/session";
 import {
   DESKTOP_PATH,
   ICON_PATH,
@@ -49,14 +53,13 @@ const utilCommandMap: Record<string, () => void> = {
 };
 
 const Run: FC<ComponentProcessProps> = ({ id }) => {
-  const {
-    open,
-    closeWithTransition,
-    processes: { Run: runProcess } = {},
-  } = useProcesses();
-  const { createPath, exists, lstat, readFile, updateFolder } = useFileSystem();
-  const { foregroundId, runHistory, setRunHistory, updateRecentFiles } =
-    useSession();
+  const { open, closeWithTransition } = useProcessesActions();
+  const runProcess = useProcess("Run");
+  const { createPath, exists, lstat, readFile, updateFolder } =
+    useFileSystemActions();
+  const { setRunHistory, updateRecentFiles } = useSessionActions();
+  const foregroundId = useForegroundId();
+  const runHistory = useRunHistory();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(!runHistory[0]);

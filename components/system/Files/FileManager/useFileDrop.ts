@@ -11,9 +11,13 @@ import {
   type NewPath,
   COMPLETE_ACTION,
 } from "components/system/Files/FileManager/useFolder";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcessesActions, useProcessesRef } from "contexts/process";
+import {
+  useIconPositions,
+  useSessionActions,
+  useSortOrder,
+} from "contexts/session";
 import {
   DESKTOP_PATH,
   MOUNTABLE_EXTENSIONS,
@@ -25,7 +29,6 @@ import {
   haltEvent,
   updateIconPositions,
 } from "utils/functions";
-import { useProcessesRef } from "hooks/useProcessesRef";
 
 export type FileDrop = {
   onDragLeave?: (event: DragEvent | React.DragEvent<HTMLElement>) => void;
@@ -50,10 +53,13 @@ const useFileDrop = ({
   onDragOver,
   updatePositions,
 }: FileDropProps): FileDrop => {
-  const { url } = useProcesses();
+  const { url } = useProcessesActions();
   const processesRef = useProcessesRef();
-  const { iconPositions, sortOrders, setIconPositions } = useSession();
-  const { exists, mkdirRecursive, updateFolder, writeFile } = useFileSystem();
+  const { setIconPositions } = useSessionActions();
+  const iconPositions = useIconPositions();
+  const [sortOrder] = useSortOrder(directory);
+  const { exists, mkdirRecursive, updateFolder, writeFile } =
+    useFileSystemActions();
   const updateProcessUrl = useCallback(
     async (
       filePath: string,
@@ -153,7 +159,7 @@ const useFileDrop = ({
               directory,
               event.target as HTMLElement,
               iconPositions,
-              sortOrders,
+              sortOrder,
               dragPosition,
               fileEntries,
               setIconPositions,
@@ -188,7 +194,7 @@ const useFileDrop = ({
       openTransferDialog,
       processesRef,
       setIconPositions,
-      sortOrders,
+      sortOrder,
       updatePositions,
       updateProcessUrl,
     ]

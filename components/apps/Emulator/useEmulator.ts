@@ -9,9 +9,9 @@ import {
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
-import { useProcesses } from "contexts/process";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
 import { zipAsync } from "utils/zipFunctions";
@@ -43,11 +43,11 @@ const useEmulator = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { exists, readFile } = useFileSystem();
+  const { exists, readFile } = useFileSystemActions();
   const { createSnapshot } = useSnapshots();
   const mountEmFs = useEmscriptenMount();
-  const { linkElement, processes: { [id]: { closing, libs = [] } = {} } = {} } =
-    useProcesses();
+  const { linkElement } = useProcessesActions();
+  const { closing, libs = [] } = useProcess(id);
   const { prependFileToTitle } = useTitle(id);
   const emulatorRef = useRef<Emulator>(undefined);
   const getContentWindow = useIsolatedContentWindow(id, containerRef);

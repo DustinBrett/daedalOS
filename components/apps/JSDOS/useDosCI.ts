@@ -8,8 +8,8 @@ import {
   zipConfigFiles,
 } from "components/apps/JSDOS/config";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { hasProcess, useProcess, useProcessesActions } from "contexts/process";
 import { SAVE_PATH, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import {
   bufferToUrl,
@@ -45,13 +45,10 @@ const useDosCI = (
   dosInstance?: DosInstance
 ): CommandInterface | undefined => {
   const { appendFileToTitle } = useTitle(id);
-  const { exists, readFile } = useFileSystem();
-  const {
-    argument,
-    linkElement,
-    processes: { [id]: process },
-  } = useProcesses();
-  const { closing } = process || {};
+  const { exists, readFile } = useFileSystemActions();
+  const { argument, linkElement } = useProcessesActions();
+  const process = useProcess(id);
+  const { closing } = process;
   const [dosCI, setDosCI] = useState<
     Record<string, CommandInterface | undefined>
   >({});
@@ -160,7 +157,7 @@ const useDosCI = (
   ]);
 
   useEffect(() => {
-    if (process && !closing && dosInstance && !(url in dosCI)) {
+    if (hasProcess(process) && !closing && dosInstance && !(url in dosCI)) {
       loadBundle();
     }
 

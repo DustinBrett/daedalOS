@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useMenu } from "contexts/menu";
+import { useMenuActions } from "contexts/menu";
 import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
 
 const useHistoryMenu = (
@@ -10,7 +10,7 @@ const useHistoryMenu = (
   backMenu: ContextMenuCapture;
   forwardMenu: ContextMenuCapture;
 } => {
-  const { contextMenu } = useMenu();
+  const { contextMenu } = useMenuActions();
 
   return {
     backMenu: useMemo(

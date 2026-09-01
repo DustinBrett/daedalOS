@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess } from "contexts/process";
+import { useWindowState } from "contexts/session";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { haltEvent, loadFiles, pxToNum } from "utils/functions";
 import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
@@ -30,13 +30,9 @@ const useClassiCube = ({
   setLoading,
   loading,
 }: ContainerHookProps): void => {
-  const { processes: { [id]: process } = {} } = useProcesses();
   const mountEmFs = useEmscriptenMount();
-  const {
-    windowStates: { [id]: windowState },
-  } = useSession();
-  const { size } = windowState || {};
-  const { componentWindow, libs, maximized } = process || {};
+  const { size } = useWindowState(id);
+  const { componentWindow, libs, maximized } = useProcess(id);
   const {
     sizes: { titleBar },
   } = useTheme();

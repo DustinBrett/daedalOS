@@ -29,11 +29,11 @@ import {
 } from "components/system/Taskbar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcessesActions } from "contexts/process";
 import directory from "contexts/process/directory";
 import { type ProcessArguments } from "contexts/process/types";
-import { useSession } from "contexts/session";
+import { useRecentFiles, useSessionActions } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -104,8 +104,9 @@ const ResultSection = dynamic(
 const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLElement | null>(null);
-  const { recentFiles, updateRecentFiles } = useSession();
-  const { lstat, readFile } = useFileSystem();
+  const { updateRecentFiles } = useSessionActions();
+  const recentFiles = useRecentFiles();
+  const { lstat, readFile } = useFileSystemActions();
   const [activeTab, setActiveTab] = useState<TabName>("All");
   const {
     sizes: { search },
@@ -132,7 +133,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const results = useSearch(searchTerm);
   const [bestMatch, setBestMatch] = useState("");
   const [activeItem, setActiveItem] = useState("");
-  const { open } = useProcesses();
+  const { open } = useProcessesActions();
   const [subResults, setSubResults] = useState<[string, lunr.Index.Result[]][]>(
     []
   );

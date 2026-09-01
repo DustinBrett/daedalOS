@@ -13,9 +13,9 @@ import {
   getResultInfo,
 } from "components/system/Taskbar/Search/functions";
 import { RightArrow } from "components/system/Taskbar/Search/Icons";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions, useFs } from "contexts/fileSystem";
 import { type ProcessArguments } from "contexts/process/types";
-import { useSession } from "contexts/session";
+import { useSessionActions } from "contexts/session";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, SHORTCUT_EXTENSION } from "utils/constants";
 import { getExtension, isYouTubeUrl, label } from "utils/functions";
@@ -43,8 +43,9 @@ const ResultEntry: FC<ResultEntryProps> = ({
   setActiveItem,
   url,
 }) => {
-  const { fs, readFile, stat } = useFileSystem();
-  const { updateRecentFiles } = useSession();
+  const { readFile, stat } = useFileSystemActions();
+  const fs = useFs();
+  const { updateRecentFiles } = useSessionActions();
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>(INITIAL_INFO);
   const extension = useMemo(

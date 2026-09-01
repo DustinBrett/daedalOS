@@ -1,20 +1,16 @@
 import { useTheme } from "styled-components";
 import { useCallback } from "react";
 import { minMaxSize } from "components/system/Window/functions";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess } from "contexts/process";
+import { useSessionActions } from "contexts/session";
 
 type WindowSize = {
   updateWindowSize: (height: number, width: number) => void;
 };
 
 const useWindowSize = (id: string): WindowSize => {
-  const { setWindowStates } = useSession();
-  const {
-    processes: {
-      [id]: { lockAspectRatio = false, maximized = false } = {},
-    } = {},
-  } = useProcesses();
+  const { setWindowStates } = useSessionActions();
+  const { lockAspectRatio = false, maximized = false } = useProcess(id);
   const {
     sizes: { titleBar },
   } = useTheme();

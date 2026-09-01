@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
-import { useFileSystem } from "contexts/fileSystem";
-import { useSession } from "contexts/session";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useCursorUrl } from "contexts/session";
 
 export const useCursor = (): React.JSX.Element | undefined => {
-  const { readFile } = useFileSystem();
+  const { readFile } = useFileSystemActions();
   const [customCursor, setCustomCursor] = useState("");
-  const { cursor } = useSession();
+  const cursor = useCursorUrl();
   const getCursor = useCallback(
     async (path: string) => {
       const [imageBuffer, { cursorToCss }] = await Promise.all([

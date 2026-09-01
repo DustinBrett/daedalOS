@@ -10,8 +10,8 @@ import useDosCI from "components/apps/JSDOS/useDosCI";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useWindowSize from "components/system/Window/useWindowSize";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useForegroundId } from "contexts/session";
 import { PREVENT_SCROLL } from "utils/constants";
 import { loadFiles, pxToNum } from "utils/functions";
 
@@ -30,10 +30,10 @@ const useJSDOS = ({
   const [dosInstance, setDosInstance] = useState<DosInstance>();
   const mountEmFs = useEmscriptenMount();
   const loadingInstanceRef = useRef(false);
-  const { foregroundId } = useSession();
+  const foregroundId = useForegroundId();
   const dosCI = useDosCI(id, url, containerRef, dosInstance);
-  const { closeWithTransition, processes: { [id]: { libs = [] } = {} } = {} } =
-    useProcesses();
+  const { closeWithTransition } = useProcessesActions();
+  const { libs = [] } = useProcess(id);
 
   useEffect(() => {
     if (!dosInstance && !loadingInstanceRef.current) {

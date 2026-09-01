@@ -1,6 +1,21 @@
-import contextFactory from "contexts/contextFactory";
-import useFileSystemContextState from "contexts/fileSystem/useFileSystemContextState";
+import contextActionSelectorFactory from "contexts/contextActionSelectorFactory";
+import useFileSystemContextState, {
+  type FileSystemContextState,
+} from "contexts/fileSystem/useFileSystemContextState";
 
-const { Provider, useContext } = contextFactory(useFileSystemContextState);
+const { Provider, useContextActions, useStateSelector } =
+  contextActionSelectorFactory(useFileSystemContextState);
 
-export { Provider as FileSystemProvider, useContext as useFileSystem };
+export const useFs = (): FileSystemContextState["fs"] =>
+  useStateSelector((state) => state.fs);
+
+export const usePasteList = (): FileSystemContextState["pasteList"] =>
+  useStateSelector((state) => state.pasteList);
+
+export const useRootFs = (): FileSystemContextState["rootFs"] =>
+  useStateSelector((state) => state.rootFs);
+
+export {
+  Provider as FileSystemProvider,
+  useContextActions as useFileSystemActions,
+};

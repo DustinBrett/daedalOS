@@ -13,18 +13,16 @@ import useWebamp from "components/apps/Webamp/useWebamp";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useFocusable from "components/system/Window/useFocusable";
 import useWindowTransitions from "components/system/Window/useWindowTransitions";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { AUDIO_PLAYLIST_EXTENSIONS } from "utils/constants";
 import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
 
 const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { readFile } = useFileSystem();
-  const {
-    processes: { [id]: { libs = [], minimized = false, url = "" } = {} } = {},
-    url: setUrl,
-  } = useProcesses();
+  const { readFile } = useFileSystemActions();
+  const { url: setUrl } = useProcessesActions();
+  const { libs = [], minimized = false, url = "" } = useProcess(id);
   const [loadedUrl, setLoadedUrl] = useState(url);
   const { initWebamp, webampCI } = useWebamp(id);
   const windowTransitions = useWindowTransitions(id, true);

@@ -5,9 +5,9 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 import StyledLoading from "components/system/Apps/StyledLoading";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useForegroundId, useSessionActions } from "contexts/session";
 import { type WallpaperFit } from "contexts/session/types";
 import {
   DESKTOP_PATH,
@@ -40,13 +40,12 @@ type JsPaint = {
 };
 
 const Paint: FC<ComponentProcessProps> = ({ id }) => {
-  const {
-    closeWithTransition,
-    processes: { [id]: { libs: [paintSrc = ""] = [], url = "" } = {} } = {},
-  } = useProcesses();
+  const { closeWithTransition } = useProcessesActions();
+  const { libs: [paintSrc = ""] = [], url = "" } = useProcess(id);
   const { createPath, exists, readFile, updateFolder, writeFile } =
-    useFileSystem();
-  const { foregroundId, setForegroundId, setWallpaper } = useSession();
+    useFileSystemActions();
+  const { setForegroundId, setWallpaper } = useSessionActions();
+  const foregroundId = useForegroundId();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [jsPaintInstance, setJsPaintInstance] = useState<JsPaint>();

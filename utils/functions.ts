@@ -4,11 +4,7 @@ import type HtmlToImage from "html-to-image";
 import { type DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { type Processes, type RelativePosition } from "contexts/process/types";
-import {
-  type IconPosition,
-  type IconPositions,
-  type SortOrders,
-} from "contexts/session/types";
+import { type IconPosition, type IconPositions } from "contexts/session/types";
 import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
@@ -528,11 +524,10 @@ export const updateIconPositionsIfEmpty = (
   url: string,
   gridElement: HTMLElement | null,
   iconPositions: IconPositions,
-  sortOrders: SortOrders
+  fileOrder: string[] = []
 ): IconPositions => {
   if (!gridElement) return iconPositions;
 
-  const [fileOrder = []] = sortOrders[url] || [];
   const newIconPositions: IconPositions = {};
   const gridComputedStyle = window.getComputedStyle(gridElement);
   const gridTemplateRowCount = gridComputedStyle
@@ -661,7 +656,7 @@ export const updateIconPositions = (
   directory: string,
   gridElement: HTMLElement | null,
   iconPositions: IconPositions,
-  sortOrders: SortOrders,
+  fileOrder: string[] | undefined,
   dragPosition: DragPosition,
   draggedEntries: string[],
   setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>,
@@ -673,7 +668,7 @@ export const updateIconPositions = (
     directory,
     gridElement,
     iconPositions,
-    sortOrders
+    fileOrder
   );
   const gridDropPosition = calcGridDropPosition(gridElement, dragPosition);
   const conflictingIcon = Object.entries(updatedIconPositions).find(

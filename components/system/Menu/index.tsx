@@ -3,7 +3,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import MenuItemEntry from "components/system/Menu/MenuItemEntry";
 import StyledMenu from "components/system/Menu/StyledMenu";
 import menuTransition from "components/system/Menu/menuTransition";
-import { useMenu } from "contexts/menu/index";
+import { useMenuActions, useMenu } from "contexts/menu/index";
 import { type MenuState } from "contexts/menu/useMenuContextState";
 import {
   FOCUSABLE_ELEMENT,
@@ -23,7 +23,8 @@ export const topLeftPosition = (): Position => ({
 });
 
 const Menu: FC<MenuProps> = ({ subMenu }) => {
-  const { menu: baseMenu = {}, setMenu } = useMenu();
+  const { setMenu } = useMenuActions();
+  const baseMenu = useMenu();
   const {
     items,
     staticX = 0,

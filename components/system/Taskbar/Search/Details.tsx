@@ -14,9 +14,9 @@ import {
   fileType,
   getResultInfo,
 } from "components/system/Taskbar/Search/functions";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions, useFs } from "contexts/fileSystem";
 import { type ProcessArguments } from "contexts/process/types";
-import { useSession } from "contexts/session";
+import { useSessionActions } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, ROOT_NAME, SHORTCUT_EXTENSION } from "utils/constants";
@@ -29,7 +29,8 @@ const Details: FC<{
   singleLineView: boolean;
   url: string;
 }> = ({ openApp, setActiveItem, singleLineView, url }) => {
-  const { fs, stat } = useFileSystem();
+  const { stat } = useFileSystemActions();
+  const fs = useFs();
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>({
     icon: UNKNOWN_ICON,
@@ -38,7 +39,7 @@ const Details: FC<{
     () => getExtension(info?.url || url),
     [info?.url, url]
   );
-  const { updateRecentFiles } = useSession();
+  const { updateRecentFiles } = useSessionActions();
   const openFile = useCallback(() => {
     openApp(info?.pid, { url: info?.url });
     if (info?.url && info?.pid) updateRecentFiles(info?.url, info?.pid);

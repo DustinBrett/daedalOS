@@ -20,7 +20,7 @@ import {
   type FileManagerViewNames,
   FileManagerViews,
 } from "components/system/Files/Views";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions, useRootFs } from "contexts/fileSystem";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -31,7 +31,7 @@ import {
 } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
 import Columns from "components/system/Files/FileManager/Columns";
-import { useSession } from "contexts/session";
+import { useForegroundId, useSessionActions, useView } from "contexts/session";
 
 const StyledEmpty = dynamic(
   () => import("components/system/Files/FileManager/StyledEmpty")
@@ -72,13 +72,15 @@ const FileManager: FC<FileManagerProps> = ({
   skipSorting,
   url,
 }) => {
-  const { foregroundId, views, setForegroundId, setViews } = useSession();
+  const { setForegroundId, setViews } = useSessionActions();
+  const foregroundId = useForegroundId();
+  const sessionView = useView(url);
   const view = useMemo(() => {
     if (isDesktop) return "icon";
     if (isStartMenu) return "list";
 
-    return views[url] || DEFAULT_VIEW;
-  }, [isDesktop, isStartMenu, url, views]);
+    return sessionView || DEFAULT_VIEW;
+  }, [isDesktop, isStartMenu, sessionView]);
   const isDetailsView = useMemo(() => view === "details", [view]);
   const [columns, setColumns] = useState<ColumnsObject | undefined>(() =>
     isDetailsView ? DEFAULT_COLUMNS : undefined
@@ -101,11 +103,13 @@ const FileManager: FC<FileManagerProps> = ({
       skipFsWatcher,
       skipSorting,
     });
-  const { lstat, mountFs, rootFs } = useFileSystem();
+  const { lstat, mountFs } = useFileSystemActions();
+  const rootFs = useRootFs();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef, focusedEntries, focusFunctions, isDesktop);
   const draggableEntry = useDraggableEntries(
+    url,
     focusedEntries,
     focusFunctions,
     fileManagerRef,

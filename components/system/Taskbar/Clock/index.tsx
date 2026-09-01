@@ -6,7 +6,7 @@ import StyledClock from "components/system/Taskbar/Clock/StyledClock";
 import { type LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
 import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
-import { useSession } from "contexts/session";
+import { useClockSource } from "contexts/session";
 import useWorker from "hooks/useWorker";
 import {
   CLICK_FOCUSABLE_ELEMENT,
@@ -77,7 +77,7 @@ const Clock: FC<ClockProps> = ({
     Object.create(null) as LocaleTimeDate
   );
   const { date, time } = now;
-  const { clockSource } = useSession();
+  const clockSource = useClockSource();
   const clockWorkerInit = useCallback(
     () =>
       new Worker(

@@ -11,9 +11,9 @@ import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useSessionActions } from "contexts/session";
 import { DEFAULT_LOCALE, DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 import { getExtension, loadFiles } from "utils/functions";
 import { useLinkHandler } from "hooks/useLinkHandler";
@@ -28,13 +28,13 @@ const useTinyMCE = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { processes: { [id]: { libs = [] } = {} } = {}, url: setUrl } =
-    useProcesses();
+  const { url: setUrl } = useProcessesActions();
+  const { libs = [] } = useProcess(id);
   const [editor, setEditor] = useState<Editor>();
   const { prependFileToTitle } = useTitle(id);
-  const { readFile, stat, updateFolder, writeFile } = useFileSystem();
+  const { readFile, stat, updateFolder, writeFile } = useFileSystemActions();
   const { onDragOver, onDrop } = useFileDrop({ id });
-  const { setForegroundId } = useSession();
+  const { setForegroundId } = useSessionActions();
   const updateTitle = useCallback(
     async (currentUrl: string) => {
       const modifiedDate = new Date(

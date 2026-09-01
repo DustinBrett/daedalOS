@@ -1,6 +1,6 @@
 import { dirname, join } from "path";
 import { useCallback } from "react";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 import { SAVE_PATH, ICON_CACHE, ICON_CACHE_EXTENSION } from "utils/constants";
 
 type Snapshot = {
@@ -14,7 +14,7 @@ type Snapshot = {
 };
 
 export const useSnapshots = (): Snapshot => {
-  const { createPath, updateFolder } = useFileSystem();
+  const { createPath, updateFolder } = useFileSystemActions();
 
   return {
     createSnapshot: useCallback(

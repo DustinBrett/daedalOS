@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { createSelectionStyling } from "components/system/Files/FileManager/Selection/functions";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
-import { useMenu } from "contexts/menu";
+import { useMenuActions, useMenu } from "contexts/menu";
 import { type MenuState } from "contexts/menu/useMenuContextState";
 import { ONE_TIME_PASSIVE_EVENT, PREVENT_SCROLL } from "utils/constants";
 
@@ -54,7 +54,8 @@ const useSelection = (
       animationRequestId.current = 0;
     });
   };
-  const { menu, setMenu } = useMenu();
+  const { setMenu } = useMenuActions();
+  const menu = useMenu();
   const onMouseDown: React.MouseEventHandler<HTMLElement> = ({
     clientX,
     clientY,

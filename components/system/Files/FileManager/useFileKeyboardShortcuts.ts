@@ -8,9 +8,9 @@ import {
   type FolderActions,
 } from "components/system/Files/FileManager/useFolder";
 import { type FileManagerViewNames } from "components/system/Files/Views";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcessesActions } from "contexts/process";
+import { useForegroundId, useSessionActions } from "contexts/session";
 import {
   DESKTOP_PATH,
   PREVENT_SCROLL,
@@ -53,10 +53,11 @@ const useFileKeyboardShortcuts = (
   isDesktop?: boolean,
   setView?: (newView: FileManagerViewNames) => void
 ): KeyboardShortcutEntry => {
-  const { copyEntries, deletePath, moveEntries } = useFileSystem();
-  const { open, url: changeUrl } = useProcesses();
+  const { copyEntries, deletePath, moveEntries } = useFileSystemActions();
+  const { open, url: changeUrl } = useProcessesActions();
   const { openTransferDialog } = useTransferDialog();
-  const { foregroundId, setIconPositions } = useSession();
+  const { setIconPositions } = useSessionActions();
+  const foregroundId = useForegroundId();
 
   useEffect(() => {
     const pasteHandler = (event: ClipboardEvent): void => {

@@ -1,7 +1,7 @@
 import { StyleSheetManager, ThemeProvider } from "styled-components";
 import { memo } from "react";
 import { type FeatureBundle, LazyMotion } from "motion/react";
-import { useSession } from "contexts/session";
+import { useThemeName } from "contexts/session";
 import GlobalStyle from "styles/GlobalStyle";
 import themes from "styles/themes";
 import { DEFAULT_THEME } from "utils/constants";
@@ -15,7 +15,7 @@ const motionFeatures = async (): Promise<FeatureBundle> =>
   ).default;
 
 const StyledApp: FC = ({ children }) => {
-  const { themeName } = useSession();
+  const themeName = useThemeName();
 
   return (
     <StyleSheetManager enableVendorPrefixes>

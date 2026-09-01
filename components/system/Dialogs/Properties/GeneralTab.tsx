@@ -11,10 +11,10 @@ import {
   type FileStat,
   removeInvalidFilenameCharacters,
 } from "components/system/Files/FileManager/functions";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions, useFs } from "contexts/fileSystem";
+import { useProcessesActions } from "contexts/process";
 import directory from "contexts/process/directory";
-import { useSession } from "contexts/session";
+import { useSessionActions } from "contexts/session";
 import Icon from "styles/common/Icon";
 import {
   DEFAULT_LOCALE,
@@ -47,12 +47,13 @@ const dateTimeString = (date?: Date): string =>
     .replace(" at ", ", ") || "";
 
 const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
-  const { closeWithTransition, icon: setIcon } = useProcesses();
-  const { setIconPositions } = useSession();
+  const { closeWithTransition, icon: setIcon } = useProcessesActions();
+  const { setIconPositions } = useSessionActions();
   const extension = useMemo(() => getExtension(url || ""), [url]);
   const extType = getFileType(extension);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { fs, readdir, rename, stat, updateFolder } = useFileSystem();
+  const { readdir, rename, stat, updateFolder } = useFileSystemActions();
+  const fs = useFs();
   const stats = useStats(url);
   const [fileCount, setFileCount] = useState(0);
   const [folderCount, setFolderCount] = useState(0);

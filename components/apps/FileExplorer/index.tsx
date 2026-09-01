@@ -5,8 +5,8 @@ import StyledFileExplorer from "components/apps/FileExplorer/StyledFileExplorer"
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { getIconFromIni } from "components/system/Files/FileEntry/functions";
 import FileManager from "components/system/Files/FileManager";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFs, useRootFs } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import {
   COMPRESSED_FOLDER_ICON,
   FOLDER_ICON,
@@ -21,11 +21,11 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const {
     icon: setProcessIcon,
     title,
-    processes: { [id]: process },
     url: setProcessUrl,
-  } = useProcesses();
-  const { componentWindow, closing, icon = "", url = "" } = process || {};
-  const { fs, rootFs } = useFileSystem();
+  } = useProcessesActions();
+  const { componentWindow, closing, icon = "", url = "" } = useProcess(id);
+  const fs = useFs();
+  const rootFs = useRootFs();
   const [currentUrl, setCurrentUrl] = useState(url);
   const addressBarRef = useRef<HTMLInputElement | null>(null);
   const searchBarRef = useRef<HTMLInputElement | null>(null);

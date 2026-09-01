@@ -2,7 +2,7 @@ import { memo, useEffect, useRef, useState } from "react";
 import { getNetworkConfig } from "components/apps/IRC/config";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledLoading from "components/system/Apps/StyledLoading";
-import { useProcesses } from "contexts/process";
+import { useProcess, useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { IFRAME_CONFIG } from "utils/constants";
 
@@ -21,11 +21,8 @@ type KiwiIrcClient = {
 };
 
 const IRC: FC<ComponentProcessProps> = ({ id }) => {
-  const {
-    linkElement,
-    processes: { [id]: { libs: [ircSrc = ""] = [] } = {} } = {},
-    title,
-  } = useProcesses();
+  const { linkElement, title } = useProcessesActions();
+  const { libs: [ircSrc = ""] = [] } = useProcess(id);
   const [loaded, setLoaded] = useState(false);
   const [channels, setChannels] = useState<string[]>([]);
   const iframeRef = useRef<HTMLIFrameElement>(null);

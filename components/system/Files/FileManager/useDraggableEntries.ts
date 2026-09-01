@@ -2,7 +2,11 @@ import { join } from "path";
 import { type Position } from "react-rnd";
 import { useCallback, useEffect, useRef } from "react";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
-import { useSession } from "contexts/session";
+import {
+  useIconPositions,
+  useSessionActions,
+  useSortOrder,
+} from "contexts/session";
 import {
   getHtmlToImage,
   getMimeType,
@@ -11,7 +15,7 @@ import {
   trimCanvasToTopLeft,
   updateIconPositions,
 } from "utils/functions";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
 type DraggableEntryProps = {
@@ -34,6 +38,7 @@ export type DragPosition = Partial<
 const FILE_MANAGER_TOP_PADDING = 5;
 
 const useDraggableEntries = (
+  directory: string,
   focusedEntries: string[],
   { focusEntry }: FocusEntryFunctions,
   fileManagerRef: React.RefObject<HTMLOListElement | null>,
@@ -41,8 +46,10 @@ const useDraggableEntries = (
   allowMoving?: boolean,
   isDesktop?: boolean
 ): DraggableEntry => {
-  const { exists } = useFileSystem();
-  const { iconPositions, sortOrders, setIconPositions } = useSession();
+  const { exists } = useFileSystemActions();
+  const { setIconPositions } = useSessionActions();
+  const iconPositions = useIconPositions();
+  const [sortOrder] = useSortOrder(directory);
   const dragImageRef = useRef<HTMLImageElement>(null);
   const adjustedCaptureOffsetRef = useRef(false);
   const capturedImageOffset = useRef({ x: 0, y: 0 });
@@ -117,7 +124,7 @@ const useDraggableEntries = (
             entryUrl,
             fileManagerRef.current,
             iconPositions,
-            sortOrders,
+            sortOrder,
             dragPositionRef.current,
             focusedEntries,
             setIconPositions,
@@ -140,7 +147,7 @@ const useDraggableEntries = (
       iconPositions,
       onDragging,
       setIconPositions,
-      sortOrders,
+      sortOrder,
       updateDragImage,
     ]
   );

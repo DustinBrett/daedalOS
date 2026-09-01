@@ -2,8 +2,8 @@ import { basename, dirname } from "path";
 import { useEffect, useRef } from "react";
 import { DX_BALL_GLOBALS, SAVE_PATH } from "components/apps/DX-Ball/constants";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess } from "contexts/process";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { loadFiles } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
@@ -21,11 +21,8 @@ declare global {
 }
 
 const useDXBall = ({ id, setLoading }: ContainerHookProps): void => {
-  const { readFile, writeFile, updateFolder } = useFileSystem();
-  const {
-    processes: { [id]: process },
-  } = useProcesses();
-  const { closing, libs = [] } = process || {};
+  const { readFile, writeFile, updateFolder } = useFileSystemActions();
+  const { closing, libs = [] } = useProcess(id);
   const records = useRef("");
   const libLoadingRef = useRef(true);
 

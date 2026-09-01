@@ -24,8 +24,8 @@ import {
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledLoading from "components/system/Apps/StyledLoading";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess } from "contexts/process";
 import useResizeObserver from "hooks/useResizeObserver";
 import { clsx, loadFiles } from "utils/functions";
 
@@ -68,9 +68,8 @@ const firstGameOnly = (pgn: string): string => {
 };
 
 const Chess: FC<ComponentProcessProps> = ({ id }) => {
-  const { processes: { [id]: { libs = [], url = "" } = {} } = {} } =
-    useProcesses();
-  const { readFile } = useFileSystem();
+  const { libs = [], url = "" } = useProcess(id);
+  const { readFile } = useFileSystemActions();
   const { prependFileToTitle } = useTitle(id);
   const boardElRef = useRef<HTMLDivElement>(null);
   const boardRef = useRef<Chessboard2Instance | undefined>(undefined);

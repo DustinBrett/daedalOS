@@ -20,9 +20,9 @@ import {
 import useCommandInterpreter from "components/apps/Terminal/useCommandInterpreter";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import extensions from "components/system/Files/FileEntry/extensions";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useForegroundId } from "contexts/session";
 import useResizeObserver from "hooks/useResizeObserver";
 import { HOME, PACKAGE_DATA, PREVENT_SCROLL } from "utils/constants";
 import {
@@ -43,11 +43,9 @@ const useTerminal = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const {
-    url: setUrl,
-    processes: { [id]: { closing = false, libs = [] } = {} },
-  } = useProcesses();
-  const { readdir } = useFileSystem();
+  const { url: setUrl } = useProcessesActions();
+  const { closing = false, libs = [] } = useProcess(id);
+  const { readdir } = useFileSystemActions();
   const [terminal, setTerminal] = useState<Terminal>();
   const [fitAddon, setFitAddon] = useState<FitAddon>();
   const [localEcho, setLocalEcho] = useState<LocalEcho>();
@@ -56,7 +54,7 @@ const useTerminal = ({
   const [prompted, setPrompted] = useState(false);
   const processCommand = useCommandInterpreter(id, cd, terminal, localEcho);
   const autoFit = useCallback(() => fitAddon?.fit(), [fitAddon]);
-  const { foregroundId } = useSession();
+  const foregroundId = useForegroundId();
 
   useEffect(() => {
     if (url) {

@@ -15,10 +15,10 @@ import {
 import useV86ScreenSize from "components/apps/V86/useV86ScreenSize";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 import { fs9pV4ToV3 } from "contexts/fileSystem/core";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { hasProcess, useProcess } from "contexts/process";
+import { useForegroundId } from "contexts/session";
 import { SAVE_PATH, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import {
   bufferToUrl,
@@ -41,17 +41,15 @@ const useV86 = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const {
-    processes: { [id]: process },
-  } = useProcesses();
-  const { foregroundId } = useSession();
-  const { closing, libs = [] } = process || {};
+  const process = useProcess(id);
+  const foregroundId = useForegroundId();
+  const { closing, libs = [] } = process;
   const { appendFileToTitle } = useTitle(id);
   const shutdown = useRef(false);
   const [emulator, setEmulator] = useState<
     Record<string, V86Starter | undefined>
   >({});
-  const { exists, readFile } = useFileSystem();
+  const { exists, readFile } = useFileSystemActions();
   const saveStateAsync = useCallback(
     (diskImageUrl: string): Promise<ArrayBuffer> =>
       new Promise((resolve, reject) => {
@@ -200,7 +198,7 @@ const useV86 = ({
   }, [emulator, foregroundId, id]);
 
   useEffect(() => {
-    if (process && !closing && !loading && !(url in emulator)) {
+    if (hasProcess(process) && !closing && !loading && !(url in emulator)) {
       loadDiskImage();
     }
 

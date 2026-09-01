@@ -1,10 +1,9 @@
 import { basename, extname, join } from "path";
 import { useCallback } from "react";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcessesActions, useProcessesRef } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { useSession } from "contexts/session";
-import { useProcessesRef } from "hooks/useProcessesRef";
+import { useSessionActions } from "contexts/session";
 import {
   DESKTOP_PATH,
   FOLDER_BACK_ICON,
@@ -15,9 +14,9 @@ import { isYouTubeUrl } from "utils/functions";
 type UseFile = (pid: string, icon?: string) => Promise<void>;
 
 const useFile = (url: string, path: string): UseFile => {
-  const { setForegroundId, updateRecentFiles } = useSession();
-  const { createPath, updateFolder } = useFileSystem();
-  const { minimize, open, url: setUrl } = useProcesses();
+  const { setForegroundId, updateRecentFiles } = useSessionActions();
+  const { createPath, updateFolder } = useFileSystemActions();
+  const { minimize, open, url: setUrl } = useProcessesActions();
   const processesRef = useProcessesRef();
 
   return useCallback(

@@ -1,8 +1,7 @@
 import { useCallback } from "react";
 import useNextFocusable from "components/system/Window/useNextFocusable";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
-import { useProcessesRef } from "hooks/useProcessesRef";
+import { useProcessesActions, useProcessesRef } from "contexts/process";
+import { useSessionActions } from "contexts/session";
 import { PREVENT_SCROLL } from "utils/constants";
 
 type WindowActions = {
@@ -13,8 +12,8 @@ type WindowActions = {
 
 const useWindowActions = (id: string): WindowActions => {
   const nextFocusableId = useNextFocusable(id);
-  const { setForegroundId, removeFromStack } = useSession();
-  const { closeWithTransition, maximize, minimize } = useProcesses();
+  const { setForegroundId, removeFromStack } = useSessionActions();
+  const { closeWithTransition, maximize, minimize } = useProcessesActions();
   const processesRef = useProcessesRef();
   const onMinimize = useCallback(
     (keepForegroundId?: boolean): void => {

@@ -33,7 +33,7 @@ import {
   useUnreadStatus,
 } from "components/apps/Messenger/hooks";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
-import { useProcesses } from "contexts/process";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
@@ -89,11 +89,8 @@ const NostrChat: FC<NostrChatProps> = ({
     },
     [changeRecipient]
   );
-  const {
-    processes: { [processId]: process },
-    url: setUrl,
-  } = useProcesses();
-  const { url } = process || {};
+  const { url: setUrl } = useProcessesActions();
+  const { url } = useProcess(processId);
 
   useUnreadStatus(
     processId,

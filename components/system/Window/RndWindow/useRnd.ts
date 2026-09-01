@@ -8,8 +8,8 @@ import rndDefaults, {
 import useDraggable from "components/system/Window/RndWindow/useDraggable";
 import useResizable from "components/system/Window/RndWindow/useResizable";
 import { isWindowOutsideBounds } from "components/system/Window/functions";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess } from "contexts/process";
+import { useSessionActions } from "contexts/session";
 import { getWindowViewport, pxToNum } from "utils/functions";
 
 const enableIframeCapture = (enable = true): void =>
@@ -20,16 +20,12 @@ const enableIframeCapture = (enable = true): void =>
 
 const useRnd = (id: string): Props => {
   const {
-    processes: {
-      [id]: {
-        allowResizing = true,
-        autoSizing = false,
-        lockAspectRatio = false,
-        maximized = false,
-      } = {},
-    },
-  } = useProcesses();
-  const { setWindowStates } = useSession();
+    allowResizing = true,
+    autoSizing = false,
+    lockAspectRatio = false,
+    maximized = false,
+  } = useProcess(id);
+  const { setWindowStates } = useSessionActions();
   const [size, setSize] = useResizable(id, autoSizing);
   const [position, setPosition] = useDraggable(id, size);
   const onDragStop: DraggableEventHandler = useCallback(

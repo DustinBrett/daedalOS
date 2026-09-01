@@ -3,8 +3,8 @@ import { type Font, type LocalizedName } from "opentype.js";
 import StyledOpenType from "components/apps/OpenType/StyledOpenType";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { haltEvent } from "utils/functions";
 
@@ -62,12 +62,9 @@ const FontCanvas: FC<FontCanvasProps> = ({
 const MemoizedFontCanvas = memo(FontCanvas);
 
 const OpenType: FC<ComponentProcessProps> = ({ id }) => {
-  const {
-    processes: { [id]: { url = "" } = {} } = {},
-    title,
-    url: setUrl,
-  } = useProcesses();
-  const { readFile } = useFileSystem();
+  const { title, url: setUrl } = useProcessesActions();
+  const { url = "" } = useProcess(id);
+  const { readFile } = useFileSystemActions();
   const [font, setFont] = useState<Font>();
   const loadFont = useCallback(
     async (fontUrl: string) => {

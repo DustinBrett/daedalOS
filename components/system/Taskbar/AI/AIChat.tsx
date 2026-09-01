@@ -52,9 +52,9 @@ import {
 } from "components/system/Taskbar/AI/types";
 import useWorker from "hooks/useWorker";
 import useFocusable from "components/system/Window/useFocusable";
-import { useSession } from "contexts/session";
+import { useSessionActions } from "contexts/session";
 import { useWindowAI } from "hooks/useWindowAI";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 import { readPdfText } from "components/apps/PDF/functions";
 import { useSnapshots } from "hooks/useSnapshots";
 
@@ -169,7 +169,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   );
   const [containerElement, setContainerElement] =
     useState<HTMLElement | null>();
-  const { removeFromStack, setWallpaper } = useSession();
+  const { removeFromStack, setWallpaper } = useSessionActions();
   const { zIndex, ...focusableProps } = useFocusable(
     AI_WINDOW_ID,
     undefined,
@@ -184,7 +184,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     textArea.style.height = "auto";
     textArea.style.height = `${textArea.scrollHeight}px`;
   }, []);
-  const { exists, readFile, stat } = useFileSystem();
+  const { exists, readFile, stat } = useFileSystemActions();
   const canvasRefs = useRef<Record<number, HTMLCanvasElement>>({});
   const sendMessage = useCallback(async () => {
     const { text } = conversation[conversation.length - 1];

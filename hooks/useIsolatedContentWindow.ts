@@ -8,8 +8,8 @@ import {
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { PREVENT_SCROLL } from "utils/constants";
 import { useMenu } from "contexts/menu";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess } from "contexts/process";
+import { useForegroundId, useSessionActions } from "contexts/session";
 
 type ContentWindow = Window & typeof globalThis;
 
@@ -99,9 +99,10 @@ const useIsolatedContentWindow = (
   const [container, setContainer] = useState<HTMLDivElement>();
   const [contentWindow, setContentWindow] = useState<ContentWindow>();
   const { onDragOver, onDrop } = useFileDrop({ id });
-  const { processes: { [id]: { maximized } = {} } = {} } = useProcesses();
-  const { foregroundId, setForegroundId } = useSession();
-  const { menu } = useMenu();
+  const { maximized } = useProcess(id);
+  const { setForegroundId } = useSessionActions();
+  const foregroundId = useForegroundId();
+  const menu = useMenu();
   const isContextMenuOpen = useMemo(
     () => (menu?.items?.length || 0) > 0,
     [menu]

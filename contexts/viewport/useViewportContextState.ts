@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   type FullscreenDocument,
   type FullscreenElement,
@@ -106,7 +106,10 @@ const useViewportContextState = (): ViewportContextState => {
       document.removeEventListener("fullscreenchange", onFullscreenChange);
   }, []);
 
-  return { fullscreenElement, toggleFullscreen };
+  return useMemo(
+    () => ({ fullscreenElement, toggleFullscreen }),
+    [fullscreenElement, toggleFullscreen]
+  );
 };
 
 export default useViewportContextState;

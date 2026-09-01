@@ -14,7 +14,7 @@ import {
 } from "components/apps/Messenger/functions";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { type ProfileData } from "components/apps/Messenger/types";
-import { useMenu } from "contexts/menu";
+import { useMenuActions } from "contexts/menu";
 import Button from "styles/common/Button";
 import { MENU_SEPERATOR } from "utils/constants";
 import { haltEvent, toSorted } from "utils/functions";
@@ -66,7 +66,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
       banner ? { background: `${GRADIENT}, url(${banner}) ${STYLING}` } : {},
     [banner]
   );
-  const { contextMenu } = useMenu();
+  const { contextMenu } = useMenuActions();
   const { publish } = useNostr();
   const { setProfiles } = useHistoryContext();
   const updateProfile = useCallback(

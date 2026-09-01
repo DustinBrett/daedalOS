@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { OLD_NET_SUPPORTED_YEARS } from "components/apps/Browser/config";
-import { useMenu } from "contexts/menu";
+import { useMenuActions } from "contexts/menu";
 import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
 
 export type ProxyState =
@@ -13,7 +13,7 @@ const useProxyMenu = (
   proxyState: ProxyState,
   setProxyState: React.Dispatch<React.SetStateAction<ProxyState>>
 ): ContextMenuCapture => {
-  const { contextMenu } = useMenu();
+  const { contextMenu } = useMenuActions();
 
   return useMemo(
     () =>

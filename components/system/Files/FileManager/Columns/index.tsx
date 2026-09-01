@@ -10,7 +10,7 @@ import {
   type ColumnName,
   type Columns as ColumnsObject,
 } from "components/system/Files/FileManager/Columns/constants";
-import { useSession } from "contexts/session";
+import { useSessionActions, useSortOrder } from "contexts/session";
 import { type Files } from "components/system/Files/FileManager/useFolder";
 
 const Down = dynamic(() =>
@@ -33,8 +33,8 @@ const Columns: FC<ColumnsProps> = ({
   const { sizes } = useTheme();
   const draggingRef = useRef("");
   const lastClientX = useRef(0);
-  const { setSortOrder, sortOrders } = useSession();
-  const [, sortedBy = "name", ascending] = sortOrders[directory] ?? [];
+  const { setSortOrder } = useSessionActions();
+  const [, sortedBy = "name", ascending] = useSortOrder(directory);
   const onPointerDownCapture = useCallback(
     (name: string) => (event: React.PointerEvent<HTMLLIElement>) => {
       if (event.button !== 0) return;

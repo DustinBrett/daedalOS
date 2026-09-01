@@ -4,7 +4,7 @@ import useMediaType from "components/system/Dialogs/Properties/useMediaType";
 import { type PropertiesMetaData } from "components/system/Dialogs/Properties";
 import Buttons from "components/system/Dialogs/Properties/Buttons";
 import StyledDetailsTab from "components/system/Dialogs/Properties/StyledDetailsTab";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 
 type TabProps = {
   hasExif: boolean;
@@ -25,7 +25,7 @@ const DetailsTab: FC<TabProps> = ({
     () => !(metaData.exif || metaData.mediaType),
     [metaData]
   );
-  const { readFile } = useFileSystem();
+  const { readFile } = useFileSystemActions();
   const [fileData, setFileData] = useState<Buffer | undefined>();
 
   useExif(hasExif ? fileData : undefined, metaData.exif, setMetaData);

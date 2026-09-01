@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useProcesses } from "contexts/process";
+import { useProcessesActions } from "contexts/process";
 
 type History = {
   canGoBack: boolean;
@@ -11,7 +11,7 @@ type History = {
 };
 
 const useHistory = (url: string, id: string): History => {
-  const { url: changeUrl } = useProcesses();
+  const { url: changeUrl } = useProcessesActions();
   const [currentUrl, setCurrentUrl] = useState(url);
   const [history, setHistory] = useState<string[]>(() => [url]);
   const [position, setPosition] = useState<number>(0);

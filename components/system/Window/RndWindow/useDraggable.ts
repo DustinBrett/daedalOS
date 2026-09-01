@@ -9,8 +9,8 @@ import {
   centerPosition,
   isWindowOutsideBounds,
 } from "components/system/Window/functions";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess, useProcessesRef } from "contexts/process";
+import { useStackOrder, useWindowState } from "contexts/session";
 import { calcInitialPosition, getWindowViewport } from "utils/functions";
 
 type Draggable = [Position, React.Dispatch<React.SetStateAction<Position>>];
@@ -21,11 +21,12 @@ const useDraggable = (id: string, size: Size): Draggable => {
       window: { cascadeOffset },
     },
   } = useTheme();
-  const { processes } = useProcesses();
   const { autoSizing, closing, componentWindow, initialRelativePosition } =
-    processes[id] || {};
-  const { stackOrder, windowStates: { [id]: windowState } = {} } = useSession();
-  const { position: sessionPosition, size: sessionSize } = windowState || {};
+    useProcess(id);
+  const processesRef = useProcessesRef();
+  const stackOrder = useStackOrder();
+  const windowState = useWindowState(id);
+  const { position: sessionPosition, size: sessionSize } = windowState;
   const isOffscreen = useMemo(
     () => isWindowOutsideBounds(windowState, getWindowViewport()),
     [windowState]
@@ -33,7 +34,7 @@ const useDraggable = (id: string, size: Size): Draggable => {
   const [position, setPosition] = useState<Position>(
     () =>
       (!isOffscreen && sessionPosition) ||
-      cascadePosition(id, processes, stackOrder, cascadeOffset) ||
+      cascadePosition(id, processesRef.current, stackOrder, cascadeOffset) ||
       centerPosition(size)
   );
   const blockAutoPositionRef = useMinMaxRef(id);

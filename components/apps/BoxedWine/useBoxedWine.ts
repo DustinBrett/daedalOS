@@ -5,9 +5,9 @@ import { getConfig } from "components/apps/BoxedWine/config";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
-import { useProcesses } from "contexts/process";
+import { useProcess } from "contexts/process";
 import { getExtension, isCanvasDrawn, loadFiles } from "utils/functions";
 
 declare global {
@@ -37,8 +37,8 @@ const useBoxedWine = ({
   url,
 }: ContainerHookProps): void => {
   const { appendFileToTitle } = useTitle(id);
-  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
-  const { readFile } = useFileSystem();
+  const { libs = [] } = useProcess(id);
+  const { readFile } = useFileSystemActions();
   const mountEmFs = useEmscriptenMount();
   const loadedUrl = useRef<string>(undefined);
   const blankCanvasCheckerTimer = useRef(0);

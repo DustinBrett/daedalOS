@@ -6,20 +6,17 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { DEFAULT_TEXT_FILE_SAVE_PATH } from "utils/constants";
 import { haltEvent, loadFiles } from "utils/functions";
 
 const Vim: FC<ComponentProcessProps> = ({ id }) => {
-  const {
-    closeWithTransition,
-    processes: { [id]: process },
-  } = useProcesses();
-  const { readFile, updateFolder, writeFile } = useFileSystem();
+  const { closeWithTransition } = useProcessesActions();
+  const { readFile, updateFolder, writeFile } = useFileSystemActions();
   const mountEmFs = useEmscriptenMount();
   const { prependFileToTitle } = useTitle(id);
-  const { libs = [], url = "" } = process || {};
+  const { libs = [], url = "" } = useProcess(id);
   const [updateQueue, setUpdateQueue] = useState<QueueItem[]>([]);
   const loading = useRef(false);
   const loadVim = useCallback(async () => {

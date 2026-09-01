@@ -2,8 +2,8 @@ import { basename } from "path";
 import { useCallback, useEffect } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess } from "contexts/process";
 import { loadFiles } from "utils/functions";
 import { useLinkHandler } from "hooks/useLinkHandler";
 
@@ -30,9 +30,9 @@ const useMarked = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { readFile } = useFileSystem();
+  const { readFile } = useFileSystemActions();
   const { prependFileToTitle } = useTitle(id);
-  const { processes: { [id]: { libs = [] } = {} } = {} } = useProcesses();
+  const { libs = [] } = useProcess(id);
   const openLink = useLinkHandler();
   const getContainer = useCallback(
     (): HTMLElement | null =>

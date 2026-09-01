@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   closeProcess,
   maximizeProcess,
@@ -19,6 +19,11 @@ import { startCloseEffect } from "utils/closeEffect";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
 type ProcessContextState = {
+  processes: Processes;
+  processesRef: React.RefObject<Processes>;
+};
+
+type ProcessContextActions = {
   argument: (
     id: string,
     name: keyof ProcessArguments,
@@ -40,21 +45,21 @@ type ProcessContextState = {
     processArguments?: ProcessArguments,
     icon?: string
   ) => void;
-  processes: Processes;
   title: (id: string, newTitle: string) => void;
   url: (id: string, newUrl: string) => void;
 };
 
-const useProcessContextState = (): ProcessContextState => {
+const useProcessContextState = (): {
+  actions: ProcessContextActions;
+  state: ProcessContextState;
+} => {
   const [processes, setProcesses] = useState<Processes>(
     Object.create(null) as Processes
   );
   const processesRef = useRef<Processes>({} as Processes);
   const closingIdsRef = useRef<Set<string>>(new Set());
 
-  useEffect(() => {
-    processesRef.current = processes;
-  }, [processes]);
+  processesRef.current = processes;
 
   const argument = useCallback(
     (
@@ -158,20 +163,37 @@ const useProcessContextState = (): ProcessContextState => {
     [closeWithTransition]
   );
 
-  return {
-    argument,
-    close,
-    closeProcessesByUrl,
-    closeWithTransition,
-    icon,
-    linkElement,
-    maximize,
-    minimize,
-    open,
-    processes,
-    title,
-    url,
-  };
+  const actions = useMemo(
+    () => ({
+      argument,
+      close,
+      closeProcessesByUrl,
+      closeWithTransition,
+      icon,
+      linkElement,
+      maximize,
+      minimize,
+      open,
+      title,
+      url,
+    }),
+    [
+      argument,
+      close,
+      closeProcessesByUrl,
+      closeWithTransition,
+      icon,
+      linkElement,
+      maximize,
+      minimize,
+      open,
+      title,
+      url,
+    ]
+  );
+  const state = useMemo(() => ({ processes, processesRef }), [processes]);
+
+  return useMemo(() => ({ actions, state }), [actions, state]);
 };
 
 export default useProcessContextState;

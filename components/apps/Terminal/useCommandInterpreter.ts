@@ -42,12 +42,11 @@ import {
   getProcessByFileExtension,
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions, useFs, useRootFs } from "contexts/fileSystem";
 import { requestPermission, resetStorage } from "contexts/fileSystem/functions";
-import { useProcesses } from "contexts/process";
+import { useProcessesActions, useProcessesRef } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { useSession } from "contexts/session";
-import { useProcessesRef } from "hooks/useProcessesRef";
+import { useSessionActions } from "contexts/session";
 import {
   DEFAULT_LOCALE,
   DESKTOP_PATH,
@@ -108,7 +107,6 @@ const useCommandInterpreter = (
     createPath,
     deletePath,
     exists,
-    fs,
     lstat,
     mapFs,
     mkdirRecursive,
@@ -116,13 +114,18 @@ const useCommandInterpreter = (
     readdir,
     readFile,
     rename,
-    rootFs,
     stat,
     updateFolder,
     writeFile,
-  } = useFileSystem();
-  const { closeWithTransition, open, title: changeTitle } = useProcesses();
-  const { setIconPositions, updateRecentFiles } = useSession();
+  } = useFileSystemActions();
+  const fs = useFs();
+  const rootFs = useRootFs();
+  const {
+    closeWithTransition,
+    open,
+    title: changeTitle,
+  } = useProcessesActions();
+  const { setIconPositions, updateRecentFiles } = useSessionActions();
   const processesRef = useProcessesRef();
   const { name: themeName } = useTheme();
   const getFullPath = useCallback(

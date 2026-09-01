@@ -10,7 +10,7 @@ import {
 import { type Event } from "nostr-tools";
 import { SEEN_EVENT_IDS_PATH } from "components/apps/Messenger/constants";
 import { type NostrProfile } from "components/apps/Messenger/types";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFileSystemActions } from "contexts/fileSystem";
 
 type Profiles = Record<string, NostrProfile>;
 
@@ -32,7 +32,7 @@ const HistoryContext = createContext({} as History);
 export const useHistoryContext = (): History => useContext(HistoryContext);
 
 export const HistoryProvider = memo<FC>(({ children }) => {
-  const { readFile, writeFile } = useFileSystem();
+  const { readFile, writeFile } = useFileSystemActions();
   const [timeScale, setTimeScale] = useState<TimeScale>("day");
   const [seenEventIds, setSeenEventIds] = useState<string[]>([]);
   const [outgoingEvents, setOutgoingEvents] = useState<Event[]>([]);

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions, useFs } from "contexts/fileSystem";
+import { useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { getExtension, getSearchParam } from "utils/functions";
 
@@ -11,8 +11,9 @@ const isBrowserUrl = (url: string): boolean =>
   url.startsWith("chrome://");
 
 const useUrlLoader = (): void => {
-  const { exists, fs, stat } = useFileSystem();
-  const { open } = useProcesses();
+  const { exists, stat } = useFileSystemActions();
+  const fs = useFs();
+  const { open } = useProcessesActions();
   const loadedInitialAppRef = useRef(false);
 
   useEffect(() => {

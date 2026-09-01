@@ -1,5 +1,5 @@
 import { useRef, useEffect, memo } from "react";
-import { useProcesses } from "contexts/process";
+import { useProcess, useProcessesActions } from "contexts/process";
 
 type PageProps = {
   canvas: HTMLCanvasElement;
@@ -9,11 +9,8 @@ type PageProps = {
 
 const Page: FC<PageProps> = ({ canvas, id, page }) => {
   const containerRef = useRef<HTMLLIElement | null>(null);
-  const {
-    argument,
-    processes: { [id]: process },
-  } = useProcesses();
-  const { componentWindow } = process || {};
+  const { argument } = useProcessesActions();
+  const { componentWindow } = useProcess(id);
 
   useEffect(() => {
     if (canvas) containerRef.current?.append(canvas);

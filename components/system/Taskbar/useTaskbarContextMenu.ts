@@ -1,22 +1,27 @@
 import { useMemo } from "react";
-import { useMenu } from "contexts/menu";
+import { useMenuActions } from "contexts/menu";
 import {
   type ContextMenuCapture,
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcessesActions, useProcessesRef } from "contexts/process";
+import {
+  useAiEnabled,
+  useSessionActions,
+  useStackOrder,
+} from "contexts/session";
 import { useViewport } from "contexts/viewport";
-import { useProcessesRef } from "hooks/useProcessesRef";
 import { AI_TITLE, MENU_SEPERATOR } from "utils/constants";
 import { toggleShowDesktop } from "utils/functions";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import { useWindowAI } from "hooks/useWindowAI";
 
 const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
-  const { contextMenu } = useMenu();
-  const { minimize, open } = useProcesses();
-  const { aiEnabled, setAiEnabled, stackOrder } = useSession();
+  const { contextMenu } = useMenuActions();
+  const { minimize, open } = useProcessesActions();
+  const { setAiEnabled } = useSessionActions();
+  const aiEnabled = useAiEnabled();
+  const stackOrder = useStackOrder();
   const processesRef = useProcessesRef();
   const { fullscreenElement, toggleFullscreen } = useViewport();
   const hasWebGPU = useWebGPUCheck();

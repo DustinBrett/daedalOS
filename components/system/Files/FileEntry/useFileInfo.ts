@@ -3,7 +3,7 @@ import {
   getInfoWithExtension,
   getInfoWithoutExtension,
 } from "components/system/Files/FileEntry/functions";
-import { useFileSystem } from "contexts/fileSystem";
+import { useFs, useRootFs } from "contexts/fileSystem";
 import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 import { getExtension } from "utils/functions";
 import { isMountedFolder } from "contexts/fileSystem/core";
@@ -36,7 +36,8 @@ const useFileInfo = (
     setInfo(newInfo);
     updatingInfo.current = false;
   }, []);
-  const { fs, rootFs } = useFileSystem();
+  const fs = useFs();
+  const rootFs = useRootFs();
 
   useEffect(() => {
     if (

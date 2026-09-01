@@ -8,7 +8,7 @@ const RenderComponent = dynamic(
 );
 
 const AppsLoader: FC = () => {
-  const { processes = {} } = useProcesses();
+  const processes = useProcesses();
 
   return (
     <AnimatePresence initial={false} presenceAffectsLayout={false}>

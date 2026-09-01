@@ -30,7 +30,7 @@ import {
   type NostrContacts,
   type NostrProfile,
 } from "components/apps/Messenger/types";
-import { useProcesses } from "contexts/process";
+import { useProcessesActions } from "contexts/process";
 import directory from "contexts/process/directory";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
 import { toSorted } from "utils/functions";
@@ -197,7 +197,7 @@ export const usePublicKey = (): string => {
 
 export const useUnreadStatus = (id: string, unreadCount: number): void => {
   const [currentUnreadCount, setCurrentUnreadCount] = useState(unreadCount);
-  const { title } = useProcesses();
+  const { title } = useProcessesActions();
   const [pid] = id.split(PROCESS_DELIMITER);
 
   useEffect(() => {

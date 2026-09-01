@@ -13,8 +13,8 @@ import {
 import type * as PdfjsLib from "pdfjs-dist";
 import { type MetadataInfo } from "components/apps/PDF/types";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { BASE_2D_CONTEXT_OPTIONS } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
@@ -40,13 +40,9 @@ const usePDF = (
   id: string,
   containerRef: RefObject<HTMLDivElement | null>
 ): HTMLCanvasElement[] => {
-  const { readFile } = useFileSystem();
-  const {
-    argument,
-    processes: { [id]: process } = {},
-    url: setUrl,
-  } = useProcesses();
-  const { libs = [], scale, url: processUrl } = process || {};
+  const { readFile } = useFileSystemActions();
+  const { argument, url: setUrl } = useProcessesActions();
+  const { libs = [], scale, url: processUrl } = useProcess(id);
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
   const pdfWorker = useRef<PDFWorker | null>(null);
   const renderPage = useCallback(

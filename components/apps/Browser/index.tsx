@@ -27,8 +27,8 @@ import {
 } from "components/apps/Browser/config";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions, useFs } from "contexts/fileSystem";
+import { hasProcess, useProcess, useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import useHistory from "hooks/useHistory";
 import Button from "styles/common/Button";
@@ -52,7 +52,7 @@ import {
   getModifiedTime,
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
-import { useSession } from "contexts/session";
+import { useSessionActions } from "contexts/session";
 
 declare module "react" {
   interface IframeHTMLAttributes<T> extends React.HTMLAttributes<T> {
@@ -65,16 +65,17 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
     icon: setIcon,
     linkElement,
     url: changeUrl,
-    processes: { [id]: process },
     open,
-  } = useProcesses();
-  const { setForegroundId, updateRecentFiles } = useSession();
+  } = useProcessesActions();
+  const process = useProcess(id);
+  const { setForegroundId, updateRecentFiles } = useSessionActions();
   const { prependFileToTitle } = useTitle(id);
-  const { initialTitle = "", url = "" } = process || {};
+  const { initialTitle = "", url = "" } = process;
   const initialUrl = url || HOME_PAGE;
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(initialUrl, id);
-  const { exists, fs, stat, readFile, readdir } = useFileSystem();
+  const { exists, stat, readFile, readdir } = useFileSystemActions();
+  const fs = useFs();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [loading, setLoading] = useState(false);
@@ -400,7 +401,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
   );
 
   useEffect(() => {
-    if (process && history[position] !== currentUrl.current) {
+    if (hasProcess(process) && history[position] !== currentUrl.current) {
       currentUrl.current = history[position];
       setUrl(history[position]);
     }

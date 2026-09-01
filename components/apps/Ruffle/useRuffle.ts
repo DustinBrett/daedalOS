@@ -3,8 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 import { type RufflePlayer } from "components/apps/Ruffle/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { loadFiles } from "utils/functions";
 
 const useRuffle = ({
@@ -13,14 +13,11 @@ const useRuffle = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const {
-    argument,
-    linkElement,
-    processes: { [id]: { libs = [] } = {} } = {},
-  } = useProcesses();
+  const { argument, linkElement } = useProcessesActions();
+  const { libs = [] } = useProcess(id);
   const [player, setPlayer] = useState<RufflePlayer>();
   const { appendFileToTitle } = useTitle(id);
-  const { readFile } = useFileSystem();
+  const { readFile } = useFileSystemActions();
   const loadFlash = useCallback(async () => {
     containerRef.current?.classList.remove("drop");
 

@@ -3,11 +3,11 @@ import { memo, useEffect, useRef, useState } from "react";
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
 import { getResultInfo } from "components/system/Taskbar/Search/functions";
-import { useFileSystem } from "contexts/fileSystem";
-import { useMenu } from "contexts/menu";
+import { useFs } from "contexts/fileSystem";
+import { useMenuActions } from "contexts/menu";
 import { type MenuItem } from "contexts/menu/useMenuContextState";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useSessionActions } from "contexts/session";
 import { SHORTCUT_EXTENSION } from "utils/constants";
 import { preloadLibs } from "utils/functions";
 import {
@@ -29,16 +29,12 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const hasUsedSearch = useRef(false);
-  const {
-    open,
-    processes: {
-      [id]: { url = "" },
-    },
-  } = useProcesses();
+  const { open } = useProcessesActions();
+  const { url = "" } = useProcess(id);
   const results = useSearch(searchTerm);
-  const { contextMenu } = useMenu();
-  const { fs } = useFileSystem();
-  const { updateRecentFiles } = useSession();
+  const { contextMenu } = useMenuActions();
+  const fs = useFs();
+  const { updateRecentFiles } = useSessionActions();
 
   useEffect(() => {
     if (searchBarRef?.current && hasUsedSearch.current) {

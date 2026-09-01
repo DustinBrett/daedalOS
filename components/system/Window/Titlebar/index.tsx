@@ -9,10 +9,10 @@ import {
 } from "components/system/Window/Titlebar/WindowActionIcons";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
-import { useMenu } from "contexts/menu";
+import { useMenuActions, useMenu } from "contexts/menu";
 import { type MenuState } from "contexts/menu/useMenuContextState";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess } from "contexts/process";
+import { useForegroundId, useSessionActions } from "contexts/session";
 import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
@@ -29,9 +29,6 @@ type TitlebarProps = {
 
 const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const {
-    processes: { [id]: process },
-  } = useProcesses();
-  const {
     allowResizing = true,
     closing,
     componentWindow,
@@ -41,11 +38,13 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
     icon,
     title,
     maximized,
-  } = process || {};
-  const { foregroundId, setForegroundId } = useSession();
+  } = useProcess(id);
+  const { setForegroundId } = useSessionActions();
+  const foregroundId = useForegroundId();
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
-  const { menu, setMenu } = useMenu();
+  const { setMenu } = useMenuActions();
+  const menu = useMenu();
   const resetMenu = useCallback(
     () => setMenu(Object.create(null) as MenuState),
     [setMenu]

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useProcesses } from "contexts/process";
+import { useProcess } from "contexts/process";
 import {
   MAX_ICON_SIZE,
   MILLISECONDS_IN_SECOND,
@@ -75,11 +75,8 @@ const renderFrame = async (
 };
 
 const useWindowPeek = (id: string): string => {
-  const {
-    processes: { [id]: process },
-  } = useProcesses();
   const { hidePeek, peekElement, peekImage, componentWindow, icon } =
-    process || {};
+    useProcess(id);
   const previewTimer = useRef(0);
   const [imageSrc, setImageSrc] = useState("");
   const animate = useRef(true);

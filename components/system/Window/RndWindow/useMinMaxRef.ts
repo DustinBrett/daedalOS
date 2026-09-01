@@ -1,9 +1,8 @@
 import { useEffect, useRef } from "react";
-import { useProcesses } from "contexts/process";
+import { useProcess } from "contexts/process";
 
 const useMinMaxRef = (id: string): React.RefObject<boolean> => {
-  const { processes } = useProcesses();
-  const { maximized = false, minimized = false } = processes[id] || {};
+  const { maximized = false, minimized = false } = useProcess(id);
   const blockAutoPositionRef = useRef(false);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { type default as Eruda, type InitOptions } from "eruda";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
-import { useProcesses } from "contexts/process";
+import { useProcess } from "contexts/process";
 import { loadFiles, viewWidth } from "utils/functions";
 
 declare global {
@@ -32,8 +32,7 @@ const useEruda = ({
   setLoading,
   url,
 }: ContainerHookProps): void => {
-  const { processes: { [id]: { closing = false, libs = [] } = {} } = {} } =
-    useProcesses();
+  const { closing = false, libs = [] } = useProcess(id);
 
   useEffect(() => {
     loadFiles(libs).then(() => {

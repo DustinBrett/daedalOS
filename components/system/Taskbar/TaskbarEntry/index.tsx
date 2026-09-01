@@ -5,8 +5,8 @@ import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTas
 import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTaskbarTransition";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useNextFocusable from "components/system/Window/useNextFocusable";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useForegroundId, useSessionActions } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { CLICK_FOCUSABLE_ELEMENT, PROCESS_DELIMITER } from "utils/constants";
@@ -24,15 +24,11 @@ type TaskbarEntryProps = {
 
 const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   const nextFocusableId = useNextFocusable(id);
-  const { foregroundId, setForegroundId } = useSession();
+  const { setForegroundId } = useSessionActions();
+  const foregroundId = useForegroundId();
   const isForeground = id === foregroundId;
-  const {
-    linkElement,
-    minimize,
-    open,
-    processes: { [id]: process },
-  } = useProcesses();
-  const { minimized, progress, singleton } = process || {};
+  const { linkElement, minimize, open } = useProcessesActions();
+  const { minimized, progress, singleton } = useProcess(id);
   const linkTaskbarEntry = useCallback(
     (taskbarEntry: HTMLButtonElement | null) => {
       if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);

@@ -35,8 +35,8 @@ import {
   type FileManagerViewNames,
   FileEntryIconSize,
 } from "components/system/Files/Views";
-import { useFileSystem } from "contexts/fileSystem";
-import { useProcesses } from "contexts/process";
+import { useFileSystemActions, useFs, usePasteList } from "contexts/fileSystem";
+import { useProcessesActions } from "contexts/process";
 import useDoubleClick from "hooks/useDoubleClick";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
@@ -157,7 +157,7 @@ const FileEntry: FC<FileEntryProps> = ({
   view,
 }) => {
   const { blurEntry, focusEntry } = focusFunctions;
-  const { url: changeUrl } = useProcesses();
+  const { url: changeUrl } = useProcessesActions();
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const isVisible = useIsVisible(buttonRef, fileManagerRef, isDesktop);
   const isDirectory = useMemo(() => stats.isDirectory(), [stats]);
@@ -171,14 +171,14 @@ const FileEntry: FC<FileEntryProps> = ({
   const {
     createPath,
     exists,
-    fs,
     mkdirRecursive,
-    pasteList,
     readdir,
     stat,
     updateFolder,
     writeFile,
-  } = useFileSystem();
+  } = useFileSystemActions();
+  const fs = useFs();
+  const pasteList = usePasteList();
   const [showInFileManager, setShowInFileManager] = useState(false);
   const { formats, sizes } = useTheme();
   const listView = useMemo(() => view === "list", [view]);

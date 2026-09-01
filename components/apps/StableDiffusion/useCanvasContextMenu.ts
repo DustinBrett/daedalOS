@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from "react";
-import { useMenu } from "contexts/menu";
+import { useMenuActions } from "contexts/menu";
 import {
   type ContextMenuCapture,
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { DESKTOP_PATH, SAVE_PATH } from "utils/constants";
-import { useSession } from "contexts/session";
+import { useSessionActions } from "contexts/session";
 import { canvasToBuffer } from "utils/functions";
 import { useSnapshots } from "hooks/useSnapshots";
 
@@ -14,8 +14,8 @@ const useCanvasContextMenu = (
   prompt: string,
   isImageReady: boolean
 ): ContextMenuCapture => {
-  const { contextMenu } = useMenu();
-  const { setWallpaper } = useSession();
+  const { contextMenu } = useMenuActions();
+  const { setWallpaper } = useSessionActions();
   const { createSnapshot } = useSnapshots();
   const saveCanvasImage = useCallback(
     async (savePath: string): Promise<string> => {

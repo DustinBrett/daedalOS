@@ -10,8 +10,8 @@ import {
 import SearchBar from "components/apps/FileExplorer/SearchBar";
 import StyledNavigation from "components/apps/FileExplorer/StyledNavigation";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
-import { useMenu } from "contexts/menu";
-import { useProcesses } from "contexts/process";
+import { useMenuActions, useMenu } from "contexts/menu";
+import { useProcess, useProcessesActions } from "contexts/process";
 import useHistory from "hooks/useHistory";
 import Button from "styles/common/Button";
 import { ROOT_NAME } from "utils/constants";
@@ -37,14 +37,11 @@ const Navigation: FC<NavigationProps> = ({
   addressBarRef,
   searchBarRef,
 }) => {
-  const {
-    url: changeUrl,
-    processes: {
-      [id]: { url = "" },
-    },
-  } = useProcesses();
+  const { url: changeUrl } = useProcessesActions();
+  const { url = "" } = useProcess(id);
   const upTo = url === "/" ? "" : basename(dirname(url));
-  const { contextMenu, menu, setMenu } = useMenu();
+  const { contextMenu, setMenu } = useMenuActions();
+  const menu = useMenu();
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(url, id);
   const recentItemsMenu = useMemo(

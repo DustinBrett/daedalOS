@@ -3,10 +3,9 @@ import {
   SEARCH_BUTTON_TITLE,
   START_BUTTON_TITLE,
 } from "components/system/Taskbar/functions";
-import { useProcesses } from "contexts/process";
-import { useSession } from "contexts/session";
+import { useProcessesActions, useProcessesRef } from "contexts/process";
+import { useForegroundId, useStackOrder } from "contexts/session";
 import { useViewport } from "contexts/viewport";
-import { useProcessesRef } from "hooks/useProcessesRef";
 import { KEYPRESS_DEBOUNCE_MS } from "utils/constants";
 import { haltEvent, toggleShowDesktop, viewHeight } from "utils/functions";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
@@ -60,9 +59,10 @@ const updateKeyStates = (event: KeyboardEvent): void => {
 };
 
 const useGlobalKeyboardShortcuts = (): void => {
-  const { closeWithTransition, minimize, open } = useProcesses();
+  const { closeWithTransition, minimize, open } = useProcessesActions();
   const processesRef = useProcessesRef();
-  const { foregroundId, stackOrder } = useSession();
+  const foregroundId = useForegroundId();
+  const stackOrder = useStackOrder();
   const { fullscreenElement, toggleFullscreen } = useViewport();
   const { onMaximize, onMinimize } = useWindowActions(foregroundId);
   const altBindingsRef = useRef<Record<string, () => void>>({});
