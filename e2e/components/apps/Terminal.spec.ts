@@ -233,11 +233,11 @@ test.describe("has file system access", () => {
 
 test.describe("has commands", () => {
   test("clear", async ({ page }) => {
-    await sendToTerminal({ page }, "echo hi");
-    await terminalHasText({ page }, "hi", 2);
+    await sendToTerminal({ page }, "echo test_echo_output");
+    await terminalHasText({ page }, "test_echo_output", 2);
 
     await sendToTerminal({ page }, "clear");
-    await terminalDoesNotHaveText({ page }, "hi");
+    await terminalDoesNotHaveText({ page }, "test_echo_output");
   });
 
   test("color", async ({ page }) => {
@@ -252,8 +252,8 @@ test.describe("has commands", () => {
   });
 
   test("echo", async ({ page }) => {
-    await sendToTerminal({ page }, "echo hi");
-    await terminalHasText({ page }, "hi", 2);
+    await sendToTerminal({ page }, "echo test_echo_output");
+    await terminalHasText({ page }, "test_echo_output", 2);
   });
 
   test("exit", async ({ page }) => {
