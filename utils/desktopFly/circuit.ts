@@ -83,7 +83,7 @@ export const Side = {
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export type Side = (typeof Side)[keyof typeof Side];
 
-export type Neuron = {
+type Neuron = {
   /**
    * Ring coordinate in radians for compass cells (EPG wedge position,
    * recovered spectrally from the wiring; PEN input locus). Undefined for
@@ -192,10 +192,4 @@ export const decodeCircuit = (buffer: ArrayBuffer): Circuit => {
   }
 
   return { edgeCount, edgePost, edgePre, edgeSyn, neurons };
-};
-
-export const loadCircuit = async (url: string): Promise<Circuit> => {
-  const response = await fetch(url);
-
-  return decodeCircuit(await response.arrayBuffer());
 };

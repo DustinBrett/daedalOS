@@ -18,16 +18,14 @@ const getApp = async (): Promise<FlyApp | undefined> => {
   if (appInstance) return appInstance;
 
   appPromise ??= (async () => {
-    const [{ FlyApp: FlyAppClass }, { loadCircuit }] = await Promise.all([
-      import("utils/desktopFly/app"),
-      import("utils/desktopFly/circuit"),
-    ]);
+    const { FlyApp: FlyAppClass } = await import("utils/desktopFly/app");
     const container = document.querySelector("main");
 
     // eslint-disable-next-line unicorn/no-useless-undefined
     if (!(container instanceof HTMLElement)) return undefined;
 
-    appInstance = new FlyAppClass(await loadCircuit(CIRCUIT_PATH), container);
+    // The circuit is fetched and compiled inside the app's brain worker.
+    appInstance = new FlyAppClass(CIRCUIT_PATH, container);
 
     return appInstance;
   })();
@@ -56,6 +54,7 @@ export const setFlyAudio = (enabled: boolean): void => {
 export const killFly = (): void => {
   appInstance?.removeFly();
   if (appInstance?.count === 0) {
+    appInstance.destroy();
     appInstance = undefined;
     appPromise = undefined;
   }

@@ -1,7 +1,8 @@
 // The coordinator: senses in, spikes in the middle, flies on the screen.
 // The order inside a frame mirrors gnat's `app.rs` (MIT): sense the desktop,
-// drive the circuits, step them in whole milliseconds, read the population
-// rates as body commands, move the bodies, draw.
+// drive the circuits, read the population rates as body commands, move the
+// bodies, draw. The circuits themselves step in a worker (brain.worker.ts);
+// the bodies run on the worker's latest reply, one frame behind the senses.
 //
 // Where gnat gave one fly the connectome and the rest a distance check, here
 // every fly carries its own 9,907-neuron simulation and its own eyes: each
@@ -11,15 +12,23 @@
 
 import { Activity } from "utils/desktopFly/activity";
 import { FlyAudio } from "utils/desktopFly/audio";
-import { type Circuit } from "utils/desktopFly/circuit";
+import {
+  type BrainResponse,
+  type BrainStim,
+} from "utils/desktopFly/brain.worker";
 import {
   FLIGHT_SPEED_PX_S,
   Fly,
   FlyState,
   type Point,
 } from "utils/desktopFly/fly";
-import { CompiledCircuit, Lif } from "utils/desktopFly/lif";
-import { drawFly, type Frame, toScene } from "utils/desktopFly/render";
+import { type Inputs } from "utils/desktopFly/lif";
+import {
+  drawFly,
+  drawRadius,
+  type Frame,
+  toScene,
+} from "utils/desktopFly/render";
 import {
   type MovingRect,
   type Threat,
@@ -33,12 +42,12 @@ import {
   tapThreat,
   threatLevel,
 } from "utils/desktopFly/senses";
+import { type Signals, circadianActivity } from "utils/desktopFly/signals";
 import {
-  SignalBuilder,
-  type Signals,
-  circadianActivity,
-} from "utils/desktopFly/signals";
-import { ledgesToScene, senseTerrain } from "utils/desktopFly/terrain";
+  ledgesToScene,
+  resetTerrainCache,
+  senseTerrain,
+} from "utils/desktopFly/terrain";
 import {
   SHEEP_ID_BASE,
   WallpaperEye,
@@ -52,8 +61,6 @@ import { Rng } from "utils/desktopFly/rng";
 const TERRAIN_INTERVAL = 150;
 /** How often the clock and idle state are re-read, in ms. */
 const AMBIENT_INTERVAL = 2000;
-/** The sims can fall at most this far behind before frames are dropped. */
-const MAX_STEPS_PER_FRAME = 50;
 /**
  * Every fly carries the full connectome — no second-class reflex flies —
  * so the population cap is the compute budget. Measured: five 9,907-neuron
@@ -61,9 +68,12 @@ const MAX_STEPS_PER_FRAME = 50;
  * looming and reading an object at once, where six of them would spend 84%
  * and leave nothing to render with. Five bigger brains beat six smaller
  * ones — 2,000 more real neurons each, and cheaper at the worst case than
- * the six-fly build was.
+ * the six-fly build was. The sims now step in a worker, but the cap still
+ * bounds their worst-case latency behind the frame.
  */
 const MAX_FLIES = 5;
+/** Ceiling on stimulations held for a worker that is behind or absent. */
+const MAX_PENDING_STIMS = 64;
 /** Per-second decay rate of transient threat pulses (taps, pop-ups). */
 const PULSE_DECAY = 4.5;
 
@@ -157,39 +167,83 @@ const emptyThreat = (): Threat => ({ loomL: 0, loomR: 0, puff: 0 });
 const isGrounded = (fly: Fly): boolean =>
   fly.state !== FlyState.Flying && fly.state !== FlyState.Caught;
 
+/** Neutral body commands, used until the brain worker's first reply. */
+const defaultSignals = (): Signals => ({
+  arousal: 0,
+  backward: false,
+  clock: 1,
+  escape: false,
+  groomDrive: 0,
+  lc11: 0,
+  lc11Bias: 0,
+  loomBias: 0,
+  mbApproach: 0,
+  mbAvoid: 0,
+  nervous: 0,
+  sleep: false,
+  tempo: 1,
+  turnBias: 0,
+  walkDrive: 0,
+  wingDrive: 0,
+});
+
+const defaultInputs = (): Inputs => ({
+  activityScale: 1,
+  airPuff: 0,
+  gaitDrive: 0,
+  gaitPhase: 0,
+  loomL: 0,
+  loomR: 0,
+  rotation: 0,
+  sensoryGate: 1,
+  smallObjL: 0,
+  smallObjR: 0,
+});
+
+/** An axis-aligned screen box, for dirty-rect clearing. */
+type Box = { h: number; w: number; x: number; y: number };
+
+const SIG_LEN = 12;
+/** A pose change below this would not move a drawn pixel. */
+const SIG_EPS = 0.002;
+const sigScratch = new Float64Array(SIG_LEN);
+
 /**
- * A fly's private stimulus encoding for an object: the subset of cells its
- * senses activate, chosen by hashing the object's identity with the fly's
- * own salt. Objects are presented to the brain as antennal-lobe projection
- * neuron combinations (roughly a quarter of the PNs, like an odor's
- * glomerular code); everything downstream — the sparse Kenyon-cell code,
- * its reliability, and its pattern separation — emerges from the real
- * PN->KC claws and APL inhibition rather than being imposed here.
+ * The pose fields that decide what drawFly paints. Breathing is left out on
+ * purpose — it is sub-pixel at this sprite size — which is what lets a
+ * settled fly skip repaints entirely.
  */
-export const patternFor = (
-  cells: Int32Array | number[],
-  key: string,
-  salt: number,
-  oneIn = 4
-): number[] => {
-  /* eslint-disable no-bitwise */
-  const out: number[] = [];
-  let base = 2_166_136_261 ^ salt;
+const fillPoseSig = (fly: Fly, out: Float64Array): void => {
+  let legs = 0;
 
-  for (let c = 0; c < key.length; c += 1) {
-    base ^= key.codePointAt(c) ?? 0;
-    base = Math.imul(base, 16_777_619);
-  }
-  cells.forEach((cell: number, k: number) => {
-    let h = base ^ k;
-
-    h = Math.imul(h ^ (h >>> 15), 2_246_822_519);
-    h ^= h >>> 13;
-    if ((h >>> 0) % oneIn === 0) out.push(cell);
+  fly.legs.forEach(({ angle, lift }) => {
+    legs += Math.abs(angle) + lift;
   });
+  /* eslint-disable no-param-reassign */
+  out[0] = fly.pos.x;
+  out[1] = fly.pos.y;
+  out[2] = fly.heading;
+  out[3] = fly.scale;
+  out[4] = fly.z + fly.surfaceZ;
+  out[5] = fly.restDepth;
+  out[6] = fly.wingRaise;
+  out[7] = fly.tasteTimer > 0 ? fly.time : 0;
+  out[8] = legs;
+  out[9] = fly.wings[0].x;
+  out[10] = fly.wings[0].z;
+  out[11] = fly.state;
+  /* eslint-enable no-param-reassign */
+};
 
-  return out;
-  /* eslint-enable no-bitwise */
+/** Whether this fly's on-screen pose differs from its last drawn one. */
+const poseChanged = (fly: Fly, sig: Float64Array): boolean => {
+  fillPoseSig(fly, sigScratch);
+
+  for (let k = 0; k < SIG_LEN; k += 1) {
+    if (Math.abs(sigScratch[k] - sig[k]) > SIG_EPS) return true;
+  }
+
+  return false;
 };
 
 /**
@@ -343,13 +397,44 @@ export class FlyApp {
 
   private readonly container: HTMLElement;
 
-  /** The wiring, compiled once; every fly's sim shares it. */
-  private readonly circuit: CompiledCircuit;
+  /** The brain worker: every fly's connectome sim, off the main thread. */
+  private readonly worker: Worker;
 
-  /** Per-fly connectome sims — every fly carries one. */
-  private brains: Lif[] = [];
+  private workerReady = false;
 
-  private builders: SignalBuilder[] = [];
+  /** A frame batch is in flight; hold new ones until the reply lands. */
+  private brainBusy = false;
+
+  private brainSentMs = 0;
+
+  /** Sensed time not yet shipped to the worker, seconds. */
+  private pendingDt = 0;
+
+  /** Bumped on any add/remove so stale worker replies can be dropped. */
+  private roster = 0;
+
+  /** Latest body commands per fly — one frame behind the brain, by design. */
+  private signals: Signals[] = [];
+
+  /** Per-fly brain inputs, rewritten in place each frame. */
+  private inputsList: Inputs[] = [];
+
+  /** Stimulations queued for the worker's next frame batch. */
+  private readonly pendingStims: BrainStim[] = [];
+
+  /** Reused per-frame scratch: scene bounds and one fly's threat. */
+  private readonly bounds: Point = { x: 0, y: 0 };
+
+  private readonly threatScratch: Threat = emptyThreat();
+
+  /** Dirty-rect bookkeeping: last drawn box + pose signature per fly. */
+  private drawBoxes: Box[] = [];
+
+  private drawSigs: Float64Array[] = [];
+
+  private readonly flashBox: Box = { h: 0, w: 0, x: 0, y: 0 };
+
+  private fullRedraw = true;
 
   private flies: Fly[] = [];
 
@@ -393,8 +478,6 @@ export class FlyApp {
 
   private loomOverride = 0;
 
-  private msAccumulator = 0;
-
   private sleepy = false;
 
   private circadian = 1;
@@ -433,12 +516,21 @@ export class FlyApp {
 
   private running = false;
 
-  public constructor(circuit: Circuit, container: HTMLElement) {
+  public constructor(circuitUrl: string, container: HTMLElement) {
     const seed = Math.floor(Date.now() / 256);
 
-    this.circuit = new CompiledCircuit(circuit);
     this.nextSeed = seed;
     this.container = container;
+    // The worker fetches and compiles the circuit itself; until it reports
+    // ready the flies run on neutral default commands.
+    this.worker = new Worker(
+      new URL("utils/desktopFly/brain.worker", import.meta.url),
+      { name: "fly-brains" }
+    );
+    this.worker.addEventListener("message", this.onBrainMessage, {
+      passive: true,
+    });
+    this.worker.postMessage({ type: "init", url: circuitUrl });
     this.canvas = document.createElement("canvas");
     this.canvas.id = FLY_CANVAS_ID;
     this.canvas.style.position = "absolute";
@@ -448,7 +540,10 @@ export class FlyApp {
     this.canvas.setAttribute("aria-hidden", "true");
     container.append(this.canvas);
 
-    const ctx = this.canvas.getContext("2d", { alpha: true });
+    const ctx = this.canvas.getContext("2d", {
+      alpha: true,
+      desynchronized: true,
+    });
 
     if (!ctx) throw new Error("desktop-fly: no 2d canvas context");
 
@@ -486,6 +581,25 @@ export class FlyApp {
 
   private readonly onKeyDown = (): void => {
     this.pokePending = true;
+  };
+
+  private readonly onBrainMessage = ({
+    data,
+  }: MessageEvent<BrainResponse>): void => {
+    if (data.type === "ready") {
+      this.workerReady = true;
+
+      return;
+    }
+
+    this.brainBusy = false;
+    // A reply computed for an out-of-date fly list (an add/remove crossed
+    // it in flight) is dropped; the next frame batch re-syncs.
+    if (data.roster !== this.roster) return;
+
+    data.signals.forEach((made, i) => {
+      this.signals[i] = made;
+    });
   };
 
   /** Try to pin a fly under a fresh pointer-down. */
@@ -550,13 +664,17 @@ export class FlyApp {
       this.nextSeed
     );
 
-    // Every fly gets its own connectome — its own seed, so no two brains
-    // crackle alike.
+    // Every fly gets its own connectome in the worker — its own seed, so no
+    // two brains crackle alike.
     this.flies.push(fly);
-    this.brains.push(new Lif(this.circuit, this.nextSeed));
-    this.builders.push(new SignalBuilder());
+    this.worker.postMessage({ seed: this.nextSeed, type: "add" });
+    this.roster += 1;
+    this.signals.push(defaultSignals());
+    this.inputsList.push(defaultInputs());
     this.pulses.push(emptyThreat());
     this.wasFlying.push(false);
+    this.drawBoxes.push({ h: 0, w: 0, x: 0, y: 0 });
+    this.drawSigs.push(new Float64Array(SIG_LEN));
     if (!this.running) this.start();
   }
 
@@ -567,10 +685,22 @@ export class FlyApp {
 
   private removeFlyAt(index: number): void {
     this.flies.splice(index, 1);
-    this.brains.splice(index, 1);
-    this.builders.splice(index, 1);
+    this.worker.postMessage({ index, type: "remove" });
+    this.roster += 1;
+    this.signals.splice(index, 1);
+    this.inputsList.splice(index, 1);
     this.pulses.splice(index, 1);
     this.wasFlying.splice(index, 1);
+    this.drawBoxes.splice(index, 1);
+    this.drawSigs.splice(index, 1);
+    // Queued stimulations refer to positions in the old list.
+    for (let s = this.pendingStims.length - 1; s >= 0; s -= 1) {
+      const stim = this.pendingStims[s];
+
+      if (stim.index === index) this.pendingStims.splice(s, 1);
+      else if (stim.index > index) stim.index -= 1;
+    }
+    this.fullRedraw = true;
     if (this.catchIndex === index) this.catchIndex = -1;
     else if (this.catchIndex > index) this.catchIndex -= 1;
     if (this.flies.length === 0) this.stop();
@@ -631,11 +761,25 @@ export class FlyApp {
     this.audio?.disable();
     this.catchIndex = -1;
     this.flies = [];
-    this.brains = [];
-    this.builders = [];
+    this.signals = [];
+    this.inputsList = [];
     this.pulses = [];
     this.wasFlying = [];
+    this.drawBoxes = [];
+    this.drawSigs = [];
+    this.pendingStims.length = 0;
+    this.pendingDt = 0;
+    this.fullRedraw = true;
+    this.roster += 1;
+    this.worker.postMessage({ type: "reset" });
+    resetTerrainCache();
     window.DEBUG_FLY_APP = undefined;
+  }
+
+  /** Stop and release the brain worker. The instance cannot be restarted. */
+  public destroy(): void {
+    this.stop();
+    this.worker.terminate();
   }
 
   private resize(): void {
@@ -653,6 +797,8 @@ export class FlyApp {
     this.movingRects = [];
     this.prevRectPos.clear();
     this.lastTerrainMs = 0;
+    // Resetting the canvas size wiped it; everything must repaint.
+    this.fullRedraw = true;
   }
 
   private readonly onFrame = (nowMs: number): void => {
@@ -704,25 +850,37 @@ export class FlyApp {
         this.mouseClient.y
       );
 
-      this.mouse = { x, y };
+      if (this.mouse) {
+        this.mouse.x = x;
+        this.mouse.y = y;
+      } else {
+        this.mouse = { x, y };
+      }
     }
 
-    const signals = this.stepBrains(dt);
-    const bounds: Point = { x: this.frame.width, y: this.frame.height };
+    this.bounds.x = this.frame.width;
+    this.bounds.y = this.frame.height;
+    this.senseFrame(dt);
+
+    const { bounds } = this;
 
     this.flies.forEach((fly, i) => {
       // eslint-disable-next-line no-param-reassign
       fly.terrain = this.terrain;
-      fly.update(dt, bounds, signals[i]);
+
+      const made = this.signals[i];
+
+      fly.update(dt, bounds, made);
+      // The giant-fibre latch is one-shot: a reply's escape spike must not
+      // fire again on frames that reuse it.
+      made.escape = false;
     });
 
     this.updateCatch(nowMs, dt);
     this.interactFlies(dt);
     this.propagateTakeoffs();
 
-    this.ctx.clearRect(0, 0, this.frame.width, this.frame.height);
-    this.flies.forEach((fly) => drawFly(this.ctx, fly, this.frame));
-    this.drawCatchFlash(nowMs);
+    this.drawScene(nowMs);
     this.audio?.update(this.flies, this.frame.width);
 
     // Catching the last fly stops the app mid-frame; don't reschedule.
@@ -743,10 +901,17 @@ export class FlyApp {
       return;
     }
 
-    const bounds: Point = { x: this.frame.width, y: this.frame.height };
+    const { bounds } = this;
 
     // The pinned fly is dragged along under the pointer.
-    if (this.mouse) fly.pinnedAt = { ...this.mouse };
+    if (this.mouse) {
+      if (fly.pinnedAt) {
+        fly.pinnedAt.x = this.mouse.x;
+        fly.pinnedAt.y = this.mouse.y;
+      } else {
+        fly.pinnedAt = { ...this.mouse };
+      }
+    }
     // Being held is the worst thing that ever happened here.
     fly.memory.recordThreat(fly.pos, bounds, dt * 2);
 
@@ -781,6 +946,59 @@ export class FlyApp {
     return WRIGGLE_CHANCE_PER_S * grip * strength * (1 - 0.5 * fly.grogginess);
   }
 
+  /**
+   * Dirty-rect drawing: clear only where flies were and are, and skip the
+   * frame entirely when nothing on screen would change (every fly settled,
+   * no catch flash live or lingering). drawFly paints legs, wings and the
+   * shadow well outside the body centre, so each fly's box comes from
+   * drawRadius — the renderer's own account of its extents.
+   */
+  private drawScene(nowMs: number): void {
+    let dirty =
+      this.fullRedraw || this.catchFlash !== undefined || this.flashBox.w > 0;
+
+    for (let i = 0; i < this.flies.length && !dirty; i += 1) {
+      dirty = poseChanged(this.flies[i], this.drawSigs[i]);
+    }
+    if (!dirty) return;
+
+    const { ctx, frame } = this;
+
+    if (this.fullRedraw) {
+      ctx.clearRect(0, 0, frame.width, frame.height);
+      this.fullRedraw = false;
+    } else {
+      // Clear every fly's previous box, then repaint every fly: with at
+      // most five small sprites, that beats tracking box intersections.
+      this.drawBoxes.forEach(({ h, w, x, y }) => {
+        if (w > 0) ctx.clearRect(x, y, w, h);
+      });
+      if (this.flashBox.w > 0) {
+        ctx.clearRect(
+          this.flashBox.x,
+          this.flashBox.y,
+          this.flashBox.w,
+          this.flashBox.h
+        );
+      }
+    }
+    this.flashBox.w = 0;
+
+    this.flies.forEach((fly, i) => {
+      drawFly(ctx, fly, frame);
+      fillPoseSig(fly, this.drawSigs[i]);
+
+      const r = drawRadius(fly);
+      const box = this.drawBoxes[i];
+
+      box.x = fly.pos.x + frame.width / 2 - r;
+      box.y = frame.height / 2 - fly.pos.y - r;
+      box.w = r * 2;
+      box.h = r * 2;
+    });
+    this.drawCatchFlash(nowMs);
+  }
+
   private drawCatchFlash(nowMs: number): void {
     if (!this.catchFlash) return;
 
@@ -792,16 +1010,19 @@ export class FlyApp {
       return;
     }
 
-    const [x, y] = [
-      this.catchFlash.x + this.frame.width / 2,
-      this.frame.height / 2 - this.catchFlash.y,
-    ];
+    const x = this.catchFlash.x + this.frame.width / 2;
+    const y = this.frame.height / 2 - this.catchFlash.y;
 
     this.ctx.beginPath();
     this.ctx.arc(x, y, 6 + 26 * age, 0, TWO_PI);
     this.ctx.strokeStyle = `rgba(255, 255, 255, ${(0.8 * (1 - age)).toFixed(3)})`;
     this.ctx.lineWidth = 2;
     this.ctx.stroke();
+    // The ring's box: radius tops out at 32 px, plus the stroke.
+    this.flashBox.x = x - 36;
+    this.flashBox.y = y - 36;
+    this.flashBox.w = 72;
+    this.flashBox.h = 72;
   }
 
   /**
@@ -929,7 +1150,6 @@ export class FlyApp {
       // APL inhibition, MBONs read it through their (possibly depressed)
       // synapses, and any dopamine that arrives while the code is active
       // teaches it.
-      const brain = this.brains[flyIndex];
       const focus = [ahead, under].find(
         (seen) =>
           seen &&
@@ -938,12 +1158,14 @@ export class FlyApp {
             seen.kind === "window")
       );
 
-      if (brain && focus) {
-        brain.stimulate(
-          patternFor(brain.getGroups().pn, focus.key, fly.mbSalt),
-          0.1,
-          Math.round(VISION_INTERVAL * 1.6)
-        );
+      if (focus) {
+        this.pendingStims.push({
+          durationMs: Math.round(VISION_INTERVAL * 1.6),
+          index: flyIndex,
+          key: focus.key,
+          salt: fly.mbSalt,
+          strength: 0.1,
+        });
         if (fly.mbFocusKey !== focus.key) {
           /* eslint-disable no-param-reassign */
           fly.mbFocusKey = focus.key;
@@ -1174,10 +1396,13 @@ export class FlyApp {
   }
 
   /**
-   * One frame of sensing and simulation for every fly. Returns per-fly body
-   * commands read off each fly's own connectome.
+   * One frame of sensing for every fly: threats, memory, mushroom-body
+   * bookkeeping, and the per-fly brain inputs. Inputs and queued
+   * stimulations ship to the brain worker whenever it can take another
+   * batch; the commands the bodies run on are the worker's latest reply,
+   * refreshed each frame with the coordinator's clock and sleep signals.
    */
-  private stepBrains(dt: number): Signals[] {
+  private senseFrame(dt: number): void {
     // Shared cursor kinematics, smoothed like gnat's compute_loom.
     if (this.mouse && this.prevMouse && dt > 0) {
       const vx = (this.mouse.x - this.prevMouse.x) / dt;
@@ -1186,7 +1411,14 @@ export class FlyApp {
       this.mouseVel.x += (vx - this.mouseVel.x) * 0.4;
       this.mouseVel.y += (vy - this.mouseVel.y) * 0.4;
     }
-    if (this.mouse) this.prevMouse = { ...this.mouse };
+    if (this.mouse) {
+      if (this.prevMouse) {
+        this.prevMouse.x = this.mouse.x;
+        this.prevMouse.y = this.mouse.y;
+      } else {
+        this.prevMouse = { ...this.mouse };
+      }
+    }
 
     let click: Point | undefined;
 
@@ -1205,21 +1437,15 @@ export class FlyApp {
 
     const pulseDecay = Math.exp(-PULSE_DECAY * dt);
     const vibration = this.activity.vibration();
+    const { bounds } = this;
 
-    // Step in whole milliseconds, carrying the remainder, so the 1 kHz
-    // internal rate stays honest regardless of frame pacing. One shared
-    // accumulator: every brain steps the same amount of biological time.
-    this.msAccumulator += dt * 1000;
-
-    const steps = Math.min(Math.floor(this.msAccumulator), MAX_STEPS_PER_FRAME);
-
-    this.msAccumulator -= steps;
-
-    const bounds: Point = { x: this.frame.width, y: this.frame.height };
-
-    return this.flies.map((fly, i) => {
+    this.flies.forEach((fly, i) => {
       // What this fly sees and feels this frame, from where it stands.
-      const threat = emptyThreat();
+      const threat = this.threatScratch;
+
+      threat.loomL = 0;
+      threat.loomR = 0;
+      threat.puff = 0;
 
       if (this.mouse) {
         addThreat(
@@ -1292,15 +1518,13 @@ export class FlyApp {
         fly.memory.recordCalm(fly.pos, bounds, dt);
       }
 
-      const brain = this.brains[i];
-      const builder = this.builders[i];
       // Bolder individuals perceive the same loom as smaller and flee later.
       const loomGain =
         Math.min(Math.max(2 - fly.phenotype.boldness, 0.7), 1.25) *
         // A fly that has just been in a fist reads every shape as worse.
         (1 + 0.35 * fly.agitation);
 
-      const { inputs } = brain;
+      const inputs = this.inputsList[i];
 
       inputs.loomL = Math.min(threat.loomL * loomGain, 1);
       inputs.loomR = Math.min(threat.loomR * loomGain, 1);
@@ -1407,14 +1631,24 @@ export class FlyApp {
       /* eslint-disable no-param-reassign */
       if (focusFresh && fly.mbPulseCooldown === 0) {
         if (level > 0.5 || touched) {
-          brain.stimulate(brain.getGroups().ppl1, 0.2, 250);
+          this.pendingStims.push({
+            durationMs: 250,
+            group: "ppl1",
+            index: i,
+            strength: 0.2,
+          });
           fly.mbPulseCooldown = 1.2;
         } else if (
           level < 0.1 &&
           (fly.state === FlyState.Grooming || fly.tasteTimer > 0) &&
           Math.random() < 0.5 * dt
         ) {
-          brain.stimulate(brain.getGroups().pam, 0.15, 250);
+          this.pendingStims.push({
+            durationMs: 250,
+            group: "pam",
+            index: i,
+            strength: 0.15,
+          });
           fly.mbPulseCooldown = 1.5;
         }
       }
@@ -1423,26 +1657,31 @@ export class FlyApp {
       // A hard tap also travels through the substrate into the wind-sensing
       // pathway, like gnat's focus-change tap — but only for flies near it.
       if (click && threat.puff > 0.3) {
-        brain.stimulate(brain.getGroups().sens, 0.2, 130);
+        this.pendingStims.push({
+          durationMs: 130,
+          group: "sens",
+          index: i,
+          strength: 0.2,
+        });
       }
       // Physical contact drives the giant fibre through the mechanosensory
       // pathway: a poked fly escapes through its real command neuron.
       if (touched && fly.scareCooldown === 0) {
-        brain.stimulate(brain.getGroups().gf, 0.6, 30);
+        this.pendingStims.push({
+          durationMs: 30,
+          group: "gf",
+          index: i,
+          strength: 0.6,
+        });
       }
 
-      brain.step(steps);
+      // The latest commands from the worker; clock and sleep are the
+      // coordinator's to refresh every frame.
+      const made = this.signals[i];
 
-      // The fly's internal compass, read off its EPG ring's bump.
-      const compass = brain.compass();
-      const made: Signals = {
-        ...builder.make(brain, dt),
-        ...(compass.strength > 0.05 ? { compass } : {}),
-        clock: circadian,
-        // Sleep is the shared quiet-desk signal or this fly's own homeostat.
-        sleep: this.sleepy || fly.drowsy,
-        tempo: 1,
-      };
+      made.clock = circadian;
+      // Sleep is the shared quiet-desk signal or this fly's own homeostat.
+      made.sleep = this.sleepy || fly.drowsy;
 
       // MBON valence: how this object feels *compared with the other things
       // this fly looks at*.
@@ -1484,9 +1723,36 @@ export class FlyApp {
         fly.mbBaseline += (diff - fly.mbBaseline) * Math.min(dt / tau, 1);
       }
       /* eslint-enable no-param-reassign */
-
-      return made;
     });
+
+    // Ship the batch. dt accumulates across frames the worker missed, so
+    // biological time stays honest; the worker steps it in whole ms. The
+    // clamp stops the wait for worker startup becoming a fast-forward.
+    this.pendingDt = Math.min(this.pendingDt + dt, 0.25);
+    // A worker that never reports ready (a failed circuit fetch) is never
+    // sent a batch, so the queue would grow for as long as the flies live;
+    // the oldest stimulations are the ones worth dropping.
+    if (this.pendingStims.length > MAX_PENDING_STIMS) {
+      this.pendingStims.splice(0, this.pendingStims.length - MAX_PENDING_STIMS);
+    }
+    // A reply that never comes (a worker fault) must not freeze the brains
+    // out forever; after a beat, offer the worker a fresh batch.
+    if (this.brainBusy && performance.now() - this.brainSentMs > 2000) {
+      this.brainBusy = false;
+    }
+    if (this.workerReady && !this.brainBusy && this.flies.length > 0) {
+      this.worker.postMessage({
+        dt: this.pendingDt,
+        inputs: this.inputsList,
+        roster: this.roster,
+        stims: this.pendingStims,
+        type: "frame",
+      });
+      this.brainBusy = true;
+      this.brainSentMs = performance.now();
+      this.pendingDt = 0;
+      this.pendingStims.length = 0;
+    }
   }
 }
 

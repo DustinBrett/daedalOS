@@ -246,8 +246,43 @@ type Rates = {
   pop: number;
 };
 
+/**
+ * A fly's private stimulus encoding for an object: the subset of cells its
+ * senses activate, chosen by hashing the object's identity with the fly's
+ * own salt. Objects are presented to the brain as antennal-lobe projection
+ * neuron combinations (roughly a quarter of the PNs, like an odor's
+ * glomerular code); everything downstream — the sparse Kenyon-cell code,
+ * its reliability, and its pattern separation — emerges from the real
+ * PN->KC claws and APL inhibition rather than being imposed here.
+ */
+export const patternFor = (
+  cells: Int32Array | number[],
+  key: string,
+  salt: number,
+  oneIn = 4
+): number[] => {
+  /* eslint-disable no-bitwise */
+  const out: number[] = [];
+  let base = 2_166_136_261 ^ salt;
+
+  for (let c = 0; c < key.length; c += 1) {
+    base ^= key.codePointAt(c) ?? 0;
+    base = Math.imul(base, 16_777_619);
+  }
+  cells.forEach((cell: number, k: number) => {
+    let h = base ^ k;
+
+    h = Math.imul(h ^ (h >>> 15), 2_246_822_519);
+    h ^= h >>> 13;
+    if ((h >>> 0) % oneIn === 0) out.push(cell);
+  });
+
+  return out;
+  /* eslint-enable no-bitwise */
+};
+
 /** What the coordinator feeds in each frame. All in 0..1 unless noted. */
-type Inputs = {
+export type Inputs = {
   /** Circadian and sleep neuromodulation of baseline drive and noise. */
   activityScale: number;
   /** Fast cursor motion near the fly, into the sensory pathway. */

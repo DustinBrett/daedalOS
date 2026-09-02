@@ -44,6 +44,13 @@ const rearBlindness = (cosBearing: number): number =>
   clamp((-cosBearing - 0.7071) / (1 - 0.7071), 0, 1);
 
 /**
+ * Reused left/right result pair. These run for every fly against every
+ * stimulus on every frame, so fresh tuples were steady garbage; every
+ * caller destructures the result before the next call.
+ */
+const eyePair: [number, number] = [0, 0];
+
+/**
  * Split a looming drive between the eyes by bearing relative to the heading.
  * `rdX/rdY` is the unit vector from the fly to the stimulus.
  */
@@ -60,10 +67,11 @@ const eyeSplit = (
   // Deep binocular overlap in front and to the sides, fading to nearly
   // nothing in the rear blind cone.
   const blind = 1 - 0.94 * rearBlindness(cosBearing);
-  const lw = clamp(0.5 + 0.5 * crossZ, 0.12, 1) * blind;
-  const rw = clamp(0.5 - 0.5 * crossZ, 0.12, 1) * blind;
 
-  return [lw, rw];
+  eyePair[0] = clamp(0.5 + 0.5 * crossZ, 0.12, 1) * blind;
+  eyePair[1] = clamp(0.5 - 0.5 * crossZ, 0.12, 1) * blind;
+
+  return eyePair;
 };
 
 /**
@@ -189,7 +197,12 @@ export const smallObjectDrive = (
   const relY = at.y - pos.y;
   const dist = Math.hypot(relX, relY);
 
-  if (dist < dist0 || dist > dist1 || speed < 15) return [0, 0];
+  if (dist < dist0 || dist > dist1 || speed < 15) {
+    eyePair[0] = 0;
+    eyePair[1] = 0;
+
+    return eyePair;
+  }
 
   // LC11 prefers modest speeds (Keleş & Frye 2017): the response saturates
   // by a brisk conspecific walk, rather than only for the fastest darts.
@@ -198,7 +211,10 @@ export const smallObjectDrive = (
     clamp(1 - (dist - dist0) / (dist1 - dist0), 0.2, 1);
   const [lw, rw] = eyeSplit(heading, relX / dist, relY / dist);
 
-  return [strength * lw, strength * rw];
+  eyePair[0] = strength * lw;
+  eyePair[1] = strength * rw;
+
+  return eyePair;
 };
 
 /** Radius inside which a click reads as a swat, in px. */

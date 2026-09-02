@@ -89,6 +89,18 @@ const LEG_LEN = 7.2;
 
 const HALF_PI = Math.PI / 2;
 
+// Hoisted iteration constants: drawFly runs for every fly on every frame,
+// and these literals were re-allocated on each call.
+const SIDES = [-1, 1];
+const MALE_BANDS = [0.05, 0.42];
+const FEMALE_BANDS = [-0.62, -0.35, 0.05, 0.42];
+const OCELLI: [number, number][] = [
+  [0, 0.55],
+  [-0.62, -0.35],
+  [0.62, -0.35],
+];
+const WING_NOTCHES = [0.55, 0.86];
+
 /** Scene frame: origin at the centre of the output, +y up. */
 export type Frame = {
   height: number;
@@ -117,6 +129,11 @@ class Pose {
 
   public readonly scale: number;
 
+  /** Reused result of at(): drawFly calls it ~50 times per fly per frame,
+   * so each call returning a fresh tuple was steady per-frame garbage.
+   * Destructure the result before the next call. */
+  private readonly point: [number, number] = [0, 0];
+
   public constructor(fly: Fly, frame: Frame) {
     this.origin = toScreen(frame, fly.pos.x, fly.pos.y);
 
@@ -135,15 +152,16 @@ class Pose {
     this.scale = fly.scale;
   }
 
-  /** A body-local point, in canvas pixels. */
+  /** A body-local point, in canvas pixels. Reuses one tuple — see above. */
   public at(x: number, y: number): [number, number] {
     const sx = x * this.scale;
     const sy = y * this.scale;
+    const { point } = this;
 
-    return [
-      this.origin[0] + this.forward[0] * sy + this.right[0] * sx,
-      this.origin[1] + this.forward[1] * sy + this.right[1] * sx,
-    ];
+    point[0] = this.origin[0] + this.forward[0] * sy + this.right[0] * sx;
+    point[1] = this.origin[1] + this.forward[1] * sy + this.right[1] * sx;
+
+    return point;
   }
 
   /** Rotation so that an ellipse's ry axis runs along the body. */
@@ -249,18 +267,15 @@ const drawLegs = (
     const reach = LEG_LEN * (1 - 0.3 * leg.lift) * (1 - 0.3 * fly.restDepth);
     const dir = leg.baseYaw + leg.swingSign * leg.angle;
     const [rootX, rootY] = p.at(ax, ay);
-    const kneeLocal: [number, number] = [
-      ax + Math.cos(dir) * reach * 0.5,
-      ay + Math.sin(dir) * reach * 0.5,
-    ];
+    const kneeLX = ax + Math.cos(dir) * reach * 0.5;
+    const kneeLY = ay + Math.sin(dir) * reach * 0.5;
     // The lower segment folds back, so a leg reads as a joint and not a spoke.
     const fold = dir + leg.swingSign * 0.9;
-    const footLocal: [number, number] = [
-      kneeLocal[0] + Math.cos(fold) * reach * 0.5,
-      kneeLocal[1] + Math.sin(fold) * reach * 0.5,
-    ];
-    const [kneeX, kneeY] = p.at(kneeLocal[0], kneeLocal[1]);
-    const [footX, footY] = p.at(footLocal[0], footLocal[1]);
+    const [kneeX, kneeY] = p.at(kneeLX, kneeLY);
+    const [footX, footY] = p.at(
+      kneeLX + Math.cos(fold) * reach * 0.5,
+      kneeLY + Math.sin(fold) * reach * 0.5
+    );
 
     line(ctx, rootX, rootY, kneeX, kneeY, p.px(0.8), legColor);
     line(ctx, kneeX, kneeY, footX, footY, p.px(0.6), legColor);
@@ -295,12 +310,10 @@ const drawWings = (ctx: CanvasRenderingContext2D, fly: Fly, p: Pose): void => {
     const foreshorten = 1 - 0.4 * Math.abs(wing.x);
     const len = HALF_LEN * foreshorten * (1 - 0.4 * wear);
     // Hinge at the rear of the thorax, wing running back and outward.
-    const hinge: [number, number] = [side * 1.4, THORAX_Y - 1.6];
-    const centreLocal: [number, number] = [
-      hinge[0] + side * len * Math.sin(sweep),
-      hinge[1] - len * Math.cos(sweep),
-    ];
-    const [cx, cy] = p.at(centreLocal[0], centreLocal[1]);
+    const [cx, cy] = p.at(
+      side * 1.4 + side * len * Math.sin(sweep),
+      THORAX_Y - 1.6 - len * Math.cos(sweep)
+    );
     const angle = p.bodyAngle(-side * sweep);
 
     const halfWidth = p.px(1.8 * (1 - 0.45 * wear));
@@ -325,7 +338,7 @@ const drawWings = (ctx: CanvasRenderingContext2D, fly: Fly, p: Pose): void => {
         p.px(len) * 4 + 16
       );
       // Two bites out of the outer half, sized by how badly torn it is.
-      [0.55, 0.86].forEach((along, n) => {
+      WING_NOTCHES.forEach((along, n) => {
         const reach = p.px(len) * along;
         const outward = halfWidth * (n === 0 ? 0.9 : 0.5);
         const nx =
@@ -363,7 +376,7 @@ const drawHalteres = (
   fly: Fly,
   p: Pose
 ): void => {
-  [-1, 1].forEach((side) => {
+  SIDES.forEach((side) => {
     const [bx, by] = p.at(side * 1.8, THORAX_Y - 2.4);
     const [knobX, knobY] = p.at(side * 3, THORAX_Y - 3.3);
 
@@ -371,6 +384,15 @@ const drawHalteres = (
     ellipse(ctx, knobX, knobY, p.px(0.55), p.px(0.55), 0, HALTERE);
   });
 };
+
+/**
+ * Radius around the fly's screen position that drawFly can touch, in px —
+ * for dirty-rect clearing. Worst case is a swept wing tip (~18.5 body units
+ * from the origin, scaled), while the shadow slides up to ~19 px away and
+ * spreads ~26 px at full altitude; the flat margin covers both, plus stroke
+ * caps and antialiasing.
+ */
+export const drawRadius = (fly: Fly): number => 20 * fly.scale + 24;
 
 /** Draw one fly. */
 export const drawFly = (
@@ -407,7 +429,7 @@ export const drawFly = (
   // abdomen at this size. D. melanogaster's posterior tergites are the
   // darkest, so the bands thicken toward the tip (negative k is rearward);
   // in males the posterior bands are subsumed by the solid patch.
-  (isMale ? [0.05, 0.42] : [-0.62, -0.35, 0.05, 0.42]).forEach((k) => {
+  (isMale ? MALE_BANDS : FEMALE_BANDS).forEach((k) => {
     const [bx, by] = p.at(0, ABDOMEN_Y + k * abLen);
 
     ellipse(
@@ -481,7 +503,7 @@ export const drawFly = (
   // the frons between them: centred any closer they fuse into one red blob
   // across the head front, which no real fly shows from above (and which is
   // exactly where the ocellar triangle drawn below belongs).
-  [-1, 1].forEach((side) => {
+  SIDES.forEach((side) => {
     const [ex, ey] = p.at(side * 1.75, HEAD_Y + 0.2);
 
     ellipse(
@@ -507,13 +529,7 @@ export const drawFly = (
   // The three ocelli: simple light-sensing lenses in a triangle on the
   // vertex, median one facing forward and a pair behind it. They are what
   // the fly levels itself against the horizon with.
-  (
-    [
-      [0, 0.55],
-      [-0.62, -0.35],
-      [0.62, -0.35],
-    ] as [number, number][]
-  ).forEach(([ox, oy]) => {
+  OCELLI.forEach(([ox, oy]) => {
     const [px2, py2] = p.at(ox, HEAD_Y - 0.7 + oy);
 
     ellipse(ctx, px2, py2, p.px(0.3), p.px(0.3), 0, palette.scutellum);
@@ -522,7 +538,7 @@ export const drawFly = (
   // Antennae, each ending in an arista — a giant branched bristle, not a
   // spike. It is the fly's ear: the branches catch air displacement, and
   // the whole thing twists like a rotary receiver (Göpfert & Robert 2002).
-  [-1, 1].forEach((side) => {
+  SIDES.forEach((side) => {
     const [bx, by] = p.at(side * 0.8, HEAD_Y + 1.2);
     const [tipX, tipY] = p.at(side * 1.8, HEAD_Y + 2.8);
 

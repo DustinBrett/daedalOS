@@ -59,7 +59,8 @@ const WINDOW_MAX_Z = 40;
 /** A menu is thrown on top of everything, so it is the highest thing there. */
 const MENU_Z = 46;
 /** Desktop icons: small, low platforms a fly can perch on. */
-const ICON_SELECTOR = "main > ol > li";
+const ICON_LIST_SELECTOR = "main > ol";
+const ICON_SELECTOR = `${ICON_LIST_SELECTOR} > li`;
 const MENU_SELECTOR = "#__next > nav";
 
 const collectRects = (width: number, height: number): TerrainRect[] => {
@@ -150,43 +151,88 @@ type TerrainSense = {
   rects: ScreenRect[];
 };
 
-/** Small platforms: desktop icons, and a context menu while it is open. */
-const collectPerches = (height: number): ScreenLedge[] => {
-  const perches: ScreenLedge[] = [];
+// Desktop icons only move on drag, rename, or a layout change, so their
+// rects are cached between polls: a MutationObserver on the icon list plus
+// a resize listener invalidate the cache, instead of a getBoundingClientRect
+// per icon per poll (~7 reads/s per icon).
+let iconPerches: ScreenLedge[] | undefined;
+let iconObserver: MutationObserver | undefined;
+let observedIconList: Element | undefined;
 
-  document.querySelectorAll(ICON_SELECTOR).forEach((element) => {
-    const { left, right, top } = element.getBoundingClientRect();
+const invalidateIconPerches = (): void => {
+  iconPerches = undefined;
+};
 
-    // An icon's walkable surface is its top edge, inset so a fly standing
-    // on one is on the icon rather than hanging off it.
-    if (right - left >= MIN_LEDGE_WIDTH && top > 4 && top < height) {
-      perches.push({
-        id: idFor(element),
-        x0: left + 4,
-        x1: right - 4,
-        y: top,
-        z: ICON_HEIGHT,
+/** Release the icon cache and everything watching it, on app teardown. */
+export const resetTerrainCache = (): void => {
+  iconObserver?.disconnect();
+  iconObserver = undefined;
+  observedIconList = undefined;
+  window.removeEventListener("resize", invalidateIconPerches);
+  invalidateIconPerches();
+};
+
+const collectIconPerches = (height: number): ScreenLedge[] => {
+  const list = document.querySelector(ICON_LIST_SELECTOR) ?? undefined;
+
+  if (observedIconList !== list) {
+    iconObserver?.disconnect();
+    if (!iconObserver) {
+      iconObserver = new MutationObserver(invalidateIconPerches);
+      window.addEventListener("resize", invalidateIconPerches, {
+        passive: true,
       });
     }
-  });
-
-  const menu = document.querySelector(MENU_SELECTOR);
-
-  if (menu instanceof HTMLElement && menu.offsetHeight > 0) {
-    const { left, right, top } = menu.getBoundingClientRect();
-
-    if (right - left >= MIN_LEDGE_WIDTH) {
-      perches.push({
-        id: idFor(menu),
-        x0: left,
-        x1: right,
-        y: top,
-        z: MENU_Z,
+    if (list) {
+      iconObserver.observe(list, {
+        attributes: true,
+        childList: true,
+        subtree: true,
       });
     }
+    observedIconList = list;
+    invalidateIconPerches();
   }
 
-  return perches;
+  if (!iconPerches) {
+    const perches: ScreenLedge[] = [];
+
+    document.querySelectorAll(ICON_SELECTOR).forEach((element) => {
+      const { left, right, top } = element.getBoundingClientRect();
+
+      // An icon's walkable surface is its top edge, inset so a fly standing
+      // on one is on the icon rather than hanging off it.
+      if (right - left >= MIN_LEDGE_WIDTH && top > 4 && top < height) {
+        perches.push({
+          id: idFor(element),
+          x0: left + 4,
+          x1: right - 4,
+          y: top,
+          z: ICON_HEIGHT,
+        });
+      }
+    });
+    iconPerches = perches;
+  }
+
+  return iconPerches;
+};
+
+/** Small platforms: desktop icons, and a context menu while it is open. */
+const collectPerches = (height: number): ScreenLedge[] => {
+  const icons = collectIconPerches(height);
+  const menu = document.querySelector(MENU_SELECTOR);
+
+  if (!(menu instanceof HTMLElement) || menu.offsetHeight === 0) return icons;
+
+  const { left, right, top } = menu.getBoundingClientRect();
+
+  if (right - left < MIN_LEDGE_WIDTH) return icons;
+
+  return [
+    ...icons,
+    { id: idFor(menu), x0: left, x1: right, y: top, z: MENU_Z },
+  ];
 };
 
 /**
@@ -230,13 +276,8 @@ export const senseTerrain = (width: number, height: number): TerrainSense => {
 
   return {
     ledges: [...out, ...collectPerches(height)],
-    rects: rects.map(({ bottom, id, left, right, top }) => ({
-      bottom,
-      id,
-      left,
-      right,
-      top,
-    })),
+    // TerrainRect is structurally a ScreenRect (plus z); no copy needed.
+    rects,
   };
 };
 
