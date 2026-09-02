@@ -3,14 +3,20 @@ import {
   memo,
   useContext,
   useEffect,
+  useLayoutEffect,
   useSyncExternalStore,
 } from "react";
 
 type ActionStateSelectorContext<A, S> = {
   Provider: React.MemoExoticComponent<FC>;
+  getCurrentState: () => S;
   useContextActions: () => A;
   useStateSelector: <T>(selector: (state: S) => T) => T;
 };
+
+// useLayoutEffect warns during SSR; notifications only run client-side
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 // Actions live in a context whose value keeps a stable identity; state is
 // only reachable through selectors, so consumers re-render when their
@@ -35,9 +41,8 @@ const contextActionSelectorFactory = <A, S>(
     // Mirrored during render so same-commit mounts read current state
     store.current = state;
 
-    useEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       store.listeners.forEach((listener) => listener());
-      // eslint-disable-next-line react-hooks-addons/no-unused-deps
     }, [state]);
 
     return (
@@ -50,6 +55,8 @@ const contextActionSelectorFactory = <A, S>(
 
   return {
     Provider,
+    // Non-subscribing read for event handlers that only need current state
+    getCurrentState: () => store.current,
     useContextActions: () => useContext(ActionsContext),
     // Selectors must return referentially stable values for unchanged data
     useStateSelector: <T,>(selector: (state: S) => T): T =>

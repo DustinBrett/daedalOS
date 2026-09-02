@@ -108,6 +108,7 @@ type FolderFlags = {
 };
 
 const NO_FILES = undefined;
+const EMPTY_FILES = Object.create(null) as Files;
 
 const useFolder = (
   directory: string,
@@ -224,7 +225,7 @@ const useFolder = (
             ? undefined
             : sortBy === "date"
               ? sortByDate(directory)
-              : sortBySize;
+              : sortBySize(directory);
           const sortAccumulator = (): Files =>
             sortContents(
               filesAccumulator,
@@ -820,20 +821,34 @@ const useFolder = (
     };
   }, [addFsWatcher, directory, removeFsWatcher, skipFsWatcher, updateFiles]);
 
-  return {
-    fileActions: {
+  return useMemo(
+    () => ({
+      fileActions: {
+        archiveFiles,
+        deleteLocalPath,
+        downloadFiles,
+        extractFiles,
+        newShortcut,
+        renameFile,
+      },
+      files: files || EMPTY_FILES,
+      folderActions,
+      isLoading,
+      updateFiles,
+    }),
+    [
       archiveFiles,
       deleteLocalPath,
       downloadFiles,
       extractFiles,
+      files,
+      folderActions,
+      isLoading,
       newShortcut,
       renameFile,
-    },
-    files: files || {},
-    folderActions,
-    isLoading,
-    updateFiles,
-  };
+      updateFiles,
+    ]
+  );
 };
 
 export default useFolder;

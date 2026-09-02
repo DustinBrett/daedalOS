@@ -7,7 +7,7 @@ import {
 } from "react";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { PREVENT_SCROLL } from "utils/constants";
-import { useMenu } from "contexts/menu";
+import { useMenuIsOpen } from "contexts/menu";
 import { useProcess } from "contexts/process";
 import { useForegroundId, useSessionActions } from "contexts/session";
 
@@ -102,11 +102,7 @@ const useIsolatedContentWindow = (
   const { maximized } = useProcess(id);
   const { setForegroundId } = useSessionActions();
   const foregroundId = useForegroundId();
-  const menu = useMenu();
-  const isContextMenuOpen = useMemo(
-    () => (menu?.items?.length || 0) > 0,
-    [menu]
-  );
+  const isContextMenuOpen = useMenuIsOpen();
   const createContentWindow = useCallback((): ContentWindow | undefined => {
     if (!container) return undefined;
 

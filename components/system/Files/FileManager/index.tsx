@@ -93,8 +93,12 @@ const FileManager: FC<FileManagerProps> = ({
     () => !isStartMenu && !isDesktop && !isDetailsView,
     [isDesktop, isDetailsView, isStartMenu]
   );
-  const { focusedEntries, focusableEntry, ...focusFunctions } =
+  const { blurEntry, focusEntry, focusedEntries, focusableEntry } =
     useFocusableEntries(fileManagerRef, isFileExplorerIconView);
+  const focusFunctions = useMemo(
+    () => ({ blurEntry, focusEntry }),
+    [blurEntry, focusEntry]
+  );
   const { fileActions, files, folderActions, isLoading, updateFiles } =
     useFolder(url, setRenaming, focusFunctions, {
       hideFolders,

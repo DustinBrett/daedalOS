@@ -59,6 +59,14 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
   } = useTheme();
   const calendarTransition = useTaskbarItemTransition(maxHeight, false);
   const finePointer = useMemo(() => hasFinePointer(), []);
+  const spotlightCell = useCallback(
+    (tdRef: HTMLTableCellElement | null): void => {
+      if (finePointer && tdRef && !tdRef.classList.contains("today")) {
+        spotlightEffect(tdRef, true, 2, true);
+      }
+    },
+    [finePointer]
+  );
 
   useEffect(() => {
     const calendarElement = calendarRef.current;
@@ -135,11 +143,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
                 {week.map(([day, type]) => (
                   <td
                     key={`${day}${type}`}
-                    ref={(tdRef: HTMLTableCellElement) => {
-                      if (finePointer && type !== "today") {
-                        spotlightEffect(tdRef, true, 2, true);
-                      }
-                    }}
+                    ref={spotlightCell}
                     aria-current={type === "today" ? "date" : undefined}
                     className={type}
                     onClick={(event) => {

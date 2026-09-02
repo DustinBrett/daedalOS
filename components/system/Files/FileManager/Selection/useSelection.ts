@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { createSelectionStyling } from "components/system/Files/FileManager/Selection/functions";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
-import { useMenuActions, useMenu } from "contexts/menu";
+import { useMenuActions, useMenuIsOpen } from "contexts/menu";
 import { type MenuState } from "contexts/menu/useMenuContextState";
 import { ONE_TIME_PASSIVE_EVENT, PREVENT_SCROLL } from "utils/constants";
 
@@ -55,7 +55,7 @@ const useSelection = (
     });
   };
   const { setMenu } = useMenuActions();
-  const menu = useMenu();
+  const menuIsOpen = useMenuIsOpen();
   const onMouseDown: React.MouseEventHandler<HTMLElement> = ({
     clientX,
     clientY,
@@ -75,14 +75,12 @@ const useSelection = (
       y: clientY - targetY + scrollTop,
     });
 
-    if (menu && Object.keys(menu).length > 0) {
-      setMenu(Object.create(null) as MenuState);
-    }
+    if (menuIsOpen) setMenu(Object.create(null) as MenuState);
     if (focusedEntries.length > 0) blurEntry();
   };
   const hasSize = typeof w === "number" && typeof h === "number";
   const hasPosition = typeof x === "number" && typeof y === "number";
-  const isSelecting = hasSize && hasPosition && Object.keys(menu).length === 0;
+  const isSelecting = hasSize && hasPosition && !menuIsOpen;
   const selection: Selection = {
     isSelecting,
     selectionEvents: {

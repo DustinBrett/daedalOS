@@ -50,10 +50,17 @@ const IDX_GID = 0;
 const FILE_ENTRY = null;
 const fsroot = index.fsroot as FS9PV4[];
 
+const fs9pDataCache = new Map<string, number>();
+
 const get9pData = (
   path: string,
   pathIndex: typeof IDX_SIZE | typeof IDX_MTIME
 ): number => {
+  const cacheKey = `${pathIndex}${path}`;
+  const cached = fs9pDataCache.get(cacheKey);
+
+  if (cached !== undefined) return cached;
+
   let fsPath = fsroot;
   let data = UNKNOWN_SIZE;
 
@@ -70,6 +77,8 @@ const get9pData = (
         fsPath = isBranch ? (pathBranch[IDX_TARGET] as FS9PV4[]) : [];
       }
     });
+
+  fs9pDataCache.set(cacheKey, data);
 
   return data;
 };

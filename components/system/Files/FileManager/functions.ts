@@ -48,18 +48,17 @@ export const sortByDate =
     return Math.abs(diff) < MILLISECONDS_IN_MINUTE ? sortByName(a, b) : diff;
   };
 
-export const sortBySize = (
-  [aPath, aStats]: FileStats,
-  [bPath, bStats]: FileStats
-): number => {
-  let aSize = aStats.size;
-  let bSize = bStats.size;
+export const sortBySize =
+  (directory: string) =>
+  ([aPath, aStats]: FileStats, [bPath, bStats]: FileStats): number => {
+    let aSize = aStats.size;
+    let bSize = bStats.size;
 
-  if (aSize === -1) aSize = get9pSize(aPath);
-  if (bSize === -1) bSize = get9pSize(bPath);
+    if (aSize === -1) aSize = get9pSize(join(directory, aPath));
+    if (bSize === -1) bSize = get9pSize(join(directory, bPath));
 
-  return aSize - bSize;
-};
+    return aSize - bSize;
+  };
 
 const sortByType = (
   [aPath, aStats]: FileStats,
@@ -146,7 +145,7 @@ export const sortFiles = (
   const sortFunctionMap: Record<string, SortFunction> = {
     date: sortByDate(directory),
     name: sortByName,
-    size: sortBySize,
+    size: sortBySize(directory),
     type: sortByType,
   };
 

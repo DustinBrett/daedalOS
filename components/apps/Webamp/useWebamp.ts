@@ -13,6 +13,7 @@ import {
   loadButterchurnPreset,
   loadMilkdropWhenNeeded,
   setSkinData,
+  stopPresetCycle,
   tracksFromPlaylist,
   updateWebampPosition,
 } from "components/apps/Webamp/functions";
@@ -71,6 +72,7 @@ const useWebamp = (id: string): Webamp => {
         subscriptions.current.forEach((unsubscribe) => unsubscribe());
         webampCI.current?.close();
       }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
+      stopPresetCycle();
       window.clearInterval(metadataProviderRef.current);
       window.clearInterval(windowPositionDebounceRef.current);
     },

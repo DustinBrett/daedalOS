@@ -9,7 +9,7 @@ import {
 } from "components/system/Window/Titlebar/WindowActionIcons";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
-import { useMenuActions, useMenu } from "contexts/menu";
+import { menuIsOpen, useMenuActions } from "contexts/menu";
 import { type MenuState } from "contexts/menu/useMenuContextState";
 import { useProcess } from "contexts/process";
 import { useForegroundId, useSessionActions } from "contexts/session";
@@ -44,7 +44,6 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const { setMenu } = useMenuActions();
-  const menu = useMenu();
   const resetMenu = useCallback(
     () => setMenu(Object.create(null) as MenuState),
     [setMenu]
@@ -95,9 +94,9 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
     React.MouseEventHandler<HTMLButtonElement>
   >(
     ({ button }) => {
-      if (button === 0 && Object.keys(menu).length > 0) resetMenu();
+      if (button === 0 && menuIsOpen()) resetMenu();
     },
-    [menu, resetMenu]
+    [resetMenu]
   );
   const onMouseUpCapture = useCallback<
     React.MouseEventHandler<HTMLButtonElement>
@@ -122,8 +121,8 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const onIconMouseDownCapture = useCallback<
     React.MouseEventHandler<HTMLImageElement>
   >(() => {
-    menuIsOpenRef.current = (menu.items?.length || 0) > 0;
-  }, [menu.items?.length]);
+    menuIsOpenRef.current = menuIsOpen();
+  }, []);
 
   return (
     <StyledTitlebar

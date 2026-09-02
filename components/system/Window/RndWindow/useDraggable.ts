@@ -1,6 +1,6 @@
 import { useTheme } from "styled-components";
 import { type Position } from "react-rnd";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import {
@@ -37,13 +37,22 @@ const useDraggable = (id: string, size: Size): Draggable => {
       cascadePosition(id, processesRef.current, stackOrder, cascadeOffset) ||
       centerPosition(size)
   );
+  const positionRef = useRef(position);
+  const sizeRef = useRef(size);
   const blockAutoPositionRef = useMinMaxRef(id);
+
+  positionRef.current = position;
+  sizeRef.current = size;
 
   useEffect(() => {
     const monitorViewportResize = (): void => {
       const vwSize = getWindowViewport();
+      const windowBounds = {
+        position: positionRef.current,
+        size: sizeRef.current,
+      };
 
-      if (isWindowOutsideBounds({ position, size }, vwSize, true)) {
+      if (isWindowOutsideBounds(windowBounds, vwSize, true)) {
         setPosition(({ x, y }) => {
           const xOffset = vwSize.x - WINDOW_OFFSCREEN_BUFFER_PX.RIGHT;
           const yOffset = vwSize.y - WINDOW_OFFSCREEN_BUFFER_PX.BOTTOM;
@@ -59,7 +68,7 @@ const useDraggable = (id: string, size: Size): Draggable => {
     window.addEventListener("resize", monitorViewportResize, { passive: true });
 
     return () => window.removeEventListener("resize", monitorViewportResize);
-  }, [position, size]);
+  }, []);
 
   useLayoutEffect(() => {
     if (
