@@ -8,11 +8,14 @@ const bundleAnalyzer = process.env.npm_config_argv?.includes(
 
 const path = require("path");
 const webpack = require("webpack");
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 /**
  * @type {import("next").NextConfig}
  * */
 const nextConfig = {
+  assetPrefix: basePath || undefined,
+  basePath,
   compiler: {
     reactRemoveProperties: isProduction,
     removeConsole: isProduction,

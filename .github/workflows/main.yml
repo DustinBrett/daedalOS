@@ -3,6 +3,7 @@ name: Tests
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   tests:
@@ -29,3 +30,35 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: 30
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: yarn
+      - name: Install Dependencies
+        run: NODE_OPTIONS='--openssl-legacy-provider' yarn --frozen-lockfile
+      - name: Build Static Export
+        env:
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          NODE_OPTIONS: --openssl-legacy-provider
+        run: yarn build
+      - name: Disable Jekyll processing
+        run: touch out/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./out
+      - id: deployment
+        uses: actions/deploy-pages@v4
