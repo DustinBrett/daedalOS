@@ -36,10 +36,12 @@ const NOVA_RATE_GLSL = (1 / 55).toFixed(6);
 // bit-identical there (their amplitudes are zero), but the fill-heaviest
 // passes drop most of their per-fragment transcendental work.
 const buildSpriteVertexShader = (crisp: boolean): string => `
+attribute vec2 aCorner;
 attribute vec4 aOrbit;
 attribute vec4 aMotion;
 attribute vec4 aColor;
 uniform mat4 uViewProj;
+uniform vec2 uViewport;
 uniform float uTime;
 uniform float uPatternRot;
 uniform float uPointScale;
@@ -58,6 +60,7 @@ varying float vNova;`
 uniform float uDustNear;`
 }
 varying vec4 vColor;
+varying vec2 vCoord;
 
 void main() {
   float a = aOrbit.x;
@@ -92,8 +95,14 @@ ${
     sin(uTime * (1.5 + fract(aMotion.w * 0.6366) * 2.5) + aMotion.w);
   float shownSize = clamp(sizePx, 1.0, uMaxPoint);
 
-  gl_PointSize = shownSize;
-  gl_Position = clip;
+  // Sprites are instanced quads, not points: each corner is pushed out in
+  // clip space by half the sprite size. Partly off-screen sprites then clip
+  // per pixel instead of vanishing once their center leaves the viewport
+  // (Metal and most mobile GL drivers cull points that way), and no driver
+  // point-size limit can shrink the big glow sprites
+  vCoord = aCorner;
+  gl_Position = clip +
+    vec4(aCorner * shownSize / uViewport * clip.w, 0.0, 0.0);
 ${
   crisp
     ? `  // Only sprites big enough to read as saturated stars grow spikes; the
@@ -122,11 +131,12 @@ ${
 const buildSpriteFragmentShader = (crisp: boolean): string => `
 precision mediump float;
 varying vec4 vColor;
+varying vec2 vCoord;
 ${crisp ? "varying float vSpike;\nvarying float vNova;" : ""}
 uniform vec3 uFalloff; // x: exponent, y: exp(-exponent), z: 1/(1-y)
 
 void main() {
-  vec2 p = gl_PointCoord * 2.0 - 1.0;
+  vec2 p = vCoord;
   float r2 = dot(p, p);
 
   if (r2 > 1.0) discard;
@@ -204,8 +214,17 @@ void main() {
   // instead of letting it clip to flat white
   vec3 over = max(color - 0.6, 0.0);
   vec3 shouldered = min(color, vec3(0.6)) + 0.4 * (1.0 - exp(-over * 2.5));
+  // A per-channel rolloff bleaches every overexposed texel to the same
+  // white. Scaling all channels by the brightest one's rolloff keeps the
+  // bulge's golden hue through the gradient, as film does, so the plateau
+  // reads as glowing Population II light and only the nucleus whites out
+  float peak = max(max(color.r, color.g), color.b);
+  float peakShouldered =
+    min(peak, 0.6) + 0.4 * (1.0 - exp(-max(peak - 0.6, 0.0) * 2.5));
+  vec3 hueKept = color * (peakShouldered / max(peak, 0.0001));
 
-  gl_FragColor = vec4(mix(color, shouldered, uTonemap), 1.0);
+  gl_FragColor =
+    vec4(mix(color, mix(shouldered, hueKept, 0.6), uTonemap), 1.0);
 }
 `;
 
@@ -409,7 +428,7 @@ export const createGalaxyRenderer = (
       gl,
       buildSpriteVertexShader(crisp),
       buildSpriteFragmentShader(crisp),
-      ["aOrbit", "aMotion", "aColor"]
+      ["aCorner", "aOrbit", "aMotion", "aColor"]
     );
 
     return {
@@ -428,6 +447,7 @@ export const createGalaxyRenderer = (
         time: gl.getUniformLocation(program, "uTime"),
         twinkleAmp: gl.getUniformLocation(program, "uTwinkleAmp"),
         viewProj: gl.getUniformLocation(program, "uViewProj"),
+        viewport: gl.getUniformLocation(program, "uViewport"),
         warp: gl.getUniformLocation(program, "uWarp"),
       },
     };
@@ -465,9 +485,6 @@ export const createGalaxyRenderer = (
   const warpNode = Math.random() * Math.PI * 2;
   const warpCos = Math.cos(warpNode);
   const warpSin = Math.sin(warpNode);
-  const maxDevicePointSize = (
-    gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE) as Float32Array
-  )[1];
 
   bindProgram(compositeProgram);
   gl.uniform1i(gl.getUniformLocation(compositeProgram, "uTex"), 0);
@@ -479,6 +496,30 @@ export const createGalaxyRenderer = (
   const vaoExtension = isWebGL2
     ? undefined
     : gl.getExtension("OES_vertex_array_object") || undefined;
+  // Sprites draw as instanced quads (see the sprite vertex shader)
+  const instancedExtension = isWebGL2
+    ? undefined
+    : gl.getExtension("ANGLE_instanced_arrays") || undefined;
+
+  if (!isWebGL2 && !instancedExtension) {
+    throw new Error("Instanced arrays unsupported for Galaxy wallpaper");
+  }
+
+  const setInstanced = (location: number): void => {
+    if (isWebGL2) gl2.vertexAttribDivisor(location, 1);
+    else instancedExtension?.vertexAttribDivisorANGLE(location, 1);
+  };
+  const drawSprites = (count: number): void => {
+    if (isWebGL2) gl2.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, count);
+    else {
+      instancedExtension?.drawArraysInstancedANGLE(
+        gl.TRIANGLE_STRIP,
+        0,
+        4,
+        count
+      );
+    }
+  };
   const vertexArrays: (WebGLVertexArrayObject | WebGLVertexArrayObjectOES)[] =
     [];
   const createStateBinder = (applyState: () => void): (() => void) => {
@@ -519,22 +560,38 @@ export const createGalaxyRenderer = (
 
     return buffer;
   });
+  // One shared quad of corners; the particle attributes advance per instance
+  const cornerBuffer = gl.createBuffer();
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, cornerBuffer);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+    gl.STATIC_DRAW
+  );
+
   const layerBinders = layers.map((layer, index) =>
     createStateBinder(() => {
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffers[index]);
+      gl.bindBuffer(gl.ARRAY_BUFFER, cornerBuffer);
       gl.enableVertexAttribArray(0);
+      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffers[index]);
       gl.enableVertexAttribArray(1);
       gl.enableVertexAttribArray(2);
-      gl.vertexAttribPointer(0, 4, gl.FLOAT, false, PARTICLE_STRIDE, 0);
-      gl.vertexAttribPointer(1, 4, gl.FLOAT, false, PARTICLE_STRIDE, 16);
+      gl.enableVertexAttribArray(3);
+      gl.vertexAttribPointer(1, 4, gl.FLOAT, false, PARTICLE_STRIDE, 0);
+      gl.vertexAttribPointer(2, 4, gl.FLOAT, false, PARTICLE_STRIDE, 16);
       gl.vertexAttribPointer(
-        2,
+        3,
         4,
         gl.UNSIGNED_BYTE,
         true,
         PARTICLE_STRIDE,
         PARTICLE_FLOATS * 4
       );
+      setInstanced(1);
+      setInstanced(2);
+      setInstanced(3);
     })
   );
   const quadBuffer = gl.createBuffer();
@@ -551,6 +608,7 @@ export const createGalaxyRenderer = (
     gl.enableVertexAttribArray(0);
     gl.disableVertexAttribArray(1);
     gl.disableVertexAttribArray(2);
+    gl.disableVertexAttribArray(3);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
   });
 
@@ -726,7 +784,12 @@ export const createGalaxyRenderer = (
     })
   );
 
-  const drawGroup = (target: GalaxyLayerTarget, passScale: number): void => {
+  const drawGroup = (
+    target: GalaxyLayerTarget,
+    passScale: number,
+    viewportWidth: number,
+    viewportHeight: number
+  ): void => {
     const fraction = QUALITY_FRACTIONS[quality];
     const alphaBoost = Math.min(1 / fraction, 2.2);
     const sizeScale = (height / SIZE_REFERENCE_HEIGHT) * passScale;
@@ -757,11 +820,9 @@ export const createGalaxyRenderer = (
         gl.uniform1f(uniforms.alpha, layer.alpha * alphaBoost);
         gl.uniform1f(
           uniforms.maxPoint,
-          Math.min(
-            Math.max(layer.maxPointSize * sizeScale, 2),
-            maxDevicePointSize
-          )
+          Math.max(layer.maxPointSize * sizeScale, 2)
         );
+        gl.uniform2f(uniforms.viewport, viewportWidth, viewportHeight);
         gl.uniform1f(uniforms.twinkleAmp, layer.twinkleAmp);
         if (uniforms.spike) gl.uniform1f(uniforms.spike, layer.spikeAmp);
         if (uniforms.nova) gl.uniform1f(uniforms.nova, layer.novaAmp);
@@ -781,7 +842,7 @@ export const createGalaxyRenderer = (
           uniforms.patternRot,
           layer.patternMul * GALAXY.patternSpeed * simTime
         );
-        gl.drawArrays(gl.POINTS, 0, count);
+        drawSprites(count);
       }
     }
   };
@@ -997,12 +1058,12 @@ export const createGalaxyRenderer = (
       gl.clearColor(0, 0, 0, 0);
       gl.bindFramebuffer(gl.FRAMEBUFFER, glowTarget.framebuffer);
       gl.clear(gl.COLOR_BUFFER_BIT);
-      drawGroup("glow", targetScale);
+      drawGroup("glow", targetScale, targetWidth, targetHeight);
       // Dust starts fully transparent: transmittance 1 in every channel
       gl.clearColor(1, 1, 1, 1);
       gl.bindFramebuffer(gl.FRAMEBUFFER, dustTarget.framebuffer);
       gl.clear(gl.COLOR_BUFFER_BIT);
-      drawGroup("dust", targetScale);
+      drawGroup("dust", targetScale, targetWidth, targetHeight);
       // eslint-disable-next-line unicorn/no-null
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
@@ -1013,7 +1074,7 @@ export const createGalaxyRenderer = (
     // dark panel is the look; a lifted navy floor reads as gray haze
     gl.clearColor(0.0012, 0.0018, 0.005, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    drawGroup("background", 1);
+    drawGroup("background", 1, width, height);
 
     if (useRenderTargets) {
       // Everything between the blits lives inside the content bounds, so
@@ -1024,16 +1085,16 @@ export const createGalaxyRenderer = (
       }
 
       compositeTarget(glowTarget, true);
-      drawGroup("stars", 1);
+      drawGroup("stars", 1, width, height);
       compositeTarget(dustTarget, false);
       gl.disable(gl.SCISSOR_TEST);
     } else {
-      drawGroup("glow", 1);
-      drawGroup("stars", 1);
-      drawGroup("dust", 1);
+      drawGroup("glow", 1, width, height);
+      drawGroup("stars", 1, width, height);
+      drawGroup("dust", 1, width, height);
     }
 
-    drawGroup("foreground", 1);
+    drawGroup("foreground", 1, width, height);
 
     // Final full-frame finishing multiply (grain + vignette). Always on:
     // it costs one cheap fullscreen quad, and gating it on the quality
@@ -1069,6 +1130,7 @@ export const createGalaxyRenderer = (
       });
       buffers.forEach((buffer) => gl.deleteBuffer(buffer));
       gl.deleteBuffer(quadBuffer);
+      gl.deleteBuffer(cornerBuffer);
       [glowTarget, dustTarget].forEach((target) => {
         gl.deleteFramebuffer(target.framebuffer);
         gl.deleteTexture(target.texture);

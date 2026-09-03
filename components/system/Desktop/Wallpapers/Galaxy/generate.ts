@@ -136,9 +136,15 @@ type ColorGrade = (
  * drawing buffer is wide gamut (same hues, but headroom to saturate beyond
  * sRGB like the film scans in NASA photography), then boosts saturation.
  */
-const createColorGrade =
-  (wideGamut: boolean, saturation: number): ColorGrade =>
-  (red, green, blue) => {
+const createColorGrade = (
+  wideGamut: boolean,
+  saturation: number
+): ColorGrade => {
+  // Shared result tuple: consumed immediately by the writer, so no
+  // per-particle allocation
+  const graded: [number, number, number] = [0, 0, 0];
+
+  return (red, green, blue) => {
     let r = sampleLut(srgbToLinearLut, red / 255);
     let g = sampleLut(srgbToLinearLut, green / 255);
     let b = sampleLut(srgbToLinearLut, blue / 255);
@@ -158,12 +164,13 @@ const createColorGrade =
     g = clamp(luminance + (g - luminance) * boost, 0, 1);
     b = clamp(luminance + (b - luminance) * boost, 0, 1);
 
-    return [
-      sampleLut(linearToSrgbLut, r) * 255,
-      sampleLut(linearToSrgbLut, g) * 255,
-      sampleLut(linearToSrgbLut, b) * 255,
-    ];
+    graded[0] = sampleLut(linearToSrgbLut, r) * 255;
+    graded[1] = sampleLut(linearToSrgbLut, g) * 255;
+    graded[2] = sampleLut(linearToSrgbLut, b) * 255;
+
+    return graded;
   };
+};
 
 /** Approximate conversion of blackbody temperature (K) to sRGB. */
 const kelvinToRgb = (kelvin: number): [number, number, number] => {
@@ -250,12 +257,22 @@ type ParticleWriter = {
   build: (meta: LayerMeta) => GalaxyLayer;
 };
 
+// Particles are written straight into the interleaved GPU layout (stride 9
+// words: 8 floats then 4 packed color bytes) through a growing typed array,
+// skipping the intermediate number array of the naive push-then-pack
+const PARTICLE_WORDS = PARTICLE_STRIDE / 4;
+
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+
 const createWriter = (grade: ColorGrade): ParticleWriter => {
-  const values: number[] = [];
+  let capacity = 4096;
+  let floats = new Float32Array(capacity * PARTICLE_WORDS);
+  let bytes = new Uint8Array(floats.buffer);
+  let count = 0;
 
   return {
-    // Positional push, no rest/spread: this is the hottest call site of
-    // generation, and a rest parameter would allocate an array per particle
+    // Positional parameters, no rest/spread: this is the hottest call site
+    // of generation, and a rest parameter would allocate per particle
     add: (
       a,
       orbitRatio,
@@ -270,52 +287,57 @@ const createWriter = (grade: ColorGrade): ParticleWriter => {
       blue,
       brightness
     ) => {
-      values.push(
-        a,
-        orbitRatio,
-        theta0,
-        phase0,
-        omegaRel,
-        z,
-        size,
-        twinklePhase,
-        red,
-        green,
-        blue,
-        brightness
-      );
+      if (count === capacity) {
+        capacity *= 2;
+
+        const grown = new Float32Array(capacity * PARTICLE_WORDS);
+
+        grown.set(floats);
+        floats = grown;
+        bytes = new Uint8Array(floats.buffer);
+      }
+
+      const floatOffset = count * PARTICLE_WORDS;
+      const colorOffset = count * PARTICLE_STRIDE + PARTICLE_FLOATS * 4;
+      const [r, g, b] = grade(red, green, blue);
+
+      floats[floatOffset] = a;
+      floats[floatOffset + 1] = orbitRatio;
+      floats[floatOffset + 2] = theta0;
+      floats[floatOffset + 3] = phase0;
+      floats[floatOffset + 4] = omegaRel;
+      floats[floatOffset + 5] = z;
+      floats[floatOffset + 6] = size;
+      floats[floatOffset + 7] = twinklePhase;
+      bytes[colorOffset] = clamp(Math.round(r), 0, 255);
+      bytes[colorOffset + 1] = clamp(Math.round(g), 0, 255);
+      bytes[colorOffset + 2] = clamp(Math.round(b), 0, 255);
+      bytes[colorOffset + 3] = clamp(Math.round(brightness), 0, 255);
+      count += 1;
     },
     build: (meta) => {
-      const count = values.length / 12;
+      // The quality governor draws a prefix of each layer, so the final
+      // copy gathers particles at a golden-ratio stride (coprime with the
+      // count, hence a permutation): any prefix is then an evenly spread
+      // subsample and every tier thins the whole population uniformly
+      // instead of dropping whatever was written last (halation, clusters,
+      // the halo). Blending within a layer is order independent.
       const data = new ArrayBuffer(count * PARTICLE_STRIDE);
-      // Two views over the same interleaved buffer: the stride is 9 words,
-      // 8 floats followed by 4 packed color bytes
-      const floats = new Float32Array(data);
-      const bytes = new Uint8Array(data);
+      const gathered = new Uint32Array(data);
+      const words = new Uint32Array(floats.buffer);
+      let stride = Math.max(Math.round(count * 0.618034), 1);
 
-      for (let index = 0; index < count; index += 1) {
-        const floatOffset = index * 9;
-        const valueOffset = index * 12;
+      while (gcd(stride, count) !== 1) stride += 1;
 
-        for (let field = 0; field < PARTICLE_FLOATS; field += 1) {
-          floats[floatOffset + field] = values[valueOffset + field];
+      for (let index = 0, source = 0; index < count; index += 1) {
+        const from = source * PARTICLE_WORDS;
+        const to = index * PARTICLE_WORDS;
+
+        for (let word = 0; word < PARTICLE_WORDS; word += 1) {
+          gathered[to + word] = words[from + word];
         }
 
-        const colorOffset = index * PARTICLE_STRIDE + PARTICLE_FLOATS * 4;
-        const [red, green, blue] = grade(
-          values[valueOffset + PARTICLE_FLOATS],
-          values[valueOffset + PARTICLE_FLOATS + 1],
-          values[valueOffset + PARTICLE_FLOATS + 2]
-        );
-
-        bytes[colorOffset] = clamp(Math.round(red), 0, 255);
-        bytes[colorOffset + 1] = clamp(Math.round(green), 0, 255);
-        bytes[colorOffset + 2] = clamp(Math.round(blue), 0, 255);
-        bytes[colorOffset + 3] = clamp(
-          Math.round(values[valueOffset + PARTICLE_FLOATS + 3]),
-          0,
-          255
-        );
+        source = (source + stride) % count;
       }
 
       return { ...meta, count, data };
@@ -560,33 +582,43 @@ export const generateGalaxy = (
   const diskGlow = createWriter(grade(1.16));
 
   for (let index = 0; index < scaled(BASE_COUNTS.diskGlow); index += 1) {
-    const a = sampleDiskRadius(random, GALAXY.diskScaleLength + 0.04);
-    const onMinorArm = a > 0.3 && random() < 0.14;
+    const sampledA = sampleDiskRadius(random, GALAXY.diskScaleLength + 0.04);
+    // The density wave piles the gas and the light of unresolved young
+    // stars into the arms: a share of the glow rides the pattern along
+    // them, just downstream of the dust lane with the newborn stars, so
+    // the arms read as luminous blue ridges against the smooth old disk
+    const onArm = sampledA > 0.28 && random() < 0.4;
+    const {
+      phase,
+      radius: a,
+      widthMul,
+    } = onArm
+      ? placeOnArm(random, sampledA, 0.3, 0.06)
+      : { phase: random() * TAU, radius: sampledA, widthMul: 1 };
     const coreness = 1 - smoothstep(0.05, 0.55, a);
     const rim = smoothstep(0.62, 1.05, a);
-    const red = mix(onMinorArm ? 158 : 172, 255, coreness);
-    const green = mix(onMinorArm ? 190 : 196, 228, coreness);
-    const blue = mix(240, 188, coreness);
+    const red = mix(onArm ? 150 : 172, 255, coreness);
+    const green = mix(onArm ? 184 : 196, 228, coreness);
+    const blue = mix(onArm ? 248 : 240, 188, coreness);
 
     diskGlow.add(
       a,
       axisRatio(a),
-      armAngle(a) + spread(random, 0.1),
-      onMinorArm
-        ? (random() < 0.5 ? 1 : -1) * MINOR_ARM_PHASE + spread(random, 0.3)
-        : random() * TAU,
-      onMinorArm ? 0 : relativeOrbitalSpeed(a),
+      armAngle(a) + (onArm ? 0.03 + spread(random, 0.04) : spread(random, 0.1)),
+      onArm ? phase + spread(random, (0.24 + a * 0.1) * widthMul) : phase,
+      onArm ? 0 : relativeOrbitalSpeed(a),
       spread(random, diskHeight(a) * 1.4),
       // Rim clouds shrink as well as dim: small faint sprites read as
       // granular cloud texture, large faint ones read as blur
-      (0.035 + random() ** 2 * 0.085) * mix(1, 0.55, rim),
+      (0.035 + random() ** 2 * 0.085) * mix(1, 0.55, rim) * (onArm ? 0.85 : 1),
       random() * TAU,
       red,
       green,
       blue,
       (8 + random() * 10) *
         mix(0.3, 1, smoothstep(0.02, 0.3, a)) *
-        mix(1, 0.34, rim)
+        mix(1, 0.34, rim) *
+        (onArm ? 1.25 : 1)
     );
   }
 
