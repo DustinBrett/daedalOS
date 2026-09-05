@@ -60,6 +60,7 @@ import { transcode } from "utils/ffmpeg";
 import {
   displayVersion,
   getExtension,
+  getMimeType,
   getTZOffsetISOString,
   isFileSystemMappingSupported,
   loadFiles,
@@ -501,9 +502,18 @@ const useCommandInterpreter = (
               const fullPath = await getFullPath(commandPath);
 
               if (await exists(fullPath)) {
-                const { fileTypeFromBuffer } = await import("file-type");
-                const { mime = "Unknown" } =
-                  (await fileTypeFromBuffer(await readFile(fullPath))) || {};
+                let mime = "Unknown";
+
+                try {
+                  const { fileTypeFromBuffer } = await import("file-type");
+                  const detectedType = await fileTypeFromBuffer(
+                    new Uint8Array(await readFile(fullPath))
+                  );
+
+                  mime = detectedType?.mime || getMimeType(fullPath) || mime;
+                } catch {
+                  // Fall back to the extension-based MIME type.
+                }
 
                 printLn(`${commandPath}: ${mime}`);
               }

@@ -1,4 +1,10 @@
-import { getFormattedSize, loadFiles } from "utils/functions";
+import { getFormattedSize, getMimeType, loadFiles } from "utils/functions";
+
+describe("gets mime type", () => {
+  test("xml", () => {
+    expect(getMimeType("sitemap.xml")).toBe("application/xml");
+  });
+});
 
 describe("gets formatted size", () => {
   const formattedSizeCases: [number, string][] = [
