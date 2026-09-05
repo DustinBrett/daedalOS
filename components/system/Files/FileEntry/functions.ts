@@ -637,7 +637,7 @@ export const getInfoWithExtension = (
                 },
               });
             } catch {
-              // Ignore failure to captrure
+              // Ignore failure to capture
             }
 
             containerElement.remove();
