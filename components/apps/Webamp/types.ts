@@ -74,7 +74,7 @@ type UpdateWindowPositions = {
   type: "UPDATE_WINDOW_POSITIONS";
 };
 
-export type WebampCI = Webamp & {
+export type WebampCI = Omit<Webamp, "store"> & {
   _actionEmitter: {
     on: (
       event: string,
