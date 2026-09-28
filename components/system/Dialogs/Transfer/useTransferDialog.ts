@@ -57,9 +57,8 @@ const useTransferDialog = (
             const [{ directory, name }] = fileReaders;
 
             if (getExtension(name) === SHORTCUT_EXTENSION) {
-              const { getShortcutInfo } = await import(
-                "components/system/Files/FileEntry/functions"
-              );
+              const { getShortcutInfo } =
+                await import("components/system/Files/FileEntry/functions");
               const { url: shortcutUrl } = getShortcutInfo(
                 await readFile(name)
               );

@@ -10,9 +10,8 @@ const Galaxy = async (
   if (!el || typeof WebGLRenderingContext === "undefined") return;
 
   try {
-    const { createGalaxyRenderer } = await import(
-      "components/system/Desktop/Wallpapers/Galaxy/renderer"
-    );
+    const { createGalaxyRenderer } =
+      await import("components/system/Desktop/Wallpapers/Galaxy/renderer");
     const canvas = document.createElement("canvas");
     const setCanvasSize = (): void => {
       canvas.style.width = `${el.offsetWidth}px`;

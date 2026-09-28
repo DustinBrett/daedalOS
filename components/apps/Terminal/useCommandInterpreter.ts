@@ -1010,9 +1010,8 @@ const useCommandInterpreter = (
           }
           case "sheep":
           case "esheep": {
-            const { countSheep, killSheep, spawnSheep } = await import(
-              "utils/spawnSheep"
-            );
+            const { countSheep, killSheep, spawnSheep } =
+              await import("utils/spawnSheep");
             let [count = 1, duration = 0] = commandArgs;
 
             if (!Number.isNaN(count) && !Number.isNaN(duration)) {

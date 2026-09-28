@@ -108,9 +108,8 @@ globalThis.addEventListener(
       }
 
       let response:
-        | string
-        | ReadableStream<string>
-        | AsyncIterable<ChatCompletionChunk> = "";
+        string | ReadableStream<string> | AsyncIterable<ChatCompletionChunk> =
+        "";
       let retry = 0;
       const rebuildSession = async (customResponse?: string): Promise<void> => {
         (session as AILanguageModel)?.destroy();
@@ -185,10 +184,10 @@ globalThis.addEventListener(
               if (data.hasWindowAI) {
                 const aiAssistant = session as AILanguageModel;
                 const aiOptions:
-                  | AILanguageModelPromptOptions
-                  | AISummarizerSummarizeOptions = {
-                  signal: abortController.signal,
-                };
+                  AILanguageModelPromptOptions | AISummarizerSummarizeOptions =
+                  {
+                    signal: abortController.signal,
+                  };
 
                 if (summarizer && data.summarizeText) {
                   // eslint-disable-next-line no-await-in-loop

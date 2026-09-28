@@ -10,11 +10,7 @@ import {
  * H-II regions, near field).
  */
 export type GalaxyLayerTarget =
-  | "background"
-  | "dust"
-  | "foreground"
-  | "glow"
-  | "stars";
+  "background" | "dust" | "foreground" | "glow" | "stars";
 
 export type GalaxyLayer = {
   alpha: number;

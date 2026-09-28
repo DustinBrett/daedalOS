@@ -29,9 +29,7 @@ export type OffscreenRenderProps = {
   canvas: OffscreenCanvas;
   clockSize?: Size;
   config?:
-    | Partial<GalaxyConfig>
-    | Partial<StableDiffusionConfig>
-    | VantaWavesConfig;
+    Partial<GalaxyConfig> | Partial<StableDiffusionConfig> | VantaWavesConfig;
   devicePixelRatio: number;
 };
 

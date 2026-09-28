@@ -16,12 +16,7 @@ const EYE_COLS = 48;
 const EYE_ROWS = 27;
 
 type SeenKind =
-  | "icon"
-  | "sheep"
-  | "taskbar"
-  | "wallpaper"
-  | "webamp"
-  | "window";
+  "icon" | "sheep" | "taskbar" | "wallpaper" | "webamp" | "window";
 
 /** One identified thing in the fly's view, in client coordinates. */
 type Seen = {

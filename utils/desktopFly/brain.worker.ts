@@ -44,8 +44,7 @@ type BrainRequest =
   | { type: "reset" };
 
 export type BrainResponse =
-  | { roster: number; signals: Signals[]; type: "signals" }
-  | { type: "ready" };
+  { roster: number; signals: Signals[]; type: "signals" } | { type: "ready" };
 
 let compiled: CompiledCircuit | undefined;
 const brains: Lif[] = [];

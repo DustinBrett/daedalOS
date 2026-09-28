@@ -108,8 +108,7 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
       const overlayedFileSystems = overlayFs?.getOverlayedFileSystems();
       const readable = overlayedFileSystems?.readable as HTTPRequest;
       const writable = overlayedFileSystems?.writable as
-        | IndexedDBFileSystem
-        | InMemoryFileSystem;
+        IndexedDBFileSystem | InMemoryFileSystem;
 
       readable?.empty();
 

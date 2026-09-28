@@ -322,15 +322,14 @@ export const findPathsRecursive = async (
   lstat: (path: string) => Promise<Stats>
 ): Promise<string[]> => {
   const pathArrays = await Promise.all(
-    paths.map(
-      async (path): Promise<string[]> =>
-        (await lstat(path)).isDirectory()
-          ? findPathsRecursive(
-              (await readdir(path)).map((file) => join(path, file)),
-              readdir,
-              lstat
-            )
-          : [path]
+    paths.map(async (path): Promise<string[]> =>
+      (await lstat(path)).isDirectory()
+        ? findPathsRecursive(
+            (await readdir(path)).map((file) => join(path, file)),
+            readdir,
+            lstat
+          )
+        : [path]
     )
   );
 

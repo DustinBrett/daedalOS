@@ -395,8 +395,7 @@ const useWallpaper = (
       wallpaperLoadAbortRef.current = loadController;
 
       let newWallpaper:
-        | Awaited<ReturnType<(typeof wallpaperHandler)[string]>>
-        | undefined;
+        Awaited<ReturnType<(typeof wallpaperHandler)[string]>> | undefined;
 
       try {
         newWallpaper = await wallpaperHandler[wallpaperName]({

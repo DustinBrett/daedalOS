@@ -322,9 +322,8 @@ const useFileSystemContextState = (): {
 
       const {
         FileSystem: { HTTPRequest },
-      } = (await import(
-        "public/System/BrowserFS/browserfs.min.js"
-      )) as typeof IBrowserFS;
+      } =
+        (await import("public/System/BrowserFS/browserfs.min.js")) as typeof IBrowserFS;
 
       return new Promise((resolve, reject) => {
         HTTPRequest?.Create(
@@ -480,9 +479,8 @@ const useFileSystemContextState = (): {
 
       if (hasNoHandle) return;
 
-      const { removeFileSystemHandle } = await import(
-        "contexts/fileSystem/functions"
-      );
+      const { removeFileSystemHandle } =
+        await import("contexts/fileSystem/functions");
 
       removeFileSystemHandle(directory);
     },

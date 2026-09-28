@@ -4,10 +4,7 @@ import { useMenuActions } from "contexts/menu";
 import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
 
 export type ProxyState =
-  | "ALL_ORIGINS"
-  | "CORS"
-  | `OLD_NET_${number}`
-  | "WAYBACK_MACHINE";
+  "ALL_ORIGINS" | "CORS" | `OLD_NET_${number}` | "WAYBACK_MACHINE";
 
 const useProxyMenu = (
   proxyState: ProxyState,
