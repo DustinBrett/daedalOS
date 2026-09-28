@@ -15,7 +15,7 @@ declare global {
 
 const Matrix = async (
   el?: HTMLElement | null,
-  config: WallpaperConfig = {} as WallpaperConfig
+  config: WallpaperConfig = {}
 ): Promise<void> => {
   if (!el) return;
 

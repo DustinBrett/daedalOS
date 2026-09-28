@@ -104,14 +104,11 @@ export type IsShown = boolean | ((browserName: string) => boolean);
 export type MenuItems = Record<string, IsShown>;
 
 type LocatorClickProps = Parameters<Locator["click"]>[0];
-type LocatorWaitForProps = Parameters<Locator["waitFor"]>[0];
 
 export const TYPE_DELAY = 75;
 
 export const EXACT = { exact: true };
-export const FORCE = { force: true };
 export const RIGHT_CLICK = { button: "right" } as LocatorClickProps;
-export const VISIBLE = { state: "visible" } as LocatorWaitForProps;
 
 const APP_CONTAINER_SELECTOR = "div";
 const VIEWPORT_SELECTOR = "div";
@@ -163,7 +160,6 @@ export const FLY_SELECTOR = `${DESKTOP_SELECTOR}>canvas#desktop-fly`;
 export const CALENDAR_LABEL = /^Date and Time Information$/;
 export const CLOCK_LABEL = /^System Clock/;
 export const FILE_EXPLORER_ADDRESS_BAR_LABEL = /^Address$/;
-export const START_BUTTON_LABEL = /^Start$/;
 
 export const ACCESSIBILITY_EXCEPTION_IDS = [
   "aria-allowed-role",
@@ -174,7 +170,7 @@ export const CLIPBOARD_WRITE_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
   "firefox",
   "webkit",
 ]);
-export const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
+const DIRECTORY_PICKER_NOT_SUPPORTED_BROWSERS = new Set([
   // https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker#browser_compatibility
   "webkit",
   "firefox",
@@ -187,9 +183,7 @@ export const WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS = new Set(
       ]
     : []
 );
-export const MEDIA_RECORDER_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
-  "webkit",
-]);
+const MEDIA_RECORDER_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set(["webkit"]);
 export const PYODIDE_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set(["firefox"]);
 export const WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS = new Set([
   "firefox",
@@ -318,7 +312,6 @@ export const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
 
 export const BASE_APP_TITLE = "daedalOS";
 export const BASE_APP_FAVICON = /^\/favicon.ico$/;
-export const BASE_APP_FAVICON_TEXT = "/favicon.ico";
 
 export const UNKNOWN_ICON_PATH = "/System/Icons/48x48/unknown.webp";
 

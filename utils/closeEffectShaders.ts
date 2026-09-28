@@ -539,7 +539,7 @@ export const loadEffect = (nick: string): Promise<ShaderEffect> => {
                 loadBMWTexture(gl, program, textureUniform, textureFile, 1)
             : undefined,
         uniformOverrides: meta.uniformOverrides,
-      } as ShaderEffect;
+      };
     })
     .catch((error: unknown) => {
       effectCache.delete(nick);

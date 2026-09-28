@@ -15,3 +15,8 @@ declare global {
     };
   }
 }
+
+export type {
+  DosOptions,
+  EmulatorFunction,
+} from "emulators-ui/dist/types/js-dos";

@@ -1,7 +1,7 @@
 import {
   type DosOptions,
   type EmulatorFunction,
-} from "emulators-ui/dist/types/js-dos";
+} from "components/apps/JSDOS/types";
 
 export const dosOptions: DosOptions = {
   emulatorFunction: "dosWorker" as EmulatorFunction,

@@ -7,7 +7,7 @@ const addConsole = (
   printOutput: (output: Output) => void
 ): void => {
   const logHandle = vm.newFunction("log", (...args) =>
-    // eslint-disable-next-line unicorn/no-array-callback-reference, @typescript-eslint/unbound-method
+    // eslint-disable-next-line unicorn/no-array-callback-reference
     args.map(vm.dump).forEach(printOutput)
   );
   const consoleHandle = vm.newObject();

@@ -4,7 +4,6 @@ import {
   type ChatCompletionMessageParam,
   type MLCEngine,
 } from "@mlc-ai/web-llm";
-import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
 import {
   runStableDiffusion,
   libs as StableDiffusionLibs,
@@ -163,7 +162,7 @@ globalThis.addEventListener(
           await runStableDiffusion(
             {
               prompts: [[data.imagePrompt, ""]],
-            } as StableDiffusionConfig,
+            },
             data.offscreenCanvas,
             true,
             false
@@ -215,7 +214,7 @@ globalThis.addEventListener(
                 // eslint-disable-next-line no-await-in-loop
                 const completions = await engine.chat.completions.create({
                   logprobs: true,
-                  messages: prompts as ChatCompletionMessageParam[],
+                  messages: prompts,
                   stream,
                   stream_options: { include_usage: false },
                   temperature: CONVO_STYLE_TEMPS[data.style].temperature,
@@ -284,15 +283,13 @@ globalThis.addEventListener(
           } else {
             try {
               let reply = "";
-              // @ts-expect-error ReadableStream will have an asyncIterator if Prompt API exists
               for await (const chunk of response) {
                 if (cancel) break;
 
                 reply +=
                   typeof chunk === "string"
                     ? chunk
-                    : (chunk as ChatCompletionChunk).choices[0]?.delta
-                        .content || "";
+                    : chunk.choices[0]?.delta.content || "";
 
                 sendMessage(reply, data.streamId);
               }

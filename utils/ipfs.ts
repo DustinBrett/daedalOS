@@ -6,7 +6,7 @@ import {
 
 let IPFS_GATEWAY_URL = "";
 
-export const IPFS_GATEWAY_URLS = [
+const IPFS_GATEWAY_URLS = [
   "https://<CID>.ipfs.dweb.link/",
   "https://gateway.ipfs.io/ipfs/<CID>/",
 ];

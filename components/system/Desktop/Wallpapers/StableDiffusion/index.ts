@@ -54,7 +54,7 @@ export const runStableDiffusion = async (
 
 const StableDiffusion = (
   el?: HTMLElement | null,
-  config: WallpaperConfig = {} as WallpaperConfig
+  config: WallpaperConfig = {}
 ): void => {
   if (!el) return;
 

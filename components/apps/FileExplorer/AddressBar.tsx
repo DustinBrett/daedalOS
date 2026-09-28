@@ -45,8 +45,7 @@ const AddressBar: FCWithRef<HTMLInputElement, AddressBarProps> = ({
     () =>
       addressBar !== displayName &&
       addressBar !== url &&
-      addressBarRef &&
-      document.activeElement === addressBarRef.current,
+      document.activeElement === (addressBarRef?.current as HTMLElement),
     [addressBar, addressBarRef, displayName, url]
   );
   const goToAddress = useCallback(async () => {

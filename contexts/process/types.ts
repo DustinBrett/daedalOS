@@ -39,7 +39,7 @@ type PdfProcessArguments = {
   subTitle?: string;
 };
 
-export type RelativePosition = {
+type RelativePosition = {
   bottom?: number;
   left?: number;
   right?: number;

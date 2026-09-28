@@ -107,7 +107,7 @@ const useFileDrop = ({
         }
 
         if (updatePositions) {
-          const { files, text } = getEventData(event as React.DragEvent);
+          const { files, text } = getEventData(event);
 
           if (files.length === 0 && text === "") return;
 

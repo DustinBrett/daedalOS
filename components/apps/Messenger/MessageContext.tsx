@@ -28,12 +28,12 @@ type MessagesState = {
   sendingEvent: (event: Event) => void;
 };
 
-const MessageContext = createContext({
+const MessageContext = createContext<MessagesState>({
   events: [],
   publicKey: "",
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   sendingEvent: () => {},
-} as MessagesState);
+});
 
 export const useMessageContext = (): MessagesState =>
   useContext(MessageContext);

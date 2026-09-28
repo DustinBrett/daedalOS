@@ -112,38 +112,6 @@ const GRIP_FLOOR = 0.12;
 const WEAKNESS_PENALTY = 0.6;
 
 /**
- * The numbers that decide whether a person can ever catch one of these. They
- * are exported because catching is a compound of four of them — reach, pin
- * chance, wriggle rate and hold time — and every one looked defensible on its
- * own while the product of them came to a 3% catch per click. Odds like that
- * are only visible if something multiplies them out.
- */
-export const CATCH_CALIBRATION = {
-  /**
-   * Chance a held fly tears loose before the hold completes. `grip` is 0 at
-   * the edge of reach and 1 dead centre; `worn` is its worst wing.
-   */
-  escapeChance: (grip: number, worn = 0): number => {
-    const leverage = Math.max((1 - grip) ** GRIP_FALLOFF, GRIP_FLOOR);
-    const rate =
-      WRIGGLE_CHANCE_PER_S * leverage * (1 - WEAKNESS_PENALTY * worn);
-
-    return 1 - Math.exp((-CATCH_HOLD_MS / 1000) * rate);
-  },
-
-  gripFalloff: GRIP_FALLOFF,
-
-  gripFloor: GRIP_FLOOR,
-
-  holdSeconds: CATCH_HOLD_MS / 1000,
-
-  radius: GRAB_RADIUS,
-
-  weaknessPenalty: WEAKNESS_PENALTY,
-
-  wrigglePerS: WRIGGLE_CHANCE_PER_S,
-};
-/**
  * How far a verdict must sit from this fly's usual before it counts as
  * liking or disliking something. Set from measurement, not taste: after
  * aversive training a punished object reads -3.0 (sd 0.2) and an unpunished
@@ -259,7 +227,7 @@ const poseChanged = (fly: Fly, sig: Float64Array): boolean => {
  * lunge with a raised-wing threat display held over the rout; females
  * headbutt and shove — no wing threat, shorter pursuit.
  */
-export const socialContact = (a: Fly, b: Fly, dt: number): void => {
+const socialContact = (a: Fly, b: Fly, dt: number): void => {
   const dx = b.pos.x - a.pos.x;
   const dy = b.pos.y - a.pos.y;
   const dist = Math.hypot(dx, dy);
@@ -572,7 +540,7 @@ export class FlyApp {
     if (this.catchIndex >= 0) {
       const held = this.flies[this.catchIndex];
 
-      if (held && held.state === FlyState.Caught) {
+      if (held?.state === FlyState.Caught) {
         held.release({ x: this.frame.width, y: this.frame.height });
       }
       this.catchIndex = -1;
@@ -895,7 +863,7 @@ export class FlyApp {
 
     const fly = this.flies[this.catchIndex];
 
-    if (!fly || fly.state !== FlyState.Caught) {
+    if (fly?.state !== FlyState.Caught) {
       this.catchIndex = -1;
 
       return;

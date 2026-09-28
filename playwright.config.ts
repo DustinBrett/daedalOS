@@ -54,5 +54,4 @@ const config: PlaywrightTestConfig = {
   workers: CI ? 1 : undefined,
 };
 
-// ts-prune-ignore-next
 export default config;

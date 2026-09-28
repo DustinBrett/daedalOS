@@ -770,8 +770,7 @@ const useFolder = (
         const fileNames = Object.keys(files);
 
         if (
-          sortOrder &&
-          fileNames.length === sortOrder.length &&
+          fileNames.length === sortOrder?.length &&
           directory === currentDirectory
         ) {
           if (fileNames.some((file) => !sortOrder.includes(file))) {

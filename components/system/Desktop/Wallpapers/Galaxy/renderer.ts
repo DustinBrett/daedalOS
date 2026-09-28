@@ -295,8 +295,9 @@ const getContext = (
     preserveDrawingBuffer: false,
     stencil: false,
   };
-  const context = (canvas.getContext("webgl2", attributes) ||
-    canvas.getContext("webgl", attributes)) as WebGLRenderingContext | null;
+  const context =
+    canvas.getContext("webgl2", attributes) ||
+    canvas.getContext("webgl", attributes);
 
   if (!context) throw new Error("Failed to getContext for Galaxy wallpaper");
 

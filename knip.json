@@ -1,0 +1,5 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreFiles": ["public/Program Files/**/*.js", "public/System/**/*.js"],
+  "tags": ["-lintignore"]
+}

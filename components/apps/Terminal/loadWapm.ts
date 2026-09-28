@@ -226,7 +226,7 @@ const loadWapm = async (
 
                     return argBuffer.length;
                   },
-                }) as Buffer;
+                });
               },
             }
           : {}),
@@ -239,7 +239,7 @@ const loadWapm = async (
       });
       const instance = await WebAssembly.instantiate(
         wasmModule,
-        wasi.getImports(wasmModule) as WebAssembly.Imports
+        wasi.getImports(wasmModule)
       );
 
       try {

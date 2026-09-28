@@ -24,6 +24,9 @@ import {
 import { getExtension } from "utils/functions";
 import { shareGlobal } from "utils/globals";
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
+const KeyS = 49 as Monaco.KeyCode;
+
 const useMonaco = ({
   containerRef,
   id,
@@ -82,7 +85,7 @@ const useMonaco = ({
     editor?.onKeyDown(async (event) => {
       const { ctrlKey, code, keyCode } = event;
 
-      if (ctrlKey && (code === "KeyS" || (keyCode as number) === 49)) {
+      if (ctrlKey && (code === "KeyS" || keyCode === KeyS)) {
         event.preventDefault();
 
         const [saveUrl, saveData] = getSaveFileInfo(url, editor);

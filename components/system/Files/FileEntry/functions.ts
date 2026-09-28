@@ -155,19 +155,16 @@ export const getShortcutInfo = (
   contents?: Buffer,
   shortcutData?: InternetShortcut
 ): FileInfo => {
+  const parsed: unknown = ini.parse(contents?.toString() || "");
   const {
-    InternetShortcut: {
-      BaseURL: pid = "",
-      Comment: comment = "",
-      IconFile: icon = "",
-      Type: type = "",
-      URL: url = "",
-    } = {},
-  } = shortcutData
-    ? { InternetShortcut: shortcutData }
-    : ((ini.parse(contents?.toString() || "") || {}) as {
-        InternetShortcut: InternetShortcut;
-      });
+    BaseURL: pid = "",
+    Comment: comment = "",
+    IconFile: icon = "",
+    Type: type = "",
+    URL: url = "",
+  } = shortcutData ??
+  (parsed as { InternetShortcut?: InternetShortcut }).InternetShortcut ??
+  {};
 
   return {
     comment,

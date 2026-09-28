@@ -321,11 +321,6 @@ export const pressFileExplorerEntryKeys = async (
 ): Promise<void> =>
   page.locator(FILE_EXPLORER_ENTRIES_SELECTOR).getByLabel(label).press(keys);
 
-export const pressWindowKeys = async (
-  keys: string,
-  { page }: TestProps
-): Promise<void> => page.locator(WINDOW_SELECTOR).press(keys);
-
 // locator->first->action
 export const clickFirstDesktopEntry = async ({
   page,
@@ -826,7 +821,7 @@ export const taskbarEntryHasTooltip = async (
 const clockTextLocator = (page: Page): Locator =>
   page.locator(TASKBAR_SELECTOR).getByLabel(CLOCK_LABEL).getByText(CLOCK_REGEX);
 
-export const clockTextIsHidden = async ({ page }: TestProps): Promise<void> =>
+const clockTextIsHidden = async ({ page }: TestProps): Promise<void> =>
   expect(clockTextLocator(page)).toBeHidden();
 
 export const clockTextIsVisible = async ({ page }: TestProps): Promise<void> =>
@@ -839,9 +834,8 @@ const clockCanvasLocator = (page: Page): Locator =>
 export const clockCanvasIsHidden = async ({ page }: TestProps): Promise<void> =>
   expect(clockCanvasLocator(page)).toBeHidden();
 
-export const clockCanvasIsVisible = async ({
-  page,
-}: TestProps): Promise<void> => expect(clockCanvasLocator(page)).toBeVisible();
+const clockCanvasIsVisible = async ({ page }: TestProps): Promise<void> =>
+  expect(clockCanvasLocator(page)).toBeVisible();
 
 export const taskbarEntryHasIcon = async (
   label: RegExp,

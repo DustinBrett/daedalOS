@@ -75,12 +75,14 @@
         "ignoreRestSiblings": true
       }
     ],
+    "@typescript-eslint/no-useless-default-assignment": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off",
     "@typescript-eslint/restrict-template-expressions": [
       "error",
       { "allowNumber": true }
     ],
     "@typescript-eslint/triple-slash-reference": "off",
+    "@typescript-eslint/unbound-method": "off",
     "@typescript-eslint/use-unknown-in-catch-callback-variable": "off",
     "camelcase": "off",
     "class-methods-use-this": "off",
@@ -171,6 +173,8 @@
     "sonarjs/deprecation": "off",
     "sonarjs/file-permissions": "off",
     "sonarjs/function-return-type": "off",
+    "sonarjs/in-operator-type-error": "off",
+    "sonarjs/jsx-no-leaked-render": "off",
     "sonarjs/media-has-caption": "off",
     "sonarjs/mouse-events-a11y": "off",
     "sonarjs/new-cap": "off",

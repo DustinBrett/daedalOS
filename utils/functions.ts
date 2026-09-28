@@ -3,7 +3,7 @@ import { type Position } from "eruda";
 import type HtmlToImage from "html-to-image";
 import { type DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
-import { type Processes, type RelativePosition } from "contexts/process/types";
+import { type Processes } from "contexts/process/types";
 import { type IconPosition, type IconPositions } from "contexts/session/types";
 import {
   DEFAULT_LOCALE,
@@ -415,8 +415,8 @@ export const getWindowViewport = (): Position => ({
 
 export const calcInitialPosition = (
   { offsetHeight }: HTMLElement,
-  { right = 0, left = 0, top = 0, bottom = 0 } = {} as RelativePosition,
-  { width = 0, height = 0 } = {} as Size
+  { right = 0, left = 0, top = 0, bottom = 0 } = {},
+  { width = 0, height = 0 }: Size = {} as Size
 ): Position => {
   const [vh, vw] = [viewHeight(), viewWidth()];
 

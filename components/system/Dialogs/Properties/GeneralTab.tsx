@@ -7,10 +7,7 @@ import {
   getIconFromIni,
   getModifiedTime,
 } from "components/system/Files/FileEntry/functions";
-import {
-  type FileStat,
-  removeInvalidFilenameCharacters,
-} from "components/system/Files/FileManager/functions";
+import { removeInvalidFilenameCharacters } from "components/system/Files/FileManager/functions";
 import { useFileSystemActions, useFs } from "contexts/fileSystem";
 import { useProcessesActions } from "contexts/process";
 import directory from "contexts/process/directory";
@@ -253,10 +250,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
             <tr>
               <th scope="row">Modified:</th>
               <td>
-                {stats &&
-                  dateTimeString(
-                    new Date(getModifiedTime(url, stats as FileStat))
-                  )}
+                {stats && dateTimeString(new Date(getModifiedTime(url, stats)))}
               </td>
             </tr>
           )}

@@ -14,7 +14,6 @@ import { useForegroundId, useSessionActions } from "contexts/session";
 type ContentWindow = Window & typeof globalThis;
 
 const alwaysPreserveDrawingBuffer = (contentWindow: ContentWindow): void => {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const canvasGetContext = contentWindow.HTMLCanvasElement.prototype.getContext;
 
   // eslint-disable-next-line no-param-reassign
