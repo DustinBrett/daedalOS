@@ -3,6 +3,7 @@ import { join } from "path";
 import AxeBuilder from "@axe-core/playwright";
 import {
   type ConsoleMessage,
+  type Disposable,
   type Locator,
   type Page,
   type Response,
@@ -155,12 +156,14 @@ export const filterMenuItems = (
     typeof shown === "boolean" ? shown : shown(browserName),
   ]);
 
-export const disableOffscreenCanvas = ({ page }: TestProps): Promise<void> =>
+export const disableOffscreenCanvas = ({
+  page,
+}: TestProps): Promise<Disposable> =>
   page.addInitScript(() => {
     delete (window as Partial<Window & typeof globalThis>).OffscreenCanvas;
   });
 
-export const disableWallpaper = ({ page }: TestProps): Promise<void> =>
+export const disableWallpaper = ({ page }: TestProps): Promise<Disposable> =>
   page.addInitScript(() => {
     window.DEBUG_DISABLE_WALLPAPER = true;
   });

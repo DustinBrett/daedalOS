@@ -218,24 +218,22 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         code {
           white-space: pre-wrap;
 
-          &.language-js,
-          &.language-python {
-            &::before {
-              background-color: rgb(29 29 29);
-              border-top-left-radius: 5px;
-              border-top-right-radius: 5px;
-              display: flex;
-              font-family: ${({ theme }) => theme.formats.systemFont};
-              font-size: 15px;
-              font-weight: 600;
-              height: 40px;
-              left: -12px;
-              padding: 0 12px;
-              place-items: center;
-              position: relative;
-              top: -12px;
-              width: calc(100% + 24px);
-            }
+          &.language-js::before,
+          &.language-python::before {
+            background-color: rgb(29 29 29);
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            display: flex;
+            font-family: ${({ theme }) => theme.formats.systemFont};
+            font-size: 15px;
+            font-weight: 600;
+            height: 40px;
+            left: -12px;
+            padding: 0 12px;
+            place-items: center;
+            position: relative;
+            top: -12px;
+            width: calc(100% + 24px);
           }
 
           &.language-js::before {
