@@ -9,10 +9,10 @@ import {
 } from "react";
 import { Chess as ChessGame } from "chess.js";
 import { Chessboard2 } from "@chrisoakman/chessboard2/dist/chessboard2.min.mjs";
-import stockfishLiteJsUrl from "stockfish/bin/stockfish-18-lite.js";
-import stockfishLiteWasmUrl from "stockfish/bin/stockfish-18-lite.wasm";
-import stockfishLiteSingleJsUrl from "stockfish/bin/stockfish-18-lite-single.js";
-import stockfishLiteSingleWasmUrl from "stockfish/bin/stockfish-18-lite-single.wasm";
+import stockfishLiteJsUrl from "stockfish/bin/stockfish-19-lite.js";
+import stockfishLiteWasmUrl from "stockfish/bin/stockfish-19-lite.wasm";
+import stockfishLiteSingleJsUrl from "stockfish/bin/stockfish-19-lite-single.js";
+import stockfishLiteSingleWasmUrl from "stockfish/bin/stockfish-19-lite-single.wasm";
 import StyledChess from "components/apps/Chess/StyledChess";
 import {
   type Chessboard2Config,
