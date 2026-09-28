@@ -1,7 +1,7 @@
 import { basename, dirname } from "path";
 import { useCallback, useEffect, useState } from "react";
 import loader from "@monaco-editor/loader";
-import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
+import type * as Monaco from "monaco-editor";
 import {
   URL_DELIMITER,
   config,
@@ -72,7 +72,9 @@ const useMonaco = ({
     if (!monaco) {
       shareGlobal("define", "MonacoEditor", 2.5 * MILLISECONDS_IN_SECOND);
       loader.config(config);
-      loader.init().then((monacoInstance) => setMonaco(monacoInstance));
+      loader
+        .init()
+        .then((monacoInstance) => setMonaco(monacoInstance as typeof Monaco));
     }
   }, [monaco]);
 

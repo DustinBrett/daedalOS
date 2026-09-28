@@ -43,3 +43,10 @@ declare module "@chrisoakman/chessboard2/dist/chessboard2.min.mjs" {
     config?: import("components/apps/Chess/types").Chessboard2Config
   ) => import("components/apps/Chess/types").Chessboard2Instance;
 }
+
+declare module "ani-cursor/dist/parser" {
+  export function parseAni(buffer: Buffer | Uint8Array): {
+    images: Uint8Array[];
+    metadata: { iDispRate?: number };
+  };
+}

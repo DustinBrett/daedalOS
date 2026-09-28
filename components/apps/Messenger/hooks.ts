@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // eslint-disable-next-line import/consistent-type-specifier-style
-import type { NIP05Result } from "nostr-tools/lib/types/nip05";
+import type { NIP05Result } from "nostr-tools/nip05";
 import {
   type Filter,
   type Event as NostrEvent,

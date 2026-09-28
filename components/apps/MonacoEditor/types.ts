@@ -1,4 +1,4 @@
-import type * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
+import type * as Monaco from "monaco-editor";
 
 export type Model = Monaco.editor.ITextModel & {
   _associatedResource: {
