@@ -311,18 +311,18 @@ test.describe("has files & folders", () => {
     await expect(entryInfo).toContainText(/^\d+ items$/);
     await expect(selectedInfo).toContainText(/^1 item selected|\d{3} bytes$/);
 
-    expect(
-      await page.locator(FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR).count()
-    ).toEqual(1);
+    await expect(
+      page.locator(FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR)
+    ).toHaveCount(1);
 
     await page.keyboard.down("Control");
     await clickFileExplorerEntry(TEST_ROOT_FILE_2, { page });
 
     await expect(selectedInfo).toContainText(/^2 items selected|\d{3} KB$/);
 
-    expect(
-      await page.locator(FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR).count()
-    ).toEqual(2);
+    await expect(
+      page.locator(FILE_EXPLORER_ENTRIES_FOCUSED_SELECTOR)
+    ).toHaveCount(2);
   });
 
   test("has tooltip", async ({ page }) => {
