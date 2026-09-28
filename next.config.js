@@ -71,6 +71,10 @@ const nextConfig = {
       __dirname,
       "public/System/mediainfo.js/MediaInfoModule.wasm"
     );
+    config.resolve.alias["ani-cursor/dist/parser"] = path.resolve(
+      __dirname,
+      "node_modules/ani-cursor/dist/parser.js"
+    );
 
     config.resolve.fallback = config.resolve.fallback || {};
     config.resolve.fallback.module = false;

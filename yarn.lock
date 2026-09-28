@@ -2517,10 +2517,10 @@ ajv@^8.0.1:
     json-schema-traverse "^1.0.0"
     require-from-string "^2.0.2"
 
-ani-cursor@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/ani-cursor/-/ani-cursor-0.0.5.tgz#192fa79227849de3a17f5dbc79a4312c058eae4b"
-  integrity sha512-gGxst72lG9TOwEfbVpX9vHhzUGw+4Ee2XB6AfYq5JP+bxBtpAjgnTBepCVxYF5t1TPrWHN23nWqLTflJOA3/ag==
+ani-cursor@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/ani-cursor/-/ani-cursor-2.3.1.tgz#9d73aa385d25721c0e09f1536a840e819632606a"
+  integrity sha512-qe6IwRi3zpHmHl78VtiCQjbKxlpfILBRecAoQAwwMDrsv4hse/CsPZGxQFooPoCawlUrMmWQZhvtZ5D6dUMiSw==
   dependencies:
     byte-data "18.1.1"
     riff-file "^1.0.3"
