@@ -68,7 +68,7 @@
     "libheif-js": "^1.19.8",
     "mediainfo.js": "0.3.6",
     "minimist": "^1.2.8",
-    "motion": "^12.23.24",
+    "motion": "^13.4.4",
     "multiformats": "^13.4.1",
     "music-metadata-browser": "^2.5.11",
     "next": "^15.5.5",
