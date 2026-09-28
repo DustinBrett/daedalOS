@@ -122,7 +122,7 @@ const useWebamp = (id: string): Webamp => {
         },
         initialSkin,
         initialTracks,
-      } as Options) as WebampCI;
+      } as Options) as unknown as WebampCI;
       const setupElements = (): void => {
         const webampElement = getWebampElement();
 

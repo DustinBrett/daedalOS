@@ -107,6 +107,7 @@ export type WebampCI = Omit<Webamp, "store"> & {
       };
       milkdrop?: {
         butterchurn?: unknown;
+        display?: "DESKTOP" | null;
         presetHistory?: number[];
         presets?: ButterChurnPreset[];
       };
