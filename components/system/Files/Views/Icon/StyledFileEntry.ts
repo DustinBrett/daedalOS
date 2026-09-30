@@ -4,8 +4,6 @@ import { type StyledFileEntryProps } from "components/system/Files/Views";
 const StyledFileEntry = styled.li<StyledFileEntryProps>`
   display: ${({ $visible }) => ($visible ? "flex" : "none")};
   height: min-content;
-  margin-bottom: ${({ $labelHeightOffset }) =>
-    $labelHeightOffset ? `-${$labelHeightOffset}px` : undefined};
   outline-offset: -2px;
   padding: ${({ theme }) => theme.sizes.fileEntry.iconPadding};
 

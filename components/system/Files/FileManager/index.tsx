@@ -89,12 +89,8 @@ const FileManager: FC<FileManagerProps> = ({
   const [renaming, setRenaming] = useState("");
   const [mounted, setMounted] = useState<boolean>(false);
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
-  const isFileExplorerIconView = useMemo(
-    () => !isStartMenu && !isDesktop && !isDetailsView,
-    [isDesktop, isDetailsView, isStartMenu]
-  );
   const { blurEntry, focusEntry, focusedEntries, focusableEntry } =
-    useFocusableEntries(fileManagerRef, isFileExplorerIconView);
+    useFocusableEntries(fileManagerRef);
   const focusFunctions = useMemo(
     () => ({ blurEntry, focusEntry }),
     [blurEntry, focusEntry]

@@ -11,6 +11,7 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   gap: ${({ theme }) =>
     `${theme.sizes.fileManager.rowGap} ${theme.sizes.fileManager.columnGap}`};
   grid-auto-flow: row;
+  grid-auto-rows: ${({ theme }) => theme.sizes.fileManager.gridEntryHeight};
   grid-template-columns: ${({ theme }) =>
     `repeat(auto-fill, ${theme.sizes.fileManager.gridEntryWidth})`};
   grid-template-rows: ${({ theme }) =>
