@@ -332,55 +332,36 @@ const useWallpaper = (
     if (isSlideshow) {
       resetWallpaper();
 
-      const slideshowFilePath = `${PICTURES_FOLDER}/${SLIDESHOW_FILE}`;
-
-      if (!(await exists(slideshowFilePath))) {
-        await writeFile(
-          slideshowFilePath,
-          JSON.stringify(
-            (await exists(PICTURES_FOLDER))
-              ? await getAllImages(PICTURES_FOLDER)
-              : "[]"
-          )
-        );
-        updateFolder(PICTURES_FOLDER, SLIDESHOW_FILE);
-      }
-
       slideshowFiles = {
         [wallpaperImage]: slideshowFiles[wallpaperImage] || [],
       };
 
       if (slideshowFiles[wallpaperImage].length === 0) {
+        const slideshowFilePath = `${PICTURES_FOLDER}/${SLIDESHOW_FILE}`;
+        // Read without exists(), which costs an extra HEAD request over HTTP
+        let slideshowJson = (await readFile(slideshowFilePath)).toString();
+
+        if (!slideshowJson) {
+          slideshowJson = JSON.stringify(
+            (await exists(PICTURES_FOLDER))
+              ? await getAllImages(PICTURES_FOLDER)
+              : []
+          );
+          await writeFile(slideshowFilePath, slideshowJson, true);
+          updateFolder(PICTURES_FOLDER, SLIDESHOW_FILE);
+        }
+
         slideshowFiles[wallpaperImage].push(
-          ...[
-            ...new Set(
-              JSON.parse(
-                (await readFile(slideshowFilePath))?.toString() || "[]"
-              ) as string[]
-            ),
-          ].sort(() => Math.random() - 0.5)
+          ...[...new Set(JSON.parse(slideshowJson) as string[])]
+            .sort(() => Math.random() - 0.5)
+            .map((url) =>
+              url.startsWith("/") ? `${window.location.origin}${url}` : url
+            )
         );
       }
 
       do {
         wallpaperUrl = slideshowFiles[wallpaperImage].shift() || "";
-
-        const [nextWallpaper] = slideshowFiles[wallpaperImage];
-
-        if (nextWallpaper) {
-          preloadImage(
-            nextWallpaper.startsWith("/")
-              ? `${window.location.origin}${nextWallpaper}`
-              : nextWallpaper,
-            PRELOAD_ID,
-            true,
-            "auto"
-          );
-        }
-
-        if (wallpaperUrl.startsWith("/")) {
-          wallpaperUrl = `${window.location.origin}${wallpaperUrl}`;
-        }
       } while (
         currentWallpaperUrl === wallpaperUrl &&
         slideshowFiles[wallpaperImage].length > 1
@@ -529,10 +510,19 @@ const useWallpaper = (
           applyWallpaper(wallpaperUrl);
 
           if (isSlideshow) {
-            wallpaperTimerRef.current = window.setTimeout(
-              loadFileWallpaper,
-              SLIDESHOW_TIMEOUT_IN_MILLISECONDS
-            );
+            // Preload the next slide mid-interval, keeping it off initial load
+            wallpaperTimerRef.current = window.setTimeout(() => {
+              const [nextWallpaper] = slideshowFiles[wallpaperImage];
+
+              if (nextWallpaper) {
+                preloadImage(nextWallpaper, PRELOAD_ID, true, "auto");
+              }
+
+              wallpaperTimerRef.current = window.setTimeout(
+                loadFileWallpaper,
+                SLIDESHOW_TIMEOUT_IN_MILLISECONDS / 2
+              );
+            }, SLIDESHOW_TIMEOUT_IN_MILLISECONDS / 2);
           }
         }
       }
