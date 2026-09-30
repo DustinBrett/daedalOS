@@ -1,5 +1,6 @@
 import { type Props, type RndResizeCallback } from "react-rnd";
 import { type DraggableEventHandler } from "react-draggable";
+import { useTheme } from "styled-components";
 import { useCallback, useMemo } from "react";
 import rndDefaults, {
   RESIZING_DISABLED,
@@ -26,6 +27,9 @@ const useRnd = (id: string): Props => {
     maximized = false,
   } = useProcess(id);
   const { setWindowStates } = useSessionActions();
+  const {
+    sizes: { titleBar },
+  } = useTheme();
   const [size, setSize] = useResizable(id, autoSizing);
   const [position, setPosition] = useDraggable(id, size);
   const onDragStop: DraggableEventHandler = useCallback(
@@ -73,6 +77,11 @@ const useRnd = (id: string): Props => {
       const newSize = { height: pxToNum(height), width: pxToNum(width) };
 
       if (newPosition.y < 0) {
+        if (lockAspectRatio) {
+          newSize.width *=
+            1 + newPosition.y / (newSize.height - titleBar.height);
+        }
+
         newSize.height += newPosition.y;
         newPosition.y = 0;
       }
@@ -96,7 +105,20 @@ const useRnd = (id: string): Props => {
         }));
       }
     },
-    [id, setPosition, setSize, setWindowStates]
+    [
+      id,
+      lockAspectRatio,
+      setPosition,
+      setSize,
+      setWindowStates,
+      titleBar.height,
+    ]
+  );
+  const contentAspectRatio = useMemo(
+    () =>
+      lockAspectRatio &&
+      Number(size.width) / (Number(size.height) - titleBar.height),
+    [lockAspectRatio, size.height, size.width, titleBar.height]
   );
   const disableIframeCapture = useCallback(
     () => enableIframeCapture(false),
@@ -110,7 +132,8 @@ const useRnd = (id: string): Props => {
   return {
     disableDragging: maximized,
     enableResizing,
-    lockAspectRatio,
+    lockAspectRatio: contentAspectRatio,
+    lockAspectRatioExtraHeight: lockAspectRatio ? titleBar.height : undefined,
     onDragStart: disableIframeCapture,
     onDragStop,
     onResizeStart: disableIframeCapture,

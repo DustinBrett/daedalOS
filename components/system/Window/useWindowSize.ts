@@ -27,7 +27,8 @@ const useWindowSize = (id: string): WindowSize => {
               height: height + titleBar.height,
               width,
             },
-            lockAspectRatio
+            lockAspectRatio,
+            titleBar.height
           ),
         },
       })),
