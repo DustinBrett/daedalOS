@@ -24,7 +24,11 @@ const vantaWaves = (
     // Failed to cleanup effect
   }
 
-  if (!el || typeof WebGLRenderingContext === "undefined") return;
+  if (!el) return;
+  if (typeof WebGLRenderingContext === "undefined") {
+    fallback?.();
+    return;
+  }
 
   loadFiles(libs, true).then(() => {
     const { VANTA: { WAVES } = {} } = window;

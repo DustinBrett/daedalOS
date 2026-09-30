@@ -7,7 +7,11 @@ const Galaxy = async (
   config?: WallpaperConfig,
   fallback?: () => void
 ): Promise<void> => {
-  if (!el || typeof WebGLRenderingContext === "undefined") return;
+  if (!el) return;
+  if (typeof WebGLRenderingContext === "undefined") {
+    fallback?.();
+    return;
+  }
 
   try {
     const { createGalaxyRenderer } =

@@ -86,8 +86,16 @@ export const getIpfsFileName = async (
 
   if (fileName) return fileName;
 
-  const { fileTypeFromBuffer } = await import("file-type");
-  const { ext = "" } = (await fileTypeFromBuffer(ipfsData)) || {};
+  let ext = "";
+
+  try {
+    const { fileTypeFromBuffer } = await import("file-type");
+
+    ext = (await fileTypeFromBuffer(ipfsData))?.ext || "";
+  } catch {
+    // file-type fails to parse in older browsers (regex v flag)
+  }
+
   const fullPath = `${hostname}${pathname}`;
 
   return `${fullPath.split("/").filter(Boolean).join("_")}${ext ? `.${ext}` : ""}`;

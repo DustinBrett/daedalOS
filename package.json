@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "browserslist": [
-    "defaults and supports es6 and not ie 11 and >1%"
+    "baseline 2020 with downstream"
   ],
   "scripts": {
     "build": "yarn build:prebuild && next build",

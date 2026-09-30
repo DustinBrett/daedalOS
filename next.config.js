@@ -45,6 +45,14 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   reactProductionProfiling: false,
   reactStrictMode: !isProduction,
+  // These ship syntax newer than the browserslist targets (e.g. ??=, #private)
+  transpilePackages: [
+    "@ffmpeg/ffmpeg",
+    "@jitl/quickjs-wasmfile-release-sync",
+    "mediainfo.js",
+    "multiformats",
+    "prettier",
+  ],
   webpack: (config) => {
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(/node:/, (resource) => {
@@ -52,7 +60,8 @@ const nextConfig = {
 
         switch (mod) {
           case "buffer":
-            resource.request = "buffer";
+          case "module":
+            resource.request = mod;
             break;
           case "stream":
             resource.request = "readable-stream";

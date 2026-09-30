@@ -6,7 +6,7 @@ const OUT_PATH = "out";
 
 const JS_MINIFIER_CONFIG = {
   compress: true,
-  ecma: 2021,
+  ecma: 2020,
   mangle: true,
   output: {
     comments: false,
@@ -32,11 +32,13 @@ const inlineIndexWorkers = (code) => {
     const workerSource = readFileSync(
       join(OUT_PATH, "_next/static/chunks", workerFilename)
     );
-    const base64Worker = Buffer.from(workerSource).toString("base64");
 
     return code.replace(
       workerRegEx,
-      `new Worker("data:application/javascript;base64,${base64Worker}",{name:"${workerName}"})`
+      () =>
+        `new Worker(URL.createObjectURL(new Blob([${JSON.stringify(
+          workerSource.toString()
+        )}],{type:"text/javascript"})),{name:"${workerName}"})`
     );
   }
 
