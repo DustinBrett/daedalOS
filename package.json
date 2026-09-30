@@ -9,10 +9,14 @@
   },
   "license": "MIT",
   "browserslist": [
-    "baseline 2020 with downstream"
+    "chrome >= 80",
+    "edge >= 80",
+    "firefox >= 74",
+    "safari >= 13.1",
+    "ios_saf >= 13.4"
   ],
   "scripts": {
-    "build": "yarn build:prebuild && next build",
+    "build": "yarn build:prebuild && next build --webpack",
     "build:bundle-analyzer": "yarn build",
     "build:fs:private": "node scripts/fs2json.js --out public/.index/fs.private.9p.json ./public/private",
     "build:fs:public": "node scripts/fs2json.js --exclude .index,private --out public/.index/fs.9p.json ./public",
@@ -20,8 +24,8 @@
     "build:prebuild": "node scripts/robots.js && node scripts/rssBuilder.js && node scripts/searchIndex.js && node scripts/preloadIcons.js && node scripts/cacheShortcuts.js && yarn build:fs:public",
     "docker:build": "docker build -t daedalos .",
     "docker:run": "docker run -dp 3000:3000 --rm --name daedalos daedalos",
-    "dev": "next dev",
-    "dev:ssl": "cross-env TRUST_STORES=system next dev --experimental-https",
+    "dev": "next dev --webpack",
+    "dev:ssl": "cross-env TRUST_STORES=system next dev --webpack --experimental-https",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
     "eslint": "eslint .",
@@ -70,7 +74,7 @@
     "motion": "^13.4.4",
     "multiformats": "^14.0.5",
     "music-metadata-browser": "^2.5.11",
-    "next": "^15.5.5",
+    "next": "^16.3.8",
     "nostr-tools": "^1.17.0",
     "opentype.js": "^2.0.0",
     "playlist-parser": "^0.0.12",
@@ -90,7 +94,7 @@
   "devDependencies": {
     "7z-wasm": "^1.2.0",
     "@axe-core/playwright": "^4.13.0",
-    "@next/bundle-analyzer": "^15.5.5",
+    "@next/bundle-analyzer": "^16.3.8",
     "@playwright/test": "^1.63.0",
     "@types/canvas-confetti": "^1.9.0",
     "@types/dom-chromium-ai": "0.0.6",

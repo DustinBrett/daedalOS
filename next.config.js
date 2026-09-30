@@ -13,6 +13,7 @@ const webpack = require("webpack");
  * @type {import("next").NextConfig}
  * */
 const nextConfig = {
+  agentRules: false,
   compiler: {
     reactRemoveProperties: isProduction,
     removeConsole: isProduction,
