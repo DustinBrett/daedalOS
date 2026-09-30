@@ -23,8 +23,13 @@ const alwaysPreserveDrawingBuffer = (contentWindow: ContentWindow): void => {
     options?: WebGLContextAttributes
   ) {
     if (contextId === "webgl" || contextId === "webgl2") {
+      // Chrome renders desynchronized + preserveDrawingBuffer WebGL to the
+      // front buffer, so partial frames flicker (e.g. Quake 3 HUD)
       // eslint-disable-next-line no-param-reassign
-      options = Object.assign(options || {}, { preserveDrawingBuffer: true });
+      options = Object.assign(options || {}, {
+        desynchronized: false,
+        preserveDrawingBuffer: true,
+      });
     }
 
     return canvasGetContext.call(this, contextId, options);

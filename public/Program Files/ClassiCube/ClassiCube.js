@@ -3458,7 +3458,7 @@ function copyTempDouble(ptr) {
 
 
         var ctx =
-          (canvas.getContext("webgl", {...webGLContextAttributes,alpha:false,desynchronized:true,preserveDrawingBuffer:true,willReadFrequently:true}) || canvas.getContext("experimental-webgl", webGLContextAttributes));
+          (canvas.getContext("webgl", {...webGLContextAttributes,alpha:false,preserveDrawingBuffer:true,willReadFrequently:true}) || canvas.getContext("experimental-webgl", webGLContextAttributes));
 
 
         return ctx && GL.registerContext(ctx, webGLContextAttributes);
