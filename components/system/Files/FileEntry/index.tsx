@@ -236,6 +236,8 @@ const FileEntry: FC<FileEntryProps> = ({
     [formats.systemFont, listView, name, sizes.fileEntry]
   );
   const iconRef = useRef<HTMLImageElement | null>(null);
+  const [loadedIcon, setLoadedIcon] = useState("");
+  const onIconLoad = useCallback(() => setLoadedIcon(icon), [icon]);
   const isIconCached = useRef(false);
   const isDynamicIconLoaded = useRef(false);
   const getIconAbortController = useRef<AbortController>(undefined);
@@ -349,6 +351,8 @@ const FileEntry: FC<FileEntryProps> = ({
     if (
       !isLoadingFileManager &&
       isVisible &&
+      // Show the default icon before swapping in a cached/generated one
+      loadedIcon &&
       !isIconCached.current &&
       (!detailsView || EXTENSIONS_WITH_ICON.has(urlExt))
     ) {
@@ -518,6 +522,7 @@ const FileEntry: FC<FileEntryProps> = ({
     isShortcut,
     isVisible,
     isYTUrl,
+    loadedIcon,
     mkdirRecursive,
     path,
     setInfo,
@@ -626,6 +631,7 @@ const FileEntry: FC<FileEntryProps> = ({
             $eager={loadIconImmediately}
             $moving={pasteList[path] === "move"}
             alt=""
+            onLoad={onIconLoad}
             src={icon}
             {...FileEntryIconSize[view]}
           />
@@ -633,6 +639,7 @@ const FileEntry: FC<FileEntryProps> = ({
             alt=""
             icon={icon}
             isDesktop={isDesktop}
+            loadedIcon={loadedIcon}
             showShortcutIcon={Boolean(hideShortcutIcon || stats.systemShortcut)}
             subIcons={subIcons}
             view={view}

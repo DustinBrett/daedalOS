@@ -92,6 +92,7 @@ const Icon: FCWithRef<
   alt = "",
   displaySize = 0,
   imgSize = 0,
+  onLoad,
   ref,
   singleSrc = false,
   src = "",
@@ -137,9 +138,12 @@ const Icon: FCWithRef<
     },
     [failedUrls]
   );
-  const onLoad: React.ReactEventHandler<HTMLImageElement> = useCallback(
-    () => setLoaded(true),
-    []
+  const onLoadHandler: React.ReactEventHandler<HTMLImageElement> = useCallback(
+    (event) => {
+      setLoaded(true);
+      onLoad?.(event);
+    },
+    [onLoad]
   );
 
   useEffect(
@@ -183,7 +187,7 @@ const Icon: FCWithRef<
         $loaded={loaded}
         alt={alt}
         onError={onError}
-        onLoad={onLoad}
+        onLoad={onLoadHandler}
         src={
           isDynamic ? imageSrc(imgSrc, imgSize, 1, srcExt) : src || undefined
         }

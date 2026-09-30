@@ -27,11 +27,13 @@ type SubIconProps = SharedSubIconProps &
   IconProps & {
     baseIcon: string;
     isFirstImage: boolean;
+    isHidden: boolean;
     totalSubIcons: number;
   };
 
 type SubIconsProps = SharedSubIconProps &
   IconProps & {
+    loadedIcon?: string;
     showShortcutIcon: boolean;
     subIcons?: string[];
   };
@@ -49,6 +51,7 @@ const SubIcon: FC<SubIconProps> = ({
   imgSize,
   isDesktop,
   isFirstImage,
+  isHidden,
   alt,
   totalSubIcons,
   view,
@@ -72,7 +75,7 @@ const SubIcon: FC<SubIconProps> = ({
     ];
   }, [icon, view]);
 
-  const style = useMemo((): React.CSSProperties | undefined => {
+  const baseStyle = useMemo((): React.CSSProperties | undefined => {
     if (icon === FOLDER_FRONT_ICON) return { zIndex: 3 };
 
     if (baseIcon === FOLDER_BACK_ICON) {
@@ -99,6 +102,11 @@ const SubIcon: FC<SubIconProps> = ({
 
     return undefined;
   }, [baseIcon, icon, imgSize, isFirstImage, totalSubIcons]);
+  const style = useMemo(
+    () =>
+      isHidden ? { ...baseStyle, visibility: "hidden" as const } : baseStyle,
+    [baseStyle, isHidden]
+  );
 
   return (
     <Icon
@@ -118,6 +126,7 @@ const SubIcons: FC<SubIconsProps> = ({
   icon,
   imgSize,
   isDesktop,
+  loadedIcon = icon,
   showShortcutIcon,
   subIcons,
   view,
@@ -140,8 +149,8 @@ const SubIcons: FC<SubIconsProps> = ({
       return [];
     }
 
-    return icons?.filter((subIcon) => subIcon !== icon) || [];
-  }, [icon, icons, view]);
+    return icons || [];
+  }, [icons, view]);
 
   return (
     <>
@@ -154,6 +163,10 @@ const SubIcons: FC<SubIconsProps> = ({
           imgSize={imgSize}
           isDesktop={isDesktop}
           isFirstImage={subIconIndex === 0}
+          // Stay mounted to preload, but wait until the main icon has swapped
+          isHidden={
+            !loadedIcon || entryIcon === icon || entryIcon === loadedIcon
+          }
           totalSubIcons={filteredSubIcons.length}
           view={view}
         />
