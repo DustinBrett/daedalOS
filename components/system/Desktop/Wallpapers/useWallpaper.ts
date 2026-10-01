@@ -42,6 +42,7 @@ import {
   bufferToUrl,
   cleanUpBufferUrl,
   createOffscreenCanvas,
+  fitImageToDecodeLimit,
   getExtension,
   getSearchParam,
   hasOffscreenCanvasSupport,
@@ -450,20 +451,20 @@ const useWallpaper = (
 
         desktopRef.current?.append(video);
       } else {
-        const applyWallpaper = (url: string): void => {
-          let positionSize = bgPositionSize[newWallpaperFit];
+        let positionSize = bgPositionSize[newWallpaperFit];
 
-          if (isSlideshow) {
-            try {
-              const { searchParams } = new URL(url);
-              const { x, y } = Object.fromEntries(searchParams.entries());
+        if (isSlideshow) {
+          try {
+            const { searchParams } = new URL(wallpaperUrl);
+            const { x, y } = Object.fromEntries(searchParams.entries());
 
-              positionSize = `${parseBgPosition(x)} ${parseBgPosition(y)} / cover`;
-            } catch {
-              // Ignore failure to specify background position
-            }
+            positionSize = `${parseBgPosition(x)} ${parseBgPosition(y)} / cover`;
+          } catch {
+            // Ignore failure to specify background position
           }
+        }
 
+        const applyWallpaper = (url: string): void => {
           const repeat = newWallpaperFit === "tile" ? "repeat" : "no-repeat";
           const isTopWindow = window === window.top;
           const isAfterNextBackground = isBeforeBg();
@@ -503,11 +504,11 @@ const useWallpaper = (
             PRELOAD_ID,
             true,
             "high",
-            () => applyWallpaper(wallpaperUrl),
+            () => fitImageToDecodeLimit(wallpaperUrl).then(applyWallpaper),
             () => applyWallpaper(fallbackBackground)
           );
         } else {
-          applyWallpaper(wallpaperUrl);
+          applyWallpaper(await fitImageToDecodeLimit(wallpaperUrl));
 
           if (isSlideshow) {
             // Preload the next slide mid-interval, keeping it off initial load

@@ -31,6 +31,7 @@ globalThis.addEventListener(
       offscreenCanvas.width = dw;
       offscreenCanvas.height = dh;
 
+      ctx.imageSmoothingQuality = "high";
       ctx.drawImage(bitmap, 0, 0, dw, dh);
 
       globalThis.postMessage(

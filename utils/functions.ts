@@ -1,6 +1,7 @@
 import { basename, dirname, extname, join } from "path";
 import { type Position } from "eruda";
 import type * as HtmlToImage from "html-to-image";
+import { type NavigatorWithMemory } from "components/apps/V86/types";
 import { type DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { type Processes } from "contexts/process/types";
@@ -934,6 +935,53 @@ export const hasOffscreenCanvasSupport = (): boolean => {
     typeof window !== "undefined" && "OffscreenCanvas" in window;
 
   return HAS_OFFSCREEN_CANVAS_SUPPORT;
+};
+
+// Android Chrome decodes JPEGs past a RAM based budget (3MP if low-end, else
+// RAM / 100 pixels) at reduced size, which CSS backgrounds draw squished.
+// deviceMemory is RAM rounded to the nearest power of 2, so assume its floor.
+export const fitImageToDecodeLimit = async (url: string): Promise<string> => {
+  const { deviceMemory } = navigator as NavigatorWithMemory;
+
+  if (
+    !deviceMemory ||
+    !navigator.userAgent.includes("Android") ||
+    !hasOffscreenCanvasSupport()
+  ) {
+    return url;
+  }
+
+  const maxPixels =
+    deviceMemory <= 1
+      ? 3 * 1024 * 1024
+      : (0.75 * deviceMemory * 1024 ** 3) / 100;
+  const image = new Image();
+
+  await new Promise((resolve) => {
+    image.addEventListener("load", resolve, ONE_TIME_PASSIVE_EVENT);
+    image.addEventListener("error", resolve, ONE_TIME_PASSIVE_EVENT);
+    image.src = url;
+  });
+
+  const { naturalHeight, naturalWidth } = image;
+  const pixels = naturalWidth * naturalHeight;
+
+  if (pixels <= maxPixels) return url;
+
+  try {
+    const blob = await (await fetch(url)).blob();
+    const maxSide = Math.floor(
+      Math.max(naturalWidth, naturalHeight) * Math.sqrt(maxPixels / pixels)
+    );
+
+    const resizedUrl = URL.createObjectURL(await resizeImage(blob, maxSide));
+
+    if (url.startsWith("blob:")) cleanUpBufferUrl(url);
+
+    return resizedUrl;
+  } catch {
+    return url;
+  }
 };
 
 export const createOffscreenCanvas = (
