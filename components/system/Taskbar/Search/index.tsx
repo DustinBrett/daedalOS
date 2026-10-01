@@ -46,7 +46,7 @@ import {
   TRANSITIONS_IN_SECONDS,
   VIDEOS_FOLDER,
 } from "utils/constants";
-import { haltEvent, label, preloadLibs } from "utils/functions";
+import { getExtension, haltEvent, label, preloadLibs } from "utils/functions";
 import {
   FILE_INDEX,
   SEARCH_INPUT_PROPS,
@@ -228,7 +228,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
 
     Promise.all(
       results.map(async (result) => {
-        const extension = extname(result.ref);
+        const extension = getExtension(result.ref);
         let pid = "";
 
         if (extension === SHORTCUT_EXTENSION) {

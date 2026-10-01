@@ -1,4 +1,4 @@
-import { basename, extname } from "path";
+import { basename } from "path";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -159,7 +159,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
               ? undefined
               : {
                   url:
-                    extname(baseUrl) === SHORTCUT_EXTENSION
+                    getExtension(baseUrl) === SHORTCUT_EXTENSION
                       ? getShortcutInfo(await readFile(baseUrl))?.url || baseUrl
                       : baseUrl,
                 }

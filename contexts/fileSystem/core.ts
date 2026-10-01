@@ -1,4 +1,4 @@
-import { extname, join } from "path";
+import { join } from "path";
 import { type openDB } from "idb";
 import {
   type ExtendedEmscriptenFileSystem,
@@ -11,6 +11,7 @@ import {
   MOUNTABLE_FS_TYPES,
   ONE_TIME_PASSIVE_EVENT,
 } from "utils/constants";
+import { getExtension } from "utils/functions";
 
 type BFSFS = { [key: string]: BFSFS | null };
 type FS9PV3 = [
@@ -221,7 +222,7 @@ export const getMountUrl = (
   mntMap: Record<string, Mount>
 ): string | undefined => {
   if (url === "/") return "";
-  if (mntMap[url] || MOUNTABLE_EXTENSIONS.has(extname(url))) return url;
+  if (mntMap[url] || MOUNTABLE_EXTENSIONS.has(getExtension(url))) return url;
 
   return Object.keys(mntMap)
     .filter((mountedUrl) => mountedUrl !== "/")
