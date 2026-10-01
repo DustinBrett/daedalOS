@@ -118,7 +118,7 @@ const usePDF = (
 
             if (fileData.length === 0) throw new Error("File is empty");
 
-            const loader = window.pdfjsLib.getDocument(fileData);
+            const loader = window.pdfjsLib.getDocument({ data: fileData });
             const doc = await loader.promise;
             const { info } = await doc.getMetadata();
 

@@ -11,7 +11,7 @@ export const readPdfText = async (pdfDoc: Buffer): Promise<string> => {
       "/Program Files/PDF.js/pdf.worker.js";
 
     try {
-      const doc = await window.pdfjsLib.getDocument(pdfDoc).promise;
+      const doc = await window.pdfjsLib.getDocument({ data: pdfDoc }).promise;
 
       for (let p = 0; p < doc.numPages; p += 1) {
         // eslint-disable-next-line no-await-in-loop
