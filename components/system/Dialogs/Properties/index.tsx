@@ -25,7 +25,7 @@ const MEDIA_APPS = new Set([
   "Webamp",
 ]);
 
-const EXIF_TYPES = new Set([".jpg", "jpeg", ".tif", ".tiff"]);
+const EXIF_TYPES = new Set([".jpeg", ".jpg", ".tif", ".tiff"]);
 
 export type MetaData = Record<string, Record<string, number | string>>;
 
