@@ -41,7 +41,7 @@
 
 - [Resizable and Draggable](https://github.com/bokuweb/react-rnd)
 - Minimize, Maximize & Close
-- Persists size/position/maximized states
+- Persists size/position
 - [Animates](https://www.framer.com/motion/) opening and closing
 
 ### Start Menu

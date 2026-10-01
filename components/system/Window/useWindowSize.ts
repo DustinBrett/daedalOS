@@ -10,7 +10,7 @@ type WindowSize = {
 
 const useWindowSize = (id: string): WindowSize => {
   const { setWindowStates } = useSessionActions();
-  const { lockAspectRatio = false, maximized = false } = useProcess(id);
+  const { lockAspectRatio = false } = useProcess(id);
   const {
     sizes: { titleBar },
   } = useTheme();
@@ -21,7 +21,6 @@ const useWindowSize = (id: string): WindowSize => {
         ...currentWindowStates,
         [id]: {
           ...currentWindowStates?.[id],
-          maximized,
           size: minMaxSize(
             {
               height: height + titleBar.height,
@@ -32,7 +31,7 @@ const useWindowSize = (id: string): WindowSize => {
           ),
         },
       })),
-    [id, lockAspectRatio, maximized, setWindowStates, titleBar.height]
+    [id, lockAspectRatio, setWindowStates, titleBar.height]
   );
 
   return {
