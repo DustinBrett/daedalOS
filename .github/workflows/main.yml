@@ -15,12 +15,12 @@ jobs:
           node-version: 22
       - name: Install Dependencies
         run: NODE_OPTIONS='--openssl-legacy-provider' yarn
-      - name: Run Oxlint
-        run: yarn lint
       - name: Run Jest Unit Tests
         run: yarn test
       - name: Build App
         run: yarn build
+      - name: Run Oxlint
+        run: yarn lint
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Run Playwright E2E Tests
