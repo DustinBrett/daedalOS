@@ -93,7 +93,8 @@
     var IS_SAFARI = /^(?:(?!chrome|android).)*safari/i.test(window.navigator.userAgent);
 
     /** @const */
-    var IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_SAFARI;
+    var IS_MOBILE = /Android/.test(window.navigator.userAgent) || IS_SAFARI ||
+        window.navigator.maxTouchPoints > 0;
 
     /** @const */
     var IS_TOUCH_ENABLED = 'ontouchstart' in window;
