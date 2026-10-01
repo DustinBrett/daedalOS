@@ -130,7 +130,7 @@
     "monaco-editor": "^0.57.0",
     "oxlint": "^1.86.0",
     "oxlint-tsgolint": "^7.0.2003",
-    "pdfjs-dist": "^5.4.296",
+    "pdfjs-dist": "^6.3.289",
     "playwright-core": "^1.63.0",
     "postcss": "^8.5.28",
     "postcss-styled-syntax": "^0.7.3",
