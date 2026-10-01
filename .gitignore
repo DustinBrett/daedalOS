@@ -4,6 +4,10 @@ certificates
 out
 next-env.d.ts
 *.tsbuildinfo
+.env*
+coverage
+yarn-debug.log*
+yarn-error.log*
 
 node_modules
 
