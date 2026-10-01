@@ -342,16 +342,29 @@ const useSessionContextState = (): {
                   if (
                     conflictingDefaultIconPath &&
                     session.iconPositions?.[conflictingDefaultIconPath]
-                      .gridColumnStart ===
+                      ?.gridColumnStart ===
                       sessionIconPosition.gridColumnStart &&
                     session.iconPositions?.[conflictingDefaultIconPath]
-                      .gridRowStart === sessionIconPosition.gridRowStart
+                      ?.gridRowStart === sessionIconPosition.gridRowStart
                   ) {
                     delete session.iconPositions[iconPath];
                   }
                 } else {
-                  session.iconPositions[iconPath] =
+                  const defaultIconPosition =
                     DEFAULT_SESSION.iconPositions[iconPath];
+
+                  // Slot taken means the default icon was renamed or moved out
+                  if (
+                    !Object.entries(session.iconPositions).some(
+                      ([path, { gridColumnStart, gridRowStart }]) =>
+                        dirname(path) === dirname(iconPath) &&
+                        gridColumnStart ===
+                          defaultIconPosition.gridColumnStart &&
+                        gridRowStart === defaultIconPosition.gridRowStart
+                    )
+                  ) {
+                    session.iconPositions[iconPath] = defaultIconPosition;
+                  }
                 }
               });
             }
