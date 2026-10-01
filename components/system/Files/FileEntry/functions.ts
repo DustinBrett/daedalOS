@@ -708,6 +708,7 @@ export const getInfoWithExtension = (
                   const processFrame = (): void => {
                     if (!context || !canvas.width || !canvas.height) return;
 
+                    context.imageSmoothingQuality = "high";
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
                     gif.addFrame(
                       context.getImageData(0, 0, canvas.width, canvas.height),
