@@ -1,18 +1,18 @@
 import { basename } from "path";
+import { Chessboard2 } from "@chrisoakman/chessboard2/dist/chessboard2.min.mjs";
+import { Chess as ChessGame } from "chess.js";
 import {
+  type ChangeEvent,
   memo,
   useCallback,
   useEffect,
   useRef,
   useState,
-  type ChangeEvent,
 } from "react";
-import { Chess as ChessGame } from "chess.js";
-import { Chessboard2 } from "@chrisoakman/chessboard2/dist/chessboard2.min.mjs";
-import stockfishLiteJsUrl from "stockfish/bin/stockfish-19-lite.js";
-import stockfishLiteWasmUrl from "stockfish/bin/stockfish-19-lite.wasm";
 import stockfishLiteSingleJsUrl from "stockfish/bin/stockfish-19-lite-single.js";
 import stockfishLiteSingleWasmUrl from "stockfish/bin/stockfish-19-lite-single.wasm";
+import stockfishLiteJsUrl from "stockfish/bin/stockfish-19-lite.js";
+import stockfishLiteWasmUrl from "stockfish/bin/stockfish-19-lite.wasm";
 import StyledChess from "components/apps/Chess/StyledChess";
 import {
   type Chessboard2Config,
@@ -51,7 +51,7 @@ const stockfishUrls = (): { jsUrl: string; wasmUrl: string } =>
       };
 
 type Status = {
-  className?: "thinking" | "over";
+  className?: "over" | "thinking";
   text: string;
 };
 
@@ -74,7 +74,7 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
   const boardElRef = useRef<HTMLDivElement>(null);
   const boardRef = useRef<Chessboard2Instance | undefined>(undefined);
   const chessRef = useRef<ChessGame | undefined>(undefined);
-  const workerRef = useRef<Worker | undefined>(undefined);
+  const workerRef = useRef<undefined | Worker>(undefined);
   const moveSeqRef = useRef(0);
   const thinkingRef = useRef(false);
   const cvcTimerRef = useRef<number | undefined>(undefined);
@@ -685,14 +685,14 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
             reviewRef.current = moves.length > 0;
             board.position(chess.fen(), false);
             prependFileToTitle(basename(url));
-            refreshStatus();
           } else {
             setPgnMoves([]);
             setPgnIndex(-1);
             reviewRef.current = false;
             board.start(false);
-            refreshStatus();
           }
+
+          refreshStatus();
         };
 
         apply();

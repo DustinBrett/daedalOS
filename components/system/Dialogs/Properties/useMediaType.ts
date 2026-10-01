@@ -1,11 +1,11 @@
-import { useEffect } from "react";
 import { type Media } from "mediainfo.js";
+import { useEffect } from "react";
 import {
-  type PropertiesMetaData,
   type MetaData,
+  type PropertiesMetaData,
 } from "components/system/Dialogs/Properties";
-import { analyzeFileToObject } from "utils/mediainfo";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
+import { analyzeFileToObject } from "utils/mediainfo";
 
 const FILTER_KEYS = new Set([
   "@type",
@@ -22,7 +22,7 @@ const FILTER_KEYS = new Set([
 const withLeadingZero = (value: number): string =>
   value.toString().padStart(2, "0");
 
-const maybeConvertValue = (key: string, value: number): string | number => {
+const maybeConvertValue = (key: string, value: number): number | string => {
   if (key === "Duration") {
     const hours = Math.floor(value / 3600);
     const minutes = Math.floor((value - hours * 3600) / 60);
@@ -43,17 +43,16 @@ const maybeConvertValue = (key: string, value: number): string | number => {
 };
 
 const convertToMetaData = (mediaTypeData?: Media): MetaData =>
-  mediaTypeData?.track?.reduce(
-    (data, track) => ({
-      ...data,
-      [track["@type"]]: Object.fromEntries(
+  Object.fromEntries(
+    (mediaTypeData?.track ?? []).map((track) => [
+      track["@type"],
+      Object.fromEntries(
         [...Object.entries(track), ...Object.entries(track.extra || {})]
           .filter(([key]) => !FILTER_KEYS.has(key))
           .map(([key, value]) => [key, maybeConvertValue(key, value as number)])
       ),
-    }),
-    {}
-  ) || {};
+    ])
+  );
 
 const useMediaType = (
   fileData: Buffer | undefined,

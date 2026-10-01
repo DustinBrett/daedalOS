@@ -1,14 +1,12 @@
-import { ROOT_PATH, libs } from "components/system/Desktop/Wallpapers/hexells";
+import { libs, ROOT_PATH } from "components/system/Desktop/Wallpapers/hexells";
 import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 
-/* eslint-disable vars-on-top, no-var  */
 declare global {
   var Demo: new (canvas: OffscreenCanvas, rootPath: string) => unknown;
   var Hexells: unknown;
   var demoCanvasRect: DOMRect;
   var devicePixelRatio: number;
 }
-/* eslint-enable vars-on-top, no-var */
 
 globalThis.addEventListener(
   "message",

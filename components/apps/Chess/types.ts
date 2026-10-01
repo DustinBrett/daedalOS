@@ -1,4 +1,4 @@
-export type Chessboard2Orientation = "white" | "black";
+export type Chessboard2Orientation = "black" | "white";
 
 type Chessboard2DragStartEvent = {
   orientation: Chessboard2Orientation;
@@ -16,11 +16,11 @@ type Chessboard2DropEvent = {
   y: number;
 };
 
-type SquareSize = "small" | "medium" | "large";
+type SquareSize = "large" | "medium" | "small";
 
-export type GameMode = "hvh" | "hvc" | "cvc";
+export type GameMode = "cvc" | "hvc" | "hvh";
 
-export type Side = "w" | "b";
+export type Side = "b" | "w";
 
 export type Chessboard2Config = {
   draggable?: boolean;
@@ -28,7 +28,7 @@ export type Chessboard2Config = {
   onDragStart?: (event: Chessboard2DragStartEvent) => boolean | void;
   onDrop?: (event: Chessboard2DropEvent) => string | void;
   orientation?: Chessboard2Orientation;
-  pieceTheme?: string | ((piece: string) => string);
+  pieceTheme?: ((piece: string) => string) | string;
   position?: string;
   touchDraggable?: boolean;
 };
@@ -36,13 +36,13 @@ export type Chessboard2Config = {
 export type Chessboard2Instance = {
   addCircle: (
     squareOrConfig:
-      | string
       | {
           color?: string;
           opacity?: number;
           size?: number | SquareSize;
           square: string;
-        },
+        }
+      | string,
     color?: string,
     size?: number | SquareSize
   ) => unknown;
@@ -53,7 +53,7 @@ export type Chessboard2Instance = {
   flip: () => Chessboard2Orientation;
   getOrientation: () => Chessboard2Orientation;
   orientation: (
-    side?: Chessboard2Orientation | "flip"
+    side?: "flip" | Chessboard2Orientation
   ) => Chessboard2Orientation;
   position: (fen: string, animate?: boolean) => void;
   resize: () => void;

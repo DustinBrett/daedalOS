@@ -10,18 +10,18 @@ import {
   getModifiedTime,
 } from "components/system/Files/FileEntry/functions";
 import {
+  COMPLETE_ACTION,
   type Files,
   type NewPath,
-  COMPLETE_ACTION,
 } from "components/system/Files/FileManager/useFolder";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
+import { get9pSize } from "contexts/fileSystem/core";
 import {
   MILLISECONDS_IN_MINUTE,
   ONE_TIME_PASSIVE_EVENT,
   ROOT_SHORTCUT,
 } from "utils/constants";
 import { getExtension, haltEvent, toSorted } from "utils/functions";
-import { get9pSize } from "contexts/fileSystem/core";
 
 export type FileStat = Stats & {
   systemShortcut?: boolean;
@@ -95,9 +95,9 @@ export const sortContents = (
     const contentOrder = Object.keys(contents);
 
     return Object.fromEntries(
+      // eslint-disable-next-line unicorn/prefer-spread
       sortOrder
         .filter((entry) => contentOrder.includes(entry))
-        // eslint-disable-next-line unicorn/prefer-spread
         .concat(contentOrder.filter((entry) => !sortOrder.includes(entry)))
         .map((entry) => [entry, contents[entry]])
     );

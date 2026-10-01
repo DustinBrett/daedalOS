@@ -1,7 +1,7 @@
 import { basename, dirname, join } from "path";
-import ini from "ini";
 import { type FSModule } from "browserfs/dist/node/core/FS";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import ini from "ini";
 import { monacoExtensions } from "components/apps/MonacoEditor/extensions";
 import extensions from "components/system/Files/FileEntry/extensions";
 import { type FileInfo } from "components/system/Files/FileEntry/useFileInfo";
@@ -9,6 +9,7 @@ import { type FileStat } from "components/system/Files/FileManager/functions";
 import { get9pModifiedTime, isMountedFolder } from "contexts/fileSystem/core";
 import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import processDirectory from "contexts/process/directory";
+import shortcutCache from "public/.index/shortcutCache.json";
 import {
   AUDIO_FILE_EXTENSIONS,
   BASE_2D_CONTEXT_OPTIONS,
@@ -43,7 +44,6 @@ import {
   VIDEO_FILE_EXTENSIONS,
   YT_ICON_CACHE,
 } from "utils/constants";
-import shortcutCache from "public/.index/shortcutCache.json";
 import {
   blobToBase64,
   bufferToBlob,
@@ -352,7 +352,7 @@ export const getInfoWithExtension = (
   const subIcons: string[] = [];
   const getInfoByFileExtension = (
     icon?: string,
-    getIcon?: true | ((signal: AbortSignal) => void | Promise<void>)
+    getIcon?: ((signal: AbortSignal) => Promise<void> | void) | true
   ): void =>
     callback({
       getIcon,
@@ -388,174 +388,168 @@ export const getInfoWithExtension = (
     );
 
   switch (extension) {
-    case SHORTCUT_EXTENSION:
-      {
-        const handleShortcut = ({
-          comment,
-          icon,
-          pid,
-          url,
-        }: FileInfo): void => {
-          const urlExt = getExtension(url);
+    case SHORTCUT_EXTENSION: {
+      const handleShortcut = ({ comment, icon, pid, url }: FileInfo): void => {
+        const urlExt = getExtension(url);
 
-          if (pid !== "ExternalURL") subIcons.push(SHORTCUT_ICON);
+        if (pid !== "ExternalURL") subIcons.push(SHORTCUT_ICON);
 
-          if (pid === "FileExplorer" && !icon) {
-            const iconCallback = (newIcon?: string): void => {
-              if (!newIcon) return;
-
-              callback({
-                comment,
-                icon: newIcon,
-                pid,
-                subIcons,
-                url,
-              });
-            };
-            const getIcon = (): void => {
-              if (urlExt) {
-                getInfoWithExtension(fs, url, urlExt, ({ icon: extIcon }) =>
-                  iconCallback(extIcon)
-                );
-              } else {
-                getIconFromIni(fs, url).then(iconCallback);
-              }
-            };
+        if (pid === "FileExplorer" && !icon) {
+          const iconCallback = (newIcon?: string): void => {
+            if (!newIcon) return;
 
             callback({
               comment,
-              getIcon,
-              icon: processDirectory[pid]?.icon,
+              icon: newIcon,
               pid,
               subIcons,
               url,
             });
-          } else if (
-            DYNAMIC_EXTENSION.has(urlExt) ||
-            DYNAMIC_PREFIX.some((prefix) => url.startsWith(prefix))
-          ) {
-            const isCachedUrl = DYNAMIC_EXTENSION.has(urlExt);
-            const cachedIconPath = join(
-              ICON_CACHE,
-              `${isCachedUrl ? url : path}${ICON_CACHE_EXTENSION}`
-            );
+          };
+          const getIcon = (): void => {
+            if (urlExt) {
+              getInfoWithExtension(fs, url, urlExt, ({ icon: extIcon }) =>
+                iconCallback(extIcon)
+              );
+            } else {
+              getIconFromIni(fs, url).then(iconCallback);
+            }
+          };
 
-            fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
-              if (!statError && cachedIconStats) {
-                if (isExistingFile(cachedIconStats)) {
+          callback({
+            comment,
+            getIcon,
+            icon: processDirectory[pid]?.icon,
+            pid,
+            subIcons,
+            url,
+          });
+        } else if (
+          DYNAMIC_EXTENSION.has(urlExt) ||
+          DYNAMIC_PREFIX.some((prefix) => url.startsWith(prefix))
+        ) {
+          const isCachedUrl = DYNAMIC_EXTENSION.has(urlExt);
+          const cachedIconPath = join(
+            ICON_CACHE,
+            `${isCachedUrl ? url : path}${ICON_CACHE_EXTENSION}`
+          );
+
+          fs.lstat(cachedIconPath, (statError, cachedIconStats) => {
+            if (!statError && cachedIconStats) {
+              if (isExistingFile(cachedIconStats)) {
+                callback({
+                  comment,
+                  icon: cachedIconPath,
+                  pid,
+                  subIcons,
+                  url,
+                });
+              } else {
+                fs.readFile(cachedIconPath, (_readError, cachedIconData) =>
                   callback({
                     comment,
-                    icon: cachedIconPath,
+                    icon: bufferToUrl(cachedIconData as Buffer),
                     pid,
                     subIcons,
                     url,
-                  });
-                } else {
-                  fs.readFile(cachedIconPath, (_readError, cachedIconData) =>
+                  })
+                );
+              }
+            } else {
+              getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
+                const {
+                  getIcon,
+                  icon: urlIcon = icon,
+                  subIcons: fileSubIcons = [],
+                } = fileInfo;
+
+                if (fileSubIcons.length > 0) {
+                  subIcons.push(
+                    ...fileSubIcons.filter(
+                      (subIcon) => !subIcons.includes(subIcon)
+                    )
+                  );
+                }
+
+                callback({
+                  comment,
+                  getIcon,
+                  icon: urlIcon,
+                  pid,
+                  subIcons,
+                  url,
+                });
+              });
+            }
+          });
+        } else if (isYouTubeUrl(url)) {
+          const ytId = new URL(url).pathname.replace("/", "");
+          const cachedIconPath = join(
+            YT_ICON_CACHE,
+            `${ytId}${ICON_CACHE_EXTENSION}`
+          );
+          const baseFileInfo = {
+            comment,
+            pid,
+            url,
+          };
+          const isDefaultIcon =
+            !icon || icon === processDirectory.VideoPlayer.icon;
+          const videoSubIcons = [processDirectory.VideoPlayer.icon];
+
+          callback({
+            ...baseFileInfo,
+            getIcon: isDefaultIcon
+              ? () =>
+                  fs.exists(cachedIconPath, (cachedIconExists) =>
+                    callback({
+                      ...baseFileInfo,
+                      icon: cachedIconExists
+                        ? cachedIconPath
+                        : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
+                      subIcons: videoSubIcons,
+                    })
+                  )
+              : undefined,
+            icon: icon || processDirectory.VideoPlayer.icon,
+            subIcons: isDefaultIcon ? undefined : videoSubIcons,
+          });
+        } else {
+          callback({
+            comment,
+            getIcon: icon
+              ? undefined
+              : () =>
+                  getInfoWithExtension(fs, url, urlExt, ({ icon: extIcon }) =>
                     callback({
                       comment,
-                      icon: bufferToUrl(cachedIconData as Buffer),
+                      icon: extIcon || processDirectory[pid]?.icon,
                       pid,
                       subIcons,
                       url,
                     })
-                  );
-                }
-              } else {
-                getInfoWithExtension(fs, url, urlExt, (fileInfo) => {
-                  const {
-                    icon: urlIcon = icon,
-                    getIcon,
-                    subIcons: fileSubIcons = [],
-                  } = fileInfo;
+                  ),
+            icon: icon || UNKNOWN_ICON_PATH,
+            pid,
+            subIcons,
+            url,
+          });
+        }
+      };
 
-                  if (fileSubIcons.length > 0) {
-                    subIcons.push(
-                      ...fileSubIcons.filter(
-                        (subIcon) => !subIcons.includes(subIcon)
-                      )
-                    );
-                  }
-
-                  callback({
-                    comment,
-                    getIcon,
-                    icon: urlIcon,
-                    pid,
-                    subIcons,
-                    url,
-                  });
-                });
-              }
-            });
-          } else if (isYouTubeUrl(url)) {
-            const ytId = new URL(url).pathname.replace("/", "");
-            const cachedIconPath = join(
-              YT_ICON_CACHE,
-              `${ytId}${ICON_CACHE_EXTENSION}`
-            );
-            const baseFileInfo = {
-              comment,
-              pid,
-              url,
-            };
-            const isDefaultIcon =
-              !icon || icon === processDirectory.VideoPlayer.icon;
-            const videoSubIcons = [processDirectory.VideoPlayer.icon];
-
-            callback({
-              ...baseFileInfo,
-              getIcon: isDefaultIcon
-                ? () =>
-                    fs.exists(cachedIconPath, (cachedIconExists) =>
-                      callback({
-                        ...baseFileInfo,
-                        icon: cachedIconExists
-                          ? cachedIconPath
-                          : `https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`,
-                        subIcons: videoSubIcons,
-                      })
-                    )
-                : undefined,
-              icon: icon || processDirectory.VideoPlayer.icon,
-              subIcons: isDefaultIcon ? undefined : videoSubIcons,
-            });
-          } else {
-            callback({
-              comment,
-              getIcon: icon
-                ? undefined
-                : () =>
-                    getInfoWithExtension(fs, url, urlExt, ({ icon: extIcon }) =>
-                      callback({
-                        comment,
-                        icon: extIcon || processDirectory[pid]?.icon,
-                        pid,
-                        subIcons,
-                        url,
-                      })
-                    ),
-              icon: icon || UNKNOWN_ICON_PATH,
-              pid,
-              subIcons,
-              url,
-            });
-          }
-        };
-
-        fs.lstat(path, (statError, stats) => {
-          if (statError) getInfoByFileExtension();
-          else if (isExistingFile(stats)) {
-            handleShortcut(getCachedShortcut(path));
-          } else {
-            fs.readFile(path, (readError, contents): void => {
-              if (readError || !contents) getInfoByFileExtension();
-              else handleShortcut(getShortcutInfo(contents));
-            });
-          }
-        });
-      }
+      fs.lstat(path, (statError, stats) => {
+        if (statError) getInfoByFileExtension();
+        else if (isExistingFile(stats)) {
+          handleShortcut(getCachedShortcut(path));
+        } else {
+          fs.readFile(path, (readError, contents): void => {
+            if (readError || !contents) getInfoByFileExtension();
+            else handleShortcut(getShortcutInfo(contents));
+          });
+        }
+      });
       break;
+    }
     case ".exe":
       getInfoByFileExtension("/System/Icons/executable.webp", (signal) =>
         fs.readFile(path, async (error, contents = Buffer.from("")) => {
@@ -614,7 +608,7 @@ export const getInfoWithExtension = (
             containerElement.style.overflow = "hidden";
             containerElement.style.opacity = "0";
             containerElement.style.userSelect = "none";
-            // eslint-disable-next-line deprecation/deprecation
+            // eslint-disable-next-line typescript/no-deprecated
             containerElement.style.webkitUserSelect = "none";
 
             containerElement.innerHTML = contents.toString();

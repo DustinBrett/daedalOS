@@ -1,6 +1,6 @@
-import { StyleSheetManager, ThemeProvider } from "styled-components";
-import { memo } from "react";
 import { type FeatureBundle, LazyMotion } from "motion/react";
+import { memo } from "react";
+import { StyleSheetManager, ThemeProvider } from "styled-components";
 import { useThemeName } from "contexts/session";
 import GlobalStyle from "styles/GlobalStyle";
 import themes from "styles/themes";

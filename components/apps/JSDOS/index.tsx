@@ -5,7 +5,7 @@ import AppContainer from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
 const JSDOS: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer StyledComponent={StyledJSDOS} id={id} useHook={useJSDOS} />
+  <AppContainer id={id} StyledComponent={StyledJSDOS} useHook={useJSDOS} />
 );
 
 export default memo(JSDOS);

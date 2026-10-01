@@ -1,5 +1,4 @@
 import { extname } from "path";
-import { type IDisposable, type Terminal } from "xterm";
 import {
   useCallback,
   useEffect,
@@ -7,7 +6,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { PROMPT_CHARACTER, config } from "components/apps/Terminal/config";
+import { type IDisposable, type Terminal } from "xterm";
+import { config, PROMPT_CHARACTER } from "components/apps/Terminal/config";
 import {
   autoComplete,
   readClipboardToTerminal,
@@ -161,7 +161,7 @@ const useTerminal = ({
     if (terminal && localEcho) {
       terminal.textarea?.setAttribute("enterkeyhint", "send");
       currentOnKey = terminal.onKey(
-        ({ domEvent: { ctrlKey, code } }: OnKeyEvent) => {
+        ({ domEvent: { code, ctrlKey } }: OnKeyEvent) => {
           if (ctrlKey && code === "KeyV") {
             readClipboardToTerminal(localEcho, terminal);
           }
@@ -201,6 +201,7 @@ const useTerminal = ({
         autoComplete(files, localEcho);
         containerRef.current
           ?.querySelector(".terminal")
+          // eslint-disable-next-line unicorn/prefer-dom-node-dataset
           ?.setAttribute("data-autocomplete-files", "true");
       });
     }

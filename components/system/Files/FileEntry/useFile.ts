@@ -22,9 +22,9 @@ const useFile = (url: string, path: string): UseFile => {
   return useCallback(
     async (pid: string, icon?: string) => {
       const {
+        icon: processIcon,
         preferProcessIcon,
         singleton,
-        icon: processIcon,
       } = processDirectory[pid] || {};
       const activePid = singleton
         ? Object.keys(processesRef.current).find(

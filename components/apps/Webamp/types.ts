@@ -146,10 +146,10 @@ export type WebampApiResponse = {
 
 declare global {
   interface Window {
-    Webamp: typeof Webamp;
-    WebampGlobal: WebampCI;
     butterchurn: {
       default: unknown;
     };
+    Webamp: typeof Webamp;
+    WebampGlobal: WebampCI;
   }
 }

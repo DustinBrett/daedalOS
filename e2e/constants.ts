@@ -2,7 +2,6 @@ import { type Locator } from "@playwright/test";
 import { type SessionData } from "contexts/session/types";
 
 declare global {
-  // eslint-disable-next-line vars-on-top, no-var
   var capturedConsoleLogs: string[] | undefined;
 
   interface Window {
@@ -99,7 +98,7 @@ export const EXCLUDED_CONSOLE_LOGS = (
   return excludedConsoleLogs;
 };
 
-export type IsShown = boolean | ((browserName: string) => boolean);
+export type IsShown = ((browserName: string) => boolean) | boolean;
 
 export type MenuItems = Record<string, IsShown>;
 
@@ -276,7 +275,7 @@ export const START_MENU_FOLDERS = {
 };
 
 export const TEST_APP_CONTAINER_APP = "Marked";
-export const TEST_APP_CONTAINER_APP_TITLE = (file: string | null): string =>
+export const TEST_APP_CONTAINER_APP_TITLE = (file: null | string): string =>
   `${file || ""}.url - ${TEST_APP_CONTAINER_APP}`;
 
 export const TEST_APP = "FileExplorer";

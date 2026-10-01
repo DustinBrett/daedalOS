@@ -1,11 +1,13 @@
 import { basename, join, resolve } from "path";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import useProxyMenu, {
-  type ProxyState,
-} from "components/apps/Browser/useProxyMenu";
-import { ADDRESS_INPUT_PROPS } from "components/apps/FileExplorer/AddressBar";
-import useHistoryMenu from "components/apps/Browser/useHistoryMenu";
-import useBookmarkMenu from "components/apps/Browser/useBookmarkMenu";
+import {
+  bookmarks,
+  DINO_GAME,
+  HOME_PAGE,
+  NOT_FOUND,
+  PROXIES,
+  SURF_TO_MISC,
+} from "components/apps/Browser/config";
 import {
   createDirectoryIndex,
   type DirectoryEntries,
@@ -17,19 +19,23 @@ import {
   Stop,
 } from "components/apps/Browser/NavigationIcons";
 import StyledBrowser from "components/apps/Browser/StyledBrowser";
-import {
-  DINO_GAME,
-  HOME_PAGE,
-  NOT_FOUND,
-  PROXIES,
-  SURF_TO_MISC,
-  bookmarks,
-} from "components/apps/Browser/config";
+import useBookmarkMenu from "components/apps/Browser/useBookmarkMenu";
+import useHistoryMenu from "components/apps/Browser/useHistoryMenu";
+import useProxyMenu, {
+  type ProxyState,
+} from "components/apps/Browser/useProxyMenu";
+import { ADDRESS_INPUT_PROPS } from "components/apps/FileExplorer/AddressBar";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import {
+  getInfoWithExtension,
+  getModifiedTime,
+  getShortcutInfo,
+} from "components/system/Files/FileEntry/functions";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions, useFs } from "contexts/fileSystem";
 import { hasProcess, useProcess, useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
+import { useSessionActions } from "contexts/session";
 import useHistory from "hooks/useHistory";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
@@ -40,22 +46,16 @@ import {
   SHORTCUT_EXTENSION,
 } from "utils/constants";
 import {
-  GOOGLE_SEARCH_QUERY,
-  LOCAL_HOST,
   getExtension,
   getUrlOrSearch,
+  GOOGLE_SEARCH_QUERY,
   haltEvent,
   label,
+  LOCAL_HOST,
 } from "utils/functions";
-import {
-  getInfoWithExtension,
-  getModifiedTime,
-  getShortcutInfo,
-} from "components/system/Files/FileEntry/functions";
-import { useSessionActions } from "contexts/session";
 
 declare module "react" {
-  interface IframeHTMLAttributes<T> extends React.HTMLAttributes<T> {
+  interface IframeHTMLAttributes<T> extends HTMLAttributes<T> {
     credentialless?: "credentialless";
   }
 }
@@ -64,8 +64,8 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const {
     icon: setIcon,
     linkElement,
-    url: changeUrl,
     open,
+    url: changeUrl,
   } = useProcessesActions();
   const process = useProcess(id);
   const { setForegroundId, updateRecentFiles } = useSessionActions();
@@ -74,7 +74,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
   const initialUrl = url || HOME_PAGE;
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(initialUrl, id);
-  const { exists, stat, readFile, readdir } = useFileSystemActions();
+  const { exists, readdir, readFile, stat } = useFileSystemActions();
   const fs = useFs();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -166,7 +166,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
                 processedUrl.search.replace(";", "&")
               ).entries()
             );
-            const { O: order, C: column } = searchParams;
+            const { C: column, O: order } = searchParams;
             const isAscending = !order || order === "A";
 
             let newSrcDoc = NOT_FOUND;
@@ -469,7 +469,7 @@ const Browser: FC<ComponentProcessProps> = ({ id }) => {
         </Button>
       </nav>
       <nav aria-label="Bookmarks">
-        {bookmarks.map(({ name, icon, url: bookmarkUrl }) => (
+        {bookmarks.map(({ icon, name, url: bookmarkUrl }) => (
           <Button
             key={name}
             onClick={({ ctrlKey }) => {

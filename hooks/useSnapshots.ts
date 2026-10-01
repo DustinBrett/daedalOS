@@ -1,13 +1,13 @@
 import { dirname, join } from "path";
 import { useCallback } from "react";
 import { useFileSystemActions } from "contexts/fileSystem";
-import { SAVE_PATH, ICON_CACHE, ICON_CACHE_EXTENSION } from "utils/constants";
+import { ICON_CACHE, ICON_CACHE_EXTENSION, SAVE_PATH } from "utils/constants";
 
 type Snapshot = {
   createSnapshot: (
     name: string,
     data: Buffer,
-    icon?: Buffer | (() => Promise<Buffer | undefined>),
+    icon?: (() => Promise<Buffer | undefined>) | Buffer,
     overwrite?: boolean,
     savePath?: string
   ) => Promise<string>;

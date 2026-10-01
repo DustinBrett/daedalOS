@@ -1,7 +1,7 @@
 type BaseLoadOptions = {
   allowScriptAccess?: boolean;
   autoplay?: "auto" | "off" | "on";
-  backgroundColor?: string | null;
+  backgroundColor?: null | string;
   letterbox?: "fullscreen" | "off" | "on";
   menu?: boolean;
   unmuteOverlay?: "hidden";

@@ -9,7 +9,7 @@ globalThis.addEventListener(
   "message",
   ({ data }: { data: DOMRect | OffscreenRenderProps | string }) => {
     if (data === "init") {
-      globalThis.tvmjsGlobalEnv = globalThis.tvmjsGlobalEnv || {};
+      globalThis.tvmjsGlobalEnv ||= {} as typeof globalThis.tvmjsGlobalEnv;
       globalThis.tvmjsGlobalEnv.logger = (type: string, message: string) => {
         if (type || message) console.info(`${type}: ${message}`);
         globalThis.postMessage({ message, type });

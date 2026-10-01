@@ -192,7 +192,7 @@ export class FlyAudio {
     });
   }
 
-  private voiceFor(fly: Fly): Voice | undefined {
+  private voiceFor(fly: Fly): undefined | Voice {
     const { ctx, master, noise } = this;
 
     if (!ctx || !master || !noise) return undefined;

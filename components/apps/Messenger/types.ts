@@ -54,4 +54,4 @@ export type NostrProfile = {
 
 export type ChatEvents = [string, Event[]][];
 
-export type DecryptedContent = Record<string, string | false>;
+export type DecryptedContent = Record<string, false | string>;

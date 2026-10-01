@@ -17,14 +17,14 @@ const StyledClock = styled.button.attrs({
   font-size: ${({ theme }) => theme.sizes.clock.fontSize};
   height: 100%;
   line-height: ${TASKBAR_HEIGHT - CLOCK_TEXT_HEIGHT_OFFSET}px;
-  max-width: ${({ theme, $width }) =>
+  max-width: ${({ $width, theme }) =>
     `calc(${$width}px + ${theme.sizes.clock.padding * 2}px)`};
-  min-width: ${({ theme, $width }) =>
+  min-width: ${({ $width, theme }) =>
     `calc(${$width}px + ${theme.sizes.clock.padding * 2}px)`};
   padding: ${({ theme }) => `0 ${theme.sizes.clock.padding}px`};
   place-content: center;
   position: absolute;
-  right: ${({ theme, $hasAI }) =>
+  right: ${({ $hasAI, theme }) =>
     $hasAI ? theme.sizes.taskbar.ai.buttonWidth : 0};
   white-space: nowrap;
 

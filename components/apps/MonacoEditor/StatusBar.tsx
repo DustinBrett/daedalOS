@@ -1,29 +1,29 @@
 import { basename, dirname } from "path";
 import { memo, useEffect, useState } from "react";
+import { getSaveFileInfo } from "components/apps/MonacoEditor/functions";
 import {
   ErrorIcon,
   InfoIcon,
   SaveIcon,
   WarningIcon,
 } from "components/apps/MonacoEditor/Icons";
-import StyledNotifications from "components/apps/MonacoEditor/StyledNotifications";
-import StyledStatusBar from "components/apps/MonacoEditor/StyledStatusBar";
-import { getSaveFileInfo } from "components/apps/MonacoEditor/functions";
 import {
-  type PrettierError,
   isPrettyLanguage,
+  type PrettierError,
   prettyPrint,
 } from "components/apps/MonacoEditor/language";
+import StyledNotifications from "components/apps/MonacoEditor/StyledNotifications";
+import StyledStatusBar from "components/apps/MonacoEditor/StyledStatusBar";
 import { type Model } from "components/apps/MonacoEditor/types";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess } from "contexts/process";
 import Button from "styles/common/Button";
-import { haltEvent, label } from "utils/functions";
 import { MILLISECONDS_IN_SECOND } from "utils/constants";
+import { haltEvent, label } from "utils/functions";
 
-type NotificationType = "error" | "warning" | "info";
+type NotificationType = "error" | "info" | "warning";
 
 const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
   const { editor, url } = useProcess(id);
@@ -85,7 +85,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
           window.monaco?.languages
             .getLanguages()
             .reduce(
-              (alias, { id: languageId, aliases }) =>
+              (alias, { aliases, id: languageId }) =>
                 languageId === modelLanguage ? aliases?.[0] || alias : alias,
               modelLanguage
             )

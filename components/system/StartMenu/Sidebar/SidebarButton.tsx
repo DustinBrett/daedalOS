@@ -1,7 +1,7 @@
 import { memo, useCallback } from "react";
 import StyledSidebarButton from "components/system/StartMenu/Sidebar/StyledSidebarButton";
-import { spotlightEffect } from "utils/spotlightEffect";
 import { hasFinePointer } from "utils/functions";
+import { spotlightEffect } from "utils/spotlightEffect";
 
 type SidebarButton = {
   action?: () => void;

@@ -1,4 +1,4 @@
-import { type Page, expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import {
   CALENDAR_LABEL,
   CLOCK_LABEL,
@@ -17,8 +17,8 @@ import {
   clickDesktop,
   clickSearchButton,
   clickStartButton,
-  fileExplorerEntriesAreVisible,
   disableWallpaper,
+  fileExplorerEntriesAreVisible,
   loadApp,
   loadTestApp,
   searchMenuIsHidden,
@@ -190,6 +190,7 @@ test.describe("engine focus behavior", () => {
     await page.evaluate(() => {
       document.body.dataset.focusEvents = "none";
 
+      // eslint-disable-next-line unicorn/consistent-function-scoping
       const record = (): void => {
         document.body.dataset.focusEvents = "fired";
       };

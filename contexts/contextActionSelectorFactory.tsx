@@ -8,8 +8,8 @@ import {
 } from "react";
 
 type ActionStateSelectorContext<A, S> = {
-  Provider: React.MemoExoticComponent<FC>;
   getCurrentState: () => S;
+  Provider: React.MemoExoticComponent<FC>;
   useContextActions: () => A;
   useStateSelector: <T>(selector: (state: S) => T) => T;
 };
@@ -54,9 +54,9 @@ const contextActionSelectorFactory = <A, S>(
   });
 
   return {
-    Provider,
     // Non-subscribing read for event handlers that only need current state
     getCurrentState: () => store.current,
+    Provider,
     useContextActions: () => useContext(ActionsContext),
     // Selectors must return referentially stable values for unchanged data
     useStateSelector: <T,>(selector: (state: S) => T): T =>

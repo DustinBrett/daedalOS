@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import StyledScreenSaver from "components/system/Dialogs/ScreenSaver/StyledScreenSaver";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
+import StyledScreenSaver from "components/system/Dialogs/ScreenSaver/StyledScreenSaver";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess, useProcessesActions } from "contexts/process";
 import {

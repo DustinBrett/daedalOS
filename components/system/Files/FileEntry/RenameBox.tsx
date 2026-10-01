@@ -1,9 +1,9 @@
 import { extname } from "path";
-import { useTheme } from "styled-components";
 import { memo, useCallback, useLayoutEffect, useMemo, useRef } from "react";
-import { type FileManagerViewNames } from "components/system/Files/Views";
+import { useTheme } from "styled-components";
 import { measureText } from "components/system/Files/FileEntry/functions";
 import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
+import { type FileManagerViewNames } from "components/system/Files/Views";
 import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 

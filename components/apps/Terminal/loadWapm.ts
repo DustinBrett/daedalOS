@@ -1,9 +1,9 @@
 import { basename, extname } from "path";
 import { type WASIBindings } from "wasi-js";
 import {
+  config,
   WAPM_STD_IN_APPS,
   WAPM_STD_IN_EXCLUDE_ARGS,
-  config,
 } from "components/apps/Terminal/config";
 import {
   clearAnsiBackground,
@@ -15,7 +15,7 @@ type WASIError = Error & {
   code: number;
 };
 
-let bindings: WASIBindings | null;
+let bindings: null | WASIBindings;
 
 const WASM_MAGIC_NUMBER = [0x00, 0x61, 0x73, 0x6d];
 const ATOM_MAGIC_NUMBER = [
@@ -156,7 +156,7 @@ const loadWapm = async (
   printLn: (message: string) => void,
   wasmFile?: Buffer,
   pipedCommand?: string
-): Promise<[string, Uint8Array | Buffer] | []> => {
+): Promise<[] | [string, Buffer | Uint8Array]> => {
   const args = commandArgs[0] === "run" ? commandArgs.slice(1) : commandArgs;
   const [{ lowerI64Imports }, { default: WASI }] = await Promise.all([
     import("@wasmer/wasm-transformer"),

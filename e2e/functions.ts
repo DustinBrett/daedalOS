@@ -1,18 +1,16 @@
-import { readFileSync, readdirSync, statSync } from "fs";
+import { readdirSync, readFileSync, statSync } from "fs";
 import { join } from "path";
 import AxeBuilder from "@axe-core/playwright";
 import {
   type ConsoleMessage,
   type Disposable,
+  expect,
   type Locator,
   type Page,
   type Response,
-  expect,
   test,
 } from "@playwright/test";
 import {
-  type IsShown,
-  type MenuItems,
   ACCESSIBILITY_EXCEPTION_IDS,
   BACKGROUND_CANVAS_SELECTOR,
   CALENDAR_LABEL,
@@ -20,6 +18,8 @@ import {
   CLOCK_REGEX,
   CONTEXT_MENU_ENTRIES_SELECTOR,
   CONTEXT_MENU_SELECTOR,
+  CURSOR_SPACE_LENGTH,
+  DEFAULT_SESSION,
   DESKTOP_ENTRIES_SELECTOR,
   DESKTOP_SELECTOR,
   EXACT,
@@ -29,22 +29,32 @@ import {
   FILE_EXPLORER_ENTRIES_RENAMING_SELECTOR,
   FILE_EXPLORER_ENTRIES_SELECTOR,
   FILE_EXPLORER_NAV_SELECTOR,
+  FILE_EXPLORER_SEARCH_BOX_SELECTOR,
   FILE_EXPLORER_SELECTOR,
   FLY_SELECTOR,
+  type IsShown,
+  type MenuItems,
   RIGHT_CLICK,
+  ROOT_PUBLIC_FOLDER,
   SEARCH_BUTTON_SELECTOR,
+  SEARCH_MENU_INPUT_SELECTOR,
+  SEARCH_MENU_RESULTS_SELECTOR,
   SEARCH_MENU_SELECTOR,
   SELECTION_SELECTOR,
   SHEEP_SELECTOR,
+  SHORTCUT_ICON_SELECTOR,
   START_BUTTON_SELECTOR,
   START_MENU_SELECTOR,
   START_MENU_SIDEBAR_SELECTOR,
+  TAB_SPACE_LENGTH,
   TASKBAR_ENTRIES_SELECTOR,
-  TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR,
   TASKBAR_ENTRY_LABEL_SUFFIX,
+  TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR,
   TASKBAR_ENTRY_PEEK_SELECTOR,
   TASKBAR_ENTRY_SELECTOR,
   TASKBAR_SELECTOR,
+  TERMINAL_ROWS_SELECTOR,
+  TERMINAL_SELECTOR,
   TEST_APP,
   TEST_APP_CONTAINER_APP,
   TYPE_DELAY,
@@ -53,16 +63,6 @@ import {
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_ICON_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
-  SEARCH_MENU_INPUT_SELECTOR,
-  SEARCH_MENU_RESULTS_SELECTOR,
-  FILE_EXPLORER_SEARCH_BOX_SELECTOR,
-  TERMINAL_ROWS_SELECTOR,
-  TERMINAL_SELECTOR,
-  ROOT_PUBLIC_FOLDER,
-  CURSOR_SPACE_LENGTH,
-  TAB_SPACE_LENGTH,
-  SHORTCUT_ICON_SELECTOR,
-  DEFAULT_SESSION,
 } from "e2e/constants";
 
 type TestProps = {
@@ -275,7 +275,7 @@ export const dragDesktopEntryToFileExplorer = async (
 export const dragWindowToDesktop = async ({
   page,
 }: TestProps): Promise<void> => {
-  const { width = 0, height = 0 } =
+  const { height = 0, width = 0 } =
     (await page.locator(WINDOW_TITLEBAR_SELECTOR).boundingBox()) || {};
 
   expect(width).toBeGreaterThan(0);
@@ -558,8 +558,8 @@ export const windowIsMaximized = async (
       await page.evaluate(
         ([windowSelector, taskbarSelector]) => {
           const {
-            clientWidth: windowWidth = 0,
             clientHeight: windowHeight = 0,
+            clientWidth: windowWidth = 0,
           } = document.querySelector(windowSelector) || {};
           const { clientHeight: taskbarHeight = 0 } =
             document.querySelector(taskbarSelector) || {};
@@ -895,7 +895,7 @@ export const taskbarEntriesAreVisible = async ({
 
 export const terminalHasText = async (
   { page }: TestProps,
-  text: string | RegExp,
+  text: RegExp | string,
   count = 1,
   cursorLine = false,
   exact = false
@@ -1063,7 +1063,7 @@ export const selectArea = async ({
   page,
   selection,
 }: TestPropsWithSelection): Promise<void> => {
-  const { x = 0, y = 0, width = 0, height = 0, up = false } = selection || {};
+  const { height = 0, up = false, width = 0, x = 0, y = 0 } = selection || {};
   await page.mouse.move(x, y);
   await page.mouse.down({ button: "left" });
   await page.mouse.move(x + width, y + height);
@@ -1083,7 +1083,7 @@ export const selectArea = async ({
 // loaders
 export const loadApp =
   (queryParams?: Record<string, string>) =>
-  async ({ page }: TestProps): Promise<Response | null> => {
+  async ({ page }: TestProps): Promise<null | Response> => {
     await page.addInitScript((session) => {
       window.DEBUG_DEFAULT_SESSION = session;
     }, DEFAULT_SESSION);
@@ -1095,16 +1095,16 @@ export const loadApp =
 
 export const loadTestApp = async ({
   page,
-}: TestProps): Promise<Response | null> => loadApp({ app: TEST_APP })({ page });
+}: TestProps): Promise<null | Response> => loadApp({ app: TEST_APP })({ page });
 
 export const loadContainerTestApp = async ({
   page,
-}: TestProps): Promise<Response | null> =>
+}: TestProps): Promise<null | Response> =>
   loadApp({ app: TEST_APP_CONTAINER_APP })({ page });
 
 export const loadAppWithCanvas = async ({
-  headless,
   browserName,
+  headless,
   page,
 }: TestProps): Promise<void> => {
   await loadApp()({ page });

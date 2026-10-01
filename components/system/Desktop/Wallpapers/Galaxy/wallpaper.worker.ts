@@ -2,8 +2,8 @@ import { type GalaxyConfig } from "components/system/Desktop/Wallpapers/Galaxy/c
 import { type GalaxyInputMessage } from "components/system/Desktop/Wallpapers/Galaxy/input";
 import {
   createGalaxyRenderer,
-  warmGalaxy,
   type GalaxyRenderer,
+  warmGalaxy,
 } from "components/system/Desktop/Wallpapers/Galaxy/renderer";
 import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 

@@ -5,7 +5,7 @@ import AppContainer from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
 const Ruffle: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer StyledComponent={StyledRuffle} id={id} useHook={useRuffle} />
+  <AppContainer id={id} StyledComponent={StyledRuffle} useHook={useRuffle} />
 );
 
 export default memo(Ruffle);

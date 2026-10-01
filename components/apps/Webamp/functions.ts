@@ -1,5 +1,5 @@
-import { type Track, type URLTrack } from "webamp";
 import { type Position } from "react-rnd";
+import { type Track, type URLTrack } from "webamp";
 import {
   type ButterChurnPresets,
   type ButterChurnWebampPreset,
@@ -195,7 +195,7 @@ export const loadMilkdropWhenNeeded = (webamp: WebampCI): void => {
 
         loadButterchurn(webamp, window.butterchurn.default);
 
-        const { playlist, main: mainWindow } = windows.genWindows || {};
+        const { main: mainWindow, playlist } = windows.genWindows || {};
         const { x = 0, y = 0 } =
           (playlist?.open ? playlist?.position : mainWindow?.position) || {};
 

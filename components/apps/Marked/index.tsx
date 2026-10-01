@@ -5,7 +5,7 @@ import AppContainer from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
 const Marked: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer StyledComponent={StyledMarked} id={id} useHook={useMarked}>
+  <AppContainer id={id} StyledComponent={StyledMarked} useHook={useMarked}>
     <article />
   </AppContainer>
 );

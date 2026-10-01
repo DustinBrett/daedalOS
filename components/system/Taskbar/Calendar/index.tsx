@@ -1,13 +1,13 @@
-import { useTheme } from "styled-components";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "styled-components";
+import {
+  celebrate,
+  CELEBRATIONS,
+  createCalendar,
+  type Calendar as ICalendar,
+} from "components/system/Taskbar/Calendar/functions";
 import { Down, Up } from "components/system/Taskbar/Calendar/Icons";
 import StyledCalendar from "components/system/Taskbar/Calendar/StyledCalendar";
-import {
-  CELEBRATIONS,
-  type Calendar as ICalendar,
-  celebrate,
-  createCalendar,
-} from "components/system/Taskbar/Calendar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import Button from "styles/common/Button";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";

@@ -1,6 +1,7 @@
-import { memo, useCallback, useState } from "react";
-import dynamic from "next/dynamic";
 import { AnimatePresence } from "motion/react";
+import dynamic from "next/dynamic";
+import { memo, useCallback, useState } from "react";
+import Clock from "components/system/Taskbar/Clock";
 import {
   importAIButton,
   importAIChat,
@@ -8,15 +9,14 @@ import {
   importSearch,
   importStartMenu,
 } from "components/system/Taskbar/functions";
-import Clock from "components/system/Taskbar/Clock";
 import SearchButton from "components/system/Taskbar/Search/SearchButton";
 import StartButton from "components/system/Taskbar/StartButton";
 import StyledTaskbar from "components/system/Taskbar/StyledTaskbar";
 import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { CLOCK_CANVAS_BASE_WIDTH, FOCUSABLE_ELEMENT } from "utils/constants";
-import { useWindowAI } from "hooks/useWindowAI";
 import { useAiEnabled } from "contexts/session";
+import { useWindowAI } from "hooks/useWindowAI";
+import { CLOCK_CANVAS_BASE_WIDTH, FOCUSABLE_ELEMENT } from "utils/constants";
 
 const AIButton = dynamic(importAIButton);
 const AIChat = dynamic(importAIChat);

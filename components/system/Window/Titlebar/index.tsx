@@ -1,14 +1,14 @@
 import { memo, useCallback, useRef } from "react";
 import rndDefaults from "components/system/Window/RndWindow/rndDefaults";
 import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
-import {
-  CloseIcon,
-  MaximizeIcon,
-  MaximizedIcon,
-  MinimizeIcon,
-} from "components/system/Window/Titlebar/WindowActionIcons";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
+import {
+  CloseIcon,
+  MaximizedIcon,
+  MaximizeIcon,
+  MinimizeIcon,
+} from "components/system/Window/Titlebar/WindowActionIcons";
 import { menuIsOpen, useMenuActions } from "contexts/menu";
 import { type MenuState } from "contexts/menu/useMenuContextState";
 import { useProcess } from "contexts/process";
@@ -36,8 +36,8 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
     hideMinimizeButton,
     hideTitlebarIcon,
     icon,
-    title,
     maximized,
+    title,
   } = useProcess(id);
   const { setForegroundId } = useSessionActions();
   const foregroundId = useForegroundId();

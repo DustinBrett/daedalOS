@@ -1,8 +1,8 @@
 import { basename, dirname, extname, join, relative } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { type AsyncZipOptions, type AsyncZippable } from "fflate";
 import { type ApiError } from "browserfs/dist/node/core/api_error";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import { type AsyncZipOptions, type AsyncZippable } from "fflate";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useTransferDialog, {
   type ObjectReader,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
@@ -17,11 +17,11 @@ import {
 import {
   type FileStat,
   findPathsRecursive,
+  getParentDirectories,
   removeInvalidFilenameCharacters,
   sortByDate,
   sortBySize,
   sortContents,
-  getParentDirectories,
 } from "components/system/Files/FileManager/functions";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import useSortBy, {
@@ -29,6 +29,7 @@ import useSortBy, {
   type SortByOrder,
 } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystemActions, useFs, usePasteList } from "contexts/fileSystem";
+import { type CaptureTriggerEvent } from "contexts/menu/useMenuContextState";
 import { useProcessesActions } from "contexts/process";
 import {
   useIconPositions,
@@ -54,7 +55,6 @@ import {
   saveUnpositionedDesktopIcons,
   updateIconPositions,
 } from "utils/functions";
-import { type CaptureTriggerEvent } from "contexts/menu/useMenuContextState";
 
 export type FileActions = {
   archiveFiles: (paths: string[]) => Promise<void>;

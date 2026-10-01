@@ -8,6 +8,7 @@ import {
   getInfoWithoutExtension,
 } from "components/system/Files/FileEntry/functions";
 import { type FileInfo } from "components/system/Files/FileEntry/useFileInfo";
+import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 import {
   FOLDER_FRONT_ICON,
   ICON_CACHE,
@@ -16,7 +17,6 @@ import {
   YT_ICON_CACHE,
 } from "utils/constants";
 import { getExtension, isYouTubeUrl } from "utils/functions";
-import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
 
 export type ResultInfo = {
   icon: string;
@@ -33,9 +33,9 @@ export const getResultInfo = async (
   if (!fs || signal?.aborted) return undefined;
 
   const {
-    subIcons,
     icon,
     pid = TEXT_EDITORS[0],
+    subIcons,
     url: infoUrl,
   } = await new Promise<FileInfo>((resolve) => {
     fs.lstat(url, (err, stats) => {

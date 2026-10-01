@@ -1,9 +1,9 @@
 import type * as Monaco from "monaco-editor";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import {
-  type Operation,
   type FileReaders,
   type ObjectReaders,
+  type Operation,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 
@@ -80,8 +80,8 @@ export type ProcessElements = {
 
 export type Process = ProcessArguments &
   ProcessElements & {
-    Component: React.ComponentType<ComponentProcessProps>;
     closing?: boolean;
+    Component: React.ComponentType<ComponentProcessProps>;
     defaultSize?: Size;
     dialogProcess?: boolean;
     hasWindow?: boolean;

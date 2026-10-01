@@ -1,14 +1,14 @@
-import { useTheme } from "styled-components";
-import { type Position } from "react-rnd";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
-import { type Size } from "components/system/Window/RndWindow/useResizable";
+import { type Position } from "react-rnd";
+import { useTheme } from "styled-components";
 import {
-  WINDOW_OFFSCREEN_BUFFER_PX,
   cascadePosition,
   centerPosition,
   isWindowOutsideBounds,
+  WINDOW_OFFSCREEN_BUFFER_PX,
 } from "components/system/Window/functions";
+import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
+import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { useProcess, useProcessesRef } from "contexts/process";
 import { useStackOrder, useWindowState } from "contexts/session";
 import { calcInitialPosition, getWindowViewport } from "utils/functions";

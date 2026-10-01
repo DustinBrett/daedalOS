@@ -1,11 +1,11 @@
 import { basename, extname } from "path";
-import { useEffect, useState } from "react";
-import { type Index } from "lunr";
 import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import { type FileSystem } from "browserfs/dist/node/core/file_system";
+import { type Index } from "lunr";
+import { useEffect, useState } from "react";
+import SEARCH_EXTENSIONS from "scripts/searchExtensions.json";
 import { useFileSystemActions, useRootFs } from "contexts/fileSystem";
 import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
-import SEARCH_EXTENSIONS from "scripts/searchExtensions.json";
 import {
   DISBALE_AUTO_INPUT_FEATURES,
   HIGH_PRIORITY_REQUEST,
@@ -75,7 +75,7 @@ const search = async (
     .trim()
     .replace(/\./g, " ")
     .replace(/\*~\^-\+/g, "");
-  const merged = new Map<string | number, Index.Result>();
+  const merged = new Map<number | string, Index.Result>();
 
   if (normalizedSearchTerm) {
     try {
@@ -102,7 +102,7 @@ const search = async (
   return [...merged.values()].map((result) => ({
     ...result,
     ref:
-      (Object.prototype.hasOwnProperty.call(basePaths, result.ref)
+      (Object.hasOwn(basePaths, result.ref)
         ? (basePaths[result.ref as keyof typeof basePaths] as string)
         : result.ref) || "",
   }));

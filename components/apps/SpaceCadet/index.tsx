@@ -6,8 +6,8 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 
 const SpaceCadet: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer
-    StyledComponent={StyledSpaceCadet}
     id={id}
+    StyledComponent={StyledSpaceCadet}
     useHook={useSpaceCadet}
   />
 );

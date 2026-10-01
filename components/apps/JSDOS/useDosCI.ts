@@ -1,7 +1,7 @@
 import { basename, join } from "path";
-import { useCallback, useEffect, useState } from "react";
-import { type DosInstance } from "emulators-ui/dist/types/js-dos";
 import { type CommandInterface } from "emulators";
+import { type DosInstance } from "emulators-ui/dist/types/js-dos";
+import { useCallback, useEffect, useState } from "react";
 import {
   globals,
   saveExtension,
@@ -10,6 +10,7 @@ import {
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { hasProcess, useProcess, useProcessesActions } from "contexts/process";
+import { useSnapshots } from "hooks/useSnapshots";
 import { SAVE_PATH, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import {
   bufferToUrl,
@@ -18,7 +19,6 @@ import {
   imgDataToBuffer,
 } from "utils/functions";
 import { cleanUpGlobals } from "utils/globals";
-import { useSnapshots } from "hooks/useSnapshots";
 
 const addJsDosConfig = async (
   buffer: Buffer,

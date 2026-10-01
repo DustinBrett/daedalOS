@@ -1,3 +1,4 @@
+import { type Event } from "nostr-tools";
 import {
   createContext,
   memo,
@@ -7,13 +8,12 @@ import {
   useMemo,
   useState,
 } from "react";
-import { type Event } from "nostr-tools";
-import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import {
   getKeyFromTags,
   getMessages,
   groupChatEvents,
 } from "components/apps/Messenger/functions";
+import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { useNostrEvents } from "components/apps/Messenger/hooks";
 import { type ChatEvents } from "components/apps/Messenger/types";
 
@@ -64,10 +64,7 @@ export const useMessages = (recipientPublicKey: string): MessageData => {
     if (
       currentMessages.length !== messages.length ||
       filteredEvents.length !==
-        messages.reduce<Event[]>(
-          (allMessages, [, moreMessages]) => [...allMessages, ...moreMessages],
-          []
-        ).length
+        messages.flatMap(([, moreMessages]) => moreMessages).length
     ) {
       setMessages(currentMessages);
     }

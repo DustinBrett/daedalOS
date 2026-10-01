@@ -1,4 +1,5 @@
 import { basename, dirname } from "path";
+import { type ApiError } from "browserfs/dist/node/core/api_error";
 import {
   type SetStateAction,
   useCallback,
@@ -7,17 +8,18 @@ import {
   useRef,
   useState,
 } from "react";
-import { type ApiError } from "browserfs/dist/node/core/api_error";
+import { WALLPAPER_PATHS } from "components/system/Desktop/Wallpapers/constants";
+import { getShortcutInfo } from "components/system/Files/FileEntry/functions";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystemActions, useRootFs } from "contexts/fileSystem";
 import {
-  type Views,
   type IconPositions,
   type RecentFiles,
   type SessionContextActions,
   type SessionContextState,
   type SessionData,
   type SortOrders,
+  type Views,
   type WallpaperFit,
   type WindowStates,
 } from "contexts/session/types";
@@ -43,8 +45,6 @@ import {
   preloadLibs,
   updateIconPositionsIfEmpty,
 } from "utils/functions";
-import { getShortcutInfo } from "components/system/Files/FileEntry/functions";
-import { WALLPAPER_PATHS } from "components/system/Desktop/Wallpapers/constants";
 
 const DEFAULT_SESSION = (
   typeof window === "object" && "DEBUG_DEFAULT_SESSION" in window
@@ -58,7 +58,7 @@ const useSessionContextState = (): {
   actions: SessionContextActions;
   state: SessionContextState;
 } => {
-  const { deletePath, readdir, readFile, writeFile, lstat } =
+  const { deletePath, lstat, readdir, readFile, writeFile } =
     useFileSystemActions();
   const rootFs = useRootFs();
   const [sessionLoaded, setSessionLoaded] = useState(false);
@@ -146,7 +146,7 @@ const useSessionContextState = (): {
   const setSortOrder = useCallback(
     (
       directory: string,
-      order: string[] | ((currentSortOrder: string[]) => string[]),
+      order: ((currentSortOrder: string[]) => string[]) | string[],
       sortBy?: SortBy,
       ascending?: boolean
     ): void =>

@@ -1,9 +1,9 @@
+import { useLayoutEffect, useState } from "react";
 import { type Props } from "react-rnd";
 import { useTheme } from "styled-components";
-import { useLayoutEffect, useState } from "react";
+import { minMaxSize } from "components/system/Window/functions";
 import useDefaultSize from "components/system/Window/RndWindow/useDefaultSize";
 import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
-import { minMaxSize } from "components/system/Window/functions";
 import { useProcess } from "contexts/process";
 import { useWindowState } from "contexts/session";
 

@@ -1,17 +1,17 @@
+import dynamic from "next/dynamic";
 import { memo, useCallback, useRef } from "react";
 import { useTheme } from "styled-components";
-import dynamic from "next/dynamic";
-import { sortFiles } from "components/system/Files/FileManager/functions";
-import { type SortBy } from "components/system/Files/FileManager/useSortBy";
-import StyledColumns from "components/system/Files/FileManager/Columns/StyledColumns";
 import {
-  DEFAULT_COLUMN_ORDER,
-  MAX_STEPS_PER_RESIZE,
   type ColumnName,
   type Columns as ColumnsObject,
+  DEFAULT_COLUMN_ORDER,
+  MAX_STEPS_PER_RESIZE,
 } from "components/system/Files/FileManager/Columns/constants";
-import { useSessionActions, useSortOrder } from "contexts/session";
+import StyledColumns from "components/system/Files/FileManager/Columns/StyledColumns";
+import { sortFiles } from "components/system/Files/FileManager/functions";
 import { type Files } from "components/system/Files/FileManager/useFolder";
+import { type SortBy } from "components/system/Files/FileManager/useSortBy";
+import { useSessionActions, useSortOrder } from "contexts/session";
 
 const Down = dynamic(() =>
   import("components/apps/FileExplorer/NavigationIcons").then((mod) => mod.Down)

@@ -3,8 +3,10 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GoTo, Refresh } from "components/apps/FileExplorer/NavigationIcons";
 import StyledAddressBar from "components/apps/FileExplorer/StyledAddressBar";
 import useAddressBarContextMenu from "components/apps/FileExplorer/useAddressBarContextMenu";
+import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess, useProcessesActions } from "contexts/process";
+import { useSessionActions } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -13,8 +15,6 @@ import {
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
 import { getExtension, label, notFound } from "utils/functions";
-import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
-import { useSessionActions } from "contexts/session";
 
 type AddressBarProps = {
   id: string;

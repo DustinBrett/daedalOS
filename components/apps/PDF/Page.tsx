@@ -1,4 +1,4 @@
-import { useRef, useEffect, memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import { useProcess, useProcessesActions } from "contexts/process";
 
 type PageProps = {
@@ -20,7 +20,7 @@ const Page: FC<PageProps> = ({ canvas, id, page }) => {
 
   useEffect(() => {
     const container = containerRef.current;
-    // eslint-disable-next-line no-undef-init, unicorn/no-useless-undefined
+    // eslint-disable-next-line unicorn/no-useless-undefined
     let observer: IntersectionObserver | undefined = undefined;
 
     if (

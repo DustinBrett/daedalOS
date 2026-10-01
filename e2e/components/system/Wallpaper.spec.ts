@@ -22,7 +22,7 @@ test.beforeEach(captureConsoleLogs());
 
 test("has background", loadAppWithCanvas);
 
-test("can change background", async ({ headless, browserName, page }) => {
+test("can change background", async ({ browserName, headless, page }) => {
   await disableWallpaper({ page });
   await loadAppWithCanvas({ browserName, headless, page });
   await sessionIsWriteable({ page });
@@ -55,7 +55,7 @@ test.describe("can set background", () => {
   test.beforeEach(fileExplorerEntriesAreVisible);
   test.beforeEach(backgroundCanvasMaybeIsVisible);
 
-  test("via image", async ({ headless, browserName, page }) => {
+  test("via image", async ({ browserName, headless, page }) => {
     await backgroundCanvasMaybeIsVisible({ browserName, headless, page });
 
     await clickFileExplorerEntry("audio.png", { page }, true);

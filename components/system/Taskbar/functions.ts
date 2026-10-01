@@ -3,7 +3,7 @@ import { PREVENT_SCROLL } from "utils/constants";
 export const START_BUTTON_TITLE = "Start";
 export const SEARCH_BUTTON_TITLE = "Type here to search";
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const importAIButton = () =>
   import("components/system/Taskbar/AI/AIButton");
 export const importAIChat = () => import("components/system/Taskbar/AI/AIChat");

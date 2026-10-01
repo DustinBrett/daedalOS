@@ -1,10 +1,10 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import useCanvasContextMenu from "components/apps/StableDiffusion/useCanvasContextMenu";
 import StyledStableDiffusion from "components/apps/StableDiffusion/StyledStableDiffusion";
 import {
   type Prompt,
   type StableDiffusionConfig,
 } from "components/apps/StableDiffusion/types";
+import useCanvasContextMenu from "components/apps/StableDiffusion/useCanvasContextMenu";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { runStableDiffusion } from "components/system/Desktop/Wallpapers/StableDiffusion";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";

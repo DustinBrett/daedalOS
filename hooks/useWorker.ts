@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 const useWorker = <T>(
   workerInit?: () => Worker,
   onMessage?: (message: MessageEvent<T>) => void
-): React.RefObject<Worker | undefined> => {
+): React.RefObject<undefined | Worker> => {
   const worker = useRef<Worker>(undefined);
 
   useEffect(() => {

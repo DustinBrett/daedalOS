@@ -35,7 +35,7 @@ test("has file entry", desktopEntriesAreVisible);
 
 test.describe("has selection", () => {
   test("has effect", async ({ page }) => {
-    const { width = 0, height = 0 } =
+    const { height = 0, width = 0 } =
       (await page.locator(DESKTOP_SELECTOR).boundingBox()) || {};
 
     await selectArea({

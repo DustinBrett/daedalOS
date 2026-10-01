@@ -1,11 +1,11 @@
 import { basename, dirname } from "path";
-import { useCallback, useEffect, useState } from "react";
 import loader from "@monaco-editor/loader";
 import type * as Monaco from "monaco-editor";
+import { useCallback, useEffect, useState } from "react";
 import {
-  URL_DELIMITER,
   config,
   theme,
+  URL_DELIMITER,
 } from "components/apps/MonacoEditor/config";
 import {
   detectLanguage,
@@ -24,7 +24,6 @@ import {
 import { getExtension } from "utils/functions";
 import { shareGlobal } from "utils/globals";
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
 const KeyS = 49 as Monaco.KeyCode;
 
 const useMonaco = ({
@@ -83,7 +82,7 @@ const useMonaco = ({
 
   useEffect(() => {
     editor?.onKeyDown(async (event) => {
-      const { ctrlKey, code, keyCode } = event;
+      const { code, ctrlKey, keyCode } = event;
 
       if (ctrlKey && (code === "KeyS" || keyCode === KeyS)) {
         event.preventDefault();

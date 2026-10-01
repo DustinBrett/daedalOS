@@ -1,7 +1,7 @@
 import { getFormattedSize, getMimeType, loadFiles } from "utils/functions";
 
 describe("gets mime type", () => {
-  test("xml", () => {
+  it("xml", () => {
     expect(getMimeType("sitemap.xml")).toBe("application/xml");
   });
 });
@@ -23,7 +23,7 @@ describe("gets formatted size", () => {
     [45266957, "43.1 MB"],
   ];
 
-  test.each(formattedSizeCases)("given %p render %p", (size, result) =>
+  it.each(formattedSizeCases)("given %p render %p", (size, result) =>
     expect(getFormattedSize(size)).toBe(result)
   );
 });
@@ -47,7 +47,7 @@ describe("loads scripts & styles", () => {
     HTMLScriptElement.prototype.addEventListener = mockOnLoadEventListener;
   });
 
-  test.each(scriptsStylesCases)(
+  it.each(scriptsStylesCases)(
     "load js files as <script /> & css files as <link />",
     async (urls) => {
       await loadFiles(urls);

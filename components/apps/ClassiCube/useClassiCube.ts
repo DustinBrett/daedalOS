@@ -1,20 +1,20 @@
-import { useTheme } from "styled-components";
 import { useEffect, useState } from "react";
+import { useTheme } from "styled-components";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcess } from "contexts/process";
 import { useWindowState } from "contexts/session";
+import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { haltEvent, loadFiles, pxToNum } from "utils/functions";
-import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 
 declare global {
   interface Window {
     CCModule: {
-      OnResize?: () => void;
       arguments: string[];
       canvas: HTMLCanvasElement;
+      OnResize?: () => void;
       postRun: (() => void)[];
       print: () => void;
       setCanvasSize?: (width: number, height: number) => void;
@@ -27,8 +27,8 @@ declare global {
 const useClassiCube = ({
   containerRef,
   id,
-  setLoading,
   loading,
+  setLoading,
 }: ContainerHookProps): void => {
   const mountEmFs = useEmscriptenMount();
   const { size } = useWindowState(id);
@@ -95,7 +95,7 @@ const useClassiCube = ({
               mountEmFs(newContentWindow.FS as EmscriptenFS, id);
             },
             () => {
-              const { width, height } = canvas.getBoundingClientRect() || {};
+              const { height, width } = canvas.getBoundingClientRect() || {};
 
               canvas.width = width;
               canvas.height = height;

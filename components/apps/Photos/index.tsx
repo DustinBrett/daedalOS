@@ -33,11 +33,11 @@ const { maxScale, minScale } = panZoomConfig;
 
 const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const { url: setUrl } = useProcessesActions();
-  const { componentWindow, closing = false, url = "" } = useProcess(id);
+  const { closing = false, componentWindow, url = "" } = useProcess(id);
   const [src, setSrc] = useState<Record<string, string>>({});
   const [brokenImage, setBrokenImage] = useState(false);
   const { prependFileToTitle } = useTitle(id);
-  const { readFile, readdir } = useFileSystemActions();
+  const { readdir, readFile } = useFileSystemActions();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const imageContainerRef = useRef<HTMLDivElement | null>(null);

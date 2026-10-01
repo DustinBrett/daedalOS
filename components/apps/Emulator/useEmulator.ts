@@ -2,9 +2,9 @@ import { basename, extname, join } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { type Core, emulatorCores } from "components/apps/Emulator/config";
 import {
+  type Emulator,
   type OnGameStart,
   type OnSaveState,
-  type Emulator,
 } from "components/apps/Emulator/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
@@ -12,11 +12,11 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcess, useProcessesActions } from "contexts/process";
+import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
+import { useSnapshots } from "hooks/useSnapshots";
 import { SAVE_PATH } from "utils/constants";
 import { bufferToUrl, getExtension, loadFiles } from "utils/functions";
 import { zipAsync } from "utils/zipFunctions";
-import { useSnapshots } from "hooks/useSnapshots";
-import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 
 const getCore = (extension: string): [string, Core] =>
   (Object.entries(emulatorCores).find(([, { ext }]) =>

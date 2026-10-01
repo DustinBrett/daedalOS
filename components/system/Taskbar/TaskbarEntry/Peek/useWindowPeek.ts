@@ -75,7 +75,7 @@ const renderFrame = async (
 };
 
 const useWindowPeek = (id: string): string => {
-  const { hidePeek, peekElement, peekImage, componentWindow, icon } =
+  const { componentWindow, hidePeek, icon, peekElement, peekImage } =
     useProcess(id);
   const previewTimer = useRef(0);
   const [imageSrc, setImageSrc] = useState("");

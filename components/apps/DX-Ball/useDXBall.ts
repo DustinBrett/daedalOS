@@ -21,7 +21,7 @@ declare global {
 }
 
 const useDXBall = ({ id, setLoading }: ContainerHookProps): void => {
-  const { readFile, writeFile, updateFolder } = useFileSystemActions();
+  const { readFile, updateFolder, writeFile } = useFileSystemActions();
   const { closing, libs = [] } = useProcess(id);
   const records = useRef("");
   const libLoadingRef = useRef(true);

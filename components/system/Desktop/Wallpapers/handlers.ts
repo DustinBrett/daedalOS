@@ -1,10 +1,10 @@
 import { MAX_RETRIES } from "components/system/Desktop/Wallpapers/constants";
 import {
-  type WallpaperHandler,
   type ApodResponse,
   type ArtInstituteOfChicagoResponse,
-  type MetMuseumSearchResponse,
   type MetMuseumObjectResponse,
+  type MetMuseumSearchResponse,
+  type WallpaperHandler,
 } from "components/system/Desktop/Wallpapers/types";
 import { type WallpaperFit } from "contexts/session/types";
 import {
@@ -14,11 +14,11 @@ import {
   MILLISECONDS_IN_SECOND,
 } from "utils/constants";
 import {
-  jsonFetch,
-  viewWidth,
-  isYouTubeUrl,
   getYouTubeUrlId,
+  isYouTubeUrl,
+  jsonFetch,
   viewHeight,
+  viewWidth,
 } from "utils/functions";
 
 const API_URL = {

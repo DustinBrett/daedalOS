@@ -1,8 +1,5 @@
-// eslint-disable-next-line import/consistent-type-specifier-style
-import type { ProfilePointer } from "nostr-tools/nip19";
-// eslint-disable-next-line import/consistent-type-specifier-style
-import type { NIP05Result } from "nostr-tools/nip05";
 import {
+  type Event,
   generatePrivateKey,
   getEventHash,
   getPublicKey,
@@ -10,11 +7,14 @@ import {
   nip04,
   nip19,
   validateEvent,
+  type VerifiedEvent,
   verifiedSymbol,
   verifySignature,
-  type Event,
-  type VerifiedEvent,
 } from "nostr-tools";
+// eslint-disable-next-line import/consistent-type-specifier-style
+import type { NIP05Result } from "nostr-tools/nip05";
+// eslint-disable-next-line import/consistent-type-specifier-style
+import type { ProfilePointer } from "nostr-tools/nip19";
 import {
   BASE_NIP05_URL,
   BASE_RW_RELAYS,
@@ -120,7 +120,7 @@ export const decryptMessage = async (
   id: string,
   content: string,
   pubkey: string
-): Promise<string | false> => {
+): Promise<false | string> => {
   if (decryptedContent[id] || decryptedContent[id] === false) {
     return decryptedContent[id];
   }
@@ -335,7 +335,7 @@ export const getPublicHexFromNostrAddress = (key: string): string => {
   }
 };
 
-const verifiedNip05Addresses: Record<string, string | number> = {};
+const verifiedNip05Addresses: Record<string, number | string> = {};
 
 const TIMEOUT_ERRORS = new Set([408, 504]);
 

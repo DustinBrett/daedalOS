@@ -1,7 +1,7 @@
 import { memo, useState } from "react";
+import { useNip05Domain } from "components/apps/Messenger/hooks";
 import { Avatar, Verified } from "components/apps/Messenger/Icons";
 import StyledProfile from "components/apps/Messenger/StyledProfile";
-import { useNip05Domain } from "components/apps/Messenger/hooks";
 import { label } from "utils/functions";
 
 type ProfileProps = {

@@ -11,8 +11,8 @@ import {
   disableWallpaper,
   dragFirstDesktopEntryToWindow,
   loadContainerTestApp,
-  windowTitlebarTextIsVisible,
   windowsAreVisible,
+  windowTitlebarTextIsVisible,
 } from "e2e/functions";
 
 test.beforeEach(captureConsoleLogs());

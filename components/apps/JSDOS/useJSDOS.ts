@@ -1,6 +1,6 @@
 import { basename, extname } from "path";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { type DosInstance } from "emulators-ui/dist/types/js-dos";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   CAPTURED_KEYS,
   dosOptions,

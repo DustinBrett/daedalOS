@@ -1,7 +1,7 @@
 import { basename } from "path";
 import extensions from "components/system/Files/FileEntry/extensions";
-import { getExtension, getTZOffsetISOString } from "utils/functions";
 import { ROOT_NAME } from "utils/constants";
+import { getExtension, getTZOffsetISOString } from "utils/functions";
 
 export type DirectoryEntries = {
   alt?: string;
@@ -31,21 +31,21 @@ const iconExtMap = {
 };
 
 const extensionIconToIndexIcon: Record<string, string> = {
-  "FutureSplash File": "portal",
-  "HTML Document": "layout",
-  "Media Playlist File": "movie",
-  "Picture File": "image2",
-  "Shockwave Flash File": "portal",
   audio: "sound2",
   compressed: "compressed",
   emulator: "portal",
   executable: "binary",
   font: "a",
+  "FutureSplash File": "portal",
+  "HTML Document": "layout",
   image: "diskimg",
   jsdos: "compressed",
   marked: "layout",
+  "Media Playlist File": "movie",
   pdf: "layout",
+  "Picture File": "image2",
   python: "p",
+  "Shockwave Flash File": "portal",
   tinymce: "layout",
   wapm: "binary",
 };

@@ -1,15 +1,16 @@
 import { basename, join } from "path";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import StyledLoading from "components/system/Apps/StyledLoading";
-import StatusBar from "components/system/Files/FileManager/StatusBar";
-import {
-  DEFAULT_COLUMNS,
-  type Columns as ColumnsObject,
-} from "components/system/Files/FileManager/Columns/constants";
 import FileEntry from "components/system/Files/FileEntry";
+import Columns from "components/system/Files/FileManager/Columns";
+import {
+  type Columns as ColumnsObject,
+  DEFAULT_COLUMNS,
+} from "components/system/Files/FileManager/Columns/constants";
 import StyledSelection from "components/system/Files/FileManager/Selection/StyledSelection";
 import useSelection from "components/system/Files/FileManager/Selection/useSelection";
+import StatusBar from "components/system/Files/FileManager/StatusBar";
 import useDraggableEntries from "components/system/Files/FileManager/useDraggableEntries";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import useFileKeyboardShortcuts from "components/system/Files/FileManager/useFileKeyboardShortcuts";
@@ -21,6 +22,7 @@ import {
   FileManagerViews,
 } from "components/system/Files/Views";
 import { useFileSystemActions, useRootFs } from "contexts/fileSystem";
+import { useForegroundId, useSessionActions, useView } from "contexts/session";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -30,8 +32,6 @@ import {
   START_MENU_PATH,
 } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
-import Columns from "components/system/Files/FileManager/Columns";
-import { useForegroundId, useSessionActions, useView } from "contexts/session";
 
 const StyledEmpty = dynamic(
   () => import("components/system/Files/FileManager/StyledEmpty")
@@ -89,7 +89,7 @@ const FileManager: FC<FileManagerProps> = ({
   const [renaming, setRenaming] = useState("");
   const [mounted, setMounted] = useState<boolean>(false);
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
-  const { blurEntry, focusEntry, focusedEntries, focusableEntry } =
+  const { blurEntry, focusableEntry, focusedEntries, focusEntry } =
     useFocusableEntries(fileManagerRef);
   const focusFunctions = useMemo(
     () => ({ blurEntry, focusEntry }),
@@ -106,7 +106,7 @@ const FileManager: FC<FileManagerProps> = ({
   const { lstat, mountFs } = useFileSystemActions();
   const rootFs = useRootFs();
   const { StyledFileEntry, StyledFileManager } = FileManagerViews[view];
-  const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
+  const { isSelecting, selectionEvents, selectionRect, selectionStyling } =
     useSelection(fileManagerRef, focusedEntries, focusFunctions, isDesktop);
   const draggableEntry = useDraggableEntries(
     url,
@@ -308,8 +308,8 @@ const FileManager: FC<FileManagerProps> = ({
                   fileActions={fileActions}
                   fileManagerId={id}
                   fileManagerRef={fileManagerRef}
-                  focusFunctions={focusFunctions}
                   focusedEntries={focusedEntries}
+                  focusFunctions={focusFunctions}
                   hasNewFolderIcon={isStartMenu}
                   hideShortcutIcon={hideShortcutIcons}
                   isDesktop={isDesktop}

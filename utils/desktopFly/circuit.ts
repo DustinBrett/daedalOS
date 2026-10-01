@@ -71,7 +71,6 @@ export const Role = {
   Ppl1: 20,
 } as const;
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type Role = (typeof Role)[keyof typeof Role];
 
 export const Side = {
@@ -80,7 +79,6 @@ export const Side = {
   Right: 1,
 } as const;
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type Side = (typeof Side)[keyof typeof Side];
 
 type Neuron = {

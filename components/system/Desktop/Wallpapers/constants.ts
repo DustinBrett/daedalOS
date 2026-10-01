@@ -1,6 +1,6 @@
 import {
-  type WallpaperMenuItem,
   type WallpaperFunc,
+  type WallpaperMenuItem,
 } from "components/system/Desktop/Wallpapers/types";
 import { type WallpaperFit } from "contexts/session/types";
 

@@ -1,5 +1,3 @@
-import { useTheme } from "styled-components";
-import { type Position } from "react-rnd";
 import {
   memo,
   useCallback,
@@ -9,6 +7,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { type Position } from "react-rnd";
+import { useTheme } from "styled-components";
 import Menu, { topLeftPosition } from "components/system/Menu";
 import {
   Checkmark,

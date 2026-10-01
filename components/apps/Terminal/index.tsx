@@ -6,8 +6,8 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 
 const Terminal: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer
-    StyledComponent={StyledTerminal}
     id={id}
+    StyledComponent={StyledTerminal}
     useHook={useTerminal}
   />
 );

@@ -1,5 +1,5 @@
-import { type Position } from "react-rnd";
 import { useRef, useState } from "react";
+import { type Position } from "react-rnd";
 import { createSelectionStyling } from "components/system/Files/FileManager/Selection/functions";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { type Size } from "components/system/Window/RndWindow/useResizable";

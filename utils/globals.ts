@@ -10,12 +10,12 @@ type SharedGlobal = {
 declare global {
   interface Window {
     Module: {
-      SDL2?: {
-        audioContext: AudioContext;
-      };
       arguments?: string[];
       canvas: HTMLCanvasElement;
       postRun: () => void;
+      SDL2?: {
+        audioContext: AudioContext;
+      };
       windowElement?: HTMLElement;
     };
     sharedGlobals?: Record<string, SharedGlobal>;
@@ -48,7 +48,7 @@ export const shareGlobal = (
     }
   }, assignTimeout);
 
-  window.sharedGlobals = window.sharedGlobals || {};
+  window.sharedGlobals ||= {};
 
   if (key in window.sharedGlobals) {
     window.sharedGlobals[key][SET_KEY] = callees;

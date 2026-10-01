@@ -1,15 +1,15 @@
 import {
-  useState,
-  useEffect,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
+  useState,
 } from "react";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
-import { PREVENT_SCROLL } from "utils/constants";
 import { useMenuIsOpen } from "contexts/menu";
 import { useProcess } from "contexts/process";
 import { useForegroundId, useSessionActions } from "contexts/session";
+import { PREVENT_SCROLL } from "utils/constants";
 
 type ContentWindow = Window & typeof globalThis;
 
@@ -70,7 +70,7 @@ const createIframe = (
   const contentDocument = iframe.contentDocument as Document;
 
   contentDocument.open();
-  // eslint-disable-next-line deprecation/deprecation
+  // eslint-disable-next-line typescript/no-deprecated
   contentDocument.write(`
     <!DOCTYPE html>
     ${styles ? `<head><style>${styles}</style></head>` : "<head />"}

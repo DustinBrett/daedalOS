@@ -4,7 +4,7 @@ import { useProcessesActions, useProcessesRef } from "contexts/process";
 import { PROCESS_DELIMITER, SHORTCUT_EXTENSION } from "utils/constants";
 import { getExtension } from "utils/functions";
 
-export type Operation = "Copying" | "Converting" | "Extracting" | "Moving";
+export type Operation = "Converting" | "Copying" | "Extracting" | "Moving";
 
 export type FileReaders = [File, string, FileReader][];
 

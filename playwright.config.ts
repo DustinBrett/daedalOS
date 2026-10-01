@@ -1,4 +1,4 @@
-import { type PlaywrightTestConfig, devices } from "@playwright/test";
+import { devices, type PlaywrightTestConfig } from "@playwright/test";
 
 const OVERRIDE_URL = "";
 const { CI, PORT = 3000 } = process.env;

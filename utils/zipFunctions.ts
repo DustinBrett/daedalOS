@@ -1,13 +1,13 @@
 import { basename, extname, join } from "path";
+import type SevenZip from "7z-wasm";
 import {
   type AsyncZipOptions,
   type AsyncZippable,
   type AsyncZippableFile,
   type Unzipped,
 } from "fflate";
-import type SevenZip from "7z-wasm";
-import { loadFiles } from "utils/functions";
 import { BASE_ZIP_CONFIG } from "utils/constants";
+import { loadFiles } from "utils/functions";
 
 export const createZippable = (path: string, file: Buffer): AsyncZippable =>
   path

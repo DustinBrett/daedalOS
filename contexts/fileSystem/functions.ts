@@ -1,18 +1,18 @@
 import { join } from "path";
 import type HTTPRequest from "browserfs/dist/node/backend/HTTPRequest";
 import type IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
-import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import type InMemoryFileSystem from "browserfs/dist/node/backend/InMemory";
-import { type FileSystemObserver } from "contexts/fileSystem/useFileSystemContextState";
-import { FS_HANDLES } from "utils/constants";
-import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
+import type OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import {
   BROWSER_FS_DB,
-  KEYVAL_STORE_NAME,
   getFileSystemHandles,
   getKeyValStore,
+  KEYVAL_STORE_NAME,
   supportsIndexedDB,
 } from "contexts/fileSystem/core";
+import { type RootFileSystem } from "contexts/fileSystem/useAsyncFs";
+import { type FileSystemObserver } from "contexts/fileSystem/useFileSystemContextState";
+import { FS_HANDLES } from "utils/constants";
 
 const KNOWN_IDB_DBS = [
   "/classicube",
@@ -77,7 +77,7 @@ export const removeFileSystemHandle = async (
 
 export const requestPermission = async (
   url: string
-): Promise<PermissionState | false> => {
+): Promise<false | PermissionState> => {
   const fsHandles = await getFileSystemHandles();
   const handle = fsHandles[url];
 

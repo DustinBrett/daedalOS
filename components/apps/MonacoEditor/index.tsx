@@ -8,8 +8,8 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 const MonacoEditor: FC<ComponentProcessProps> = ({ id }) => (
   <>
     <AppContainer
-      StyledComponent={StyledMonacoEditor}
       id={id}
+      StyledComponent={StyledMonacoEditor}
       useHook={useMonaco}
     />
     <StatusBar id={id} />

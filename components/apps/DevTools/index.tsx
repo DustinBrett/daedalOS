@@ -5,7 +5,7 @@ import AppContainer from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
 const DevTools: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer StyledComponent={StyledDevTools} id={id} useHook={useEruda}>
+  <AppContainer id={id} StyledComponent={StyledDevTools} useHook={useEruda}>
     <div />
   </AppContainer>
 );

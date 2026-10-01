@@ -1,6 +1,12 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ChatProfile from "components/apps/Messenger/ChatProfile";
+import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
+import {
+  decryptMessage,
+  prettyChatTimestamp,
+} from "components/apps/Messenger/functions";
+import { useNostrProfile } from "components/apps/Messenger/hooks";
 import {
   Avatar,
   CheckCircle,
@@ -11,12 +17,6 @@ import {
   useMessages,
 } from "components/apps/Messenger/MessageContext";
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
-import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
-import {
-  decryptMessage,
-  prettyChatTimestamp,
-} from "components/apps/Messenger/functions";
-import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { type DecryptedContent } from "components/apps/Messenger/types";
 import { clsx } from "utils/functions";
 
@@ -66,7 +66,7 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
           <ChatProfile publicKey={recipientPublicKey} />
           {messages.map(([timestamp, eventGroup], gropupIndex) =>
             eventGroup.map(
-              ({ created_at, id, pubkey, content }, messageIndex) => (
+              ({ content, created_at, id, pubkey }, messageIndex) => (
                 <li
                   key={id}
                   className={clsx({

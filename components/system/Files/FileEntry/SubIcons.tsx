@@ -1,7 +1,7 @@
 import { memo, useMemo } from "react";
 import {
-  type FileManagerViewNames,
   FileEntryIconSize,
+  type FileManagerViewNames,
 } from "components/system/Files/Views";
 import Icon from "styles/common/Icon";
 import {
@@ -19,7 +19,7 @@ type IconProps = {
 };
 
 type SharedSubIconProps = {
-  imgSize?: 64 | 32 | 16 | 8;
+  imgSize?: 16 | 32 | 64 | 8;
   isDesktop?: boolean;
 };
 
@@ -46,13 +46,13 @@ const SHORT_IMAGE_TRANSFORM_16 = "matrix(0.4, 0.14, 0, 0.8, -0.5, 2)";
 const NON_SUB_ICONS = new Set([SHORTCUT_ICON, FOLDER_FRONT_ICON]);
 
 const SubIcon: FC<SubIconProps> = ({
+  alt,
   baseIcon,
   icon,
   imgSize,
   isDesktop,
   isFirstImage,
   isHidden,
-  alt,
   totalSubIcons,
   view,
 }) => {

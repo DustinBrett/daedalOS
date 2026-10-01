@@ -16,6 +16,7 @@ export type ContainerHookProps = {
 type ContainerHook = (props: ContainerHookProps) => void;
 
 type AppContainerProps = {
+  id: string;
   StyledComponent?: IStyledComponent<
     "web",
     FastOmit<
@@ -26,17 +27,16 @@ type AppContainerProps = {
       never
     >
   >;
-  id: string;
   useHook: ContainerHook;
 };
 
 const StyledAppContainer = styled.div``;
 
 const AppContainer: FC<AppContainerProps> = ({
-  id,
-  useHook,
-  StyledComponent,
   children,
+  id,
+  StyledComponent,
+  useHook,
 }): React.JSX.Element => {
   const { url = "" } = useProcess(id);
   const containerRef = useRef<HTMLDivElement | null>(null);

@@ -6,8 +6,8 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 
 const Emulator: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer
-    StyledComponent={StyledEmulator}
     id={id}
+    StyledComponent={StyledEmulator}
     useHook={useEmulator}
   />
 );

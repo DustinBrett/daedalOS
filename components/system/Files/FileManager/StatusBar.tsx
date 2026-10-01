@@ -8,15 +8,15 @@ import {
   useState,
 } from "react";
 import { useTheme } from "styled-components";
-import { type FileManagerViewNames } from "components/system/Files/Views";
 import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
 import { type FileDrop } from "components/system/Files/FileManager/useFileDrop";
+import { type FileManagerViewNames } from "components/system/Files/Views";
 import { useFileSystemActions } from "contexts/fileSystem";
-import useResizeObserver from "hooks/useResizeObserver";
-import { getFormattedSize, haltEvent, label } from "utils/functions";
 import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
-import Icon from "styles/common/Icon";
+import useResizeObserver from "hooks/useResizeObserver";
 import Button from "styles/common/Button";
+import Icon from "styles/common/Icon";
+import { getFormattedSize, haltEvent, label } from "utils/functions";
 
 type StatusBarProps = {
   count: number;

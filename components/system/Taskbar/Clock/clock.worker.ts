@@ -1,8 +1,8 @@
 import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 import {
-  type LocaleTimeDate,
-  formatLocaleDateTime,
   CLOCK_TEXT_HEIGHT_OFFSET,
+  formatLocaleDateTime,
+  type LocaleTimeDate,
 } from "components/system/Taskbar/Clock/functions";
 import { getNtpAdjustedTime } from "components/system/Taskbar/Clock/ntp";
 import { type ClockSource } from "contexts/session/types";
@@ -71,7 +71,7 @@ let initialized = false;
 
 globalThis.addEventListener(
   "message",
-  ({ data }: { data: ClockSource | OffscreenRenderProps | "init" }) => {
+  ({ data }: { data: "init" | ClockSource | OffscreenRenderProps }) => {
     if (!initialized) {
       if (data === "init") {
         initialized = true;

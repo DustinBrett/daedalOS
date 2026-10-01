@@ -1,16 +1,17 @@
-import { useTheme } from "styled-components";
-import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { type Variant } from "motion/react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { useTheme } from "styled-components";
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
 import StyledStartMenu from "components/system/StartMenu/StyledStartMenu";
-import { updateInputValueOnReactElement } from "components/system/Taskbar/Search/functions";
 import {
+  maybeCloseTaskbarMenu,
   SEARCH_BUTTON_TITLE,
   START_BUTTON_TITLE,
-  maybeCloseTaskbarMenu,
 } from "components/system/Taskbar/functions";
+import { updateInputValueOnReactElement } from "components/system/Taskbar/Search/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
+import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
 import {
   FOCUSABLE_ELEMENT,
   PREVENT_SCROLL,
@@ -18,7 +19,6 @@ import {
   THIN_SCROLLBAR_WIDTH,
   THIN_SCROLLBAR_WIDTH_NON_WEBKIT,
 } from "utils/constants";
-import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;

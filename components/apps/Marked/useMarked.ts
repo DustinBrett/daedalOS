@@ -4,8 +4,8 @@ import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess } from "contexts/process";
-import { loadFiles } from "utils/functions";
 import { useLinkHandler } from "hooks/useLinkHandler";
+import { loadFiles } from "utils/functions";
 
 export type MarkedOptions = {
   headerIds: boolean;

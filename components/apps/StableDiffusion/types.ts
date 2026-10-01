@@ -2,11 +2,10 @@ export type Prompt = [string, string];
 
 type Prompts = Prompt[];
 
-/* eslint-disable vars-on-top, no-var  */
 declare global {
   var Tokenizer: {
-    TokenizerWasm: new (config: string) => (name: string) => Promise<unknown>;
     init: () => Promise<void>;
+    TokenizerWasm: new (config: string) => (name: string) => Promise<unknown>;
   };
   var sentencepiece: {
     sentencePieceProcessor: (url: string) => void;
@@ -25,7 +24,6 @@ declare global {
     systemPrompt: string;
   };
 }
-/* eslint-enable vars-on-top, no-var */
 
 export type StableDiffusionConfig = {
   prompts: Prompts;

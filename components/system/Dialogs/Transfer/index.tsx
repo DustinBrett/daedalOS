@@ -1,6 +1,5 @@
 import { basename, dirname } from "path";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledButton from "components/system/Dialogs/StyledButton";
 import StyledTransfer from "components/system/Dialogs/Transfer/StyledTransfer";
@@ -9,6 +8,7 @@ import {
   type ObjectReaders,
   type Operation,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
+import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { hasProcess, useProcess, useProcessesActions } from "contexts/process";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 import { haltEvent } from "utils/functions";

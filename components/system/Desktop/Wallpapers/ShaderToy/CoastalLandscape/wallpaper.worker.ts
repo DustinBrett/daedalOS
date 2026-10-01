@@ -1,14 +1,12 @@
 import { libs } from "components/system/Desktop/Wallpapers/ShaderToy/CoastalLandscape";
 import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 
-/* eslint-disable vars-on-top, no-var  */
 declare global {
   var effectInit: (canvas: OffscreenCanvas) => void;
   var updateLandscapeSize: () => void;
   var demoCanvasRect: DOMRect;
   var devicePixelRatio: number;
 }
-/* eslint-enable vars-on-top, no-var */
 
 globalThis.addEventListener(
   "message",

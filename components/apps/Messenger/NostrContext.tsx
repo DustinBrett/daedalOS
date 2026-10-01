@@ -11,15 +11,15 @@ import {
 } from "react";
 
 interface NostrContextType {
-  connectToRelays: (urls: string[]) => void;
   connectedRelays: Relay[];
+  connectToRelays: (urls: string[]) => void;
   publish: (event: NostrEvent) => void;
 }
 
 /* eslint-disable @typescript-eslint/no-empty-function */
 const NostrContext = createContext<NostrContextType>({
-  connectToRelays: () => {},
   connectedRelays: [],
+  connectToRelays: () => {},
   publish: () => {},
 });
 /* eslint-enable @typescript-eslint/no-empty-function */
@@ -98,8 +98,8 @@ const NostrProviderFC: FC<{ relayUrls: string[] }> = ({
     <NostrContext
       value={useMemo(
         () => ({
-          connectToRelays,
           connectedRelays: Object.values(connectedRelays),
+          connectToRelays,
           publish,
         }),
         [connectToRelays, connectedRelays, publish]

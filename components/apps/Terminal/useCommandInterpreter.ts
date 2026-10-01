@@ -1,16 +1,15 @@
 import { basename, dirname, extname, isAbsolute, join } from "path";
-import { type Terminal } from "xterm";
-import { useTheme } from "styled-components";
 import { useCallback, useEffect, useRef } from "react";
+import { useTheme } from "styled-components";
 import type UAParser from "ua-parser-js";
-import { runJs } from "components/apps/Terminal/js";
+import { type Terminal } from "xterm";
 import { colorAttributes, rgbAnsi } from "components/apps/Terminal/color";
 import {
   BACKUP_NAME_SERVER,
+  config,
   LINUX_IMAGE_PATH,
   PI_ASCII,
   PRIMARY_NAME_SERVER,
-  config,
 } from "components/apps/Terminal/config";
 import {
   aliases,
@@ -25,6 +24,7 @@ import {
   printTable,
   unknownCommand,
 } from "components/apps/Terminal/functions";
+import { runJs } from "components/apps/Terminal/js";
 import loadWapm from "components/apps/Terminal/loadWapm";
 import processGit from "components/apps/Terminal/processGit";
 import { runPython } from "components/apps/Terminal/python";
@@ -68,9 +68,9 @@ import {
 } from "utils/functions";
 import { convert } from "utils/imagemagick";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
+import { analyzeFileToText } from "utils/mediainfo";
 import { fullSearch } from "utils/search";
 import { convertSheet } from "utils/sheetjs";
-import { analyzeFileToText } from "utils/mediainfo";
 
 const COMMAND_NOT_SUPPORTED = "The system does not support the command.";
 const FILE_NOT_FILE = "The system cannot find the file specified.";
@@ -216,7 +216,6 @@ const useCommandInterpreter = (
       const lcBaseCommand = baseCommand.toLowerCase();
 
       try {
-        // eslint-disable-next-line sonarjs/max-switch-cases
         switch (lcBaseCommand) {
           case "cat":
           case "type": {
@@ -291,9 +290,9 @@ const useCommandInterpreter = (
               print(rgbAnsi(Number(r), Number(g), Number(b)));
             } else {
               const [[bg, fg] = []] = commandArgs;
-              const { rgb: bgRgb, name: bgName } =
+              const { name: bgName, rgb: bgRgb } =
                 colorAttributes[bg?.toUpperCase()] || {};
-              const { rgb: fgRgb, name: fgName } =
+              const { name: fgName, rgb: fgRgb } =
                 colorAttributes[fg?.toUpperCase()] || {};
 
               if (bgRgb) {
@@ -630,6 +629,7 @@ const useCommandInterpreter = (
                 .split("\n")
                 .map((entry) => entry.split("=")) || []
             ) as Record<string, string>;
+            // eslint-disable-next-line unicorn/consistent-function-scoping
             const isValidIp = (possibleIp: string): boolean => {
               const octets = possibleIp.split(".");
 
@@ -681,23 +681,22 @@ const useCommandInterpreter = (
             }
             break;
           }
-          case "mediainfo":
-            {
-              const [commandPath] = commandArgs;
+          case "mediainfo": {
+            const [commandPath] = commandArgs;
 
-              if (commandPath) {
-                const fullPath = await getFullPath(commandPath);
+            if (commandPath) {
+              const fullPath = await getFullPath(commandPath);
 
-                if (await exists(fullPath)) {
-                  try {
-                    printLn(await analyzeFileToText(await readFile(fullPath)));
-                  } catch {
-                    printLn("Failed to parse media file");
-                  }
+              if (await exists(fullPath)) {
+                try {
+                  printLn(await analyzeFileToText(await readFile(fullPath)));
+                } catch {
+                  printLn("Failed to parse media file");
                 }
               }
             }
             break;
+          }
           case "mount": {
             const [mountPoint, url, baseUrl] = commandArgs;
 
@@ -925,6 +924,7 @@ const useCommandInterpreter = (
             const [domainName] = commandArgs;
 
             if (domainName) {
+              // eslint-disable-next-line unicorn/consistent-function-scoping
               const nsLookup = async (
                 domain: string,
                 server = PRIMARY_NAME_SERVER[0]
@@ -1051,44 +1051,42 @@ const useCommandInterpreter = (
             break;
           case "py":
           case "python":
-          case "python3":
-            {
-              const [file] = commandArgs;
-              const fullSourcePath = await getFullPath(file);
+          case "python3": {
+            const [file] = commandArgs;
+            const fullSourcePath = await getFullPath(file);
 
-              if (await exists(fullSourcePath)) {
-                const code = await readFile(fullSourcePath);
+            if (await exists(fullSourcePath)) {
+              const code = await readFile(fullSourcePath);
 
-                if (code.length > 0) {
-                  await runPython(code.toString(), printLn);
-                }
-              } else {
-                const [, code = "version"] = command.split(" ");
-
-                await runPython(code, printLn);
+              if (code.length > 0) {
+                await runPython(code.toString(), printLn);
               }
+            } else {
+              const [, code = "version"] = command.split(" ");
+
+              await runPython(code, printLn);
             }
             break;
+          }
           case "qjs":
           case "quickjs":
-          case "node":
-            {
-              const [file] = commandArgs;
-              const fullSourcePath = await getFullPath(file);
+          case "node": {
+            const [file] = commandArgs;
+            const fullSourcePath = await getFullPath(file);
 
-              if (await exists(fullSourcePath)) {
-                const code = await readFile(fullSourcePath);
+            if (await exists(fullSourcePath)) {
+              const code = await readFile(fullSourcePath);
 
-                if (code.length > 0) {
-                  await runJs(code.toString(), printLn);
-                }
-              } else {
-                const [, code] = command.split(" ");
-
-                await runJs(code, printLn);
+              if (code.length > 0) {
+                await runJs(code.toString(), printLn);
               }
+            } else {
+              const [, code] = command.split(" ");
+
+              await runJs(code, printLn);
             }
             break;
+          }
           case "logout":
           case "restart":
           case "shutdown":

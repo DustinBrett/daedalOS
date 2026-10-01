@@ -1,14 +1,14 @@
-import { type Props, type RndResizeCallback } from "react-rnd";
-import { type DraggableEventHandler } from "react-draggable";
-import { useTheme } from "styled-components";
 import { useCallback, useMemo } from "react";
+import { type DraggableEventHandler } from "react-draggable";
+import { type Props, type RndResizeCallback } from "react-rnd";
+import { useTheme } from "styled-components";
+import { isWindowOutsideBounds } from "components/system/Window/functions";
 import rndDefaults, {
   RESIZING_DISABLED,
   RESIZING_ENABLED,
 } from "components/system/Window/RndWindow/rndDefaults";
 import useDraggable from "components/system/Window/RndWindow/useDraggable";
 import useResizable from "components/system/Window/RndWindow/useResizable";
-import { isWindowOutsideBounds } from "components/system/Window/functions";
 import { useProcess } from "contexts/process";
 import { useSessionActions } from "contexts/session";
 import { getWindowViewport, pxToNum } from "utils/functions";
@@ -61,7 +61,7 @@ const useRnd = (id: string): Props => {
     (
       _event,
       _direction,
-      { style: { height, width, transform } },
+      { style: { height, transform, width } },
       _delta,
       resizePosition
     ) => {

@@ -1,13 +1,12 @@
 import { type QuickJSContext } from "quickjs-emscripten";
 
-type Output = string | number | object;
+type Output = number | object | string;
 
 const addConsole = (
   vm: QuickJSContext,
   printOutput: (output: Output) => void
 ): void => {
   const logHandle = vm.newFunction("log", (...args) =>
-    // eslint-disable-next-line unicorn/no-array-callback-reference
     args.map(vm.dump).forEach(printOutput)
   );
   const consoleHandle = vm.newObject();

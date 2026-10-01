@@ -1,5 +1,10 @@
-import { useTheme } from "styled-components";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "styled-components";
+import { readPdfText } from "components/apps/PDF/functions";
+import {
+  AI_WORKER,
+  DEFAULT_CONVO_STYLE,
+} from "components/system/Taskbar/AI/constants";
 import {
   escapeHtml,
   formatWebLlmProgress,
@@ -20,21 +25,24 @@ import {
   StopIcon,
   WarningIcon,
 } from "components/system/Taskbar/AI/icons";
-import useAITransition from "components/system/Taskbar/AI/useAITransition";
-import {
-  AI_WORKER,
-  DEFAULT_CONVO_STYLE,
-} from "components/system/Taskbar/AI/constants";
 import StyledAIChat from "components/system/Taskbar/AI/StyledAIChat";
-import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
-import Button from "styles/common/Button";
 import {
-  canvasToBuffer,
-  clsx,
-  getExtension,
-  label,
-  viewWidth,
-} from "utils/functions";
+  type AIResponse,
+  type ConvoStyles,
+  type Message,
+  type MessageTypes,
+  type WebLlmProgress,
+  type WorkerResponse,
+} from "components/system/Taskbar/AI/types";
+import useAITransition from "components/system/Taskbar/AI/useAITransition";
+import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
+import useFocusable from "components/system/Window/useFocusable";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useSessionActions } from "contexts/session";
+import { useSnapshots } from "hooks/useSnapshots";
+import { useWindowAI } from "hooks/useWindowAI";
+import useWorker from "hooks/useWorker";
+import Button from "styles/common/Button";
 import {
   AI_TITLE,
   AI_WINDOW_ID,
@@ -43,20 +51,12 @@ import {
   SAVE_PATH,
 } from "utils/constants";
 import {
-  type MessageTypes,
-  type ConvoStyles,
-  type Message,
-  type WorkerResponse,
-  type WebLlmProgress,
-  type AIResponse,
-} from "components/system/Taskbar/AI/types";
-import useWorker from "hooks/useWorker";
-import useFocusable from "components/system/Window/useFocusable";
-import { useSessionActions } from "contexts/session";
-import { useWindowAI } from "hooks/useWindowAI";
-import { useFileSystemActions } from "contexts/fileSystem";
-import { readPdfText } from "components/apps/PDF/functions";
-import { useSnapshots } from "hooks/useSnapshots";
+  canvasToBuffer,
+  clsx,
+  getExtension,
+  label,
+  viewWidth,
+} from "utils/functions";
 
 type AIChatProps = {
   toggleAI: () => void;
@@ -205,7 +205,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         const docText = await readFile(docPath);
         const extension = getExtension(docPath);
 
-        if ([".html", ".htm", ".whtml"].includes(extension)) {
+        if ([".htm", ".html", ".whtml"].includes(extension)) {
           const domContent = new DOMParser().parseFromString(
             docText.toString(),
             "text/html"
@@ -445,7 +445,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         </div>
         <div className="conversation">
           {conversation.map(
-            ({ formattedText, type, text, withCanvas }, index) => (
+            ({ formattedText, text, type, withCanvas }, index) => (
               // eslint-disable-next-line react/no-array-index-key
               <div key={index} className={type}>
                 {(index === 0 || conversation[index - 1].type !== type) && (

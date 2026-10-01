@@ -1,16 +1,16 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { type Event } from "nostr-tools";
-import Profile from "components/apps/Messenger/Profile";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   copyKeyMenuItems,
   decryptMessage,
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
+import Profile from "components/apps/Messenger/Profile";
 import { useMenuActions } from "contexts/menu";
+import { useIsVisible } from "hooks/useIsVisible";
 import Button from "styles/common/Button";
 import { MENU_SEPERATOR, MILLISECONDS_IN_MINUTE } from "utils/constants";
-import { useIsVisible } from "hooks/useIsVisible";
 
 type ContactProps = {
   lastEvent: Event;

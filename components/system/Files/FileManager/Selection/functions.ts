@@ -33,7 +33,7 @@ export const isSelectionIntersecting = (
   selection: SelectionRect,
   containerScrollTop: number
 ): boolean => {
-  const { x = 0, y = 0, width = 0, height = 0 } = selection;
+  const { height = 0, width = 0, x = 0, y = 0 } = selection;
   const selectionRect = new DOMRect(x, y, Number(width), Number(height));
 
   return !(

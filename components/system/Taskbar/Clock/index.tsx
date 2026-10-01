@@ -1,12 +1,13 @@
-import { useTheme } from "styled-components";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { importCalendar } from "components/system/Taskbar/functions";
+import { useTheme } from "styled-components";
 import { measureText } from "components/system/Files/FileEntry/functions";
-import StyledClock from "components/system/Taskbar/Clock/StyledClock";
 import { type LocaleTimeDate } from "components/system/Taskbar/Clock/functions";
+import StyledClock from "components/system/Taskbar/Clock/StyledClock";
 import useClockContextMenu from "components/system/Taskbar/Clock/useClockContextMenu";
+import { importCalendar } from "components/system/Taskbar/functions";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { useClockSource } from "contexts/session";
+import { useMenuPreload } from "hooks/useMenuPreload";
 import useWorker from "hooks/useWorker";
 import {
   CLICK_FOCUSABLE_ELEMENT,
@@ -18,9 +19,8 @@ import {
   createOffscreenCanvas,
   hasOffscreenCanvasSupport,
 } from "utils/functions";
-import { useMenuPreload } from "hooks/useMenuPreload";
 
-type ClockWorkerResponse = LocaleTimeDate | "source";
+type ClockWorkerResponse = "source" | LocaleTimeDate;
 
 const EASTER_EGG_CLICK_COUNT = 7;
 

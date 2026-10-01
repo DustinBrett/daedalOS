@@ -1,4 +1,4 @@
-import { type RuleSet, css } from "styled-components";
+import { css, type RuleSet } from "styled-components";
 import { TASKBAR_HEIGHT } from "utils/constants";
 
 const TaskbarPanel = (

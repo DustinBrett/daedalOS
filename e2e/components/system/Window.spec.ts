@@ -22,8 +22,8 @@ import {
   windowIsMaximized,
   windowIsOpaque,
   windowIsTransparent,
-  windowTitlebarTextIsVisible,
   windowsAreVisible,
+  windowTitlebarTextIsVisible,
 } from "e2e/functions";
 
 test.beforeEach(captureConsoleLogs());
@@ -99,10 +99,10 @@ test("can drag", async ({ page }) => {
 test("can resize", async ({ page }) => {
   const windowElement = page.locator(WINDOW_SELECTOR);
   const {
+    height: initialHeight = 0,
+    width: initialWidth = 0,
     x = 0,
     y = 0,
-    width: initialWidth = 0,
-    height: initialHeight = 0,
   } = (await windowElement.boundingBox()) || {};
   const RESIZE_OFFSET = 25;
 
@@ -110,7 +110,7 @@ test("can resize", async ({ page }) => {
   await page.mouse.down({ button: "left" });
   await page.mouse.move(x + RESIZE_OFFSET, y + RESIZE_OFFSET);
 
-  const { width: finalWidth = 0, height: finalHeight = 0 } =
+  const { height: finalHeight = 0, width: finalWidth = 0 } =
     (await windowElement.boundingBox()) || {};
 
   expect(finalWidth).toEqual(initialWidth - RESIZE_OFFSET);

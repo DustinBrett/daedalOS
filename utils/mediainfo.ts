@@ -1,4 +1,4 @@
-import { type Media, type FormatType, type MediaInfo } from "mediainfo.js";
+import { type FormatType, type Media, type MediaInfo } from "mediainfo.js";
 
 const getMediaInfo = async <T extends FormatType>(
   format: T

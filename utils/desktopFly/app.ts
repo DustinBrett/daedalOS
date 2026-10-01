@@ -29,33 +29,33 @@ import {
   type Frame,
   toScene,
 } from "utils/desktopFly/render";
+import { Rng } from "utils/desktopFly/rng";
 import {
-  type MovingRect,
-  type Threat,
   addThreat,
   appearanceThreat,
   cursorThreat,
   isContact,
+  type MovingRect,
   rectThreat,
   smallObjectDrive,
   takeoffStartle,
   tapThreat,
+  type Threat,
   threatLevel,
 } from "utils/desktopFly/senses";
-import { type Signals, circadianActivity } from "utils/desktopFly/signals";
+import { circadianActivity, type Signals } from "utils/desktopFly/signals";
 import {
   ledgesToScene,
   resetTerrainCache,
   senseTerrain,
 } from "utils/desktopFly/terrain";
 import {
-  SHEEP_ID_BASE,
-  WallpaperEye,
   classifyPoint,
   senseSheep,
   senseSound,
+  SHEEP_ID_BASE,
+  WallpaperEye,
 } from "utils/desktopFly/vision";
-import { Rng } from "utils/desktopFly/rng";
 
 /** How often the window list is re-read, in ms. DOM reads are cheap. */
 const TERRAIN_INTERVAL = 150;
@@ -1317,7 +1317,7 @@ export class FlyApp {
     const menuOpen = menu instanceof HTMLElement && menu.offsetHeight > 0;
 
     if (menuOpen && !this.menuWasOpen) {
-      const { left, right, top, bottom } = menu.getBoundingClientRect();
+      const { bottom, left, right, top } = menu.getBoundingClientRect();
 
       this.startleAt(
         {

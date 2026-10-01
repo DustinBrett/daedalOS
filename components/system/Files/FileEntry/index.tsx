@@ -1,5 +1,6 @@
 import { basename, dirname, extname, join } from "path";
-import { useTheme } from "styled-components";
+import { m as motion } from "motion/react";
+import dynamic from "next/dynamic";
 import {
   memo,
   useCallback,
@@ -9,11 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import dynamic from "next/dynamic";
-import { m as motion } from "motion/react";
-import { type Columns } from "components/system/Files/FileManager/Columns/constants";
-import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
-import SubIcons from "components/system/Files/FileEntry/SubIcons";
+import { useTheme } from "styled-components";
 import {
   getCachedIconUrl,
   getCachedShortcut,
@@ -21,23 +18,28 @@ import {
   getFileType,
   getTextWrapData,
 } from "components/system/Files/FileEntry/functions";
+import StyledFigure from "components/system/Files/FileEntry/StyledFigure";
+import SubIcons from "components/system/Files/FileEntry/SubIcons";
 import useFile from "components/system/Files/FileEntry/useFile";
 import useFileContextMenu from "components/system/Files/FileEntry/useFileContextMenu";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import FileManager from "components/system/Files/FileManager";
+import { type Columns } from "components/system/Files/FileManager/Columns/constants";
+import { type FileStat } from "components/system/Files/FileManager/functions";
 import { isSelectionIntersecting } from "components/system/Files/FileManager/Selection/functions";
 import { type SelectionRect } from "components/system/Files/FileManager/Selection/useSelection";
-import { type FileStat } from "components/system/Files/FileManager/functions";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { type FileActions } from "components/system/Files/FileManager/useFolder";
 import {
-  type FileManagerViewNames,
   FileEntryIconSize,
+  type FileManagerViewNames,
 } from "components/system/Files/Views";
 import { useFileSystemActions, useFs, usePasteList } from "contexts/fileSystem";
+import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
 import { useProcessesActions } from "contexts/process";
 import useDoubleClick from "hooks/useDoubleClick";
+import { useIsVisible } from "hooks/useIsVisible";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import {
@@ -69,8 +71,6 @@ import {
   preloadImage,
 } from "utils/functions";
 import { spotlightEffect } from "utils/spotlightEffect";
-import { useIsVisible } from "hooks/useIsVisible";
-import { UNKNOWN_SIZE } from "contexts/fileSystem/core";
 
 const ColumnRow = dynamic(
   () => import("components/system/Files/FileEntry/ColumnRow")
@@ -89,8 +89,8 @@ type FileEntryProps = {
   fileActions: FileActions;
   fileManagerId?: string;
   fileManagerRef: React.RefObject<HTMLOListElement | null>;
-  focusFunctions: FocusEntryFunctions;
   focusedEntries: string[];
+  focusFunctions: FocusEntryFunctions;
   hasNewFolderIcon?: boolean;
   hideShortcutIcon?: boolean;
   isDesktop?: boolean;
@@ -141,6 +141,7 @@ const FileEntry: FC<FileEntryProps> = ({
   fileManagerRef,
   focusedEntries,
   focusFunctions,
+  hasNewFolderIcon,
   hideShortcutIcon,
   isDesktop,
   isHeading,
@@ -153,7 +154,6 @@ const FileEntry: FC<FileEntryProps> = ({
   selectionRect,
   setRenaming,
   stats,
-  hasNewFolderIcon,
   view,
 }) => {
   const { blurEntry, focusEntry } = focusFunctions;

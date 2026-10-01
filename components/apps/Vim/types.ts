@@ -6,6 +6,12 @@ export type QueueItem = {
 };
 
 type VimModule = {
+  arguments: string[];
+  asmLibraryArg?: {
+    _vimjs_prepare_exit: () => void;
+  };
+  containerWindow?: HTMLElement | null;
+  exit?: () => void;
   FS?: EmscriptenFS;
   FS_createDataFile?: (
     parentPath: string,
@@ -20,27 +26,21 @@ type VimModule = {
     canRead: boolean,
     canWrite: boolean
   ) => void;
-  VIMJS_ALLOW_EXIT: boolean;
-  arguments: string[];
-  asmLibraryArg?: {
-    _vimjs_prepare_exit: () => void;
-  };
-  containerWindow?: HTMLElement | null;
-  exit?: () => void;
   memoryInitializerPrefixURL: string;
   postRun: (() => void)[];
   preRun: (() => void)[];
   print: (args: unknown) => void;
   printErr: (args: unknown) => void;
   quitCallback: () => void;
+  VIMJS_ALLOW_EXIT: boolean;
   writeCallback: (buffer: Uint8Array) => void;
 };
 
 declare global {
   interface Window {
     VimWrapperModule?: {
-      VimModule?: VimModule;
       init?: (config: VimModule) => void;
+      VimModule?: VimModule;
     };
   }
 }

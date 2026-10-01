@@ -1,4 +1,9 @@
 import { basename } from "path";
+import type * as PdfjsLib from "pdfjs-dist";
+import {
+  type PDFDocumentProxy,
+  type PDFWorker,
+} from "pdfjs-dist/types/src/display/api";
 import {
   type RefObject,
   useCallback,
@@ -6,11 +11,6 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  type PDFWorker,
-  type PDFDocumentProxy,
-} from "pdfjs-dist/types/src/display/api";
-import type * as PdfjsLib from "pdfjs-dist";
 import { type MetadataInfo } from "components/apps/PDF/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
@@ -44,7 +44,7 @@ const usePDF = (
   const { argument, url: setUrl } = useProcessesActions();
   const { libs = [], scale, url: processUrl } = useProcess(id);
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
-  const pdfWorker = useRef<PDFWorker | null>(null);
+  const pdfWorker = useRef<null | PDFWorker>(null);
   const renderPage = useCallback(
     async (
       pageNumber: number,

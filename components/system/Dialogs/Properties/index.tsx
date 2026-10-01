@@ -1,17 +1,17 @@
 import { basename, extname } from "path";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import GeneralTab from "components/system/Dialogs/Properties/GeneralTab";
 import StyledProperties from "components/system/Dialogs/Properties/StyledProperties";
 import useStats from "components/system/Dialogs/Properties/useStats";
 import StyledButton from "components/system/Dialogs/StyledButton";
+import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import useFileInfo from "components/system/Files/FileEntry/useFileInfo";
 import useTitle from "components/system/Window/useTitle";
 import { useProcess, useProcessesActions } from "contexts/process";
-import { haltEvent } from "utils/functions";
 import { PREVENT_SCROLL } from "utils/constants";
+import { haltEvent } from "utils/functions";
 
 const DetailsTab = dynamic(
   () => import("components/system/Dialogs/Properties/DetailsTab")
@@ -27,7 +27,7 @@ const MEDIA_APPS = new Set([
 
 const EXIF_TYPES = new Set([".jpg", "jpeg", ".tif", ".tiff"]);
 
-export type MetaData = Record<string, Record<string, string | number>>;
+export type MetaData = Record<string, Record<string, number | string>>;
 
 export type PropertiesMetaData = {
   exif?: MetaData;
@@ -48,7 +48,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const getIconAbortController = useRef<AbortController>(undefined);
   const propertiesRef = useRef<HTMLDivElement>(null);
   const closeOnEscape = useCloseOnEscape(id);
-  const [currentTab, setCurrentTab] = useState<"general" | "details">(
+  const [currentTab, setCurrentTab] = useState<"details" | "general">(
     "general"
   );
   const isShortcut = Boolean(process?.shortcutPath);

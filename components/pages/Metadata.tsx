@@ -1,7 +1,7 @@
-import { memo } from "react";
 import Head from "next/head";
-import { useFaviconAndTitle } from "components/pages/hooks/useFaviconAndTitle";
+import { memo } from "react";
 import { useCursor } from "components/pages/hooks/useCursor";
+import { useFaviconAndTitle } from "components/pages/hooks/useFaviconAndTitle";
 import desktopIcons from "public/.index/desktopIcons.json";
 import { HIGH_PRIORITY_ELEMENT, PACKAGE_DATA } from "utils/constants";
 import {
@@ -40,7 +40,7 @@ const PreloadIcons = memo(() =>
 );
 
 const Metadata: FC = () => {
-  const { title, Favicon } = useFaviconAndTitle();
+  const { Favicon, title } = useFaviconAndTitle();
 
   return (
     <Head>

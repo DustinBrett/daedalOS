@@ -11,6 +11,7 @@ const contextFactory = <T,>(
 
   return {
     Provider: memo<FC>(({ children }) => (
+      // eslint-disable-next-line react/jsx-no-constructed-context-values
       <Context value={useContextState()}>
         {children}
         {ContextComponent}

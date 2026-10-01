@@ -1,8 +1,8 @@
 import { type Position } from "react-rnd";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
+import { type FileManagerViewNames } from "components/system/Files/Views";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { type ThemeName } from "styles/themes";
-import { type FileManagerViewNames } from "components/system/Files/Views";
 
 declare global {
   interface Window {
@@ -74,7 +74,7 @@ export type SessionContextActions = {
   setRunHistory: React.Dispatch<React.SetStateAction<string[]>>;
   setSortOrder: (
     directory: string,
-    order: string[] | ((currentSortOrder: string[]) => string[]),
+    order: ((currentSortOrder: string[]) => string[]) | string[],
     sortBy?: SortBy,
     ascending?: boolean
   ) => void;

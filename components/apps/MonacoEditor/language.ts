@@ -29,7 +29,7 @@ const prettyLanguages = new Set([
 const getLanguageParser = async (
   language: string
 ): Promise<Parser | undefined> => {
-  if (["css", "sass", "less"].includes(language)) {
+  if (["css", "less", "sass"].includes(language)) {
     return {
       parser: language,
       plugins: [await import("prettier/plugins/postcss")],

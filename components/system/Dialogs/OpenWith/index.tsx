@@ -1,8 +1,8 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledOpenWith from "components/system/Dialogs/OpenWith/StyledOpenWith";
 import StyledOpenWithList from "components/system/Dialogs/OpenWith/StyledOpenWithList";
+import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { getProcessByFileExtension } from "components/system/Files/FileEntry/functions";
 import { useProcess, useProcessesActions } from "contexts/process";
 import directory from "contexts/process/directory";
@@ -63,7 +63,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
   const { url } = useProcess(id);
   const urlExtension = url ? getExtension(url) : "";
   const primaryExtensionProcesses = getProcessByFileExtension(urlExtension);
-  const { title: primaryTitle, icon: primaryIcon } =
+  const { icon: primaryIcon, title: primaryTitle } =
     (primaryExtensionProcesses && directory[primaryExtensionProcesses]) || {};
   const [selectedPid, setSelectedPid] = useState(primaryExtensionProcesses);
   const [closeOnBlur, setCloseOnBlur] = useState(false);

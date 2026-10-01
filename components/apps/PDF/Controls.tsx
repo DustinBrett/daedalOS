@@ -25,9 +25,9 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
   const { readFile } = useFileSystemActions();
   const { argument } = useProcessesActions();
   const {
+    componentWindow,
     count = 0,
     page: currentPage = 1,
-    componentWindow,
     rendering = false,
     scale = 1,
     subTitle = "",
@@ -56,7 +56,8 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
 
                 componentWindow
                   ?.querySelectorAll("li")
-                  [newPage - 1].scrollIntoView();
+                  .item(newPage - 1)
+                  .scrollIntoView();
               }}
               value={currentPage}
             />{" "}

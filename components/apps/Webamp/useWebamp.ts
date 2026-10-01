@@ -1,9 +1,7 @@
-import { type Options, type Track, type URLTrack } from "webamp";
 import { useCallback, useEffect, useRef } from "react";
+import { type Options, type Track, type URLTrack } from "webamp";
 import {
   BASE_WEBAMP_OPTIONS,
-  MAIN_WINDOW,
-  PLAYLIST_WINDOW,
   cleanBufferOnSkinLoad,
   closeEqualizer,
   createM3uPlaylist,
@@ -12,6 +10,8 @@ import {
   getWebampElement,
   loadButterchurnPreset,
   loadMilkdropWhenNeeded,
+  MAIN_WINDOW,
+  PLAYLIST_WINDOW,
   setSkinData,
   stopPresetCycle,
   tracksFromPlaylist,
@@ -24,6 +24,7 @@ import { useFileSystemActions } from "contexts/fileSystem";
 import { hasProcess, useProcess, useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSessionActions, useWindowState } from "contexts/session";
+import { useSnapshots } from "hooks/useSnapshots";
 import {
   AUDIO_PLAYLIST_EXTENSIONS,
   DESKTOP_PATH,
@@ -38,7 +39,6 @@ import {
   getHtmlToImage,
   haltEvent,
 } from "utils/functions";
-import { useSnapshots } from "hooks/useSnapshots";
 
 type Webamp = {
   initWebamp: (containerElement: HTMLDivElement, options: Options) => void;

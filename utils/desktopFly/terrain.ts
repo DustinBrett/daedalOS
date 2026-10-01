@@ -4,8 +4,8 @@
 // taskbar top as the screen floor. Ported from gnat's `terrain.rs` (MIT) with
 // Hyprland IPC swapped for the DOM.
 
-import { type Ledge } from "utils/desktopFly/fly";
 import { TASKBAR_HEIGHT } from "utils/constants";
+import { type Ledge } from "utils/desktopFly/fly";
 
 /** A walkable horizontal edge in screen coordinates. */
 type ScreenLedge = {

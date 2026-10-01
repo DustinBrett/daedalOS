@@ -1,4 +1,4 @@
-import { type RuleSet, css } from "styled-components";
+import { css, type RuleSet } from "styled-components";
 
 const Message = (text: string, color: string): RuleSet<object> => css`
   &::before {

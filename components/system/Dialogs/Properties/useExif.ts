@@ -3,11 +3,11 @@ import { type PropertiesMetaData } from "components/system/Dialogs/Properties";
 
 type NumberObject = { toString: () => string };
 
-type EXIFData = string | number | NumberObject;
+type EXIFData = number | NumberObject | string;
 
 type EXIFObject = Record<string, EXIFData>;
 
-const maybeConvertValue = (value: EXIFData): string | number => {
+const maybeConvertValue = (value: EXIFData): number | string => {
   if (typeof value === "number" || typeof value === "string") return value;
   if ("toString" in value) return value.toString();
 

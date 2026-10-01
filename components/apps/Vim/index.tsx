@@ -35,7 +35,6 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     const fileData = url ? await readFile(saveUrl) : Buffer.from("");
 
     window.VimWrapperModule?.init?.({
-      VIMJS_ALLOW_EXIT: true,
       arguments: [`${prependPath}${saveUrl}`],
       containerWindow: document
         .querySelector("#vimjs-container")
@@ -82,6 +81,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
       print: console.info,
       printErr: console.info,
       quitCallback: () => closeWithTransition(id),
+      VIMJS_ALLOW_EXIT: true,
       writeCallback: (data) =>
         setUpdateQueue((currentQueue) => [
           ...currentQueue,

@@ -1,5 +1,5 @@
-import { useTheme } from "styled-components";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "styled-components";
 import SidebarButton, {
   type SidebarButtons,
 } from "components/system/StartMenu/Sidebar/SidebarButton";

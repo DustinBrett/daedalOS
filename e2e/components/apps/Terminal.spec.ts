@@ -22,8 +22,8 @@ import {
   terminalHasRows,
   terminalHasText,
   windowIsHidden,
-  windowTitlebarTextIsVisible,
   windowsAreVisible,
+  windowTitlebarTextIsVisible,
 } from "e2e/functions";
 
 test.beforeEach(captureConsoleLogs());

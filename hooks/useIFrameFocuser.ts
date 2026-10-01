@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useSessionActions } from "contexts/session";
 import { useProcessesRef } from "contexts/process";
+import { useSessionActions } from "contexts/session";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 const useIFrameFocuser = (): void => {

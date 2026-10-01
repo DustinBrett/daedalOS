@@ -6,7 +6,7 @@ import {
   config,
   saveExtension,
 } from "components/apps/V86/config";
-import { type V86ImageConfig, getImageType } from "components/apps/V86/image";
+import { getImageType, type V86ImageConfig } from "components/apps/V86/image";
 import {
   type NavigatorWithMemory,
   type V86Config,
@@ -19,6 +19,7 @@ import { useFileSystemActions } from "contexts/fileSystem";
 import { fs9pV4ToV3 } from "contexts/fileSystem/core";
 import { hasProcess, useProcess } from "contexts/process";
 import { useForegroundId } from "contexts/session";
+import { useSnapshots } from "hooks/useSnapshots";
 import { SAVE_PATH, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import {
   bufferToUrl,
@@ -28,7 +29,6 @@ import {
   getHtmlToImage,
   loadFiles,
 } from "utils/functions";
-import { useSnapshots } from "hooks/useSnapshots";
 
 if (typeof window !== "undefined") {
   window.DEBUG = false;
@@ -47,7 +47,7 @@ const useV86 = ({
   const { appendFileToTitle } = useTitle(id);
   const shutdown = useRef(false);
   const [emulator, setEmulator] = useState<
-    Record<string, V86Starter | undefined>
+    Record<string, undefined | V86Starter>
   >({});
   const { exists, readFile } = useFileSystemActions();
   const saveStateAsync = useCallback(

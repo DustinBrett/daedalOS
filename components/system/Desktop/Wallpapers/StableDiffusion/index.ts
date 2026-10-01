@@ -16,7 +16,7 @@ export const runStableDiffusion = async (
   reUseCanvas = true
 ): Promise<void> => {
   if (!skipLibs) {
-    window.tvmjsGlobalEnv = window.tvmjsGlobalEnv || {};
+    window.tvmjsGlobalEnv ||= {} as typeof window.tvmjsGlobalEnv;
 
     await loadFiles(libs);
   }
@@ -41,7 +41,7 @@ export const runStableDiffusion = async (
     globalThis.tvmjsGlobalEnv.canvas = undefined;
   }
 
-  globalThis.tvmjsGlobalEnv.canvas = globalThis.tvmjsGlobalEnv.canvas || canvas;
+  globalThis.tvmjsGlobalEnv.canvas ||= canvas;
 
   const { prompts } = config;
 

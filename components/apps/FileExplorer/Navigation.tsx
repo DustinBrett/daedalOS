@@ -10,17 +10,17 @@ import {
 import SearchBar from "components/apps/FileExplorer/SearchBar";
 import StyledNavigation from "components/apps/FileExplorer/StyledNavigation";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
-import { useMenuActions, useMenu } from "contexts/menu";
+import { useMenu, useMenuActions } from "contexts/menu";
+import {
+  type CaptureTriggerEvent,
+  type MenuState,
+} from "contexts/menu/useMenuContextState";
 import { useProcess, useProcessesActions } from "contexts/process";
 import useHistory from "hooks/useHistory";
+import useResizeObserver from "hooks/useResizeObserver";
 import Button from "styles/common/Button";
 import { ROOT_NAME } from "utils/constants";
 import { haltEvent, label } from "utils/functions";
-import {
-  type MenuState,
-  type CaptureTriggerEvent,
-} from "contexts/menu/useMenuContextState";
-import useResizeObserver from "hooks/useResizeObserver";
 
 type NavigationProps = {
   addressBarRef: React.RefObject<HTMLInputElement | null>;
@@ -32,9 +32,9 @@ type NavigationProps = {
 const CONTEXT_MENU_OFFSET = 3;
 
 const Navigation: FC<NavigationProps> = ({
+  addressBarRef,
   hideSearch,
   id,
-  addressBarRef,
   searchBarRef,
 }) => {
   const { url: changeUrl } = useProcessesActions();
@@ -121,8 +121,8 @@ const Navigation: FC<NavigationProps> = ({
           else {
             const {
               height = 0,
-              y = 0,
               x = 0,
+              y = 0,
             } = navRef.current?.getBoundingClientRect() || {};
 
             onContextMenuCapture(

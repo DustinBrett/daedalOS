@@ -1,5 +1,5 @@
-import { useTheme } from "styled-components";
 import { useMemo } from "react";
+import { useTheme } from "styled-components";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { useProcess } from "contexts/process";
 import { DEFAULT_WINDOW_SIZE } from "utils/constants";

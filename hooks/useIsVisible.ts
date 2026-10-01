@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { DEFAULT_INTERSECTION_OPTIONS } from "utils/constants";
 
 export const useIsVisible = (
   elementRef: React.RefObject<HTMLElement | null>,
-  parentSelector?: string | React.RefObject<HTMLElement | null>,
+  parentSelector?: React.RefObject<HTMLElement | null> | string,
   alwaysVisible = false
 ): boolean => {
   const [isVisible, setIsVisible] = useState(alwaysVisible);

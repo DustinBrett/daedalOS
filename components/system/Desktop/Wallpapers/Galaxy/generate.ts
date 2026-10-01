@@ -814,6 +814,7 @@ export const generateGalaxy = (
     dustEmitted += 1;
   };
 
+  // eslint-disable-next-line no-unmodified-loop-condition
   while (dustEmitted < dustBudget) {
     const sampledA = 0.3 + random() ** 1.3 * 0.72;
 

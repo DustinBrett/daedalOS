@@ -56,7 +56,6 @@ export const speakMessage = (text: string): void => {
 };
 
 export const responseTweaks = (text: string): string => {
-  // eslint-disable-next-line sonarjs/no-dead-store
   let newText = text;
 
   newText = text.replace("</think></p>", "</p></think>");

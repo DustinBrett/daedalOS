@@ -4,10 +4,10 @@ import {
   type ContextMenuCapture,
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
-import { DESKTOP_PATH, SAVE_PATH } from "utils/constants";
 import { useSessionActions } from "contexts/session";
-import { canvasToBuffer } from "utils/functions";
 import { useSnapshots } from "hooks/useSnapshots";
+import { DESKTOP_PATH, SAVE_PATH } from "utils/constants";
+import { canvasToBuffer } from "utils/functions";
 
 const useCanvasContextMenu = (
   canvasRef: React.RefObject<HTMLCanvasElement | null>,

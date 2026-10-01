@@ -5,9 +5,9 @@ import {
   type PanzoomObject,
 } from "@panzoom/panzoom/dist/src/types";
 import { useCallback, useEffect, useState } from "react";
-import useResizeObserver from "hooks/useResizeObserver";
-import { useProcess } from "contexts/process";
 import useTitle from "components/system/Window/useTitle";
+import { useProcess } from "contexts/process";
+import useResizeObserver from "hooks/useResizeObserver";
 
 export const panZoomConfig = {
   cursor: "default",

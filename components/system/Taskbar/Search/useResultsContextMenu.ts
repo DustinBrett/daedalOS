@@ -13,9 +13,9 @@ const useResultsContextMenu = (url: string): ContextMenuCapture => {
     () =>
       contextMenu?.(() => [
         {
-          SvgIcon: OpenFolder,
           action: () => open("FileExplorer", { url: dirname(url) }, ""),
           label: "Open file location",
+          SvgIcon: OpenFolder,
         },
       ]),
     [contextMenu, open, url]

@@ -1,19 +1,20 @@
 import { basename, dirname } from "path";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
+import SubIcons from "components/system/Files/FileEntry/SubIcons";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
+import {
+  fileType,
+  getResultInfo,
+  type ResultInfo,
+} from "components/system/Taskbar/Search/functions";
 import {
   Open,
   OpenFolder,
   RightArrow,
 } from "components/system/Taskbar/Search/Icons";
 import StyledDetails from "components/system/Taskbar/Search/StyledDetails";
-import {
-  type ResultInfo,
-  fileType,
-  getResultInfo,
-} from "components/system/Taskbar/Search/functions";
 import { useFileSystemActions, useFs } from "contexts/fileSystem";
 import { type ProcessArguments } from "contexts/process/types";
 import { useSessionActions } from "contexts/session";
@@ -21,7 +22,6 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, ROOT_NAME, SHORTCUT_EXTENSION } from "utils/constants";
 import { getExtension, isYouTubeUrl, label } from "utils/functions";
-import SubIcons from "components/system/Files/FileEntry/SubIcons";
 
 const Details: FC<{
   openApp: (pid: string, args?: ProcessArguments) => void;

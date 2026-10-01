@@ -1,9 +1,4 @@
 import { memo, useCallback, useMemo } from "react";
-import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
-import { Back, Write } from "components/apps/Messenger/Icons";
-import { useNostr } from "components/apps/Messenger/NostrContext";
-import Profile from "components/apps/Messenger/Profile";
-import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import {
   copyKeyMenuItems,
@@ -12,7 +7,12 @@ import {
   getPrivateKey,
   getWebSocketStatusIcon,
 } from "components/apps/Messenger/functions";
+import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
+import { Back, Write } from "components/apps/Messenger/Icons";
+import { useNostr } from "components/apps/Messenger/NostrContext";
+import Profile from "components/apps/Messenger/Profile";
+import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
 import { type ProfileData } from "components/apps/Messenger/types";
 import { useMenuActions } from "contexts/menu";
 import Button from "styles/common/Button";
@@ -53,11 +53,11 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     picture,
     userName = "New message",
   } = useNostrProfile(pubkey);
-  const { connectToRelays, connectedRelays } = useNostr();
+  const { connectedRelays, connectToRelays } = useNostr();
   const connectedRelayData = useMemo(
     () =>
       Object.fromEntries(
-        connectedRelays.map(({ url, status }) => [url, status])
+        connectedRelays.map(({ status, url }) => [url, status])
       ),
     [connectedRelays]
   );

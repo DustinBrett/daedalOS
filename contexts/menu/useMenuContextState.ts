@@ -3,7 +3,6 @@ import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { isSafari } from "utils/functions";
 
 export type MenuItem = {
-  SvgIcon?: React.MemoExoticComponent<() => React.JSX.Element>;
   action?: () => void;
   checked?: boolean;
   disabled?: boolean;
@@ -12,6 +11,7 @@ export type MenuItem = {
   menu?: MenuItem[];
   primary?: boolean;
   seperator?: boolean;
+  SvgIcon?: React.MemoExoticComponent<() => React.JSX.Element>;
   toggle?: boolean;
   tooltip?: string;
 };

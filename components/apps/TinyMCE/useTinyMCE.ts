@@ -1,7 +1,7 @@
 import { basename, dirname, extname } from "path";
-import { type Editor, type NotificationSpec } from "tinymce";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DEFAULT_SAVE_PATH, config } from "components/apps/TinyMCE/config";
+import { type Editor, type NotificationSpec } from "tinymce";
+import { config, DEFAULT_SAVE_PATH } from "components/apps/TinyMCE/config";
 import {
   draggableEditor,
   setReadOnlyMode,
@@ -14,9 +14,9 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess, useProcessesActions } from "contexts/process";
 import { useSessionActions } from "contexts/session";
+import { useLinkHandler } from "hooks/useLinkHandler";
 import { DEFAULT_LOCALE, DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 import { getExtension, loadFiles } from "utils/functions";
-import { useLinkHandler } from "hooks/useLinkHandler";
 
 const TITLE_DATE_FORMATTER = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
   dateStyle: "medium",

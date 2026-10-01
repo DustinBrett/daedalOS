@@ -11,10 +11,10 @@ import {
   useStackOrder,
 } from "contexts/session";
 import { useViewport } from "contexts/viewport";
-import { AI_TITLE, MENU_SEPERATOR } from "utils/constants";
-import { toggleShowDesktop } from "utils/functions";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
 import { useWindowAI } from "hooks/useWindowAI";
+import { AI_TITLE, MENU_SEPERATOR } from "utils/constants";
+import { toggleShowDesktop } from "utils/functions";
 
 const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
   const { contextMenu } = useMenuActions();

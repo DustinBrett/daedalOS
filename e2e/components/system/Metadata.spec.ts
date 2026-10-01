@@ -1,8 +1,8 @@
 import { basename } from "path";
 import { expect, test } from "@playwright/test";
-import desktopIcons from "public/.index/desktopIcons.json";
 import { OG_TAGS } from "e2e/constants";
 import { loadApp } from "e2e/functions";
+import desktopIcons from "public/.index/desktopIcons.json";
 
 test.beforeEach(loadApp());
 

@@ -7,8 +7,8 @@ import { haltEvent } from "utils/functions";
 
 const BoxedWine: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer
-    StyledComponent={StyledBoxedWine}
     id={id}
+    StyledComponent={StyledBoxedWine}
     useHook={useBoxedWine}
   >
     <canvas

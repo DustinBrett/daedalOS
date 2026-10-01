@@ -1,22 +1,22 @@
 import { join } from "path";
-import { useTheme } from "styled-components";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { listenGalaxyInput } from "components/system/Desktop/Wallpapers/Galaxy/input";
-import { wallpaperHandler } from "components/system/Desktop/Wallpapers/handlers";
+import { useTheme } from "styled-components";
 import {
   BASE_CANVAS_SELECTOR,
   BASE_VIDEO_SELECTOR,
+  bgPositionSize,
   PRELOAD_ID,
   REDUCED_MOTION_PERCENT,
   STABLE_DIFFUSION_DELAY_IN_MIN,
   WALLPAPER_PATHS,
-  WALLPAPER_WORKERS,
   WALLPAPER_WORKER_NAMES,
-  bgPositionSize,
+  WALLPAPER_WORKERS,
 } from "components/system/Desktop/Wallpapers/constants";
+import { listenGalaxyInput } from "components/system/Desktop/Wallpapers/Galaxy/input";
+import { wallpaperHandler } from "components/system/Desktop/Wallpapers/handlers";
 import {
-  type WallpaperMessage,
   type WallpaperConfig,
+  type WallpaperMessage,
 } from "components/system/Desktop/Wallpapers/types";
 import { useFileSystemActions } from "contexts/fileSystem";
 import {
@@ -56,7 +56,7 @@ let slideshowFiles: Record<string, string[]> = {};
 const useWallpaper = (
   desktopRef: React.RefObject<HTMLElement | null>
 ): void => {
-  const { exists, lstat, readFile, readdir, updateFolder, writeFile } =
+  const { exists, lstat, readdir, readFile, updateFolder, writeFile } =
     useFileSystemActions();
   const { setWallpaper } = useSessionActions();
   const sessionLoaded = useSessionLoaded();
@@ -101,7 +101,7 @@ const useWallpaper = (
         return;
       }
 
-      let config: WallpaperConfig | undefined;
+      let config: undefined | WallpaperConfig;
       const { matches: prefersReducedMotion } = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       );

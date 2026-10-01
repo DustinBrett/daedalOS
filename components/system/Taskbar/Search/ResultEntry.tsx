@@ -1,26 +1,26 @@
 import { basename, extname } from "path";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import useResultsContextMenu from "components/system/Taskbar/Search/useResultsContextMenu";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   getModifiedTime,
   getShortcutInfo,
 } from "components/system/Files/FileEntry/functions";
+import SubIcons from "components/system/Files/FileEntry/SubIcons";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 import {
-  type ResultInfo,
   fileType,
   getResultInfo,
+  type ResultInfo,
 } from "components/system/Taskbar/Search/functions";
 import { RightArrow } from "components/system/Taskbar/Search/Icons";
+import useResultsContextMenu from "components/system/Taskbar/Search/useResultsContextMenu";
 import { useFileSystemActions, useFs } from "contexts/fileSystem";
 import { type ProcessArguments } from "contexts/process/types";
 import { useSessionActions } from "contexts/session";
+import { useIsVisible } from "hooks/useIsVisible";
 import Icon from "styles/common/Icon";
 import { DEFAULT_LOCALE, SHORTCUT_EXTENSION } from "utils/constants";
 import { getExtension, isYouTubeUrl, label } from "utils/functions";
-import { useIsVisible } from "hooks/useIsVisible";
-import SubIcons from "components/system/Files/FileEntry/SubIcons";
 
 type ResultEntryProps = {
   active?: boolean;
@@ -142,6 +142,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
   );
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
       ref={elementRef}
       className={active ? "active-item" : undefined}

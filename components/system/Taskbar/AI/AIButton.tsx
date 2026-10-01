@@ -1,16 +1,16 @@
 import { memo } from "react";
-import { importAIChat } from "components/system/Taskbar/functions";
 import { AIIcon } from "components/system/Taskbar/AI/icons";
 import StyledAIButton from "components/system/Taskbar/AI/StyledAIButton";
+import { importAIChat } from "components/system/Taskbar/functions";
+import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
+import { useSessionActions } from "contexts/session";
+import { useMenuPreload } from "hooks/useMenuPreload";
 import {
   AI_TITLE,
   AI_WINDOW_ID,
   CLICK_FOCUSABLE_ELEMENT,
 } from "utils/constants";
 import { label } from "utils/functions";
-import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
-import { useSessionActions } from "contexts/session";
-import { useMenuPreload } from "hooks/useMenuPreload";
 
 type AIButtonProps = {
   aiVisible: boolean;

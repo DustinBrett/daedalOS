@@ -3,9 +3,9 @@ import { type FSModule } from "browserfs/dist/node/core/FS";
 import {
   type AuthCallback,
   type GitAuth,
+  type default as index,
   type MessageCallback,
   type ProgressCallback,
-  type default as index,
 } from "isomorphic-git";
 import { type ParsedArgs } from "minimist";
 import { help } from "components/apps/Terminal/functions";
@@ -55,7 +55,7 @@ const processGit = async (
       import("isomorphic-git/http/web"),
       import("minimist"),
     ]);
-    const { username, password, ...cliArgs } = minimist(args) as GitAuth &
+    const { password, username, ...cliArgs } = minimist(args) as GitAuth &
       ParsedArgs;
     const onAuth: AuthCallback = () => ({ password, username });
     const onMessage: MessageCallback = (message = "") =>

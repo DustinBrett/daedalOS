@@ -17,7 +17,7 @@ const TimeScaleLabel: Partial<Record<TimeScale, string>> = {
 const GetMoreMessages: FC<{
   setSince: React.Dispatch<React.SetStateAction<number>>;
 }> = ({ setSince }) => {
-  const { timeScale, setTimeScale } = useHistoryContext();
+  const { setTimeScale, timeScale } = useHistoryContext();
   const [disabled, setDisabled] = useState<boolean>(false);
 
   // eslint-disable-next-line react/jsx-no-useless-fragment

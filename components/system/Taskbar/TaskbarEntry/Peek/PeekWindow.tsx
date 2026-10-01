@@ -9,8 +9,8 @@ import {
 import StyledPeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekWindow";
 import usePeekTransition from "components/system/Taskbar/TaskbarEntry/Peek/usePeekTransition";
 import useWindowPeek from "components/system/Taskbar/TaskbarEntry/Peek/useWindowPeek";
-import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
+import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcess, useProcessesActions } from "contexts/process";
 import { useSessionActions } from "contexts/session";
 import Button from "styles/common/Button";
@@ -43,7 +43,7 @@ const Play = memo(() => (
 
 const PeekWindow: FC<PeekWindowProps> = ({ id }) => {
   const { minimize } = useProcessesActions();
-  const { pause, paused, play, minimized = false, title = id } = useProcess(id);
+  const { minimized = false, pause, paused, play, title = id } = useProcess(id);
   const { setForegroundId } = useSessionActions();
   const { onClose } = useWindowActions(id);
   const [offsetX, setOffsetX] = useState(0);

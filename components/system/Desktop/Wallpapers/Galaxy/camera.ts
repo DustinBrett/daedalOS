@@ -59,8 +59,8 @@ const lookAtOrigin = (
   xX /= xLength;
   xY /= xLength;
 
-  const yX = zY * 0 - zZ * xY;
-  const yY = zZ * xX - zX * 0;
+  const yX = -zZ * xY;
+  const yY = zZ * xX;
   const yZ = zX * xY - zY * xX;
   const target = out;
 

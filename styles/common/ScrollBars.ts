@@ -1,4 +1,4 @@
-import { type RuleSet, css } from "styled-components";
+import { css, type RuleSet } from "styled-components";
 import { DOWN, LEFT, RIGHT, UP } from "styles/ArrowIcons";
 import { DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
 

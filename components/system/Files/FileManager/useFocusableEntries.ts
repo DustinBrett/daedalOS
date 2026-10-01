@@ -96,10 +96,10 @@ const useFocusableEntries = (
         }
       };
       const onMouseUp: React.MouseEventHandler = ({
+        button,
         ctrlKey,
         pageX,
         pageY,
-        button,
       }) => {
         const { x, y } = mouseDownPositionRef.current;
 
@@ -128,7 +128,7 @@ const useFocusableEntries = (
     [blurEntry, focusEntry, focusedEntries, onBlurCapture, onFocusCapture]
   );
 
-  return { blurEntry, focusEntry, focusableEntry, focusedEntries };
+  return { blurEntry, focusableEntry, focusedEntries, focusEntry };
 };
 
 export default useFocusableEntries;

@@ -1,5 +1,6 @@
 import { basename, join } from "path";
 import { memo, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { ADDRESS_INPUT_PROPS } from "components/apps/FileExplorer/AddressBar";
 import { parseCommand } from "components/apps/Terminal/functions";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
@@ -17,6 +18,7 @@ import {
   useRunHistory,
   useSessionActions,
 } from "contexts/session";
+import Icon from "styles/common/Icon";
 import {
   DESKTOP_PATH,
   ICON_PATH,
@@ -28,8 +30,6 @@ import { getExtension, haltEvent, notFound } from "utils/functions";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
 import { spawnFly } from "utils/spawnFly";
 import { spawnSheep } from "utils/spawnSheep";
-import Icon from "styles/common/Icon";
-import { ADDRESS_INPUT_PROPS } from "components/apps/FileExplorer/AddressBar";
 
 const OPEN_ID = "open";
 
@@ -53,7 +53,7 @@ const utilCommandMap: Record<string, () => void> = {
 };
 
 const Run: FC<ComponentProcessProps> = ({ id }) => {
-  const { open, closeWithTransition } = useProcessesActions();
+  const { closeWithTransition, open } = useProcessesActions();
   const runProcess = useProcess("Run");
   const { createPath, exists, lstat, readFile, updateFolder } =
     useFileSystemActions();
@@ -64,9 +64,9 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(!runHistory[0]);
   const [running, setRunning] = useState(false);
-  const checkIsEmpty: React.KeyboardEventHandler | React.ChangeEventHandler =
+  const checkIsEmpty: React.ChangeEventHandler | React.KeyboardEventHandler =
     useCallback(
-      ({ target }: React.KeyboardEvent | React.ChangeEvent): void =>
+      ({ target }: React.ChangeEvent | React.KeyboardEvent): void =>
         setIsEmptyInput(!(target as HTMLInputElement)?.value),
       []
     );

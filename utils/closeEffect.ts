@@ -54,7 +54,7 @@ const compileShader = (
   gl: WebGLRenderingContext,
   type: number,
   source: string
-): WebGLShader | undefined => {
+): undefined | WebGLShader => {
   const shader = gl.createShader(type);
 
   if (!shader) return undefined;
@@ -74,7 +74,7 @@ const compileShader = (
 const createGlProgram = (
   gl: WebGLRenderingContext,
   fragmentSource: string
-): WebGLProgram | undefined => {
+): undefined | WebGLProgram => {
   const vertShader = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
   const fragShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
 
@@ -118,7 +118,7 @@ type EffectContext = {
   duration: number;
   gl: WebGLRenderingContext;
   startTime: number;
-  uProgress: WebGLUniformLocation | null;
+  uProgress: null | WebGLUniformLocation;
 };
 
 const setupEffect = async (

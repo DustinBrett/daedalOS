@@ -1,30 +1,30 @@
 import { basename, dirname, isAbsolute, join } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type * as IBrowserFS from "browserfs";
+import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
+import type IZipFS from "browserfs/dist/node/backend/ZipFS";
+import { type ApiError } from "browserfs/dist/node/core/api_error";
 import {
   type BFSCallback,
   type FileSystem,
 } from "browserfs/dist/node/core/file_system";
-import { type ApiError } from "browserfs/dist/node/core/api_error";
 import { type FSModule } from "browserfs/dist/node/core/FS";
-import type IZipFS from "browserfs/dist/node/backend/ZipFS";
-import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
-import type * as IBrowserFS from "browserfs";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import {
-  type InputChangeEvent,
   getEventData,
   handleFileInputEvent,
+  type InputChangeEvent,
   iterateFileName,
   removeInvalidFilenameCharacters,
 } from "components/system/Files/FileManager/functions";
 import { type NewPath } from "components/system/Files/FileManager/useFolder";
 import {
+  type FS9PV4,
   getFileSystemHandles,
   hasIndexedDB,
   isMountedFolder,
-  parseDirectory,
   KEYVAL_DB,
-  type FS9PV4,
+  parseDirectory,
 } from "contexts/fileSystem/core";
 import useAsyncFs, {
   type AsyncFS,
@@ -53,7 +53,7 @@ export type FileSystemObserver = {
 
 type FileSystemChangeRecord = {
   relativePathComponents: string[];
-  relativePathMovedFrom: string[] | null;
+  relativePathMovedFrom: null | string[];
   type: "appeared" | "disappeared" | "moved";
 };
 
@@ -711,16 +711,16 @@ const useFileSystemContextState = (): {
       mountFs,
       mountHttpRequestFs,
       moveEntries,
-      readFile,
       readdir,
+      readFile,
       removeFsWatcher,
       rename,
       rmdir,
       setPasteList,
       stat,
+      unlink,
       unMapFs,
       unMountFs,
-      unlink,
       updateFolder,
       writeFile,
     }),

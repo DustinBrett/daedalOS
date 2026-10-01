@@ -1,9 +1,9 @@
+import { decodeQoi } from "components/apps/Photos/qoi";
 import {
-  TIFF_IMAGE_FORMATS,
   HEIF_IMAGE_FORMATS,
   ONE_TIME_PASSIVE_EVENT,
+  TIFF_IMAGE_FORMATS,
 } from "utils/constants";
-import { decodeQoi } from "components/apps/Photos/qoi";
 import {
   blobToBuffer,
   bufferToUrl,
@@ -149,7 +149,7 @@ const aniToCss = async (
   mimeType: string
 ): Promise<string> => {
   const { parseAni } = await import("ani-cursor/dist/parser");
-  const { metadata, images } = parseAni(imageBuffer);
+  const { images, metadata } = parseAni(imageBuffer);
   const toUrl = (image: Uint8Array): string =>
     bufferToUrl(Buffer.from(image), mimeType);
 

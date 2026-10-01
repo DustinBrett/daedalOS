@@ -1,7 +1,6 @@
 import { basename, extname } from "path";
-import { type Options } from "webamp";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import StyledWebamp from "components/apps/Webamp/StyledWebamp";
+import { type Options } from "webamp";
 import {
   cleanBufferOnSkinLoad,
   focusWindow,
@@ -9,6 +8,7 @@ import {
   tracksFromPlaylist,
   unFocus,
 } from "components/apps/Webamp/functions";
+import StyledWebamp from "components/apps/Webamp/StyledWebamp";
 import useWebamp from "components/apps/Webamp/useWebamp";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useFocusable from "components/system/Window/useFocusable";
@@ -63,7 +63,7 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   }, [readFile, url]);
   const loadWebampUrl = useCallback(async () => {
     if (webampCI) {
-      const { initialTracks, initialSkin } = await getUrlOptions();
+      const { initialSkin, initialTracks } = await getUrlOptions();
 
       if (initialTracks) webampCI.setTracksToPlay(initialTracks);
       else if (initialSkin) {

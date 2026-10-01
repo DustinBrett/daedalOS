@@ -1,13 +1,29 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { type Event } from "nostr-tools";
 import { AnimatePresence } from "motion/react";
+import { type Event } from "nostr-tools";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ChatLog from "components/apps/Messenger/ChatLog";
+import {
+  inLeftOutRight,
+  inRightOutLeft,
+  UNKNOWN_PUBLIC_KEY,
+} from "components/apps/Messenger/constants";
 import Contact from "components/apps/Messenger/Contact";
+import {
+  getPublicHexFromNostrAddress,
+  getRelayUrls,
+  toHexKey,
+} from "components/apps/Messenger/functions";
 import GetMoreMessages from "components/apps/Messenger/GetMoreMessages";
 import {
   HistoryProvider,
   useHistoryContext,
 } from "components/apps/Messenger/HistoryContext";
+import {
+  useNip05,
+  useNostrContacts,
+  usePublicKey,
+  useUnreadStatus,
+} from "components/apps/Messenger/hooks";
 import { MessageProvider } from "components/apps/Messenger/MessageContext";
 import { NostrProvider } from "components/apps/Messenger/NostrContext";
 import ProfileBanner from "components/apps/Messenger/ProfileBanner";
@@ -16,22 +32,6 @@ import StyledChatContainer from "components/apps/Messenger/StyledChatContainer";
 import StyledContacts from "components/apps/Messenger/StyledContacts";
 import StyledMessenger from "components/apps/Messenger/StyledMessenger";
 import To from "components/apps/Messenger/To";
-import {
-  UNKNOWN_PUBLIC_KEY,
-  inLeftOutRight,
-  inRightOutLeft,
-} from "components/apps/Messenger/constants";
-import {
-  getPublicHexFromNostrAddress,
-  getRelayUrls,
-  toHexKey,
-} from "components/apps/Messenger/functions";
-import {
-  useNip05,
-  useNostrContacts,
-  usePublicKey,
-  useUnreadStatus,
-} from "components/apps/Messenger/hooks";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import { useProcess, useProcessesActions } from "contexts/process";
 import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
@@ -63,7 +63,7 @@ const NostrChat: FC<NostrChatProps> = ({
             ...new Set([
               ...currentEvents
                 .filter(({ pubkey }) =>
-                  [recipientKey, currenRecipientKey].includes(pubkey)
+                  [currenRecipientKey, recipientKey].includes(pubkey)
                 )
                 .map(({ id }) => id),
               ...currentSeenEventIds,

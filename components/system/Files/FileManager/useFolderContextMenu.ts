@@ -12,11 +12,11 @@ import {
   usePasteList,
   useRootFs,
 } from "contexts/fileSystem";
+import { getMountUrl, isMountedFolder } from "contexts/fileSystem/core";
 import { useMenuActions } from "contexts/menu";
 import {
   type CaptureTriggerEvent,
   type ContextMenuCapture,
-  type MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcessesActions, useProcessesRef } from "contexts/process";
 import {
@@ -47,7 +47,6 @@ import {
   stopGlobalMusicVisualization,
   updateIconPositions,
 } from "utils/functions";
-import { getMountUrl, isMountedFolder } from "contexts/fileSystem/core";
 
 const NEW_FOLDER = "New folder";
 const NEW_TEXT_DOCUMENT = "New Text Document.txt";
@@ -79,14 +78,14 @@ const useFolderContextMenu = (
   isStartMenu?: boolean
 ): ContextMenuCapture => {
   const { contextMenu } = useMenuActions();
-  const { exists, mapFs, writeFile, updateFolder } = useFileSystemActions();
+  const { exists, mapFs, updateFolder, writeFile } = useFileSystemActions();
   const pasteList = usePasteList();
   const rootFs = useRootFs();
   const {
     setCloseEffect,
     setForegroundId,
-    setWallpaper: setSessionWallpaper,
     setIconPositions,
+    setWallpaper: setSessionWallpaper,
     updateRecentFiles,
   } = useSessionActions();
   const closeEffect = useCloseEffect();
@@ -95,7 +94,7 @@ const useFolderContextMenu = (
   const wallpaperImage = useWallpaperImage();
   const { minimize, open } = useProcessesActions();
   const updateSorting = useCallback(
-    (value: SortBy | "", defaultIsAscending: boolean): void => {
+    (value: "" | SortBy, defaultIsAscending: boolean): void => {
       setIconPositions((currentIconPositions) =>
         Object.fromEntries(
           Object.entries(currentIconPositions).filter(
@@ -408,33 +407,8 @@ const useFolderContextMenu = (
                 MENU_SEPERATOR,
                 {
                   label: "Background",
-                  menu: WALLPAPER_MENU.filter(
-                    ({ requiresWebGPU }) => !requiresWebGPU || hasWebGPU
-                  ).reduce<MenuItem[]>(
-                    (menu, { hasAlt = true, id, name }) => [
-                      ...menu,
-                      {
-                        action: () => {
-                          if (isMusicVisualizationRunning) {
-                            stopGlobalMusicVisualization();
-                          }
-                          setSessionWallpaper(
-                            `${id}${
-                              hasAlt &&
-                              wallpaperImage.startsWith(id) &&
-                              !wallpaperImage.endsWith(" ALT")
-                                ? " ALT"
-                                : ""
-                            }`
-                          );
-                        },
-                        label: name || id,
-                        toggle: hasAlt
-                          ? wallpaperImage.startsWith(id)
-                          : wallpaperImage === id,
-                      },
-                    ],
-                    isMusicVisualizationRunning
+                  menu: [
+                    ...(isMusicVisualizationRunning
                       ? [
                           {
                             action: stopGlobalMusicVisualization,
@@ -443,8 +417,30 @@ const useFolderContextMenu = (
                           },
                           MENU_SEPERATOR,
                         ]
-                      : []
-                  ),
+                      : []),
+                    ...WALLPAPER_MENU.filter(
+                      ({ requiresWebGPU }) => !requiresWebGPU || hasWebGPU
+                    ).map(({ hasAlt = true, id, name }) => ({
+                      action: () => {
+                        if (isMusicVisualizationRunning) {
+                          stopGlobalMusicVisualization();
+                        }
+                        setSessionWallpaper(
+                          `${id}${
+                            hasAlt &&
+                            wallpaperImage.startsWith(id) &&
+                            !wallpaperImage.endsWith(" ALT")
+                              ? " ALT"
+                              : ""
+                          }`
+                        );
+                      },
+                      label: name || id,
+                      toggle: hasAlt
+                        ? wallpaperImage.startsWith(id)
+                        : wallpaperImage === id,
+                    })),
+                  ],
                 },
                 {
                   label: "Window close effect",

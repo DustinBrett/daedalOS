@@ -32,6 +32,7 @@ declare global {
       };
       setCanvasSize: () => void;
     };
+    EJS_biosUrl?: string;
     EJS_Buttons?: {
       cacheManage: boolean;
       loadState: boolean;
@@ -41,8 +42,6 @@ declare global {
       screenRecord: boolean;
       screenshot: boolean;
     };
-    EJS_RESET_VARS?: boolean;
-    EJS_biosUrl?: string;
     EJS_core?: string;
     EJS_emulator?: {
       on: (event: string, callback: () => void) => void;
@@ -53,6 +52,7 @@ declare global {
     EJS_onSaveState?: OnSaveState;
     EJS_pathtodata?: string;
     EJS_player?: string;
+    EJS_RESET_VARS?: boolean;
     EJS_startOnLoaded?: boolean;
     EJS_terminate?: () => void;
     FS: unknown;

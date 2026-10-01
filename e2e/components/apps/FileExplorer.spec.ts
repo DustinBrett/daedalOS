@@ -1,5 +1,6 @@
 import { dirname, extname } from "path";
 import { expect, test } from "@playwright/test";
+import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 import {
   BASE_APP_FAVICON,
   BASE_APP_TITLE,
@@ -73,10 +74,9 @@ import {
   typeInFileExplorerAddressBar,
   typeInFileExplorerSearchBox,
   windowAnimationIsFinished,
-  windowTitlebarTextIsVisible,
   windowsAreVisible,
+  windowTitlebarTextIsVisible,
 } from "e2e/functions";
-import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
 
 test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);

@@ -32,6 +32,7 @@ const withStyledComponents = async (
   }
 };
 
+// eslint-disable-next-line react/prefer-function-component
 class Document extends NextDocument {
   public static override async getInitialProps(
     ctx: DocumentContext

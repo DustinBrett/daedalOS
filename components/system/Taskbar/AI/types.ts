@@ -4,7 +4,6 @@ import { type ChatCompletionMessageParam } from "@mlc-ai/web-llm";
 import { type MarkedOptions } from "components/apps/Marked/useMarked";
 
 declare global {
-  /* eslint-disable vars-on-top, no-var  */
   var ai: {
     languageModel: AILanguageModelFactory;
     summarizer: AISummarizerFactory;
@@ -12,13 +11,12 @@ declare global {
   var marked: {
     parse: (markdownString: string, options: MarkedOptions) => string;
   };
-  /* eslint-enable vars-on-top, no-var */
   interface Window {
     initialAiPrompt?: string;
   }
 }
 
-export type MessageTypes = "user" | "ai";
+export type MessageTypes = "ai" | "user";
 
 export type Message = {
   formattedText: string;
@@ -56,7 +54,7 @@ export type WebLlmProgress = {
 };
 
 export type WorkerResponse = {
-  data: AIResponse | WebLlmProgress | "canceled";
+  data: "canceled" | AIResponse | WebLlmProgress;
 };
 
 export type Prompt = (AILanguageModelPrompt | ChatCompletionMessageParam) & {

@@ -32,10 +32,10 @@ const config = {
   hasGlintTexture: false,
   hasThunder: false,
   highPassThreshold: 0,
-  isPolar: false,
   isolateCursor: true,
   isolateGlint: false,
   isometric: false,
+  isPolar: false,
   loops: false,
   numColumns: Math.max(Math.floor(viewWidth() / 15), 50),
   palette: [

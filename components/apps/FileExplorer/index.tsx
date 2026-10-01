@@ -6,6 +6,7 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 import { getIconFromIni } from "components/system/Files/FileEntry/functions";
 import FileManager from "components/system/Files/FileManager";
 import { useFs, useRootFs } from "contexts/fileSystem";
+import { getMountUrl, isMountedFolder } from "contexts/fileSystem/core";
 import { useProcess, useProcessesActions } from "contexts/process";
 import {
   COMPRESSED_FOLDER_ICON,
@@ -15,7 +16,6 @@ import {
   ROOT_NAME,
 } from "utils/constants";
 import { haltEvent } from "utils/functions";
-import { getMountUrl, isMountedFolder } from "contexts/fileSystem/core";
 
 const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -23,7 +23,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     title,
     url: setProcessUrl,
   } = useProcessesActions();
-  const { componentWindow, closing, icon = "", url = "" } = useProcess(id);
+  const { closing, componentWindow, icon = "", url = "" } = useProcess(id);
   const fs = useFs();
   const rootFs = useRootFs();
   const [currentUrl, setCurrentUrl] = useState(url);

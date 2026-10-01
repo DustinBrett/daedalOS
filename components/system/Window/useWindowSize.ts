@@ -1,5 +1,5 @@
-import { useTheme } from "styled-components";
 import { useCallback } from "react";
+import { useTheme } from "styled-components";
 import { minMaxSize } from "components/system/Window/functions";
 import { useProcess } from "contexts/process";
 import { useSessionActions } from "contexts/session";

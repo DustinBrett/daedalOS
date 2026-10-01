@@ -21,10 +21,10 @@ export const cascadePosition = (
     stackOrder.find((stackPid) => stackPid.startsWith(processPid)) || "";
   const { componentWindow } = processes?.[parentPositionProcess] || {};
   const {
+    height = 0,
+    width = 0,
     x = 0,
     y = 0,
-    width = 0,
-    height = 0,
   } = componentWindow?.getBoundingClientRect() || {};
   const isOffscreen =
     x + offset + width > viewWidth() || y + offset + height > viewHeight();

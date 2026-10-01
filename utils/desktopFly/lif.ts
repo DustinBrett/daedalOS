@@ -13,10 +13,10 @@
 
 import {
   type Circuit,
-  Role,
-  Side,
   isCompass,
   isLooming,
+  Role,
+  Side,
 } from "utils/desktopFly/circuit";
 import { Rng } from "utils/desktopFly/rng";
 
@@ -779,7 +779,7 @@ export class Lif {
   /** Per-EPG "fired this millisecond" flags, reused for the same reason. */
   private readonly epgFired: Uint8Array;
 
-  private rates: Rates = {
+  private readonly rates: Rates = {
     central: 0,
     dnaL: 0,
     dnaR: 0,
@@ -938,7 +938,6 @@ export class Lif {
     // rest of the time this is pure recovery, and recovery only concerns
     // synapses that were actually depressed — a few hundred, not all 27,000.
     if (punish > 0.05 || reward > 0.05) {
-      // eslint-disable-next-line unicorn/no-for-loop
       for (let e = 0; e < plSlot.length; e += 1) {
         const drive = plAvd[e] === 1 ? reward : punish;
 

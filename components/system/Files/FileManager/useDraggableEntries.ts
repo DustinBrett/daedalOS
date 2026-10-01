@@ -1,12 +1,14 @@
 import { join } from "path";
-import { type Position } from "react-rnd";
 import { useCallback, useEffect, useRef } from "react";
+import { type Position } from "react-rnd";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
+import { useFileSystemActions } from "contexts/fileSystem";
 import {
   useIconPositions,
   useSessionActions,
   useSortOrder,
 } from "contexts/session";
+import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import {
   getHtmlToImage,
   getMimeType,
@@ -15,8 +17,6 @@ import {
   trimCanvasToTopLeft,
   updateIconPositions,
 } from "utils/functions";
-import { useFileSystemActions } from "contexts/fileSystem";
-import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
 type DraggableEntryProps = {
   draggable: boolean;

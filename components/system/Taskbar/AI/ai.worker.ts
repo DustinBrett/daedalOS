@@ -9,9 +9,9 @@ import {
   libs as StableDiffusionLibs,
 } from "components/system/Desktop/Wallpapers/StableDiffusion";
 import {
-  type WorkerMessage,
   type ConvoStyles,
   type Prompt,
+  type WorkerMessage,
 } from "components/system/Taskbar/AI/types";
 import { isAvailable } from "hooks/useWindowAI";
 
@@ -64,7 +64,7 @@ let markedLoaded = false;
 
 globalThis.addEventListener(
   "message",
-  async ({ data }: { data: WorkerMessage | "cancel" | "init" }) => {
+  async ({ data }: { data: "cancel" | "init" | WorkerMessage }) => {
     if (!data || data === "init") return;
 
     if (data === "cancel") {
@@ -78,8 +78,9 @@ globalThis.addEventListener(
       if (sessionId !== data.id) {
         sessionId = data.id;
 
+        prompts = [];
+
         if (data.hasWindowAI) {
-          prompts = [];
           summarizer?.destroy();
           (session as AILanguageModel)?.destroy();
 
@@ -90,24 +91,20 @@ globalThis.addEventListener(
           };
 
           session = await globalThis.ai.languageModel.create(config);
-        } else {
-          prompts = [];
+        } else if (!engine) {
+          const { CreateMLCEngine } = await import("@mlc-ai/web-llm");
 
-          if (!engine) {
-            const { CreateMLCEngine } = await import("@mlc-ai/web-llm");
-
-            if (!cancel) {
-              engine = await CreateMLCEngine(WEB_LLM_MODEL, {
-                initProgressCallback: (progress) =>
-                  globalThis.postMessage({ progress }),
-              });
-            }
+          if (!cancel) {
+            engine = await CreateMLCEngine(WEB_LLM_MODEL, {
+              initProgressCallback: (progress) =>
+                globalThis.postMessage({ progress }),
+            });
           }
         }
       }
 
       let response:
-        string | ReadableStream<string> | AsyncIterable<ChatCompletionChunk> =
+        AsyncIterable<ChatCompletionChunk> | ReadableStream<string> | string =
         "";
       let retry = 0;
       const rebuildSession = async (customResponse?: string): Promise<void> => {
@@ -145,7 +142,7 @@ globalThis.addEventListener(
         }
 
         if (data.imagePrompt && data.offscreenCanvas) {
-          globalThis.tvmjsGlobalEnv = globalThis.tvmjsGlobalEnv || {};
+          globalThis.tvmjsGlobalEnv ||= {} as typeof globalThis.tvmjsGlobalEnv;
           globalThis.tvmjsGlobalEnv.logger = (_type: string, message: string) =>
             globalThis.postMessage({
               progress: {

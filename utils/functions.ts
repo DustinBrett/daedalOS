@@ -1,6 +1,6 @@
 import { basename, dirname, extname, join } from "path";
 import { type Position } from "eruda";
-import type HtmlToImage from "html-to-image";
+import type * as HtmlToImage from "html-to-image";
 import { type DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { type Processes } from "contexts/process/types";
@@ -415,8 +415,8 @@ export const getWindowViewport = (): Position => ({
 
 export const calcInitialPosition = (
   { offsetHeight }: HTMLElement,
-  { right = 0, left = 0, top = 0, bottom = 0 } = {},
-  { width = 0, height = 0 }: Size = {} as Size
+  { bottom = 0, left = 0, right = 0, top = 0 } = {},
+  { height = 0, width = 0 }: Size = {} as Size
 ): Position => {
   const [vh, vw] = [viewHeight(), viewWidth()];
 
@@ -475,7 +475,7 @@ export const saveUnpositionedDesktopIcons = (
     const unPositionedIcons = [
       ...desktopIconGrid.querySelectorAll("li"),
     ].filter(
-      ({ style: { gridRowStart, gridColumnStart } }) =>
+      ({ style: { gridColumnStart, gridRowStart } }) =>
         !gridRowStart || !gridColumnStart
     );
 
@@ -494,7 +494,7 @@ export const saveUnpositionedDesktopIcons = (
       const rowTopPadding = pxToNum(paddingTop);
       const newIconPositions = Object.fromEntries(
         unPositionedIcons.map((icon) => {
-          const { top, left } = icon.getBoundingClientRect() || {};
+          const { left, top } = icon.getBoundingClientRect() || {};
           const button = icon.querySelector("button") as HTMLButtonElement;
           let name = button?.getAttribute("aria-label") || button?.textContent;
 
@@ -551,7 +551,7 @@ export const updateIconPositionsIfEmpty = (
       }
 
       if (gridEntry instanceof HTMLElement) {
-        const { x, y, height, width } = gridEntry.getBoundingClientRect();
+        const { height, width, x, y } = gridEntry.getBoundingClientRect();
 
         newIconPositions[entryUrl] = calcGridDropPosition(gridElement, {
           x: x + width / 2,
@@ -838,7 +838,6 @@ let timezoneOffset: number;
 
 export const getTZOffsetISOString = (timestamp?: number): string => {
   let time = timestamp;
-  // eslint-disable-next-line no-undef-init
   let date: Date | undefined = undefined;
 
   if (!time) {
@@ -1104,10 +1103,7 @@ export const supportsWebp = (): boolean => {
 };
 
 const supportsImageSrcSet = (): boolean =>
-  Object.prototype.hasOwnProperty.call(
-    HTMLLinkElement.prototype,
-    "imageSrcset"
-  );
+  Object.hasOwn(HTMLLinkElement.prototype, "imageSrcset");
 
 export const preloadImage = (
   image: string,
@@ -1162,7 +1158,6 @@ export const preloadLibs = (libs: string[] = []): void => {
   const scripts = [...document.scripts];
   const preloadedLinks = getPreloadedLinks();
 
-  // eslint-disable-next-line unicorn/no-array-callback-reference
   libs.map(encodeURI).forEach((lib) => {
     if (
       scripts.some((script) => script.src.endsWith(lib)) ||
@@ -1211,8 +1206,8 @@ export const getGifJs = async (): Promise<GIFWithWorkers> => {
 
   return new GIFInstance({
     quality: 10,
-    workerScript: "System/gif.js/gif.worker.js",
     workers: Math.max(Math.floor(navigator.hardwareConcurrency / 4), 1),
+    workerScript: "System/gif.js/gif.worker.js",
   }) as GIFWithWorkers;
 };
 
@@ -1243,7 +1238,7 @@ export const isBeforeBg = (): boolean =>
     "--before-background-opacity"
   ) === "1";
 
-export const parseBgPosition = (position?: string): `${number}%` | "center" => {
+export const parseBgPosition = (position?: string): "center" | `${number}%` => {
   if (typeof position === "string") {
     const positionNum = Number.parseFloat(position);
 
@@ -1270,7 +1265,7 @@ export const shouldCaptureDragImage = (
 ): boolean => entryCount > 1 || (!isDesktop && entryCount === 1 && isSafari());
 
 export const maybeRequestIdleCallback = (
-  callback: () => void | Promise<void>
+  callback: () => Promise<void> | void
 ): void => {
   if (
     "requestIdleCallback" in window &&

@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { m as motion } from "motion/react";
+import styled from "styled-components";
 import StyledFileEntry from "components/system/Files/Views/List/StyledFileEntry";
 import StyledFileManager from "components/system/Files/Views/List/StyledFileManager";
 import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";

@@ -21,7 +21,7 @@ const rotl = (x: number, k: number): number =>
   ((x << k) | (x >>> (32 - k))) >>> 0;
 
 export class Rng {
-  private s: [number, number, number, number];
+  private readonly s: [number, number, number, number];
 
   public constructor(seed: number) {
     const next = splitMix32(seed);

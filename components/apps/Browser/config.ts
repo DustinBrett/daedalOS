@@ -24,7 +24,6 @@ export const SURF_TO_MISC = {
   icon: "/Users/Public/Documents/OldSite/favicon.ico",
   name: "The Ultimate Misc Page",
   path: "/Users/Public/Documents/OldSite/index.html",
-  // eslint-disable-next-line sonarjs/no-clear-text-protocols
   url: "http://surf.to/misc",
 };
 

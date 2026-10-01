@@ -82,7 +82,7 @@ const useFileKeyboardShortcuts = (
       (event) => {
         if (isStartMenu) return;
 
-        const { altKey, ctrlKey, key, target, shiftKey } = event;
+        const { altKey, ctrlKey, key, shiftKey, target } = event;
 
         if (shiftKey) {
           if (ctrlKey && !isDesktop) {
@@ -255,7 +255,7 @@ const useFileKeyboardShortcuts = (
                   if (!targetElement) return;
                 }
 
-                const { x, y, height, width } =
+                const { height, width, x, y } =
                   targetElement.getBoundingClientRect();
                 let movedElement =
                   key === "ArrowUp" || key === "ArrowDown"

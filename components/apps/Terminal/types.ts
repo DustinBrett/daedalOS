@@ -18,8 +18,8 @@ export type LocalEcho = ITerminalAddon & {
     entries: string[];
   };
   print: (message: string) => void;
-  printWide: (message: string) => void;
   println: (message: string) => void;
+  printWide: (message: string) => void;
   read: (prompt: string) => Promise<string>;
   removeAutocompleteHandler: (callback: unknown) => void;
 };

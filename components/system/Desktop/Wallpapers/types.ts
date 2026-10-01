@@ -1,8 +1,8 @@
 import { type StableDiffusionConfig } from "components/apps/StableDiffusion/types";
 import { type GalaxyConfig } from "components/system/Desktop/Wallpapers/Galaxy/config";
+import type MatrixConfig from "components/system/Desktop/Wallpapers/Matrix/config";
 import { type VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
-import type MatrixConfig from "components/system/Desktop/Wallpapers/Matrix/config";
 import { type WallpaperFit } from "contexts/session/types";
 
 declare global {
@@ -65,7 +65,7 @@ export type ArtInstituteOfChicagoResponse = {
 };
 
 export type MetMuseumSearchResponse = {
-  objectIDs: number[] | null;
+  objectIDs: null | number[];
   total: number;
 };
 

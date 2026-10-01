@@ -1,30 +1,30 @@
 import { join } from "path";
-import { type FSModule } from "browserfs/dist/node/core/FS";
-import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";
-import { useEffect, useMemo, useRef, useState } from "react";
 import type * as IBrowserFS from "browserfs";
 import type EmscriptenFileSystem from "browserfs/dist/node/backend/Emscripten";
 import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
+import { type FSModule } from "browserfs/dist/node/core/FS";
+import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { isExistingFile } from "components/system/Files/FileEntry/functions";
+import {
+  get9pSize,
+  supportsIndexedDB,
+  UNKNOWN_STATE_CODES,
+} from "contexts/fileSystem/core";
+import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
+import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
   SESSION_FILE,
 } from "utils/constants";
-import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
-import {
-  UNKNOWN_STATE_CODES,
-  get9pSize,
-  supportsIndexedDB,
-} from "contexts/fileSystem/core";
-import FileSystemConfig from "contexts/fileSystem/FileSystemConfig";
-import { isExistingFile } from "components/system/Files/FileEntry/functions";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
   lstat: (path: string) => Promise<Stats>;
   mkdir: (path: string, overwrite?: boolean) => Promise<boolean>;
-  readFile: (path: string) => Promise<Buffer>;
   readdir: (path: string) => Promise<string[]>;
+  readFile: (path: string) => Promise<Buffer>;
   rename: (oldPath: string, newPath: string) => Promise<boolean>;
   rmdir: (path: string) => Promise<boolean>;
   stat: (path: string) => Promise<Stats>;
@@ -109,6 +109,12 @@ const useAsyncFs = (): AsyncFSModule => {
             error ? reject(error) : resolve(true)
           );
         }),
+      readdir: (path) =>
+        new Promise((resolve, reject) => {
+          fs?.readdir(path, (error, data = []) =>
+            error ? reject(error) : resolve(data)
+          );
+        }),
       readFile: (path) =>
         new Promise((resolve, reject) => {
           fs?.readFile(path, (error, data = Buffer.from("")) => {
@@ -125,12 +131,6 @@ const useAsyncFs = (): AsyncFSModule => {
 
             return reject(error);
           });
-        }),
-      readdir: (path) =>
-        new Promise((resolve, reject) => {
-          fs?.readdir(path, (error, data = []) =>
-            error ? reject(error) : resolve(data)
-          );
         }),
       rename: (oldPath, newPath) =>
         new Promise((resolve, reject) => {
@@ -160,7 +160,7 @@ const useAsyncFs = (): AsyncFSModule => {
               );
             } else if (renameError.code === "EISDIR") {
               rootFs?.umount(oldPath);
-              asyncFs.rename(oldPath, newPath).then(resolve, reject);
+              asyncFs.rename(oldPath, newPath).then(resolve).catch(reject);
             } else if (UNKNOWN_STATE_CODES.has(renameError.code)) {
               resolve(false);
             } else {
@@ -269,8 +269,8 @@ const useAsyncFs = (): AsyncFSModule => {
         exists: queueFsCall("exists"),
         lstat: queueFsCall("lstat"),
         mkdir: queueFsCall("mkdir"),
-        readFile: queueFsCall("readFile"),
         readdir: queueFsCall("readdir"),
+        readFile: queueFsCall("readFile"),
         rename: queueFsCall("rename"),
         rmdir: queueFsCall("rmdir"),
         stat: queueFsCall("stat"),

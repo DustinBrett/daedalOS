@@ -1,8 +1,8 @@
 import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 import { libs } from "components/system/Desktop/Wallpapers/vantaWaves";
 import {
-  config as vantaConfig,
   disableControls,
+  config as vantaConfig,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import {
   type VantaObject,
@@ -11,7 +11,6 @@ import {
 } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 
 declare global {
-  // eslint-disable-next-line vars-on-top, no-var
   var VANTA: VantaObject;
 }
 
@@ -25,7 +24,7 @@ globalThis.addEventListener(
     if (data === "init") {
       globalThis.importScripts(...libs);
     } else if (data instanceof DOMRect) {
-      const { width, height } = data;
+      const { height, width } = data;
 
       waveEffect?.renderer.setSize(width, height);
       waveEffect?.resize();

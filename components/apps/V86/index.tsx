@@ -6,7 +6,7 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 import { haltEvent } from "utils/functions";
 
 const V86: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer StyledComponent={StyledV86} id={id} useHook={useV86}>
+  <AppContainer id={id} StyledComponent={StyledV86} useHook={useV86}>
     <div
       aria-label="Text screen"
       onContextMenuCapture={haltEvent}

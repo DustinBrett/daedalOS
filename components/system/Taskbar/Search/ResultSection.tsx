@@ -18,14 +18,14 @@ type ResultsSectionProps = {
 };
 
 const ResultSection: FC<ResultsSectionProps> = ({
-  activeTab,
   activeItem,
+  activeTab,
+  changeTab,
   details,
   openApp,
   results,
   searchTerm,
   setActiveItem,
-  changeTab,
   title,
 }) => {
   const noResults = useMemo(

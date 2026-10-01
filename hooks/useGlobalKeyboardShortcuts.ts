@@ -3,12 +3,12 @@ import {
   SEARCH_BUTTON_TITLE,
   START_BUTTON_TITLE,
 } from "components/system/Taskbar/functions";
+import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 import { useProcessesActions, useProcessesRef } from "contexts/process";
 import { useForegroundId, useStackOrder } from "contexts/session";
 import { useViewport } from "contexts/viewport";
 import { KEYPRESS_DEBOUNCE_MS } from "utils/constants";
 import { haltEvent, toggleShowDesktop, viewHeight } from "utils/functions";
-import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
 
 declare global {
   interface Window {
@@ -53,7 +53,7 @@ const haltAndDebounceBinding = (event: KeyboardEvent): boolean => {
 const metaCombos = new Set(["ARROWDOWN", "ARROWUP", "D", "E", "R", "S", "X"]);
 
 const updateKeyStates = (event: KeyboardEvent): void => {
-  const { altKey, ctrlKey, shiftKey, metaKey } = event;
+  const { altKey, ctrlKey, metaKey, shiftKey } = event;
 
   window.globalKeyStates = { altKey, ctrlKey, metaKey, shiftKey };
 };

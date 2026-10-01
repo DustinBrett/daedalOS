@@ -46,7 +46,7 @@ export const FileManagerViews: Record<FileManagerViewNames, FileManagerView> = {
 };
 
 export const FileEntryIconSize: Record<
-  FileManagerViewNames | "detailsSub" | "sub",
+  "detailsSub" | "sub" | FileManagerViewNames,
   IconProps
 > = {
   details: {

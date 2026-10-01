@@ -1,5 +1,5 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type Font, type LocalizedName } from "opentype.js";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import StyledOpenType from "components/apps/OpenType/StyledOpenType";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";

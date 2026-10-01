@@ -53,8 +53,8 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
 
               const {
                 icon,
-                url: infoUrl,
                 pid = "",
+                url: infoUrl,
               } = (await getResultInfo(fs, path)) || {};
 
               return {

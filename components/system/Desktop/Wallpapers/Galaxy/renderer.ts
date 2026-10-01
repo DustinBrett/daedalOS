@@ -4,16 +4,16 @@ import {
 } from "components/system/Desktop/Wallpapers/Galaxy/camera";
 import {
   CAMERA,
-  GALAXY,
   defaultConfig,
+  GALAXY,
   type GalaxyConfig,
 } from "components/system/Desktop/Wallpapers/Galaxy/config";
 import {
-  PARTICLE_FLOATS,
-  PARTICLE_STRIDE,
-  generateGalaxy,
   type GalaxyLayer,
   type GalaxyLayerTarget,
+  generateGalaxy,
+  PARTICLE_FLOATS,
+  PARTICLE_STRIDE,
 } from "components/system/Desktop/Wallpapers/Galaxy/generate";
 
 export type GalaxyRenderer = {
@@ -423,7 +423,7 @@ export const createGalaxyRenderer = (
     crisp: boolean
   ): {
     program: WebGLProgram;
-    uniforms: Record<string, WebGLUniformLocation | null>;
+    uniforms: Record<string, null | WebGLUniformLocation>;
   } => {
     const program = compileProgram(
       gl,
@@ -447,8 +447,8 @@ export const createGalaxyRenderer = (
         spikeGate: gl.getUniformLocation(program, "uSpikeGate"),
         time: gl.getUniformLocation(program, "uTime"),
         twinkleAmp: gl.getUniformLocation(program, "uTwinkleAmp"),
-        viewProj: gl.getUniformLocation(program, "uViewProj"),
         viewport: gl.getUniformLocation(program, "uViewport"),
+        viewProj: gl.getUniformLocation(program, "uViewProj"),
         warp: gl.getUniformLocation(program, "uWarp"),
       },
     };
@@ -473,7 +473,7 @@ export const createGalaxyRenderer = (
     aberration: gl.getUniformLocation(compositeProgram, "uAberration"),
     tonemap: gl.getUniformLocation(compositeProgram, "uTonemap"),
   };
-  let activeProgram: WebGLProgram | undefined;
+  let activeProgram: undefined | WebGLProgram;
   const bindProgram = (program: WebGLProgram): void => {
     if (activeProgram !== program) {
       gl.useProgram(program);

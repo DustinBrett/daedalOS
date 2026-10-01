@@ -1,8 +1,8 @@
 import { extname, join } from "path";
 import { type openDB } from "idb";
 import {
-  type Mount,
   type ExtendedEmscriptenFileSystem,
+  type Mount,
 } from "contexts/fileSystem/useAsyncFs";
 import index from "public/.index/fs.9p.json";
 import {
@@ -54,7 +54,7 @@ const fs9pDataCache = new Map<string, number>();
 
 const get9pData = (
   path: string,
-  pathIndex: typeof IDX_SIZE | typeof IDX_MTIME
+  pathIndex: typeof IDX_MTIME | typeof IDX_SIZE
 ): number => {
   const cacheKey = `${pathIndex}${path}`;
   const cached = fs9pDataCache.get(cacheKey);

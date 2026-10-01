@@ -1,7 +1,7 @@
 import { type WallpaperConfig } from "components/system/Desktop/Wallpapers/types";
 import {
-  config as vantaConfig,
   disableControls,
+  config as vantaConfig,
 } from "components/system/Desktop/Wallpapers/vantaWaves/config";
 import { type VantaWavesConfig } from "components/system/Desktop/Wallpapers/vantaWaves/types";
 import { loadFiles } from "utils/functions";

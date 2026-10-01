@@ -206,7 +206,6 @@ export const FlyState = {
   Walking: 0,
 } as const;
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type FlyState = (typeof FlyState)[keyof typeof FlyState];
 
 /**

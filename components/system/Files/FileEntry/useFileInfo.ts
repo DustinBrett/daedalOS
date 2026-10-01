@@ -4,13 +4,13 @@ import {
   getInfoWithoutExtension,
 } from "components/system/Files/FileEntry/functions";
 import { useFs, useRootFs } from "contexts/fileSystem";
+import { isMountedFolder } from "contexts/fileSystem/core";
 import { MOUNTABLE_EXTENSIONS } from "utils/constants";
 import { getExtension } from "utils/functions";
-import { isMountedFolder } from "contexts/fileSystem/core";
 
 export type FileInfo = {
   comment?: string;
-  getIcon?: true | ((signal: AbortSignal) => void | Promise<void>);
+  getIcon?: ((signal: AbortSignal) => Promise<void> | void) | true;
   icon: string;
   pid: string;
   subIcons?: string[];

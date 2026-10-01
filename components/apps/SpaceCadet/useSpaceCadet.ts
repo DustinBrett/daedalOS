@@ -3,15 +3,15 @@ import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcess } from "contexts/process";
-import { haltEvent, loadFiles } from "utils/functions";
 import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
+import { haltEvent, loadFiles } from "utils/functions";
 
 const useSpaceCadet = ({
   containerRef,
   id,
-  setLoading,
   loading,
+  setLoading,
 }: ContainerHookProps): void => {
   const { libs = [] } = useProcess(id);
   const mountEmFs = useEmscriptenMount();

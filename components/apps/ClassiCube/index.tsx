@@ -6,8 +6,8 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 
 const ClassiCube: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer
-    StyledComponent={StyledClassiCube}
     id={id}
+    StyledComponent={StyledClassiCube}
     useHook={useClassiCube}
   />
 );

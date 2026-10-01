@@ -1,14 +1,14 @@
 import { memo, useCallback } from "react";
-import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
-import StyledTaskbarButton from "components/system/Taskbar/StyledTaskbarButton";
 import {
   importStartMenu,
   START_BUTTON_TITLE,
 } from "components/system/Taskbar/functions";
+import StartButtonIcon from "components/system/Taskbar/StartButton/StartButtonIcon";
+import StyledTaskbarButton from "components/system/Taskbar/StyledTaskbarButton";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
+import { useMenuPreload } from "hooks/useMenuPreload";
 import { CLICK_FOCUSABLE_ELEMENT } from "utils/constants";
 import { label, preloadImage } from "utils/functions";
-import { useMenuPreload } from "hooks/useMenuPreload";
 
 type StartButtonProps = {
   startMenuVisible: boolean;

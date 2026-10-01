@@ -23,16 +23,16 @@ export type ControlBar = {
 export type SourceObjectWithUrl = videojs.Tech.SourceObject & { url: string };
 
 export type YouTubePlayerQuality =
-  | "hd2160"
-  | "hd1440"
+  | "auto"
   | "hd1080"
+  | "hd1440"
+  | "hd2160"
   | "hd720"
   | "highres"
   | "large"
   | "medium"
   | "small"
-  | "tiny"
-  | "auto";
+  | "tiny";
 
 export type YouTubePlayer = {
   getPlaybackQuality: () => YouTubePlayerQuality;

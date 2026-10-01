@@ -1,7 +1,9 @@
 import { basename, dirname, extname, join } from "path";
-import { type URLTrack } from "webamp";
 import { useMemo } from "react";
-import { type FileStat } from "components/system/Files/FileManager/functions";
+import { type URLTrack } from "webamp";
+import useTransferDialog, {
+  type ObjectReader,
+} from "components/system/Dialogs/Transfer/useTransferDialog";
 import { EXTRACTABLE_EXTENSIONS } from "components/system/Files/FileEntry/constants";
 import extensions from "components/system/Files/FileEntry/extensions";
 import {
@@ -9,9 +11,12 @@ import {
   isExistingFile,
 } from "components/system/Files/FileEntry/functions";
 import useFile from "components/system/Files/FileEntry/useFile";
+import { type FileStat } from "components/system/Files/FileManager/functions";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
 import { type FileActions } from "components/system/Files/FileManager/useFolder";
+import { Share } from "components/system/Menu/MenuIcons";
 import { useFileSystemActions, useRootFs } from "contexts/fileSystem";
+import { isMountedFolder } from "contexts/fileSystem/core";
 import { useMenuActions } from "contexts/menu";
 import {
   type ContextMenuCapture,
@@ -20,6 +25,8 @@ import {
 import { useProcessesActions, useProcessesRef } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useAiEnabled, useSessionActions } from "contexts/session";
+import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
+import { useWindowAI } from "hooks/useWindowAI";
 import {
   AI_TITLE,
   AUDIO_PLAYLIST_EXTENSIONS,
@@ -54,13 +61,6 @@ import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
-import { Share } from "components/system/Menu/MenuIcons";
-import { useWindowAI } from "hooks/useWindowAI";
-import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
-import useTransferDialog, {
-  type ObjectReader,
-} from "components/system/Dialogs/Transfer/useTransferDialog";
-import { isMountedFolder } from "contexts/fileSystem/core";
 
 const { alias } = PACKAGE_DATA;
 
@@ -467,9 +467,9 @@ const useFileContextMenu = (
                     navigator.canShare?.(shareData)
                   ) {
                     menuItems.unshift({
-                      SvgIcon: Share,
                       action: () => navigator.share(shareData),
                       label: "Share",
+                      SvgIcon: Share,
                     });
                   }
                 } catch {

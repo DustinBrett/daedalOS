@@ -1,22 +1,23 @@
 import { basename, join } from "path";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  config,
   CONTROL_BAR_HEIGHT,
   DEFAULT_QUALITY_SIZE,
   VideoResizeKey,
   YT_TYPE,
-  config,
   ytQualitySizeMap,
 } from "components/apps/VideoPlayer/config";
 import {
-  type YouTubeTech,
+  type CodecBox,
+  type ControlBar,
   type SourceObjectWithUrl,
   type VideoPlayer,
   type YouTubePlayer,
-  type ControlBar,
-  type CodecBox,
+  type YouTubeTech,
 } from "components/apps/VideoPlayer/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
+import { getCoverArt } from "components/system/Files/FileEntry/functions";
 import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystemActions } from "contexts/fileSystem";
@@ -37,7 +38,6 @@ import {
   viewHeight,
   viewWidth,
 } from "utils/functions";
-import { getCoverArt } from "components/system/Files/FileEntry/functions";
 
 const useVideoPlayer = ({
   containerRef,
@@ -293,7 +293,7 @@ const useVideoPlayer = ({
       );
       containerRef.current
         ?.closest("section")
-        ?.addEventListener("keydown", ({ key, altKey, ctrlKey }) => {
+        ?.addEventListener("keydown", ({ altKey, ctrlKey, key }) => {
           if (altKey) {
             if (VideoResizeKey[key]) {
               updateWindowSize(
@@ -353,11 +353,7 @@ const useVideoPlayer = ({
         containerRef.current?.querySelector(".vjs-control-bar");
 
       if (controlBar instanceof HTMLElement) {
-        if (type === YT_TYPE) {
-          controlBar.classList.add("no-interaction");
-        } else {
-          controlBar.classList.remove("no-interaction");
-        }
+        controlBar.classList.toggle("no-interaction", type === YT_TYPE);
       }
     },
     [containerRef]

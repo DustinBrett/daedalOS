@@ -1,15 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-// eslint-disable-next-line import/consistent-type-specifier-style
-import type { NIP05Result } from "nostr-tools/nip05";
 import {
   type Filter,
   type Event as NostrEvent,
   type Relay,
   type Sub,
 } from "nostr-tools";
-import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
-import { useMessageContext } from "components/apps/Messenger/MessageContext";
-import { useNostr } from "components/apps/Messenger/NostrContext";
+// eslint-disable-next-line import/consistent-type-specifier-style
+import type { NIP05Result } from "nostr-tools/nip05";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_NIP05_URL,
   METADATA_KIND,
@@ -25,6 +22,9 @@ import {
   maybeGetExistingPublicKey,
   toHexKey,
 } from "components/apps/Messenger/functions";
+import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
+import { useMessageContext } from "components/apps/Messenger/MessageContext";
+import { useNostr } from "components/apps/Messenger/NostrContext";
 import {
   type Metadata,
   type NostrContacts,

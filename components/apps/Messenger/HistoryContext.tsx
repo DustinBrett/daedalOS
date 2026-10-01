@@ -1,3 +1,4 @@
+import { type Event } from "nostr-tools";
 import {
   createContext,
   memo,
@@ -7,14 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { type Event } from "nostr-tools";
 import { SEEN_EVENT_IDS_PATH } from "components/apps/Messenger/constants";
 import { type NostrProfile } from "components/apps/Messenger/types";
 import { useFileSystemActions } from "contexts/fileSystem";
 
 type Profiles = Record<string, NostrProfile>;
 
-export type TimeScale = "day" | "week" | "month" | "trimester" | "infinite";
+export type TimeScale = "day" | "infinite" | "month" | "trimester" | "week";
 
 type History = {
   outgoingEvents: Event[];

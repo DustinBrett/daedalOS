@@ -6,7 +6,7 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 import { haltEvent } from "utils/functions";
 
 const DXBall: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer StyledComponent={StyledDXBall} id={id} useHook={useDXBall}>
+  <AppContainer id={id} StyledComponent={StyledDXBall} useHook={useDXBall}>
     <canvas
       aria-label="DX-Ball"
       id="dx-ball"

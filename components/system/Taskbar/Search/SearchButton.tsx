@@ -1,14 +1,14 @@
-import { useTheme } from "styled-components";
 import { memo, useCallback } from "react";
-import StyledSearchButton from "components/system/Taskbar/Search/StyledSearchButton";
+import { useTheme } from "styled-components";
 import {
   importSearch,
   SEARCH_BUTTON_TITLE,
 } from "components/system/Taskbar/functions";
+import StyledSearchButton from "components/system/Taskbar/Search/StyledSearchButton";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
+import { useMenuPreload } from "hooks/useMenuPreload";
 import { CLICK_FOCUSABLE_ELEMENT } from "utils/constants";
 import { label } from "utils/functions";
-import { useMenuPreload } from "hooks/useMenuPreload";
 
 type StartButtonProps = {
   searchVisible: boolean;

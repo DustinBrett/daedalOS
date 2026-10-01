@@ -7,9 +7,9 @@ import {
 } from "components/system/Files/FileManager/functions";
 import { type DragPosition } from "components/system/Files/FileManager/useDraggableEntries";
 import {
+  COMPLETE_ACTION,
   type CompleteAction,
   type NewPath,
-  COMPLETE_ACTION,
 } from "components/system/Files/FileManager/useFolder";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcessesActions, useProcessesRef } from "contexts/process";

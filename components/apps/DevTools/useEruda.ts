@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { type default as Eruda, type InitOptions } from "eruda";
+import { useEffect } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import { useProcess } from "contexts/process";
 import { loadFiles, viewWidth } from "utils/functions";

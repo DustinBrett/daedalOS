@@ -1,31 +1,31 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useProcess } from "contexts/process";
+import { useForegroundId } from "contexts/session";
 import {
   FAVICON_BASE_PATH,
   ONE_TIME_PASSIVE_EVENT,
   PACKAGE_DATA,
 } from "utils/constants";
-import { useProcess } from "contexts/process";
-import { useForegroundId } from "contexts/session";
 import {
-  isDynamicIcon,
-  imageSrc,
   getDpi,
   getExtension,
   getMimeType,
+  imageSrc,
+  isDynamicIcon,
 } from "utils/functions";
 
 const { alias } = PACKAGE_DATA;
 
 export const useFaviconAndTitle = (): {
-  Favicon: React.JSX.Element | null;
+  Favicon: null | React.JSX.Element;
   title: string;
 } => {
   const [title, setTitle] = useState(alias);
   const [favIcon, setFavIcon] = useState("");
   const foregroundId = useForegroundId();
   const {
-    icon: processIcon,
     hideTaskbarEntry,
+    icon: processIcon,
     title: processTitle,
   } = useProcess(foregroundId);
   const resetFaviconAndTitle = useCallback((): void => {

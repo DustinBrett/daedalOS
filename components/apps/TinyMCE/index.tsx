@@ -6,8 +6,8 @@ import { type ComponentProcessProps } from "components/system/Apps/RenderCompone
 
 const TinyMCE: FC<ComponentProcessProps> = ({ id }) => (
   <AppContainer
-    StyledComponent={StyledTinyMceEditor}
     id={id}
+    StyledComponent={StyledTinyMceEditor}
     useHook={useTinyMCE}
   >
     <div id={id} />

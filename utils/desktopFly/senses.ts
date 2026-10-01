@@ -41,7 +41,7 @@ const clamp = (value: number, lo: number, hi: number): number =>
  */
 const rearBlindness = (cosBearing: number): number =>
   // cos < cos(135°) ≈ -0.7071 means inside the rear 90° cone.
-  clamp((-cosBearing - 0.7071) / (1 - 0.7071), 0, 1);
+  clamp((-cosBearing - Math.SQRT1_2) / (1 - Math.SQRT1_2), 0, 1);
 
 /**
  * Reused left/right result pair. These run for every fly against every

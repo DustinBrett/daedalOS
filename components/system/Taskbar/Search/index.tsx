@@ -1,8 +1,8 @@
 import { basename, extname } from "path";
-import { useTheme } from "styled-components";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { m as motion } from "motion/react";
 import dynamic from "next/dynamic";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "styled-components";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
 import {
   getCachedShortcut,
@@ -15,6 +15,10 @@ import {
   Pictures,
   Videos,
 } from "components/system/StartMenu/Sidebar/SidebarIcons";
+import {
+  maybeCloseTaskbarMenu,
+  SEARCH_BUTTON_TITLE,
+} from "components/system/Taskbar/functions";
 import { Games } from "components/system/Taskbar/Search/Icons";
 import StyledFiles from "components/system/Taskbar/Search/StyledFiles";
 import StyledResults from "components/system/Taskbar/Search/StyledResults";
@@ -23,10 +27,6 @@ import StyledSections from "components/system/Taskbar/Search/StyledSections";
 import StyledSuggestions from "components/system/Taskbar/Search/StyledSuggestions";
 import StyledTabs from "components/system/Taskbar/Search/StyledTabs";
 import useSearchInputTransition from "components/system/Taskbar/Search/useSearchInputTransition";
-import {
-  SEARCH_BUTTON_TITLE,
-  maybeCloseTaskbarMenu,
-} from "components/system/Taskbar/functions";
 import useTaskbarItemTransition from "components/system/Taskbar/useTaskbarItemTransition";
 import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useFileSystemActions } from "contexts/fileSystem";

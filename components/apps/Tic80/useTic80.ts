@@ -1,11 +1,11 @@
 import { basename } from "path";
 import { useCallback, useEffect, useRef } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
-import { useProcess } from "contexts/process";
-import { bufferToUrl, haltEvent, loadFiles } from "utils/functions";
-import { useFileSystemActions } from "contexts/fileSystem";
 import useTitle from "components/system/Window/useTitle";
+import { useFileSystemActions } from "contexts/fileSystem";
+import { useProcess } from "contexts/process";
 import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
+import { bufferToUrl, haltEvent, loadFiles } from "utils/functions";
 
 const useTic80 = ({
   containerRef,

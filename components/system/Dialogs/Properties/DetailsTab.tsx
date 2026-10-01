@@ -1,9 +1,9 @@
 import { Fragment, memo, useEffect, useMemo, useState } from "react";
-import useExif from "components/system/Dialogs/Properties/useExif";
-import useMediaType from "components/system/Dialogs/Properties/useMediaType";
 import { type PropertiesMetaData } from "components/system/Dialogs/Properties";
 import Buttons from "components/system/Dialogs/Properties/Buttons";
 import StyledDetailsTab from "components/system/Dialogs/Properties/StyledDetailsTab";
+import useExif from "components/system/Dialogs/Properties/useExif";
+import useMediaType from "components/system/Dialogs/Properties/useMediaType";
 import { useFileSystemActions } from "contexts/fileSystem";
 
 type TabProps = {
