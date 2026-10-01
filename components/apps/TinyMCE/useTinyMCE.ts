@@ -1,5 +1,11 @@
 import { basename, dirname, extname } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { type Editor, type NotificationSpec } from "tinymce";
 import { config, DEFAULT_SAVE_PATH } from "components/apps/TinyMCE/config";
 import {
@@ -233,12 +239,9 @@ const useTinyMCE = ({
     if (editor) loadFile();
   }, [editor, loadFile]);
 
-  useEffect(
-    () => () => {
-      window.setTimeout(() => editor?.destroy(), 0);
-    },
-    [editor]
-  );
+  // Layout cleanup runs before the window leaves the DOM, Firefox throws if
+  // TinyMCE tears down after its iframe is detached
+  useLayoutEffect(() => () => editor?.destroy(), [editor]);
 };
 
 export default useTinyMCE;
