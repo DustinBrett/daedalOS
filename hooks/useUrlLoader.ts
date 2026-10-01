@@ -3,7 +3,7 @@ import { getProcessByFileExtension } from "components/system/Files/FileEntry/fun
 import { useFileSystemActions, useFs } from "contexts/fileSystem";
 import { useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { getExtension, getSearchParam } from "utils/functions";
+import { getExtension, getSearchParam, isYouTubeUrl } from "utils/functions";
 
 const isBrowserUrl = (url: string): boolean =>
   url.startsWith("http://") ||
@@ -32,6 +32,7 @@ const useUrlLoader = (): void => {
       try {
         urlExists =
           (initialApp === "Browser" && isBrowserUrl(url)) ||
+          (initialApp === "VideoPlayer" && isYouTubeUrl(url)) ||
           (await exists(url));
       } catch {
         // Ignore error checking if url exists
@@ -51,7 +52,9 @@ const useUrlLoader = (): void => {
 
       loadInitialApp(lcAppNames[app.toLowerCase()]);
     } else if (url) {
-      if (isBrowserUrl(url)) {
+      if (isYouTubeUrl(url)) {
+        loadInitialApp("VideoPlayer");
+      } else if (isBrowserUrl(url)) {
         loadInitialApp("Browser");
       } else {
         try {
