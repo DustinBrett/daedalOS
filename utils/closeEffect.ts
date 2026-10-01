@@ -605,6 +605,7 @@ export const startCloseEffect = async (
   hideRealWindow(componentWindow);
   onCaptured();
   await runAnimation(ctx);
+  ctx.gl.getExtension("WEBGL_lose_context")?.loseContext();
 
   if (isRandom) preloadNick(nextRandomNick);
 };
