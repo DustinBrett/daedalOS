@@ -1,4 +1,4 @@
-const { mkdir, readdir, readlink, stat, writeFile } = require("fs");
+const { existsSync, mkdir, readdir, readlink, stat, writeFile } = require("fs");
 const { basename, dirname, join, resolve: resolvePath } = require("path");
 
 const VERSION = 4;
@@ -111,4 +111,6 @@ const fs2json = (dir) => {
   });
 };
 
-fs2json(resolvePath(argPath));
+// Optional dirs (e.g. gitignored public/private) are absent in CI
+if (existsSync(argPath)) fs2json(argPath);
+else console.info(`Skipping ${argPath} (not found)`);
