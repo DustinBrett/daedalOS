@@ -116,10 +116,10 @@ export const toggleShowDesktop = (
   stackOrder: string[],
   minimize: (id: string) => void
 ): void => {
+  const windows = stackOrder.filter((pid) => processes[pid]);
   const restoreWindows =
-    stackOrder.length > 0 &&
-    !stackOrder.some((pid) => !processes[pid]?.minimized);
-  const allWindows = restoreWindows ? [...stackOrder].reverse() : stackOrder;
+    windows.length > 0 && windows.every((pid) => processes[pid]?.minimized);
+  const allWindows = restoreWindows ? [...windows].reverse() : windows;
 
   if (!restoreWindows) visibleWindows = [];
   else if (visibleWindows.length === 0) visibleWindows = allWindows;
@@ -135,7 +135,7 @@ export const toggleShowDesktop = (
 
   if (restoreWindows) {
     requestAnimationFrame(() =>
-      processes[stackOrder[0]]?.componentWindow?.focus(PREVENT_SCROLL)
+      processes[windows[0]]?.componentWindow?.focus(PREVENT_SCROLL)
     );
   }
 };

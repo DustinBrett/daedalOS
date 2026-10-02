@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo } from "react";
 import { useProcess } from "contexts/process";
 import {
   useForegroundId,
@@ -23,7 +23,8 @@ const useFocusable = (
   callbackEvents?: Partial<Events>,
   focusElement?: HTMLElement | null
 ): Focusable => {
-  const { prependToStack, setForegroundId } = useSessionActions();
+  const { prependToStack, removeFromStack, setForegroundId } =
+    useSessionActions();
   const foregroundId = useForegroundId();
   const stackOrder = useStackOrder();
   const {
@@ -106,6 +107,8 @@ const useFocusable = (
     }
     // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [closing, componentWindow, id, minimized, setForegroundId, url]);
+
+  useEffect(() => () => removeFromStack(id), [id, removeFromStack]);
 
   return useMemo(
     () => ({
