@@ -1,7 +1,5 @@
 FROM node:22-alpine AS builder
 
-ENV NODE_OPTIONS=--openssl-legacy-provider
-
 RUN apk add --no-cache git
 
 WORKDIR /daedalOS

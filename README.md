@@ -6,7 +6,7 @@
 
 ### Feature Overview
 
-[![Feature Overview](https://img.youtube.com/vi/djCqHH0SCmA/mqdefault.jpg)](http://www.youtube.com/watch?v=djCqHH0SCmA)
+[![Feature Overview](https://img.youtube.com/vi/djCqHH0SCmA/mqdefault.jpg)](https://www.youtube.com/watch?v=djCqHH0SCmA)
 
 # System 🧠
 
@@ -17,9 +17,14 @@
   - Thumbnail & Details Views
 - [Drag & Drop](https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API) File Support (internal & external)
   - Loading progress dialog
-- ZIP ([write support](https://www.npmjs.com/package/fflate)), [ZIP](https://github.com/jvilk/BrowserFS/blob/master/src/backends/ZipFS.ts)/[ISO](https://github.com/jvilk/BrowserFS/blob/master/src/backends/IsoFS.ts) read support, [7Z/GZ/RAR/TAR/etc. extract](https://github.com/use-strict/7z-wasm) support
-- Writes to [IndexedDb](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
+- Archives
+  - Browse [ZIP](https://github.com/jvilk/BrowserFS/blob/master/src/backends/ZipFS.ts) & [ISO](https://github.com/jvilk/BrowserFS/blob/master/src/backends/IsoFS.ts) files as folders
+  - Create ZIP files ([fflate](https://www.npmjs.com/package/fflate))
+  - Extract 7Z/GZ/RAR/TAR/etc. ([7z-wasm](https://github.com/use-strict/7z-wasm))
+- Writes to [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
 - Group selection/manipulation & drag to sort/arrange
+  - Sort by name, size, type or date
+  - Persists icon position/sort order
 - Dynamic and auto cached icons for [music](https://github.com/Borewit/music-metadata-browser), images, video & emulator states
 - Context Menus
   - Cut, Copy, Create shortcut, Delete, Rename
@@ -29,20 +34,18 @@
   - Sort by, New Folder, New Text Document
   - Screen Capture
 - Keyboard Shortcuts
-  - CTRL+C, CTRL+V, CTRL+X, CTRL+A, Delete
-  - F2, F5, Backspace, Arrows, Enter
-  - SHIFT+CTRL+R, SHIFT+F10, SHIFT+F12
-  - In Fullscreen: Windows Key, Windows Key + R
+  - CTRL+A, CTRL+C, CTRL+X, CTRL+V, Delete (or CTRL+D)
+  - F2 (Rename), F5 or CTRL+R (Refresh), Backspace (Up one level)
+  - Arrows, Home, End, Enter (Open), ALT+Enter (Properties), ALT+N (New window)
+  - CTRL+SHIFT+3 (Thumbnail view), CTRL+SHIFT+6 (Details view)
 - File information tooltips
-- Allow sorting by name, size, type or date
-  - Persists icon position/sort order
 
 ### Windows
 
 - [Resizable and Draggable](https://github.com/bokuweb/react-rnd)
 - Minimize, Maximize & Close
 - Persists size/position/maximized states
-- [Animates](https://www.framer.com/motion/) opening and closing
+- [Animates](https://motion.dev/) opening and closing
 
 ### Start Menu
 
@@ -50,8 +53,7 @@
   - Apps list, Documents/Pictures/Videos shortcuts, Power (clears session)
 - Spotlight visual effect
 - Folder support
-- Keyboard shortcut opens with **_SHIFT+ESC_**
-  - Or Windows Key when in fullscreen
+- Opens with **_SHIFT+ESC_** (or the Windows key in fullscreen)
 
 ### Taskbar
 
@@ -59,6 +61,25 @@
 - Focused window indicator
 - Search menu (w/Recent files)
 - AI Chat Agent ([Prompt API](https://docs.google.com/document/d/1VG8HIyz361zGduWgNG7R_R8Xkv0OOJ8b5C9QKeCjU0c/edit) & [WebLLM](https://github.com/mlc-ai/web-llm)) (w/Summarize & Image Generation)
+
+### Keyboard Shortcuts
+
+| Shortcut             | Action                           |
+| -------------------- | -------------------------------- |
+| SHIFT+ESC            | Start Menu                       |
+| SHIFT+CTRL+E         | File Explorer                    |
+| SHIFT+CTRL+R         | Run dialog                       |
+| SHIFT+CTRL+S         | Search                           |
+| SHIFT+CTRL+X         | Start button context menu        |
+| SHIFT+CTRL+D         | Show desktop                     |
+| SHIFT+CTRL+Up / Down | Maximize / Minimize (or restore) |
+| SHIFT+F5             | Reload                           |
+| SHIFT+F10            | Terminal                         |
+| SHIFT+F12            | DevTools                         |
+| CTRL+ALT+F4          | Close focused window             |
+| F11                  | Toggle fullscreen                |
+
+In fullscreen the Windows key opens the Start Menu, Windows key combos work in place of SHIFT+CTRL (e.g. Windows Key + R), ALT+F4 closes the focused window and ESC exits fullscreen.
 
 ### Clock
 
@@ -73,26 +94,28 @@
 
 - Dynamic animated wallpapers ([OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas)/[Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers))
   - Milky Way ([density wave theory](https://beltoforion.de/en/spiral_galaxy_renderer/), device orientation parallax)
-  - [Waves](https://www.vantajs.com/?effect=waves)
+  - [Vanta Waves](https://www.vantajs.com/?effect=waves)
   - [Hexells](https://znah.net/hexells/)
-  - [Matrix](https://rezmason.github.io/matrix/)
+  - [Matrix](https://rezmason.github.io/matrix/) (2D & 3D)
   - [Coastal Landscape](https://www.shadertoy.com/view/fstyD4)
 - Set via image/video (Fill, Fit, Stretch, Tile, Center)
 - Picture Slideshow
-- [Astronomy Picture of the Day](https://api.nasa.gov/#apod)
-- [Art Institute of Chicago](https://api.artic.edu/docs/)
-- [Metropolitan Museum of Art](https://metmuseum.github.io/)
-- [Lorem Picsum](https://picsum.photos/)
-- AI Generated Wallpapers [Stable Diffusion](https://stability.ai/stable-diffusion)
-- Custom screen saver file support
+- Online image sources
+  - [NASA Astronomy Picture of the Day](https://api.nasa.gov/#apod)
+  - [Art Institute of Chicago](https://api.artic.edu/docs/)
+  - [Metropolitan Museum of Art](https://metmuseum.github.io/)
+  - [Lorem Picsum](https://picsum.photos/)
+- AI generated wallpapers via [Stable Diffusion](https://stability.ai/stable-diffusion) (requires WebGPU)
+- Screen saver file support (**_.xscr_**)
   - [3D FlowerBox](https://github.com/kevin-shannon/3D-FlowerBox)
   - [3D Maze](https://github.com/ibid-11962/Windows-95-3D-Maze-Screensaver)
-  - [Pipes](https://github.com/1j01/pipes)
+  - [3D Pipes](https://github.com/1j01/pipes)
+  - Hackers
 
 ### Run Dialog
 
 - Launch apps by alias or paths
-- Opens `ipfs:` & `nostr:` URIs
+- Opens `ipfs://` & `nostr:` URIs
 
 ### URL
 
@@ -119,9 +142,10 @@
 
 ### [DesktopFly](https://github.com/DenisSergeevitch/desktop-fly)
 
-- Fruit fly pets driven by a live spiking simulation of 1,275 real [FlyWire](https://flywire.ai/) connectome neurons, with escape, backward retreat, grooming, sleep & circadian rhythm
+- Fruit fly pets driven by a live spiking simulation of 9,907 real [FlyWire](https://flywire.ai/) connectome neurons, with escape, backward retreat, grooming, sleep & circadian rhythm
 - Every fly has its own brain & senses: window edges are walkable terrain, dragged windows & the cursor loom, clicks swat, and a takeoff startles nearby flies
-- Spawn via `fly` in Terminal or Run dialog
+- Flies learn: swat one while it is watching something and it learns to avoid that thing
+- Spawn via `fly [count]` (up to 5) in Terminal or the Run dialog, see `fly help` for details
 
 ### [DevTools](https://eruda.liriliri.io/)
 
@@ -130,7 +154,7 @@
 
 ### [EmulatorJS](https://github.com/ethanaobrien/emulatorjs) (**_.32x, .a26, .a52, .a78, .gb, .gba, .gbc, .gen, .gg, .j64, .jag, .lnx, .n64, .nds, .nes, .ngc, .ngp, .pce, .sfc, .smc, .smd, .sms, .v64, .vb, .vboy, .ws, .wsc, .z64_**)
 
-- Plays console game roms
+- Plays console game ROMs
 
 ### [IRC](https://kiwiirc.com/)
 
@@ -161,19 +185,19 @@
 - Save files via **_CTRL+S_**
 - Line count, cursor position, language id
 - [Prettier](https://prettier.io/) formatting
-  - json, js/ts, css/sass/less, html, markdown
+  - JSON, JS/TS, CSS/Sass/Less, HTML, Markdown, XML
 
 ### [OpenType](https://github.com/opentypejs/opentype.js) (**_.otf, .ttf, .woff_**)
 
 - Font viewer
 
-### [Paint](https://github.com/1j01/jspaint) (**_.bmp, .gif, .ico, .jpg, .png, .tiff, .webp,_**)
+### [Paint](https://github.com/1j01/jspaint) (**_.bmp, .gif, .ico, .jpeg, .jpg, .png, .tif, .tiff, .webp_**)
 
 - Create & edit images
 
 ### [PDF](https://mozilla.github.io/pdf.js/) (**_.pdf_**)
 
-- Render/Print PDF's
+- Render/Print PDFs
 - Page current/count & Zoom
 
 ### Photos
@@ -182,7 +206,8 @@
   - [HEIF](https://github.com/catdad-experiments/libheif-js) (**_.heic, .heif_**)
   - [JPEG XL](https://github.com/niutech/jxl.js) (**_.jxl_**)
   - [QOI](https://gist.github.com/nicolaslegland/f0577cb49b1e56b729a2c0fc0aa151ba) (**_.qoi_**)
-  - [TIFF](https://github.com/photopea/UTIF.js) (**_.tif, .tiff_**)
+  - [TIFF & RAW](https://github.com/photopea/UTIF.js) (**_.tif, .tiff, .cr2, .dng, .nef_**)
+  - Cursors (**_.ani, .cur_**)
 - Fullscreen & [Zoom](https://github.com/anvaka/panzoom)
 
 ### [Ruffle](https://ruffle.rs/) (**_.swf, .spl_**)
@@ -192,23 +217,25 @@
 ### [Stable Diffusion](https://stability.ai/stable-diffusion)
 
 - Creates 512x512 images using artificial intelligence
-- Runs locally using [WebSD](https://mlc.ai/web-stable-diffusion/)
+- Runs locally using [WebSD](https://mlc.ai/web-stable-diffusion/) (requires WebGPU)
 
 ### [Terminal](https://xtermjs.org/)
 
+- Activate from Start Menu or **_SHIFT+F10_**
 - File system support
 - Autocomplete & history
 - Pipe commands together
 - Command list via `help`
 - [Git support](https://isomorphic-git.org/) (checkout & clone)
 - [Python support](https://pyodide.org/) (**_.py_**)
-- [WebAssembly Package Manager](https://wapm.io/)
+- [JavaScript support](https://bellard.org/quickjs/) via `qjs`
+- [WebAssembly Package Manager](https://wapm.io/) (**_.wasm_**)
   - Ex: `wapm cowsay moo` ([\#](https://wapm.io/package/cowsay))
+- [FFmpeg](https://github.com/ffmpegwasm/ffmpeg.wasm) & [ImageMagick](https://github.com/KnicKnic/WASM-ImageMagick) conversion
 - [Weather information](https://wttr.in/)
 - [eSheep](https://adrianotiger.github.io/web-esheep/)
-- Activate from Start Menu or **_SHIFT+F10_**
 - Neofetch
-- [FFmpeg](https://github.com/ffmpegwasm/ffmpeg.wasm) & [ImageMagick](https://github.com/KnicKnic/WASM-ImageMagick) conversion
+- Boots Linux in Virtual x86 via `linux` or `wsl`
 
 ### [TIC-80](https://tic80.com/) (**_.tic_**)
 
@@ -219,7 +246,7 @@
 - Read & WYSIWYG modes
 - File save support
 
-### [Virtual x86](https://copy.sh/v86/) (**_.img, .iso_**)
+### [Virtual x86](https://copy.sh/v86/) (**_.bin, .dsk, .img, .iso_**)
 
 - x86 emulator
 - Automatic save states on close
@@ -228,7 +255,8 @@
 
 ### [Video Player](https://videojs.com/)
 
-- [Supported Formats](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs) ([codecbox.js](https://github.com/duanyao/codecbox.js))
+- [Supported Formats](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs) (**_.mp4, .webm, .mkv, .mov, .m4v, .ogv, .3gp, .m3u8, etc._**)
+  - AVI/DivX decoded via [codecbox.js](https://github.com/duanyao/codecbox.js)
 - Plays [YouTube](https://github.com/videojs/videojs-youtube) videos/shortcuts
 - Keyboard Shortcuts (Volume, Seek, Scale, Fullscreen)
 
@@ -237,7 +265,7 @@
 - Code/text editor
 - Supports all file types
 
-### [Webamp](https://webamp.org/) (**_.mp3, .wsz_**)
+### [Webamp](https://webamp.org/) (**_.mp3, .wsz, .asx, .m3u, .pls_**)
 
 - Winamp audio player
 - [Skin support](https://skins.webamp.org/) (w/random skins via [Winamp Skin Museum](https://skins.webamp.org/))
@@ -269,34 +297,44 @@
 
 # Try It 🚀
 
-##### Requirements
+### Requirements
 
-- [Node.js](https://nodejs.org/en/download/)
-- [Yarn](https://yarnpkg.com/en/)
+- [Node.js](https://nodejs.org/en/download/) 22+
+- [Yarn](https://classic.yarnpkg.com/)
 
-##### Development
+### Development
 
-```
+`build:prebuild` generates the file system and search indexes the app loads at startup, so re-run it after adding or removing files in `public/`.
+
+```sh
 yarn install
 yarn build:prebuild
 yarn dev
 ```
 
-##### Production
+Then open http://localhost:3000.
 
-```
+### Production
+
+Builds a static export to `out/` and serves it on http://localhost:3000.
+
+```sh
 yarn install
 yarn build
 yarn serve
 ```
 
-##### Docker
+### Docker
 
-```
+```sh
 docker build -t daedalos .
 docker run -dp 3000:3000 --rm --name daedalos daedalos
 ```
 
-##### Notes
+### Tests & Linting
 
-- If during `yarn install` you receive the error `digital envelope routines::unsupported`, you need to set `NODE_OPTIONS` to `--openssl-legacy-provider` ([1](https://github.com/DustinBrett/daedalOS/blob/main/Dockerfile#L3), [2](https://github.com/DustinBrett/daedalOS/blob/main/.github/workflows/main.yml#L17), [3](https://stackoverflow.com/a/69699772/5895982))
+```sh
+yarn test # Jest unit tests
+yarn e2e  # Playwright end-to-end tests (run `yarn playwright install` once first)
+yarn lint # Oxlint
+```
