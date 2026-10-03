@@ -14,6 +14,7 @@ const webpack = require("webpack");
  * */
 const nextConfig = {
   agentRules: false,
+  allowedDevOrigins: ["**.*"],
   compiler: {
     reactRemoveProperties: isProduction,
     removeConsole: isProduction,
