@@ -9,7 +9,7 @@ import {
 import { BASE_ZIP_CONFIG } from "utils/constants";
 import { loadFiles } from "utils/functions";
 
-export const createZippable = (path: string, file: Buffer): AsyncZippable =>
+export const createZippable = (path: string, file: Uint8Array): AsyncZippable =>
   path
     .split("/")
     .reduceRight<AsyncZippable>((value, key) => ({ [key]: value }), [
@@ -62,9 +62,14 @@ export const addFileToZip = async (
 ): Promise<Buffer> =>
   Buffer.from(
     await zipAsync(
-      addEntryToZippable(
-        (buffer.length > 0 && (await unzipAsync(buffer))) || {},
-        createZippable(zipFilePath, await readFile(filePath))
+      // Nested entries get the directory entries js-dos needs to extract
+      Object.entries({
+        ...(buffer.length > 0 && (await unzipAsync(buffer))),
+        [zipFilePath]: await readFile(filePath),
+      }).reduce<AsyncZippable>(
+        (zippable, [path, file]) =>
+          addEntryToZippable(zippable, createZippable(path, file)),
+        {}
       )
     )
   );
