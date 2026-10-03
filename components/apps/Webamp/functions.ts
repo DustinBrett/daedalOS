@@ -1,5 +1,10 @@
 import { type Position } from "react-rnd";
-import { type Track, type URLTrack } from "webamp";
+import {
+  type Action,
+  type Middleware,
+  type Track,
+  type URLTrack,
+} from "webamp";
 import {
   type ButterChurnPresets,
   type ButterChurnWebampPreset,
@@ -8,8 +13,18 @@ import {
   type WebampCI,
 } from "components/apps/Webamp/types";
 import { centerPosition } from "components/system/Window/functions";
-import { HOME, MP3_MIME_TYPE, PACKAGE_DATA } from "utils/constants";
-import { bufferToBlob, cleanUpBufferUrl, loadFiles } from "utils/functions";
+import {
+  HOME,
+  MP3_MIME_TYPE,
+  PACKAGE_DATA,
+  TASKBAR_HEIGHT,
+} from "utils/constants";
+import {
+  bufferToBlob,
+  cleanUpBufferUrl,
+  loadFiles,
+  viewHeight,
+} from "utils/functions";
 
 const BROKEN_PRESETS = new Set([
   "Flexi - alien fish pond",
@@ -34,7 +49,20 @@ const createWebampSkinMuseumQuery = (offset: number): string => `
   }
 `;
 
+// Webamp snaps windows within the browser size it measures, so exclude the taskbar
+const excludeTaskbarFromBounds: Middleware =
+  () => (next: (action: Action) => unknown) => (action: Action) =>
+    next(
+      action.type === "BROWSER_WINDOW_SIZE_CHANGED"
+        ? {
+            ...action,
+            height: Math.min(action.height, viewHeight() - TASKBAR_HEIGHT),
+          }
+        : action
+    );
+
 export const BASE_WEBAMP_OPTIONS = {
+  __customMiddlewares: [excludeTaskbarFromBounds],
   availableSkins: [
     {
       name: "Aqua X",

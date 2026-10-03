@@ -122,7 +122,9 @@ const useWebamp = (id: string): Webamp => {
         },
         initialSkin,
         initialTracks,
-      } as Options) as unknown as WebampCI;
+      } as ConstructorParameters<
+        typeof window.Webamp
+      >[0]) as unknown as WebampCI;
       const setupElements = (): void => {
         const webampElement = getWebampElement();
 
