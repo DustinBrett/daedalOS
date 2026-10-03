@@ -3,6 +3,7 @@ import { getProcessByFileExtension } from "components/system/Files/FileEntry/fun
 import { useFileSystemActions, useFs } from "contexts/fileSystem";
 import { useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
+import { useSessionLoaded } from "contexts/session";
 import { getExtension, getSearchParam, isYouTubeUrl } from "utils/functions";
 
 const isBrowserUrl = (url: string): boolean =>
@@ -14,10 +15,19 @@ const useUrlLoader = (): void => {
   const { exists, stat } = useFileSystemActions();
   const fs = useFs();
   const { open } = useProcessesActions();
+  const sessionLoaded = useSessionLoaded();
   const loadedInitialAppRef = useRef(false);
 
   useEffect(() => {
-    if (loadedInitialAppRef.current || !fs || !exists || !open) return;
+    if (
+      loadedInitialAppRef.current ||
+      !fs ||
+      !exists ||
+      !open ||
+      !sessionLoaded
+    ) {
+      return;
+    }
 
     loadedInitialAppRef.current = true;
 
@@ -70,7 +80,7 @@ const useUrlLoader = (): void => {
         }
       }
     }
-  }, [exists, fs, open, stat]);
+  }, [exists, fs, open, sessionLoaded, stat]);
 };
 
 export default useUrlLoader;
