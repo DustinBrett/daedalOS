@@ -22,6 +22,8 @@ import useTitle from "components/system/Window/useTitle";
 import useWindowSize from "components/system/Window/useWindowSize";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess, useProcessesActions } from "contexts/process";
+import { useViewport } from "contexts/viewport";
+import { getFullscreenElement } from "contexts/viewport/useViewportContextState";
 import {
   AUDIO_FILE_EXTENSIONS,
   DESKTOP_PATH,
@@ -54,6 +56,7 @@ const useVideoPlayer = ({
   const [player, setPlayer] = useState<VideoPlayer>();
   const [ytPlayer, setYtPlayer] = useState<YouTubePlayer>();
   const { prependFileToTitle } = useTitle(id);
+  const { toggleFullscreen: switchFullscreen } = useViewport();
   const cleanUpSource = useCallback((): void => {
     const { src: sources = [] } = player?.getMedia() || {};
 
@@ -169,6 +172,30 @@ const useVideoPlayer = ({
           }
         }
       });
+      const requestFullscreen = videoPlayer.requestFullscreen.bind(videoPlayer);
+      const exitFullscreen = videoPlayer.exitFullscreen.bind(videoPlayer);
+
+      // Not every browser can go from one fullscreen element to another, so
+      // the viewport handles switching to and back from desktop fullscreen
+      videoPlayer.requestFullscreen = () => {
+        if (getFullscreenElement()) {
+          switchFullscreen(videoPlayer.el() as HTMLElement);
+        } else {
+          requestFullscreen();
+        }
+
+        return videoPlayer;
+      };
+      videoPlayer.exitFullscreen = () => {
+        if (getFullscreenElement() === videoPlayer.el()) {
+          switchFullscreen(videoPlayer.el() as HTMLElement);
+        } else {
+          exitFullscreen();
+        }
+
+        return videoPlayer;
+      };
+
       const toggleFullscreen = (): void => {
         try {
           if (videoPlayer.isFullscreen()) videoPlayer.exitFullscreen();
@@ -343,6 +370,7 @@ const useVideoPlayer = ({
     linkElement,
     setLoading,
     setUrl,
+    switchFullscreen,
     updateFolder,
     updateWindowSize,
     url,
@@ -443,6 +471,28 @@ const useVideoPlayer = ({
   useEffect(() => {
     if (!loading && !closing && player && url) loadVideo();
   }, [closing, loadVideo, loading, player, url]);
+
+  useEffect(() => {
+    // Cross-origin YouTube iframe swallows drops meant for the player
+    const allowDrop = (): void => {
+      const iframe = containerRef.current?.querySelector("iframe");
+
+      if (!iframe || iframe.style.pointerEvents === "none") return;
+
+      iframe.style.pointerEvents = "none";
+      // Mouse events don't fire mid-drag, so the next move means it ended
+      window.addEventListener(
+        "mousemove",
+        () => iframe.style.removeProperty("pointer-events"),
+        { once: true }
+      );
+    };
+
+    window.addEventListener("dragenter", allowDrop, { capture: true });
+
+    return () =>
+      window.removeEventListener("dragenter", allowDrop, { capture: true });
+  }, [containerRef]);
 };
 
 export default useVideoPlayer;
