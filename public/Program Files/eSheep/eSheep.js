@@ -148,7 +148,7 @@ window.Sheep = class eSheep {
       }
     });
     // Window resized, recalculate eSheep bounds
-    document.body.addEventListener("resize", () => {
+    window.addEventListener("resize", () => {
       this.screenW =
         window.innerWidth ||
         document.documentElement.clientWidth ||
