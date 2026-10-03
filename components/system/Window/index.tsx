@@ -2,6 +2,7 @@ import { memo, useCallback } from "react";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledPeekViewport from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekViewport";
 import RndWindow from "components/system/Window/RndWindow";
+import useRnd from "components/system/Window/RndWindow/useRnd";
 import StyledWindow from "components/system/Window/StyledWindow";
 import Titlebar from "components/system/Window/Titlebar";
 import useFocusable from "components/system/Window/useFocusable";
@@ -23,7 +24,8 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   const foregroundId = useForegroundId();
   const isForeground = id === foregroundId;
   const { zIndex, ...focusableProps } = useFocusable(id);
-  const windowTransitions = useWindowTransitions(id);
+  const rndProps = useRnd(id);
+  const windowTransitions = useWindowTransitions(id, rndProps.position);
   const linkViewportEntry = useCallback(
     (viewportEntry: HTMLDivElement) => {
       if (Component && !peekElement && viewportEntry) {
@@ -34,7 +36,7 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   );
 
   return (
-    <RndWindow id={id} zIndex={zIndex}>
+    <RndWindow id={id} rndProps={rndProps} zIndex={zIndex}>
       <StyledWindow
         $backgroundBlur={backgroundBlur}
         $backgroundColor={backgroundColor}

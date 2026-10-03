@@ -46,6 +46,10 @@ export const centerPosition = ({ height, width }: Size): Position => {
   };
 };
 
+export const coversViewport = ({ height, width }: Size): boolean =>
+  pxToNum(width) >= viewWidth() &&
+  pxToNum(height) >= viewHeight() - TASKBAR_HEIGHT;
+
 export const WINDOW_OFFSCREEN_BUFFER_PX = {
   BOTTOM: 15,
   LEFT: 150,

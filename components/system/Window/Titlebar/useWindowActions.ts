@@ -12,7 +12,8 @@ type WindowActions = {
 
 const useWindowActions = (id: string): WindowActions => {
   const nextFocusableId = useNextFocusable(id);
-  const { removeFromStack, setForegroundId } = useSessionActions();
+  const { removeFromStack, setForegroundId, setWindowStates } =
+    useSessionActions();
   const { closeWithTransition, maximize, minimize } = useProcessesActions();
   const processesRef = useProcessesRef();
   const onMinimize = useCallback(
@@ -24,7 +25,13 @@ const useWindowActions = (id: string): WindowActions => {
   );
   const onMaximize = useCallback((): void => {
     const triggerMaximize = (): void => {
-      maximize(id);
+      const maximized = !processesRef.current[id]?.maximized;
+
+      maximize(id, maximized);
+      setWindowStates((currentWindowStates) => ({
+        ...currentWindowStates,
+        [id]: { ...currentWindowStates[id], maximized },
+      }));
       setForegroundId(id);
       processesRef.current[id]?.componentWindow?.focus(PREVENT_SCROLL);
     };
@@ -36,7 +43,7 @@ const useWindowActions = (id: string): WindowActions => {
     } else {
       triggerMaximize();
     }
-  }, [id, maximize, processesRef, setForegroundId]);
+  }, [id, maximize, processesRef, setForegroundId, setWindowStates]);
   const onClose = useCallback((): void => {
     removeFromStack(id);
     closeWithTransition(id);

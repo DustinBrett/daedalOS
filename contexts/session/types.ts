@@ -13,6 +13,7 @@ declare global {
 export type UpdateFiles = (newFile?: string, oldFile?: string) => Promise<void>;
 
 export type WindowState = {
+  maximized?: boolean;
   position?: Position;
   size?: Size;
 };

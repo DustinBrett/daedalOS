@@ -25,7 +25,7 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   const { libs = [], minimized = false, url = "" } = useProcess(id);
   const [loadedUrl, setLoadedUrl] = useState(url);
   const { initWebamp, webampCI } = useWebamp(id);
-  const windowTransitions = useWindowTransitions(id, true);
+  const windowTransitions = useWindowTransitions(id, undefined, true);
   const focusEvents = useMemo(
     () => ({
       onBlurCapture: () => webampCI && unFocus(webampCI),

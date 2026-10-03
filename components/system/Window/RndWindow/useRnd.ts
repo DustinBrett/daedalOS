@@ -1,17 +1,20 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { type DraggableEventHandler } from "react-draggable";
 import { type Props, type RndResizeCallback } from "react-rnd";
 import { useTheme } from "styled-components";
-import { isWindowOutsideBounds } from "components/system/Window/functions";
+import {
+  coversViewport,
+  isWindowOutsideBounds,
+} from "components/system/Window/functions";
 import rndDefaults, {
   RESIZING_DISABLED,
   RESIZING_ENABLED,
 } from "components/system/Window/RndWindow/rndDefaults";
 import useDraggable from "components/system/Window/RndWindow/useDraggable";
 import useResizable from "components/system/Window/RndWindow/useResizable";
-import { useProcess } from "contexts/process";
-import { useSessionActions } from "contexts/session";
-import { getWindowViewport, pxToNum } from "utils/functions";
+import { useProcess, useProcessesActions } from "contexts/process";
+import { useSessionActions, useWindowState } from "contexts/session";
+import { getWindowViewport, hasFinePointer, pxToNum } from "utils/functions";
 
 const enableIframeCapture = (enable = true): void =>
   document.querySelectorAll("iframe").forEach((iframe) => {
@@ -23,15 +26,27 @@ const useRnd = (id: string): Props => {
   const {
     allowResizing = true,
     autoSizing = false,
+    hideMaximizeButton = false,
     lockAspectRatio = false,
     maximized = false,
   } = useProcess(id);
+  const { maximize } = useProcessesActions();
   const { setWindowStates } = useSessionActions();
+  const { maximized: wasMaximized } = useWindowState(id);
   const {
     sizes: { titleBar },
   } = useTheme();
   const [size, setSize] = useResizable(id, autoSizing);
   const [position, setPosition] = useDraggable(id, size);
+  // Reopen as it was left, otherwise default to maximized on touch devices
+  // and when the window would fill the viewport anyway
+  // eslint-disable-next-line react/hook-use-state
+  const [openMaximized] = useState(
+    () =>
+      allowResizing &&
+      !hideMaximizeButton &&
+      (wasMaximized ?? (!hasFinePointer() || coversViewport(size)))
+  );
   const onDragStop: DraggableEventHandler = useCallback(
     (_event, { x, y }) => {
       enableIframeCapture();
@@ -128,6 +143,10 @@ const useRnd = (id: string): Props => {
     () => (allowResizing && !maximized ? RESIZING_ENABLED : RESIZING_DISABLED),
     [allowResizing, maximized]
   );
+
+  useLayoutEffect(() => {
+    if (openMaximized) maximize(id, true);
+  }, [id, maximize, openMaximized]);
 
   return {
     disableDragging: maximized,

@@ -38,7 +38,7 @@ type ProcessContextActions = {
     name: keyof ProcessElements,
     element: HTMLElement
   ) => void;
-  maximize: (id: string) => void;
+  maximize: (id: string, maximized?: boolean) => void;
   minimize: (id: string) => void;
   open: (
     id: string,
@@ -78,7 +78,8 @@ const useProcessContextState = (): {
     []
   );
   const maximize = useCallback(
-    (id: string) => setProcesses(maximizeProcess(id)),
+    (id: string, maximized?: boolean) =>
+      setProcesses(maximizeProcess(id, maximized)),
     []
   );
   const minimize = useCallback(

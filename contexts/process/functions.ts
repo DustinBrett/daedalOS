@@ -96,10 +96,10 @@ export const openProcess =
   };
 
 export const maximizeProcess =
-  (processId: string) =>
+  (processId: string, maximized?: boolean) =>
   (currentProcesses: Processes): Processes =>
     setProcessSettings(processId, {
-      maximized: !currentProcesses[processId]?.maximized,
+      maximized: maximized ?? !currentProcesses[processId]?.maximized,
     })(currentProcesses);
 
 export const minimizeProcess =

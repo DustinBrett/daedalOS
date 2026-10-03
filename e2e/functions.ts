@@ -1082,11 +1082,11 @@ export const selectArea = async ({
 
 // loaders
 export const loadApp =
-  (queryParams?: Record<string, string>) =>
+  (queryParams?: Record<string, string>, session = DEFAULT_SESSION) =>
   async ({ page }: TestProps): Promise<null | Response> => {
-    await page.addInitScript((session) => {
-      window.DEBUG_DEFAULT_SESSION = session;
-    }, DEFAULT_SESSION);
+    await page.addInitScript((debugSession) => {
+      window.DEBUG_DEFAULT_SESSION = debugSession;
+    }, session);
 
     return page.goto(
       queryParams ? `/?${new URLSearchParams(queryParams).toString()}` : "/"
