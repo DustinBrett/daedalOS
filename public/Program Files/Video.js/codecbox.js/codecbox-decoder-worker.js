@@ -12,7 +12,7 @@
     FS.mkdir(dir);
   };
 
-  importScripts("/Program Files/codecbox.js/codecbox.js");
+  importScripts("/Program Files/Video.js/codecbox.js/codecbox.js");
 
   onmessage = function (ev) {
     var msg = ev.data;

@@ -1,5 +1,5 @@
 window.initCodecBox = (config) => {
-  var ffworker = new Worker("/Program Files/codecbox.js/codecbox-decoder-worker.js");
+  var ffworker = new Worker("/Program Files/Video.js/codecbox.js/codecbox-decoder-worker.js");
 
   var canvas = config.canvas;
   var canvas2D = canvas.getContext("2d");
