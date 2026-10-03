@@ -7,6 +7,23 @@ import useIsolatedContentWindow from "hooks/useIsolatedContentWindow";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { haltEvent, loadFiles } from "utils/functions";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = (): void => {};
+
+// SDL needs an audio context to start, even if it can only be a silent one
+class SilentAudioContext {
+  public destination = {};
+
+  public sampleRate = 44_100;
+
+  public close = noop;
+
+  public createScriptProcessor = (): Record<string, () => void> => ({
+    connect: noop,
+    disconnect: noop,
+  });
+}
+
 const useSpaceCadet = ({
   containerRef,
   id,
@@ -36,6 +53,13 @@ const useSpaceCadet = ({
         ) as HTMLCanvasElement;
 
         canvas.addEventListener("contextmenu", haltEvent);
+
+        if (
+          !("AudioContext" in newContentWindow) &&
+          !("webkitAudioContext" in newContentWindow)
+        ) {
+          Object.assign(newContentWindow, { AudioContext: SilentAudioContext });
+        }
 
         newContentWindow.Module = {
           canvas,
