@@ -22,9 +22,9 @@ const triggerEvents = [
   "blur",
   "keyup",
   "keydown",
-  "pointerup",
-  "pointerdown",
-  "pointermove",
+  "mouseup",
+  "mousedown",
+  "mousemove",
   "touchstart",
   "touchend",
   "touchmove",
@@ -43,13 +43,21 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
       }),
     [readFile, url]
   );
-  const closeScreenSaver = useCallback(() => {
-    if (iframeRef.current) {
-      iframeRef.current.style.display = "none";
-    }
+  const closeScreenSaver = useCallback(
+    (event?: Event) => {
+      // Stops the tap from also clicking what was under the screen saver
+      if (event?.type === "touchstart" && event.cancelable) {
+        event.preventDefault();
+      }
 
-    close(id);
-  }, [close, id]);
+      if (iframeRef.current) {
+        iframeRef.current.style.display = "none";
+      }
+
+      close(id);
+    },
+    [close, id]
+  );
 
   useEffect(() => {
     if (url && !srcDoc[url]) loadScreenSaver();
@@ -68,11 +76,10 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
             setTimeout(
               () =>
                 triggerEvents.forEach((eventName) =>
-                  iframeWindow.addEventListener(
-                    eventName,
-                    closeScreenSaver,
-                    ONE_TIME_PASSIVE_CAPTURE_EVENT
-                  )
+                  iframeWindow.addEventListener(eventName, closeScreenSaver, {
+                    ...ONE_TIME_PASSIVE_CAPTURE_EVENT,
+                    passive: eventName !== "touchstart",
+                  })
                 ),
               TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK
             )
