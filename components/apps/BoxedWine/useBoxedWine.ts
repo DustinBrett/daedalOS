@@ -7,8 +7,14 @@ import useEmscriptenMount from "components/system/Files/FileManager/useEmscripte
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
-import { useProcess } from "contexts/process";
+import { useProcess, useProcessesActions } from "contexts/process";
 import { getExtension, isCanvasDrawn, loadFiles } from "utils/functions";
+
+type WineFS = EmscriptenFS & {
+  close: (stream: { path?: string }) => void;
+};
+
+const WINE_LOADER = "/root/base/bin/wine";
 
 declare global {
   interface Window {
@@ -38,6 +44,7 @@ const useBoxedWine = ({
 }: ContainerHookProps): void => {
   const { appendFileToTitle } = useTitle(id);
   const { libs = [] } = useProcess(id);
+  const { closeWithTransition } = useProcessesActions();
   const { readFile } = useFileSystemActions();
   const mountEmFs = useEmscriptenMount();
   const loadedUrl = useRef<string>(undefined);
@@ -111,9 +118,26 @@ const useBoxedWine = ({
       if (url) appendFileToTitle(appName || basename(url));
       try {
         window.BoxedWineShell(() => {
+          const wineFs = window.FS as WineFS;
+          const { close } = wineFs;
+
+          // Each Wine process holds the loader open until it exits, once the
+          // program has drawn the first one to close means it was closed
+          wineFs.close = (stream) => {
+            close(stream);
+
+            if (
+              appName &&
+              stream.path === WINE_LOADER &&
+              !blankCanvasCheckerTimer.current
+            ) {
+              closeWithTransition(id);
+            }
+          };
+
           setLoading(false);
           mountEmFs(
-            window.FS as EmscriptenFS,
+            wineFs,
             url ? `BoxedWine_${basename(url, extname(url))}` : id
           );
         });
@@ -123,6 +147,7 @@ const useBoxedWine = ({
     });
   }, [
     appendFileToTitle,
+    closeWithTransition,
     containerRef,
     id,
     libs,
