@@ -549,25 +549,27 @@ const useFolder = (
         close(`Transfer${PROCESS_DELIMITER}${path}`);
 
       try {
-        const [{ unarchive, unzip }, data] = await Promise.all([
+        const [{ getZipBatches, unarchive, unzip }, data] = await Promise.all([
           import("utils/zipFunctions"),
           readFile(path),
         ]);
-        const unzippedFiles = Object.entries(
-          ZIP_EXTENSIONS.has(getExtension(path))
-            ? await unzip(data)
-            : await unarchive(path, data)
-        );
+        const isZip = ZIP_EXTENSIONS.has(getExtension(path));
+        let unzipped = isZip ? {} : await unarchive(path, data);
+        const batches = isZip
+          ? await getZipBatches(data)
+          : [Object.keys(unzipped)];
 
-        if (unzippedFiles.length === 0) closeDialog();
+        if (batches[0].length === 0) closeDialog();
         else {
           const zipFolderName = basename(
             path,
             path.toLowerCase().endsWith(".tar.gz") ? ".tar.gz" : extname(path)
           );
           const uniqueName = await createPath(zipFolderName, directory);
-          const objectReaders = unzippedFiles.map<ObjectReader>(
-            ([extractPath, fileContents]) => {
+          let currentBatch = isZip ? -1 : 0;
+          let extracting = Promise.resolve();
+          const objectReaders = batches.flatMap((names, batch) =>
+            names.map<ObjectReader>((extractPath) => {
               let aborted = false;
 
               return {
@@ -578,30 +580,45 @@ const useFolder = (
                 done: () => updateFolder(directory, uniqueName),
                 name: extractPath,
                 operation: "Extracting",
-                read: async () => {
-                  if (aborted) return;
+                // One at a time, so only the current batch is in memory
+                read: () => {
+                  extracting = extracting.then(async () => {
+                    if (aborted) return;
 
-                  try {
-                    const localPath = join(directory, uniqueName, extractPath);
-
-                    if (
-                      fileContents.length === 0 &&
-                      extractPath.endsWith("/")
-                    ) {
-                      await mkdir(localPath);
-                    } else {
-                      if (!(await exists(dirname(localPath)))) {
-                        await mkdirRecursive(dirname(localPath));
+                    try {
+                      if (batch !== currentBatch) {
+                        currentBatch = batch;
+                        unzipped = await unzip(data, names);
                       }
 
-                      await writeFile(localPath, Buffer.from(fileContents));
+                      const fileContents = unzipped[extractPath];
+                      const localPath = join(
+                        directory,
+                        uniqueName,
+                        extractPath
+                      );
+
+                      if (
+                        fileContents.length === 0 &&
+                        extractPath.endsWith("/")
+                      ) {
+                        await mkdir(localPath);
+                      } else {
+                        if (!(await exists(dirname(localPath)))) {
+                          await mkdirRecursive(dirname(localPath));
+                        }
+
+                        await writeFile(localPath, Buffer.from(fileContents));
+                      }
+                    } catch {
+                      // Ignore failure to extract
                     }
-                  } catch {
-                    // Ignore failure to extract
-                  }
+                  });
+
+                  return extracting;
                 },
               };
-            }
+            })
           );
 
           openTransferDialog(objectReaders, path);
