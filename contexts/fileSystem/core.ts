@@ -30,7 +30,7 @@ type FS9P = {
   version: 3;
 };
 
-type FileSystemHandles = Record<string, FileSystemDirectoryHandle>;
+type FileSystemHandles = Record<string, FileSystemDirectoryHandle | undefined>;
 
 export const UNKNOWN_SIZE = -1;
 export const UNKNOWN_STATE_CODES = new Set(["EIO", "ENOENT"]);

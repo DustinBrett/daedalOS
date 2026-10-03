@@ -30,7 +30,7 @@ const observers = new Map<string, FileSystemObserver>();
 
 export const addFileSystemHandle = async (
   directory: string,
-  handle: FileSystemDirectoryHandle,
+  handle: FileSystemDirectoryHandle | undefined,
   mappedName: string,
   observer?: FileSystemObserver
 ): Promise<void> => {

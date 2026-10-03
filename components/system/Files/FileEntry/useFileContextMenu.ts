@@ -53,7 +53,6 @@ import {
 } from "utils/ffmpeg/formats";
 import {
   getExtension,
-  isSafari,
   isYouTubeUrl,
   saveUnpositionedDesktopIcons,
 } from "utils/functions";
@@ -208,11 +207,8 @@ const useFileContextMenu = (
           if (path) {
             if (path === join(DESKTOP_PATH, ROOT_SHORTCUT)) {
               if (typeof FileSystemHandle === "function") {
-                const mapFileSystemDirectory = (
-                  directory: string,
-                  existingHandle?: FileSystemDirectoryHandle
-                ): void => {
-                  mapFs(directory, existingHandle)
+                const mapFileSystemDirectory = (directory: string): void => {
+                  mapFs(directory)
                     .then((mappedFolder) => {
                       updateFolder("/", mappedFolder);
                       open("FileExplorer", {
@@ -226,7 +222,7 @@ const useFileContextMenu = (
                 const showMapDirectory = "showDirectoryPicker" in window;
                 const showMapOpfs =
                   typeof navigator.storage?.getDirectory === "function" &&
-                  !isSafari();
+                  "createWritable" in FileSystemFileHandle.prototype;
 
                 menuItems.unshift(
                   ...(showMapDirectory
@@ -240,16 +236,7 @@ const useFileContextMenu = (
                   ...(showMapOpfs
                     ? [
                         {
-                          action: async () => {
-                            try {
-                              mapFileSystemDirectory(
-                                "/OPFS",
-                                await navigator.storage.getDirectory()
-                              );
-                            } catch {
-                              // Ignore failure to map directory
-                            }
-                          },
+                          action: () => mapFileSystemDirectory("/OPFS"),
                           label: "Map OPFS",
                         },
                       ]

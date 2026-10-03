@@ -351,11 +351,13 @@ const useFileSystemContextState = (): {
       try {
         handle =
           existingHandle ??
-          (await window.showDirectoryPicker({
-            id: "MapDirectoryPicker",
-            mode: "readwrite",
-            startIn: "desktop",
-          }));
+          (await (SYSTEM_DIRECTORIES.has(directory)
+            ? navigator.storage.getDirectory()
+            : window.showDirectoryPicker({
+                id: "MapDirectoryPicker",
+                mode: "readwrite",
+                startIn: "desktop",
+              })));
       } catch {
         // Ignore cancelling the dialog
       }
@@ -425,7 +427,12 @@ const useFileSystemContextState = (): {
 
               import("contexts/fileSystem/functions").then(
                 ({ addFileSystemHandle }) =>
-                  addFileSystemHandle(directory, handle, mappedName, observer)
+                  addFileSystemHandle(
+                    directory,
+                    systemDirectory ? undefined : handle,
+                    mappedName,
+                    observer
+                  )
               );
             });
           });
