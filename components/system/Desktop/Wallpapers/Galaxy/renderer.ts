@@ -29,7 +29,8 @@ const MAX_RADIUS_GLSL = GALAXY.maxRadius.toFixed(2);
 // Supernova cadence: once per cycle a hash window picks roughly one star
 // of the young population to flare and decay (the real event compressed
 // into wall time). Width 0.00007 selects ~1 of the ~8k young stars.
-const NOVA_RATE_GLSL = (1 / 55).toFixed(6);
+const NOVA_CYCLE_SECONDS = 55;
+const NOVA_RATE_GLSL = (1 / NOVA_CYCLE_SECONDS).toFixed(6);
 
 // Two sprite shader variants from one template: crisp (star layers) keeps
 // spikes + supernovae, soft (glow/dust/nebulae) compiles those terms out -
@@ -47,7 +48,8 @@ uniform float uPatternRot;
 uniform float uPointScale;
 uniform float uAlpha;
 uniform float uTwinkleAmp;
-uniform float uMaxPoint;
+uniform vec2 uSizeRange; // sprite footprint limits (px): anti-alias floor, cap
+uniform float uVignette;
 uniform vec4 uWarp; // x: amplitude, y: cos(node), z: sin(node), w: start
 ${
   crisp
@@ -90,10 +92,19 @@ ${
     max(clip.w, 0.0001);`
     : `  float sizePx = aMotion.z * uPointScale / max(clip.w, 0.0001);`
 }
-  float fade = clamp(sizePx, 0.0, 1.0);
   float twinkle = 1.0 + uTwinkleAmp *
     sin(uTime * (1.5 + fract(aMotion.w * 0.6366) * 2.5) + aMotion.w);
-  float shownSize = clamp(sizePx, 1.0, uMaxPoint);
+  // A gaussian narrower than ~half a pixel is undersampled: its summed
+  // brightness swings with the sub-pixel position, so slowly drifting stars
+  // would shimmer. Smaller sprites spread over the floor footprint instead,
+  // dimmed so their total light is unchanged
+  float shownSize = clamp(sizePx, uSizeRange.x, uSizeRange.y);
+  float coverage = min(sizePx / shownSize, 1.0);
+  // Optical vignette, evaluated per sprite (it varies far slower than any
+  // sprite's extent) so no fullscreen pass is needed to apply it
+  float vignette = 1.0 - uVignette * 0.28 *
+    smoothstep(0.4, 0.9, length(clip.xy / max(clip.w, 0.0001)) * 0.5);
+  float fade = coverage * coverage * vignette;
 
   // Sprites are instanced quads, not points: each corner is pushed out in
   // clip space by half the sprite size. Partly off-screen sprites then clip
@@ -113,7 +124,7 @@ ${
     uSpike * nova * 4.0);
   vNova = min(nova * 2.0, 1.0);
   vColor = vec4(aColor.rgb,
-    aColor.a * uAlpha * twinkle * fade * fade * (1.0 + nova * 5.0));`
+    aColor.a * uAlpha * twinkle * fade * (1.0 + nova * 5.0));`
     : `  // Inclination asymmetry of extinction: dust on the near side of a tilted
   // disk blocks the light column behind it, while far-side dust is hidden
   // by the disk's own glow - the cue astronomers read to tell which edge
@@ -123,7 +134,7 @@ ${
   float dustBias = mix(1.0, mix(0.72, 1.28, nearness), uDustNear);
 
   vColor = vec4(aColor.rgb,
-    aColor.a * uAlpha * twinkle * fade * fade * dustBias);`
+    aColor.a * uAlpha * twinkle * fade * dustBias);`
 }
 }
 `;
@@ -190,6 +201,7 @@ varying vec2 vUv;
 uniform sampler2D uTex;
 uniform float uTonemap;
 uniform float uAberration;
+uniform float uGrainSeed; // negative: no grain or vignette (dust composite)
 
 void main() {
   vec3 color;
@@ -223,31 +235,22 @@ void main() {
     min(peak, 0.6) + 0.4 * (1.0 - exp(-max(peak - 0.6, 0.0) * 2.5));
   vec3 hueKept = color * (peakShouldered / max(peak, 0.0001));
 
-  gl_FragColor =
-    vec4(mix(color, mix(shouldered, hueKept, 0.6), uTonemap), 1.0);
-}
-`;
+  color = mix(color, mix(shouldered, hueKept, 0.6), uTonemap);
 
-const FINISH_FRAGMENT_SHADER = `
-#ifdef GL_FRAGMENT_PRECISION_HIGH
-precision highp float;
-#else
-precision mediump float;
-#endif
-varying vec2 vUv;
-uniform float uSeed;
+  if (uGrainSeed >= 0.0) {
+    // Sensor grain rides on the glow (the shot noise of a long exposure)
+    // and the lens vignette eases the corners down; both multiply, so black
+    // stays black. Sprites get the same vignette in their vertex shader.
+    // Sine-free hash: sin() of large arguments bands on mobile GPUs
+    vec3 p3 = fract(vec3(gl_FragCoord.xy, uGrainSeed) * 0.1031);
+    p3 += dot(p3, p3.zyx + 31.32);
+    float noise = fract((p3.x + p3.y) * p3.z);
 
-void main() {
-  // Multiplicative finishing pass. Sensor grain rides on the signal (the
-  // shot noise of a long exposure), and a gentle optical vignette eases
-  // the frame corners down the way real lens flat-fields fall off -
-  // multiplying means pure black stays pure black, so the sky keeps its
-  // full contrast while the corners deepen and frame the galaxy
-  float noise = fract(
-    sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233)) + uSeed) * 43758.5453);
-  float vignette = 1.0 - 0.28 * smoothstep(0.4, 0.9, length(vUv - 0.5));
+    color *= (1.0 - 0.28 * smoothstep(0.4, 0.9, length(vUv - 0.5))) *
+      (1.0 + (noise - 0.5) * 0.07);
+  }
 
-  gl_FragColor = vec4(vec3(vignette * (1.0 + (noise - 0.5) * 0.07)), 1.0);
+  gl_FragColor = vec4(color, 1.0);
 }
 `;
 
@@ -280,6 +283,8 @@ const BOUND_POINTS = ((): number[] => {
 })();
 const SIZE_REFERENCE_HEIGHT = 900;
 const MIN_EFFECTIVE_FPS = 60;
+// Narrowest sprite gaussian (device px) that pixels sample stably
+const MIN_SPRITE_SIGMA = 0.55;
 
 type GalaxyCanvas = HTMLCanvasElement | OffscreenCanvas;
 
@@ -304,59 +309,28 @@ const getContext = (
   return context;
 };
 
-const compileShader = (
-  gl: WebGLRenderingContext,
-  type: number,
-  source: string
-): WebGLShader => {
-  const shader = gl.createShader(type) as WebGLShader;
-
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    throw new Error(gl.getShaderInfoLog(shader) || "Shader compile failed");
-  }
-
-  return shader;
-};
-
 const isMobileDevice = (): boolean =>
   typeof navigator === "object" &&
   /android|iphone|ipad|mobi/i.test(navigator.userAgent);
 
 const randomSeed = (): number => Math.trunc(Math.random() * 0x7ffffffe) + 1;
 
-// Warm cache: the worker generates the particle buffers while handling its
-// "init" message, overlapping desktop startup instead of delaying the
-// first rendered frame once the canvas arrives
-let warmedLayers: GalaxyLayer[] | undefined;
-let warmedWideGamut = false;
-let warmedQuality = 0;
+const attachShader = (
+  gl: WebGLRenderingContext,
+  program: WebGLProgram,
+  type: number,
+  source: string
+): void => {
+  const shader = gl.createShader(type) as WebGLShader;
 
-// Feature-detect wide gamut on the context prototypes: no throwaway canvas
-// or GL context needed, so the warm-up path stays instant
-const probeWideGamut = (): boolean => {
-  if (typeof WebGL2RenderingContext === "function") {
-    return "drawingBufferColorSpace" in WebGL2RenderingContext.prototype;
-  }
-
-  if (typeof WebGLRenderingContext === "function") {
-    return "drawingBufferColorSpace" in WebGLRenderingContext.prototype;
-  }
-
-  return false;
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  gl.attachShader(program, shader);
 };
 
-export const warmGalaxy = (): void => {
-  if (warmedLayers) return;
-
-  warmedQuality = isMobileDevice() ? 0.55 : 1;
-  warmedWideGamut = probeWideGamut();
-  warmedLayers = generateGalaxy(warmedQuality, warmedWideGamut, randomSeed());
-};
-
-const compileProgram = (
+// Compiling and linking only queue commands; nothing blocks until a status
+// query, so the driver builds the programs while the particles generate
+const startProgram = (
   gl: WebGLRenderingContext,
   vertexSource: string,
   fragmentSource: string,
@@ -364,18 +338,29 @@ const compileProgram = (
 ): WebGLProgram => {
   const program = gl.createProgram();
 
-  gl.attachShader(program, compileShader(gl, gl.VERTEX_SHADER, vertexSource));
-  gl.attachShader(
-    program,
-    compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource)
-  );
+  attachShader(gl, program, gl.VERTEX_SHADER, vertexSource);
+  attachShader(gl, program, gl.FRAGMENT_SHADER, fragmentSource);
   attributeNames.forEach((name, location) =>
     gl.bindAttribLocation(program, location, name)
   );
   gl.linkProgram(program);
 
+  return program;
+};
+
+const checkProgram = (
+  gl: WebGLRenderingContext,
+  program: WebGLProgram
+): WebGLProgram => {
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    throw new Error(gl.getProgramInfoLog(program) || "Program link failed");
+    const logs = (gl.getAttachedShaders(program) || []).map((shader) =>
+      gl.getShaderInfoLog(shader)
+    );
+
+    throw new Error(
+      [gl.getProgramInfoLog(program), ...logs].filter(Boolean).join("\n") ||
+        "Program link failed"
+    );
   }
 
   return program;
@@ -403,34 +388,41 @@ export const createGalaxyRenderer = (
     // Keep default sRGB drawing buffer
   }
 
-  // A fresh seed and viewing angle every load: same galaxy physics, never
-  // the exact same sky twice. Pre-warmed buffers are used when their
-  // settings match the real context, then discarded so a later renderer
-  // gets its own fresh sky
-  const generationQuality = isMobile ? 0.55 : 1;
-  const layers =
-    warmedLayers &&
-    warmedWideGamut === wideGamut &&
-    warmedQuality === generationQuality
-      ? warmedLayers
-      : generateGalaxy(generationQuality, wideGamut, randomSeed());
-  const azimuthStart = Math.random() * Math.PI * 2;
+  // Lets the driver build the programs below on parallel threads
+  gl.getExtension("KHR_parallel_shader_compile");
 
-  warmedLayers = undefined;
+  const spriteAttributes = ["aCorner", "aOrbit", "aMotion", "aColor"];
+  const [pendingCrisp, pendingSoft] = [true, false].map((crisp) =>
+    startProgram(
+      gl,
+      buildSpriteVertexShader(crisp),
+      buildSpriteFragmentShader(crisp),
+      spriteAttributes
+    )
+  );
+  const pendingComposite = startProgram(
+    gl,
+    COMPOSITE_VERTEX_SHADER,
+    COMPOSITE_FRAGMENT_SHADER,
+    ["aPos"]
+  );
+  // Hand the queued compiles to the driver now, or they would wait in the
+  // command buffer until the first status query after generation
+  gl.flush();
+
+  // A fresh seed and viewing angle every load: same galaxy physics, never
+  // the exact same sky twice
+  const layers = generateGalaxy(isMobile ? 0.55 : 1, wideGamut, randomSeed());
+  const azimuthStart = Math.random() * Math.PI * 2;
   // Uniform locations absent from a variant (compiled out) resolve to null
   // and their guarded sets are skipped in the draw loop
   const createSpriteVariant = (
-    crisp: boolean
+    pendingProgram: WebGLProgram
   ): {
     program: WebGLProgram;
     uniforms: Record<string, null | WebGLUniformLocation>;
   } => {
-    const program = compileProgram(
-      gl,
-      buildSpriteVertexShader(crisp),
-      buildSpriteFragmentShader(crisp),
-      ["aCorner", "aOrbit", "aMotion", "aColor"]
-    );
+    const program = checkProgram(gl, pendingProgram);
 
     return {
       program,
@@ -439,38 +431,28 @@ export const createGalaxyRenderer = (
         depthFade: gl.getUniformLocation(program, "uDepthFade"),
         dustNear: gl.getUniformLocation(program, "uDustNear"),
         falloff: gl.getUniformLocation(program, "uFalloff"),
-        maxPoint: gl.getUniformLocation(program, "uMaxPoint"),
         nova: gl.getUniformLocation(program, "uNova"),
         patternRot: gl.getUniformLocation(program, "uPatternRot"),
         pointScale: gl.getUniformLocation(program, "uPointScale"),
+        sizeRange: gl.getUniformLocation(program, "uSizeRange"),
         spike: gl.getUniformLocation(program, "uSpike"),
         spikeGate: gl.getUniformLocation(program, "uSpikeGate"),
         time: gl.getUniformLocation(program, "uTime"),
         twinkleAmp: gl.getUniformLocation(program, "uTwinkleAmp"),
         viewport: gl.getUniformLocation(program, "uViewport"),
         viewProj: gl.getUniformLocation(program, "uViewProj"),
+        vignette: gl.getUniformLocation(program, "uVignette"),
         warp: gl.getUniformLocation(program, "uWarp"),
       },
     };
   };
-  const crispSprites = createSpriteVariant(true);
-  const softSprites = createSpriteVariant(false);
+  const crispSprites = createSpriteVariant(pendingCrisp);
+  const softSprites = createSpriteVariant(pendingSoft);
   const spriteVariants = [crispSprites, softSprites];
-  const compositeProgram = compileProgram(
-    gl,
-    COMPOSITE_VERTEX_SHADER,
-    COMPOSITE_FRAGMENT_SHADER,
-    ["aPos"]
-  );
-  const finishProgram = compileProgram(
-    gl,
-    COMPOSITE_VERTEX_SHADER,
-    FINISH_FRAGMENT_SHADER,
-    ["aPos"]
-  );
-  const finishSeedLocation = gl.getUniformLocation(finishProgram, "uSeed");
+  const compositeProgram = checkProgram(gl, pendingComposite);
   const compositeUniforms = {
     aberration: gl.getUniformLocation(compositeProgram, "uAberration"),
+    grainSeed: gl.getUniformLocation(compositeProgram, "uGrainSeed"),
     tonemap: gl.getUniformLocation(compositeProgram, "uTonemap"),
   };
   let activeProgram: undefined | WebGLProgram;
@@ -736,7 +718,6 @@ export const createGalaxyRenderer = (
   let previousTick = 0;
   let tickInterval = 1000 / 60;
   let ticksSinceRender = 0;
-  let simTime = 0;
   let quality = 0;
   let frameTimeAverage = 1000 / 60;
   // The frame budget: vsync interval times the vsync-skip divisor
@@ -757,11 +738,15 @@ export const createGalaxyRenderer = (
     : CAMERA.elevation +
       (isMobile ? CAMERA.mobileElevationAdd : 0) +
       (Math.random() * 2 - 1) * CAMERA.elevationJitter;
+  // Enter the supernova cycle at a random point: a cycle starting at load
+  // would open ~45% of visits with a flare, making a rare event routine
+  let simTime = Math.random() * NOVA_CYCLE_SECONDS;
 
   type LayerDraw = {
     binder: () => void;
     falloffCut: number;
     layer: GalaxyLayer;
+    minSize: number;
     variant: typeof crispSprites;
   };
 
@@ -778,6 +763,8 @@ export const createGalaxyRenderer = (
       binder: layerBinders[index],
       falloffCut: Math.exp(-layer.falloffK),
       layer,
+      // Footprint where the gaussian's sigma reaches MIN_SPRITE_SIGMA
+      minSize: MIN_SPRITE_SIGMA * 2 * Math.sqrt(2 * layer.falloffK),
       // Star layers with spikes or supernovae need the crisp program; every
       // other layer renders bit-identically on the cheaper soft one
       variant:
@@ -795,6 +782,10 @@ export const createGalaxyRenderer = (
     const alphaBoost = Math.min(1 / fraction, 2.2);
     const sizeScale = (height / SIZE_REFERENCE_HEIGHT) * passScale;
     const basePointScale = pointScale(height) * passScale;
+    // The glow composite vignettes its buffer per pixel, and dust holds
+    // transmittance, which the vignette must not touch
+    const vignette =
+      target === "dust" || (target === "glow" && useRenderTargets) ? 0 : 1;
 
     // Dust sprites accumulate transmittance multiplicatively: each channel
     // of dst is scaled by (1 - absorption), giving physical reddening
@@ -803,7 +794,9 @@ export const createGalaxyRenderer = (
       target === "dust" ? gl.ONE_MINUS_SRC_COLOR : gl.ONE
     );
 
-    for (const { binder, falloffCut, layer, variant } of layerGroups[target]) {
+    const draws = layerGroups[target];
+
+    for (const { binder, falloffCut, layer, minSize, variant } of draws) {
       const count = Math.floor(layer.count * fraction);
 
       if (count > 0) {
@@ -819,10 +812,12 @@ export const createGalaxyRenderer = (
           1 / (1 - falloffCut)
         );
         gl.uniform1f(uniforms.alpha, layer.alpha * alphaBoost);
-        gl.uniform1f(
-          uniforms.maxPoint,
-          Math.max(layer.maxPointSize * sizeScale, 2)
+        gl.uniform2f(
+          uniforms.sizeRange,
+          minSize,
+          Math.max(layer.maxPointSize * sizeScale, minSize)
         );
+        gl.uniform1f(uniforms.vignette, vignette);
         gl.uniform2f(uniforms.viewport, viewportWidth, viewportHeight);
         gl.uniform1f(uniforms.twinkleAmp, layer.twinkleAmp);
         if (uniforms.spike) gl.uniform1f(uniforms.spike, layer.spikeAmp);
@@ -860,6 +855,10 @@ export const createGalaxyRenderer = (
     gl.uniform1f(
       compositeUniforms.aberration,
       additive ? ABERRATION_STRENGTH : 0
+    );
+    gl.uniform1f(
+      compositeUniforms.grainSeed,
+      additive ? (simTime * 61.8) % 97 : -1
     );
     gl.bindTexture(gl.TEXTURE_2D, target.texture);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -1096,15 +1095,6 @@ export const createGalaxyRenderer = (
     }
 
     drawGroup("foreground", 1, width, height);
-
-    // Final full-frame finishing multiply (grain + vignette). Always on:
-    // it costs one cheap fullscreen quad, and gating it on the quality
-    // governor would make the whole frame visibly pop when tiers change
-    bindProgram(finishProgram);
-    quadBinder();
-    gl.blendFunc(gl.ZERO, gl.SRC_COLOR);
-    gl.uniform1f(finishSeedLocation, (simTime * 61.8) % 97);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 
   const start = (): void => {
@@ -1139,7 +1129,6 @@ export const createGalaxyRenderer = (
       gl.deleteProgram(crispSprites.program);
       gl.deleteProgram(softSprites.program);
       gl.deleteProgram(compositeProgram);
-      gl.deleteProgram(finishProgram);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     },
     resize: (newWidth, newHeight) => {

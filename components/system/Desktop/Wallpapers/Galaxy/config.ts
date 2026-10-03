@@ -13,18 +13,18 @@ export const defaultConfig: GalaxyConfig = {
  * visible stellar disk ends near 1.0).
  *
  * Spiral arms emerge from nested elliptical orbits whose major axes are
- * rotated progressively with radius (`armWinding`). Aligned inner ellipses
- * produce the central bar, the crowding of ellipse apoapsides produces the
- * two major arms.
+ * rotated progressively with radius (a log spiral of `armPitch` beyond
+ * `spiralStart`). Aligned inner ellipses produce the central bar, and the
+ * crowding of neighboring orbits produces the two stellar arms.
  */
 export const GALAXY = {
-  armWinding: 3.5,
+  // Milky Way arm pitch angle in degrees (Vallée 2017: 12-13)
+  armPitch: 12.5,
   barAxisRatio: 0.62,
   barRadius: 0.24,
   bulgeRadius: 0.13,
-  diskAxisRatio: 0.94,
+  diskAxisRatio: 0.96,
   diskScaleLength: 0.38,
-  dustLaneOffset: -0.35,
   // Absolute sampling bound; the visible edge is set by the break, not here
   maxRadius: 1.25,
   // Negative: the disk rotates clockwise on screen, so the arms (whose
@@ -39,6 +39,8 @@ export const GALAXY = {
   outerBreak: 0.92,
   outerScale: 0.09,
   patternSpeed: -0.028,
+  // Arms start winding at the end of the bar
+  spiralStart: 0.22,
   // The outer disk is warped into a gentle integral-sign shape (mapped in
   // HI gas for decades and traced in stellar kinematics by Gaia DR2): one
   // side of the rim lifts above the plane while the opposite side dips,
@@ -49,7 +51,7 @@ export const GALAXY = {
 
 export const CAMERA = {
   azimuthDriftSpeed: 0.006,
-  distance: 2.07,
+  distance: 2.28,
   elevation: 0.48,
   elevationFaceOn: 1.35,
   elevationJitter: 0.05,
@@ -80,7 +82,7 @@ export const BASE_COUNTS = {
   h2Regions: 150,
   haloStars: 1500,
   nearStars: 90,
-  oldStars: 46000,
+  oldStars: 64000,
   openClusters: 26,
   youngStars: 7000,
 };

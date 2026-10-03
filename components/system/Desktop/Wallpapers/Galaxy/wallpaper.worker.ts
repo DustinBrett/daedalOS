@@ -3,7 +3,6 @@ import { type GalaxyInputMessage } from "components/system/Desktop/Wallpapers/Ga
 import {
   createGalaxyRenderer,
   type GalaxyRenderer,
-  warmGalaxy,
 } from "components/system/Desktop/Wallpapers/Galaxy/renderer";
 import { type OffscreenRenderProps } from "components/system/Desktop/Wallpapers/types";
 
@@ -49,12 +48,12 @@ globalThis.addEventListener(
   }: {
     data: DOMRect | GalaxyInputMessage | OffscreenRenderProps | string;
   }) => {
-    if (typeof WebGLRenderingContext === "undefined") return;
-
-    if (typeof data === "string") {
-      // Generate the particle buffers ahead of the canvas handoff
-      if (data === "init") warmGalaxy();
-
+    // The "init" string needs no work: the canvas message is queued right
+    // behind it, and the renderer overlaps generation with shader compiles
+    if (
+      typeof WebGLRenderingContext === "undefined" ||
+      typeof data === "string"
+    ) {
       return;
     }
 

@@ -17,13 +17,15 @@ const Galaxy = async (
     const { createGalaxyRenderer } =
       await import("components/system/Desktop/Wallpapers/Galaxy/renderer");
     const canvas = document.createElement("canvas");
+    // Same hiDPI backing store as the worker path (see useWallpaper)
+    const scale = Math.min(window.devicePixelRatio || 1, 1.5);
     const setCanvasSize = (): void => {
       canvas.style.width = `${el.offsetWidth}px`;
       canvas.style.height = `${el.offsetHeight}px`;
     };
 
-    canvas.width = el.offsetWidth;
-    canvas.height = el.offsetHeight;
+    canvas.width = Math.floor(el.offsetWidth * scale);
+    canvas.height = Math.floor(el.offsetHeight * scale);
     setCanvasSize();
     canvas.setAttribute("aria-hidden", "true");
     el.append(canvas);
@@ -39,7 +41,7 @@ const Galaxy = async (
     });
     const resizeListener = (): void => {
       setCanvasSize();
-      renderer.resize(el.offsetWidth, el.offsetHeight);
+      renderer.resize(el.offsetWidth * scale, el.offsetHeight * scale);
     };
     const contextLostListener = (event: Event): void => {
       // preventDefault keeps the evicted context restorable
