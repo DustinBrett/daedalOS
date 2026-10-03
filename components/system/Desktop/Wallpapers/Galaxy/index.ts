@@ -52,12 +52,15 @@ const Galaxy = async (
       renderer = createGalaxyRenderer(canvas, config as Partial<GalaxyConfig>);
     };
 
-    window.addEventListener("resize", resizeListener, { passive: true });
+    // iOS can resize the page (zoom, dismissed banners) without a resize event
+    const resizeObserver = new ResizeObserver(resizeListener);
+
+    resizeObserver.observe(el);
     canvas.addEventListener("webglcontextlost", contextLostListener);
     canvas.addEventListener("webglcontextrestored", contextRestoredListener);
 
     window.WallpaperDestroy = () => {
-      window.removeEventListener("resize", resizeListener);
+      resizeObserver.disconnect();
       canvas.removeEventListener("webglcontextlost", contextLostListener);
       canvas.removeEventListener(
         "webglcontextrestored",
