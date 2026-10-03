@@ -14,7 +14,7 @@ import useDraggable from "components/system/Window/RndWindow/useDraggable";
 import useResizable from "components/system/Window/RndWindow/useResizable";
 import { useProcess, useProcessesActions } from "contexts/process";
 import { useSessionActions, useWindowState } from "contexts/session";
-import { getWindowViewport, hasFinePointer, pxToNum } from "utils/functions";
+import { getWindowViewport, pxToNum } from "utils/functions";
 
 const enableIframeCapture = (enable = true): void =>
   document.querySelectorAll("iframe").forEach((iframe) => {
@@ -38,14 +38,14 @@ const useRnd = (id: string): Props => {
   } = useTheme();
   const [size, setSize] = useResizable(id, autoSizing);
   const [position, setPosition] = useDraggable(id, size);
-  // Reopen as it was left, otherwise default to maximized on touch devices
-  // and when the window would fill the viewport anyway
+  // Reopen as it was left, otherwise maximize only when the window would
+  // cover the viewport in both dimensions anyway
   // eslint-disable-next-line react/hook-use-state
   const [openMaximized] = useState(
     () =>
       allowResizing &&
       !hideMaximizeButton &&
-      (wasMaximized ?? (!hasFinePointer() || coversViewport(size)))
+      (wasMaximized ?? coversViewport(size))
   );
   const onDragStop: DraggableEventHandler = useCallback(
     (_event, { x, y }) => {
