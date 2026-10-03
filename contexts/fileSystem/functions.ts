@@ -131,7 +131,9 @@ export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
                 .map(({ name }) => name as string)
             : KNOWN_IDB_DBS;
 
-          await Promise.all(dbs.map((name) => deleteDB(name)));
+          await Promise.all(
+            dbs.map((name) => deleteDB(name, { blocked: clearFs }))
+          );
         } catch {
           // Ignore errors deleting databases
         } finally {
