@@ -192,7 +192,6 @@ const loadWapm = async (
         (typeof args[2] === "string" ||
           !WAPM_STD_IN_EXCLUDE_ARGS.includes(args[1]));
       let readStdIn = false;
-      let exitStdIn = false;
       const wasiArgs = stdIn
         ? pipedCommand
           ? parseCommand(pipedCommand).slice(1)
@@ -207,32 +206,20 @@ const loadWapm = async (
         },
         ...(stdIn
           ? {
-              getStdin() {
-                if (exitStdIn) {
-                  // eslint-disable-next-line unicorn/no-null
-                  this.getStdin = null as unknown as undefined;
-                }
+              getStdin: () => {
+                // An empty read is the EOF
+                const input = readStdIn
+                  ? ""
+                  : args.slice(wasiArgs.length).join(" ");
 
-                const argBuffer = Buffer.from(
-                  args.slice(wasiArgs.length).join(" "),
-                  "utf8"
-                );
+                readStdIn = true;
 
-                return Object.assign(argBuffer, {
-                  copy: () => {
-                    if (readStdIn) return 0;
-
-                    readStdIn = true;
-
-                    return argBuffer.length;
-                  },
-                });
+                return Buffer.from(input, "utf8");
               },
             }
           : {}),
         sendStderr: (buffer: Uint8Array) => print(buffer.toString()),
         sendStdout: (buffer: Uint8Array) => {
-          if (stdIn) exitStdIn = true;
           const output = buffer.toString();
           print(stdIn ? clearAnsiBackground(output) : output);
         },
