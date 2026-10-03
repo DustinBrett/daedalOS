@@ -35,10 +35,46 @@ export const addEntryToZippable = (
   return oldZippable;
 };
 
-const unzipAsync = (zipFile: Buffer): Promise<Unzipped> =>
+const UNZIP_BATCH_SIZE = 64 * 1024 * 1024;
+
+const unzipAsync = (zipFile: Buffer, names?: string[]): Promise<Unzipped> =>
   new Promise((resolve, reject) => {
+    const batch = new Set(names);
+
     import("fflate").then(({ unzip }) =>
-      unzip(zipFile, (error, data) => (error ? reject(error) : resolve(data)))
+      unzip(
+        zipFile,
+        names ? { filter: ({ name }) => batch.has(name) } : {},
+        (error, data) => (error ? reject(error) : resolve(data))
+      )
+    );
+  });
+
+// A large zip runs out of memory unzipped all at once, so its entries are
+// grouped into batches which can be unzipped one after another
+export const getZipBatches = (zipFile: Buffer): Promise<string[][]> =>
+  new Promise((resolve, reject) => {
+    const batches: string[][] = [[]];
+    let batchSize = 0;
+
+    import("fflate").then(({ unzip }) =>
+      unzip(
+        zipFile,
+        {
+          filter: ({ name, originalSize }) => {
+            if (batchSize > 0 && batchSize + originalSize > UNZIP_BATCH_SIZE) {
+              batches.push([]);
+              batchSize = 0;
+            }
+
+            batches[batches.length - 1].push(name);
+            batchSize += originalSize;
+
+            return false;
+          },
+        },
+        (error) => (error ? reject(error) : resolve(batches))
+      )
     );
   });
 
