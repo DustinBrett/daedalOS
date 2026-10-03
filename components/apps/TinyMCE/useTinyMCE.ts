@@ -21,7 +21,11 @@ import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess, useProcessesActions } from "contexts/process";
 import { useSessionActions } from "contexts/session";
 import { useLinkHandler } from "hooks/useLinkHandler";
-import { DEFAULT_LOCALE, DEFAULT_SCROLLBAR_WIDTH } from "utils/constants";
+import {
+  DEFAULT_LOCALE,
+  DEFAULT_SCROLLBAR_WIDTH,
+  ONE_TIME_PASSIVE_EVENT,
+} from "utils/constants";
 import { getExtension, loadFiles } from "utils/functions";
 
 const TITLE_DATE_FORMATTER = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
@@ -104,23 +108,35 @@ const useTinyMCE = ({
 
           editor.notificationManager.open(saveSpec);
 
-          const notification = editor.notificationManager
-            .getNotifications()?.[0]
-            ?.getEl()?.parentElement;
+          const notification =
+            editor.notificationManager.getNotifications()?.[0];
+          const toast = notification?.getEl()?.parentElement;
           const mceContainer = editor.editorContainer;
 
           if (
-            notification instanceof HTMLElement &&
+            toast instanceof HTMLElement &&
             mceContainer instanceof HTMLElement
           ) {
-            mceContainer.append(notification);
-            notification.setAttribute(
-              "style",
-              "position: absolute; right: 0; bottom: 0; padding: 33px 25px;"
-            );
-            notification
-              .querySelector("[role=alert]")
-              ?.setAttribute("style", "opacity: 1;");
+            // TinyMCE's own reposition moves the toast back out & restyles it
+            notification.reposition = () => {
+              mceContainer.append(toast);
+              toast.setAttribute(
+                "style",
+                "position: absolute; right: 0; bottom: 0; padding: 33px 25px;"
+              );
+              toast
+                .querySelector("[role=alert]")
+                ?.setAttribute("style", "opacity: 1;");
+            };
+            notification.reposition();
+            // TinyMCE only handles clicks from within its own container
+            toast
+              .querySelector("button")
+              ?.addEventListener(
+                "click",
+                notification.close,
+                ONE_TIME_PASSIVE_EVENT
+              );
           }
 
           if (saveUrl === DEFAULT_SAVE_PATH) updateTitle(saveUrl);
