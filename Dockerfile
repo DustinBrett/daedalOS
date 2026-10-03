@@ -1,13 +1,20 @@
-FROM node:22-alpine
+FROM node:22-alpine AS builder
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
 RUN apk add --no-cache git
 
-WORKDIR daedalOS
+WORKDIR /daedalOS
 COPY . .
 
 RUN yarn
 RUN yarn build
 
-CMD yarn serve
+FROM node:22-alpine
+
+WORKDIR /daedalOS
+COPY --from=builder /daedalOS/out ./out
+
+RUN npm install -g serve@latest
+
+CMD ["serve", "out"]

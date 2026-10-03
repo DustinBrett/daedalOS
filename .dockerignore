@@ -3,7 +3,10 @@
 .next
 .swc
 .vscode
+certificates
 node_modules
 out
 playwright-report
+public/private
+scratch
 test-results
