@@ -1,3 +1,4 @@
+import { basename } from "path";
 import {
   HIGH_PRIORITY_REQUEST,
   MILLISECONDS_IN_SECOND,
@@ -84,7 +85,7 @@ export const getIpfsFileName = async (
   const { hostname, pathname, searchParams } = new URL(ipfsUrl);
   const fileName = searchParams.get("filename");
 
-  if (fileName) return fileName;
+  if (fileName) return basename(fileName);
 
   let ext = "";
 

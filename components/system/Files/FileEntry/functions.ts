@@ -48,6 +48,7 @@ import {
   blobToBase64,
   bufferToBlob,
   bufferToUrl,
+  cleanUpBufferUrl,
   getExtension,
   getGifJs,
   getHtmlToImage,
@@ -223,7 +224,8 @@ export const getCachedIconUrl = async (
             (readError, cachedIconData = Buffer.from("")) => {
               if (cachedIconData.length >= SMALLEST_PNG_SIZE) {
                 resolve(bufferToUrl(cachedIconData));
-              } else if (!readError) fs.unlink(cachedIconPath);
+              } else if (readError) resolve("");
+              else fs.unlink(cachedIconPath, () => resolve(""));
             }
           );
         }
@@ -660,7 +662,10 @@ export const getInfoWithExtension = (
 
               const mimeType = getMimeType(path);
 
-              if (contents.length > MAX_THUMBNAIL_FILE_SIZE) {
+              if (
+                contents.length > MAX_THUMBNAIL_FILE_SIZE &&
+                extension !== ".svg"
+              ) {
                 resizeImage(
                   bufferToBlob(contents, mimeType),
                   MAX_ICON_SIZE
@@ -723,6 +728,7 @@ export const getInfoWithExtension = (
                           gif.freeWorkers.forEach((worker) =>
                             worker?.terminate()
                           );
+                          cleanUpBufferUrl(video.src);
                         })
                         .render();
                     }
@@ -784,6 +790,13 @@ export const getInfoWithExtension = (
                 { signal, ...ONE_TIME_PASSIVE_EVENT }
               );
 
+              if (signal.aborted) return;
+
+              signal.addEventListener(
+                "abort",
+                () => cleanUpBufferUrl(video.src),
+                ONE_TIME_PASSIVE_EVENT
+              );
               video.src = bufferToUrl(
                 contents,
                 isSafari()
