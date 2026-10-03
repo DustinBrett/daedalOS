@@ -564,25 +564,30 @@ const useWallpaper = (
   }, [loadFileWallpaper, loadWallpaper, sessionLoaded, wallpaperName]);
 
   useEffect(() => {
-    const resizeListener = (): void => {
-      if (!desktopRef.current || !WALLPAPER_PATHS[wallpaperName]) return;
+    const desktop = desktopRef.current;
+    let { height, width } = desktop?.getBoundingClientRect() || {};
+    // iOS can resize the page (zoom, dismissed banners) without a resize event
+    const resizeObserver = new ResizeObserver(() => {
+      if (!desktop || !WALLPAPER_PATHS[wallpaperName]) return;
 
-      const desktopRect = desktopRef.current.getBoundingClientRect();
+      const desktopRect = desktop.getBoundingClientRect();
 
+      if (desktopRect.height === height && desktopRect.width === width) return;
+
+      ({ height, width } = desktopRect);
       wallpaperWorker.current?.postMessage(desktopRect);
 
-      const canvasElement =
-        desktopRef.current.querySelector(BASE_CANVAS_SELECTOR);
+      const canvasElement = desktop.querySelector(BASE_CANVAS_SELECTOR);
 
       if (canvasElement instanceof HTMLCanvasElement) {
-        canvasElement.style.width = `${desktopRect.width}px`;
-        canvasElement.style.height = `${desktopRect.height}px`;
+        canvasElement.style.width = `${width}px`;
+        canvasElement.style.height = `${height}px`;
       }
-    };
+    });
 
-    window.addEventListener("resize", resizeListener, { passive: true });
+    if (desktop) resizeObserver.observe(desktop);
 
-    return () => window.removeEventListener("resize", resizeListener);
+    return () => resizeObserver.disconnect();
   }, [desktopRef, wallpaperName, wallpaperWorker]);
 };
 
