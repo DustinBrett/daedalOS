@@ -158,9 +158,31 @@ const useAsyncFs = (): AsyncFSModule => {
                   }
                 }
               );
-            } else if (renameError.code === "EISDIR") {
-              rootFs?.umount(oldPath);
+            } else if (
+              renameError.code === "EISDIR" &&
+              rootFs?.mntMap[oldPath]
+            ) {
+              rootFs.umount(oldPath);
               asyncFs.rename(oldPath, newPath).then(resolve).catch(reject);
+            } else if (renameError.code === "EISDIR") {
+              // Directory across file systems, source may be read-only (ZIP/ISO)
+              asyncFs
+                .mkdir(newPath)
+                .then(() => asyncFs.readdir(oldPath))
+                .then((entries) =>
+                  Promise.all(
+                    entries.map((entry) =>
+                      asyncFs.rename(join(oldPath, entry), join(newPath, entry))
+                    )
+                  )
+                )
+                .then((moved) =>
+                  moved.every(Boolean)
+                    ? asyncFs.rmdir(oldPath).catch(() => false)
+                    : false
+                )
+                .then(resolve)
+                .catch(reject);
             } else if (UNKNOWN_STATE_CODES.has(renameError.code)) {
               resolve(false);
             } else {
