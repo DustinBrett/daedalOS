@@ -10,31 +10,9 @@ import { useMenuIsOpen } from "contexts/menu";
 import { useProcess } from "contexts/process";
 import { useForegroundId, useSessionActions } from "contexts/session";
 import { PREVENT_SCROLL } from "utils/constants";
+import { keepCanvasesReadable } from "utils/readableCanvas";
 
 type ContentWindow = Window & typeof globalThis;
-
-const alwaysPreserveDrawingBuffer = (contentWindow: ContentWindow): void => {
-  const canvasGetContext = contentWindow.HTMLCanvasElement.prototype.getContext;
-
-  // eslint-disable-next-line no-param-reassign
-  contentWindow.HTMLCanvasElement.prototype.getContext = function getContext(
-    this: typeof canvasGetContext,
-    contextId: "webgl" | "webgl2",
-    options?: WebGLContextAttributes
-  ) {
-    if (contextId === "webgl" || contextId === "webgl2") {
-      // Chrome renders desynchronized + preserveDrawingBuffer WebGL to the
-      // front buffer, so partial frames flicker (e.g. Quake 3 HUD)
-      // eslint-disable-next-line no-param-reassign
-      options = Object.assign(options || {}, {
-        desynchronized: false,
-        preserveDrawingBuffer: true,
-      });
-    }
-
-    return canvasGetContext.call(this, contextId, options);
-  } as typeof canvasGetContext;
-};
 
 const createCanvas = (contentDocument: Document): HTMLCanvasElement => {
   const canvas = contentDocument.createElement("canvas");
@@ -115,7 +93,7 @@ const useIsolatedContentWindow = (
     const iframe = createIframe(id, container, styles);
     const newContentWindow = iframe.contentWindow as ContentWindow;
 
-    alwaysPreserveDrawingBuffer(newContentWindow);
+    keepCanvasesReadable(newContentWindow);
 
     let canvas: HTMLCanvasElement;
 

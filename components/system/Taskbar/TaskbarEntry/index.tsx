@@ -1,4 +1,4 @@
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, useIsPresent } from "motion/react";
 import dynamic from "next/dynamic";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
@@ -29,6 +29,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   const isForeground = id === foregroundId;
   const { linkElement, minimize, open } = useProcessesActions();
   const { minimized, progress, singleton } = useProcess(id);
+  const isPresent = useIsPresent();
   const linkTaskbarEntry = useCallback(
     (taskbarEntry: HTMLButtonElement | null) => {
       if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);
@@ -37,12 +38,15 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   );
   const [isPeekVisible, setIsPeekVisible] = useState(false);
   const hidePeekTimerRef = useRef(0);
-  const hidePeek = useCallback((): void => {
-    hidePeekTimerRef.current = window.setTimeout(
-      () => setIsPeekVisible(false),
-      200
-    );
-  }, []);
+  const hidePeek = useCallback(
+    ({ currentTarget }: React.MouseEvent<HTMLElement>): void => {
+      hidePeekTimerRef.current = window.setTimeout(
+        () => setIsPeekVisible(false),
+        currentTarget.querySelector(".peekWindow:not([inert])") ? 200 : 0
+      );
+    },
+    []
+  );
   const resetPeekTimer = useCallback(() => {
     if (hidePeekTimerRef.current) {
       window.clearTimeout(hidePeekTimerRef.current);
@@ -52,6 +56,10 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   const showPeek = useCallback(() => {
     resetPeekTimer();
     setIsPeekVisible(true);
+  }, [resetPeekTimer]);
+  const closePeek = useCallback(() => {
+    resetPeekTimer();
+    setIsPeekVisible(false);
   }, [resetPeekTimer]);
   const onClick = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
     (event): void => {
@@ -78,10 +86,7 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   );
   useEffect(() => {
     const onKeyDown = ({ key }: KeyboardEvent): void => {
-      if (key === "Escape") {
-        resetPeekTimer();
-        setIsPeekVisible(false);
-      }
+      if (key === "Escape") closePeek();
     };
 
     if (isPeekVisible) {
@@ -89,17 +94,16 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
     }
 
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isPeekVisible, resetPeekTimer]);
+  }, [closePeek, isPeekVisible]);
   const titlebarContextMenu = useTitlebarContextMenu(id);
   const onContextMenuCapture = useCallback<
     React.MouseEventHandler<HTMLElement>
   >(
     (event) => {
-      resetPeekTimer();
-      setIsPeekVisible(false);
+      closePeek();
       titlebarContextMenu.onContextMenuCapture?.(event);
     },
-    [resetPeekTimer, titlebarContextMenu]
+    [closePeek, titlebarContextMenu]
   );
 
   return (
@@ -113,9 +117,11 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
       {...titlebarContextMenu}
       onContextMenuCapture={onContextMenuCapture}
     >
-      <AnimatePresence initial={false} presenceAffectsLayout={false}>
-        {isPeekVisible && <PeekWindow id={id} />}
-      </AnimatePresence>
+      {isPresent && (
+        <AnimatePresence initial={false} presenceAffectsLayout={false}>
+          {isPeekVisible && <PeekWindow id={id} onHide={closePeek} />}
+        </AnimatePresence>
+      )}
       <Button
         ref={linkTaskbarEntry}
         aria-pressed={isForeground}

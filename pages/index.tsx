@@ -6,6 +6,10 @@ import useGlobalErrorHandler from "hooks/useGlobalErrorHandler";
 import useGlobalKeyboardShortcuts from "hooks/useGlobalKeyboardShortcuts";
 import useIFrameFocuser from "hooks/useIFrameFocuser";
 import useUrlLoader from "hooks/useUrlLoader";
+import { keepCanvasesReadable } from "utils/readableCanvas";
+
+// Before any app creates a canvas context
+if (typeof window !== "undefined") keepCanvasesReadable(window);
 
 const Index = (): React.ReactElement => {
   useIFrameFocuser();

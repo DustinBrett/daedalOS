@@ -1,116 +1,186 @@
-import { useEffect, useRef, useState } from "react";
-import { useProcess } from "contexts/process";
+import { useIsPresent } from "motion/react";
+import { useEffect, useState } from "react";
 import {
-  MAX_ICON_SIZE,
-  MILLISECONDS_IN_SECOND,
-  ONE_TIME_PASSIVE_EVENT,
-  PEEK_MAX_WIDTH,
-} from "utils/constants";
+  captureElement,
+  drawLiveElement,
+  drawLivePlacement,
+  drawPeek,
+  getFrameDocuments,
+  getLivePlacements,
+  isLiveElement,
+  type LivePlacement,
+} from "components/system/Taskbar/TaskbarEntry/Peek/functions";
+import { useProcess } from "contexts/process";
+import { MAX_ICON_SIZE, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import {
   getExtension,
-  getHtmlToImage,
   imageSrc as getImageSrc,
   isCanvasDrawn,
 } from "utils/functions";
 
-const FPS = 15;
+const PEEK_REFRESH_MS = 250;
 
-const renderFrame = async (
-  previewElement: HTMLElement,
-  animate: React.RefObject<boolean>,
-  callback: (url: string) => void
-): Promise<void> => {
-  if (!animate.current) return;
-
-  const nextFrame = (): number =>
-    window.requestAnimationFrame(() =>
-      renderFrame(previewElement, animate, callback)
-    );
-  const htmlToImage = await getHtmlToImage();
-  let dataCanvas: HTMLCanvasElement | undefined;
-
-  try {
-    const spacing =
-      previewElement.tagName === "VIDEO" ? { margin: "0", padding: "0" } : {};
-
-    dataCanvas = await htmlToImage?.toCanvas(previewElement, {
-      ...(previewElement.clientWidth > PEEK_MAX_WIDTH && {
-        canvasHeight: Math.round(
-          (PEEK_MAX_WIDTH / previewElement.clientWidth) *
-            previewElement.clientHeight
-        ),
-        canvasWidth: PEEK_MAX_WIDTH,
-      }),
-      filter: (element) => !(element instanceof HTMLSourceElement),
-      skipAutoScale: true,
-      style: {
-        inset: "0",
-        ...spacing,
-      },
-    });
-  } catch {
-    // Ignore failure to capture
-  }
-
-  if (dataCanvas && dataCanvas.width > 0 && dataCanvas.height > 0) {
-    if (isCanvasDrawn(dataCanvas)) {
-      const previewImage = new Image();
-      const dataUrl = dataCanvas.toDataURL();
-
-      previewImage.addEventListener(
-        "load",
-        () => {
-          if (!animate.current) return;
-          callback(dataUrl);
-          window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
-        },
-        ONE_TIME_PASSIVE_EVENT
-      );
-      previewImage.decoding = "async";
-      previewImage.src = dataUrl;
-    } else {
-      nextFrame();
-    }
-  }
-};
-
-const useWindowPeek = (id: string): string => {
+const useWindowPeek = (
+  id: string,
+  canvas: HTMLCanvasElement | null | undefined,
+  delay: number
+): boolean => {
   const { componentWindow, hidePeek, icon, peekElement, peekImage } =
     useProcess(id);
-  const previewTimer = useRef(0);
-  const [imageSrc, setImageSrc] = useState("");
-  const animate = useRef(true);
+  const isPresent = useIsPresent();
+  // eslint-disable-next-line react/hook-use-state
+  const [showAt] = useState(() => performance.now() + delay);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (hidePeek || peekImage) {
-      setImageSrc(
-        peekImage || getImageSrc(icon, MAX_ICON_SIZE, 1, getExtension(icon))
-      );
-    } else {
-      const previewElement = peekElement || componentWindow;
+    const ctx = canvas?.getContext("2d");
+    // Cross-origin frames can't be captured, so the window is used instead
+    const element =
+      peekElement?.nodeName === "IFRAME" &&
+      getFrameDocuments(peekElement).length === 0
+        ? componentWindow
+        : peekElement || componentWindow;
+    let active = true;
+    let animationFrame = 0;
+    let showTimer = 0;
+    let refreshTimer = 0;
+    let openEnd = 0;
+    let unsubscribe = (): void => undefined;
+    const show = (): void => {
+      if (showTimer) return;
 
-      if (!previewTimer.current && previewElement) {
-        previewTimer.current = window.setTimeout(
-          () =>
-            window.requestAnimationFrame(() =>
-              renderFrame(previewElement, animate, setImageSrc)
-            ),
-          document.querySelector(".peekWindow") ? 0 : MILLISECONDS_IN_SECOND / 2
-        );
-        animate.current = true;
+      openEnd =
+        Math.max(showAt, performance.now()) +
+        TRANSITIONS_IN_MILLISECONDS.WINDOW;
+      showTimer = window.setTimeout(
+        () => setReady(true),
+        showAt - performance.now()
+      );
+    };
+
+    if (ctx && isPresent) {
+      if (hidePeek || peekImage) {
+        const image = new Image();
+
+        image.src =
+          peekImage || getImageSrc(icon, MAX_ICON_SIZE, 1, getExtension(icon));
+        image
+          .decode()
+          .then(() => {
+            if (
+              active &&
+              drawPeek(ctx, image, image.naturalWidth, image.naturalHeight)
+            ) {
+              show();
+            }
+          })
+          .catch(() => {
+            // Ignore failure to load image
+          });
+      } else if (element && isLiveElement(element)) {
+        const drawFrame = (): void => {
+          if (drawLiveElement(ctx, element)) show();
+
+          animationFrame = window.requestAnimationFrame(drawFrame);
+        };
+
+        drawFrame();
+      } else if (element) {
+        let snapshot: HTMLCanvasElement | undefined;
+        let placements: LivePlacement[] = [];
+        let capturing = false;
+        let changed = false;
+        let lastCapture = 0;
+        const drawFrame = (): void => {
+          if (!snapshot) return;
+
+          drawPeek(ctx, snapshot, snapshot.width, snapshot.height);
+          placements.forEach((placement) => drawLivePlacement(ctx, placement));
+          animationFrame =
+            placements.length > 0 ? window.requestAnimationFrame(drawFrame) : 0;
+        };
+        // Captures wait for the open transition and are spaced out
+        const refresh = (): void => {
+          changed = true;
+
+          if (capturing || refreshTimer) return;
+
+          refreshTimer = window.setTimeout(
+            async () => {
+              refreshTimer = 0;
+              capturing = true;
+              changed = false;
+
+              const nextSnapshot = await captureElement(element);
+
+              capturing = false;
+              lastCapture = performance.now();
+
+              if (!active) return;
+
+              const nextPlacements = nextSnapshot
+                ? getLivePlacements(element, nextSnapshot.width)
+                : [];
+              const isDrawn = isCanvasDrawn(nextSnapshot);
+
+              if (nextSnapshot && (isDrawn || nextPlacements.length > 0)) {
+                snapshot = nextSnapshot;
+                placements = nextPlacements;
+                if (!animationFrame) drawFrame();
+                show();
+              }
+
+              if (!snapshot || changed) refresh();
+            },
+            Math.max(openEnd, lastCapture + PEEK_REFRESH_MS) - performance.now()
+          );
+        };
+        const observer = new MutationObserver((records) => {
+          if (records.some(({ target }) => !isLiveElement(target))) refresh();
+        });
+        const targets = [element, ...getFrameDocuments(element)];
+
+        targets.forEach((target) => {
+          observer.observe(target, {
+            attributes: true,
+            characterData: true,
+            childList: true,
+            subtree: true,
+          });
+          target.addEventListener("scroll", refresh, {
+            capture: true,
+            passive: true,
+          });
+        });
+        unsubscribe = () => {
+          observer.disconnect();
+          targets.forEach((target) =>
+            target.removeEventListener("scroll", refresh, { capture: true })
+          );
+        };
+        refresh();
       }
     }
 
     return () => {
-      if (previewTimer.current) {
-        clearTimeout(previewTimer.current);
-        previewTimer.current = 0;
-      }
-      animate.current = false;
+      active = false;
+      window.cancelAnimationFrame(animationFrame);
+      window.clearTimeout(showTimer);
+      window.clearTimeout(refreshTimer);
+      unsubscribe();
     };
-  }, [componentWindow, hidePeek, icon, peekElement, peekImage]);
+  }, [
+    canvas,
+    componentWindow,
+    hidePeek,
+    icon,
+    isPresent,
+    peekElement,
+    peekImage,
+    showAt,
+  ]);
 
-  return imageSrc;
+  return ready && isPresent;
 };
 
 export default useWindowPeek;

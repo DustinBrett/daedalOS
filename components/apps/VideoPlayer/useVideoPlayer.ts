@@ -401,30 +401,29 @@ const useVideoPlayer = ({
           isYT ? ytPlayer?.videoTitle || "YouTube" : basename(url)
         );
 
-        const [videoElement] =
-          (containerRef.current?.childNodes as NodeListOf<HTMLVideoElement>) ??
-          [];
+        const extension = getExtension(source.url);
+        const isAudio =
+          extension === ".mp3" || AUDIO_FILE_EXTENSIONS.has(extension);
+        const videoElement = containerRef.current?.querySelector(
+          "video"
+        ) as HTMLVideoElement;
 
         linkElement(
           id,
           "peekElement",
-          isYT ? (componentWindow as HTMLElement) : videoElement
+          isYT || isAudio ? (componentWindow as HTMLElement) : videoElement
         );
         argument(id, "peekImage", "");
 
-        if (buffer) {
-          const extension = getExtension(source.url);
+        if (buffer && isAudio) {
+          getCoverArt(source.url, buffer).then((coverPicture) => {
+            if (coverPicture) {
+              const coverUrl = bufferToUrl(coverPicture);
 
-          if (extension === ".mp3" || AUDIO_FILE_EXTENSIONS.has(extension)) {
-            getCoverArt(source.url, buffer).then((coverPicture) => {
-              if (coverPicture) {
-                const coverUrl = bufferToUrl(coverPicture);
-
-                player.poster(coverUrl);
-                argument(id, "peekImage", coverUrl);
-              }
-            });
-          }
+              player.poster(coverUrl);
+              argument(id, "peekImage", coverUrl);
+            }
+          });
         }
       } catch {
         // Ignore player errors

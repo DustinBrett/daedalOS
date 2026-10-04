@@ -3,11 +3,7 @@ import styled from "styled-components";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import { PEEK_MAX_WIDTH, TASKBAR_HEIGHT } from "utils/constants";
 
-type StyledPeekWindowProps = {
-  $offsetX: number;
-};
-
-const StyledPeekWindow = styled(motion.div)<StyledPeekWindowProps>`
+const StyledPeekWindow = styled(motion.div)`
   backdrop-filter: ${({ theme }) => `blur(${theme.sizes.taskbar.blur})`};
   background-color: ${({ theme }) => theme.colors.taskbar.background};
   border: ${({ theme }) => `1px solid ${theme.colors.taskbar.peekBorder}`};
@@ -18,8 +14,6 @@ const StyledPeekWindow = styled(motion.div)<StyledPeekWindowProps>`
   place-content: center;
   place-items: flex-start;
   position: fixed;
-  transform: ${({ $offsetX }) =>
-    $offsetX ? `translateX(${$offsetX}px)` : undefined};
 
   ${StyledTaskbarEntry}:hover & {
     background-color: hsl(0 0% 25% / 70%);
@@ -29,7 +23,7 @@ const StyledPeekWindow = styled(motion.div)<StyledPeekWindowProps>`
     }
   }
 
-  img {
+  canvas {
     height: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.height}px;
     margin: ${({ theme }) => theme.sizes.taskbar.entry.peekImage.margin}px;
     max-height: ${PEEK_MAX_WIDTH}px;
