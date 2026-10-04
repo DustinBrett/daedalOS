@@ -225,9 +225,9 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
 
 export const CLOCK_MENU_ITEMS = [/^Local time$/, /^Server time$/];
 
-export const TASKBAR_ENTRIES_MENU_ITEMS = (hasWebGpu: boolean): RegExp[] => [
+export const TASKBAR_ENTRIES_MENU_ITEMS = (hasAI: boolean): RegExp[] => [
   /^Enter full screen$/,
-  ...(hasWebGpu ? [/^Show Talos button$/] : []),
+  ...(hasAI ? [/^Show Talos button$/] : []),
   /^Show the desktop$/,
 ];
 

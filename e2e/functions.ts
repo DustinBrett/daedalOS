@@ -517,6 +517,23 @@ export const mockSaveFilePicker = async (
 export const getHostname = async ({ page }: TestProps): Promise<string> =>
   page.evaluate(() => window.location.hostname);
 
+// Mirrors getAvailability in hooks/useWindowAI
+export const hasBuiltInAI = async ({ page }: TestProps): Promise<boolean> =>
+  page.evaluate(async () => {
+    if (!("LanguageModel" in window)) return false;
+
+    try {
+      return (
+        (await LanguageModel.availability({
+          expectedInputs: [{ languages: ["en"], type: "text" }],
+          expectedOutputs: [{ languages: ["en"], type: "text" }],
+        })) !== "unavailable"
+      );
+    } catch {
+      return false;
+    }
+  });
+
 export const windowAnimationIsFinished = async ({
   page,
 }: TestProps): Promise<Animation[]> =>

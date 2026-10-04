@@ -26,6 +26,7 @@ import {
   disableWallpaper,
   fileExplorerEntriesAreVisible,
   flyIsVisible,
+  hasBuiltInAI,
   hoverOnTaskbarEntry,
   loadApp,
   loadTestApp,
@@ -188,8 +189,9 @@ test.describe("entries", () => {
 
     test("has items", async ({ browserName, page }) => {
       const entries = TASKBAR_ENTRIES_MENU_ITEMS(
-        !WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName) &&
-          !process.env.CI
+        (!WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName) &&
+          !process.env.CI) ||
+          (await hasBuiltInAI({ page }))
       );
 
       await contextMenuHasCount(entries.length, { page });
