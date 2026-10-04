@@ -37,6 +37,9 @@ export type DragPosition = Partial<
 
 const FILE_MANAGER_TOP_PADDING = 5;
 
+const DRAG_IMAGE_CSS =
+  "li { background-color: transparent !important; outline: none !important; }";
+
 const useDraggableEntries = (
   directory: string,
   focusedEntries: string[],
@@ -95,6 +98,8 @@ const useDraggableEntries = (
                 focusedElements.some((focusedElement) =>
                   focusedElement.contains(element)
                 ),
+              // Injected into the capture, overriding the cloned inline styles
+              fontEmbedCSS: DRAG_IMAGE_CSS,
               imagePlaceholder: UNKNOWN_ICON,
               skipAutoScale: true,
             }
@@ -214,6 +219,17 @@ const useDraggableEntries = (
               ? capturedImageOffset.current.y
               : event.nativeEvent.offsetY
           );
+        } else {
+          // Browser snapshots the entry after dragstart, so hide selection until then
+          const { style } = event.currentTarget as HTMLElement;
+
+          style.backgroundColor = "transparent";
+          style.outline = "none";
+
+          setTimeout(() => {
+            style.backgroundColor = "";
+            style.outline = "";
+          }, 0);
         }
 
         Object.assign(event.dataTransfer, { effectAllowed: "move" });
