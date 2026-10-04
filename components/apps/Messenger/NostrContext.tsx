@@ -1,4 +1,7 @@
-import { type Event as NostrEvent, type Relay, relayInit } from "nostr-tools";
+import { type Filter } from "nostr-tools/filter";
+import { type Event } from "nostr-tools/pure";
+import { Relay } from "nostr-tools/relay";
+import { normalizeURL } from "nostr-tools/utils";
 import {
   createContext,
   memo,
@@ -9,100 +12,199 @@ import {
   useRef,
   useState,
 } from "react";
+import {
+  BASE_RW_RELAYS,
+  RECONNECT_DELAYS_MS,
+  RELAY_TIMEOUT_MS,
+} from "components/apps/Messenger/constants";
+import { type RelayStatus, type Signer } from "components/apps/Messenger/types";
 
 interface NostrContextType {
-  connectedRelays: Relay[];
-  connectToRelays: (urls: string[]) => void;
-  publish: (event: NostrEvent) => void;
+  connectToRelay: (url: string) => void;
+  publish: (event: Event, urls?: string[]) => Promise<boolean>;
+  query: (filter: Filter) => Promise<Event[]>;
+  relays: Relay[];
+  relayStatus: Record<string, RelayStatus>;
+  signer: Signer;
 }
 
-/* eslint-disable @typescript-eslint/no-empty-function */
-const NostrContext = createContext<NostrContextType>({
-  connectedRelays: [],
-  connectToRelays: () => {},
-  publish: () => {},
-});
-/* eslint-enable @typescript-eslint/no-empty-function */
+const NostrContext = createContext({} as NostrContextType);
 
 export const useNostr = (): NostrContextType => useContext(NostrContext);
 
-const NostrProviderFC: FC<{ relayUrls: string[] }> = ({
-  children,
-  relayUrls,
-}) => {
-  const [connectedRelays, setConnectedRelays] = useState<Record<string, Relay>>(
-    {}
-  );
-  const knownRelaysRef = useRef<string[]>([]);
-  const disconnectToRelays = useCallback((urls: string[]) => {
-    if (urls.length === 0) return;
+const publishWithAuth = (
+  relay: Relay,
+  event: Event,
+  signer: Signer
+): Promise<string> =>
+  relay.publish(event).catch(async (error: unknown) => {
+    if (!String(error).includes("auth-required")) throw error;
 
-    setConnectedRelays((currentConnectedRelays) => {
-      const newConnectedRelays = { ...currentConnectedRelays };
+    await relay.auth(signer.signEvent);
 
-      urls.forEach((url) => {
-        newConnectedRelays[url]?.close();
-        delete newConnectedRelays[url];
-      });
+    return relay.publish(event);
+  });
 
-      return newConnectedRelays;
-    });
-  }, []);
-  const connectToRelays = useCallback(
-    (urls: string[]) =>
-      urls.forEach((url) => {
-        if (connectedRelays[url]) return;
-
-        const relay = relayInit(url);
-
-        relay.on("connect", () =>
-          setConnectedRelays((currentConnectedRelays) => ({
-            ...currentConnectedRelays,
-            [url]: relay,
-          }))
-        );
-        relay.on("disconnect", () =>
-          setConnectedRelays(
-            ({ [url]: _previouslyConnectedRelay, ...newConnectedRelays }) =>
-              newConnectedRelays
-          )
-        );
-        relay.on("error", console.error);
-        relay.connect();
-      }),
-    [connectedRelays]
-  );
-  const publish = useCallback(
-    (event: NostrEvent) =>
-      Object.values(connectedRelays).forEach((relay) => relay.publish(event)),
-    [connectedRelays]
-  );
+const NostrProviderFC: FC<{ signer: Signer }> = ({ children, signer }) => {
+  const [relays, setRelays] = useState<Record<string, Relay>>({});
+  const [connecting, setConnecting] = useState<string[]>([]);
+  const openRelaysRef = useRef(new Set<Relay>());
+  const initialConnections = useRef<Promise<unknown>>(Promise.resolve());
+  const connectRef = useRef<(url: string) => void>(undefined);
 
   useEffect(() => {
-    const { current: knownRelays } = knownRelaysRef;
+    let active = true;
+    const retryTimers = new Map<string, number>();
+    const openRelays = new Set<Relay>();
+    const connect = (url: string, attempt = 0): Promise<void> => {
+      const relay = new Relay(url);
+      const retry = (nextAttempt: number): void => {
+        if (active && nextAttempt <= RECONNECT_DELAYS_MS.length) {
+          retryTimers.set(
+            url,
+            window.setTimeout(
+              () => connect(url, nextAttempt),
+              RECONNECT_DELAYS_MS[nextAttempt - 1]
+            )
+          );
+        }
+      };
 
-    if (
-      relayUrls.length === knownRelays.length &&
-      relayUrls.every((url) => knownRelays.includes(url))
-    ) {
-      return;
-    }
+      window.clearTimeout(retryTimers.get(url));
+      setConnecting((currentUrls) => [...currentUrls, url]);
 
-    disconnectToRelays(knownRelays.filter((url) => !relayUrls.includes(url)));
-    connectToRelays(relayUrls);
+      return relay
+        .connect({ timeout: RELAY_TIMEOUT_MS })
+        .then(() => {
+          if (!active) {
+            relay.close();
+            return;
+          }
 
-    knownRelaysRef.current = relayUrls;
-  }, [connectToRelays, disconnectToRelays, relayUrls]);
+          openRelays.add(relay);
+          // eslint-disable-next-line unicorn/prefer-add-event-listener
+          relay.onclose = () => {
+            openRelays.delete(relay);
+            setRelays(
+              ({ [url]: _closedRelay, ...currentRelays }) => currentRelays
+            );
+            retry(1);
+          };
+          setRelays((currentRelays) => ({ ...currentRelays, [url]: relay }));
+        })
+        .catch(() => retry(attempt + 1))
+        .finally(() =>
+          setConnecting((currentUrls) =>
+            currentUrls.filter((currentUrl) => currentUrl !== url)
+          )
+        );
+    };
+
+    connectRef.current = connect;
+    openRelaysRef.current = openRelays;
+    initialConnections.current = Promise.allSettled(
+      BASE_RW_RELAYS.map((url) => connect(url))
+    );
+
+    return () => {
+      active = false;
+      retryTimers.forEach((timer) => window.clearTimeout(timer));
+      openRelays.forEach((relay) => {
+        // Skip CLOSE frames that would race the socket closing
+        relay.openSubs.forEach((subscription) => {
+          // eslint-disable-next-line no-param-reassign
+          subscription.closed = true;
+        });
+        relay.close();
+      });
+      setRelays({});
+    };
+  }, []);
+
+  const connectToRelay = useCallback(
+    (url: string) => connectRef.current?.(url),
+    []
+  );
+  const publish = useCallback(
+    async (event: Event, urls = BASE_RW_RELAYS): Promise<boolean> => {
+      const results = await Promise.allSettled(
+        [...new Set(urls.map(normalizeURL))].map(async (url) => {
+          const connectedRelay = [...openRelaysRef.current].find(
+            (relay) => relay.url === url
+          );
+
+          if (connectedRelay) {
+            return publishWithAuth(connectedRelay, event, signer);
+          }
+
+          const relay = await Relay.connect(url, { timeout: RELAY_TIMEOUT_MS });
+
+          try {
+            return await publishWithAuth(relay, event, signer);
+          } finally {
+            relay.close();
+          }
+        })
+      );
+
+      return results.some(({ status }) => status === "fulfilled");
+    },
+    [signer]
+  );
+  const query = useCallback(async (filter: Filter): Promise<Event[]> => {
+    await initialConnections.current;
+
+    return new Promise((resolve) => {
+      const events: Event[] = [];
+      const connectedRelays = [...openRelaysRef.current];
+      let remaining = connectedRelays.length;
+
+      if (remaining === 0) resolve(events);
+
+      connectedRelays.forEach((relay) => {
+        let finished = false;
+        const subscription = relay.subscribe([filter], {
+          eoseTimeout: RELAY_TIMEOUT_MS,
+          onclose: () => {
+            if (finished) return;
+
+            finished = true;
+            remaining -= 1;
+
+            if (remaining === 0) resolve(events);
+          },
+          oneose: () => subscription.close(),
+          onevent: (event) => events.push(event),
+        });
+      });
+    });
+  }, []);
 
   return (
     <NostrContext
       value={useMemo(
         () => ({
-          connectedRelays: Object.values(connectedRelays),
-          connectToRelays,
+          connectToRelay,
           publish,
+          query,
+          relays: Object.values(relays),
+          relayStatus: {
+            ...Object.fromEntries(
+              connecting.map((url): [string, RelayStatus] => [
+                url,
+                "connecting",
+              ])
+            ),
+            ...Object.fromEntries(
+              Object.keys(relays).map((url): [string, RelayStatus] => [
+                url,
+                "connected",
+              ])
+            ),
+          },
+          signer,
         }),
-        [connectToRelays, connectedRelays, publish]
+        [connecting, connectToRelay, publish, query, relays, signer]
       )}
     >
       {children}

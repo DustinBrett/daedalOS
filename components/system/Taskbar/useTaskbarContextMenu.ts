@@ -5,14 +5,10 @@ import {
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
 import { useProcessesActions, useProcessesRef } from "contexts/process";
-import {
-  useAiEnabled,
-  useSessionActions,
-  useStackOrder,
-} from "contexts/session";
+import { useSessionActions, useStackOrder } from "contexts/session";
 import { useViewport } from "contexts/viewport";
 import { useWebGPUCheck } from "hooks/useWebGPUCheck";
-import { useWindowAI } from "hooks/useWindowAI";
+import { useShowAI, useWindowAI } from "hooks/useWindowAI";
 import { AI_TITLE, MENU_SEPERATOR } from "utils/constants";
 import { toggleShowDesktop } from "utils/functions";
 
@@ -20,12 +16,12 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
   const { contextMenu } = useMenuActions();
   const { minimize, open } = useProcessesActions();
   const { setAiEnabled } = useSessionActions();
-  const aiEnabled = useAiEnabled();
   const stackOrder = useStackOrder();
   const processesRef = useProcessesRef();
   const { fullscreenElement, toggleFullscreen } = useViewport();
   const hasWebGPU = useWebGPUCheck();
-  const hasWindowAI = useWindowAI();
+  const windowAI = useWindowAI();
+  const showAI = useShowAI();
 
   return useMemo(
     () =>
@@ -72,11 +68,11 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
                   : "Enter full screen",
             },
             MENU_SEPERATOR,
-            ...(hasWebGPU && !hasWindowAI
+            ...(hasWebGPU || windowAI !== "unavailable"
               ? [
                   {
-                    action: () => setAiEnabled(!aiEnabled),
-                    checked: aiEnabled,
+                    action: () => setAiEnabled(!showAI),
+                    checked: showAI,
                     label: `Show ${AI_TITLE} button`,
                   },
                   MENU_SEPERATOR,
@@ -88,18 +84,18 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
         return menuItems;
       }),
     [
-      aiEnabled,
       contextMenu,
       fullscreenElement,
       hasWebGPU,
-      hasWindowAI,
       minimize,
       onStartButton,
       open,
       processesRef,
       setAiEnabled,
+      showAI,
       stackOrder,
       toggleFullscreen,
+      windowAI,
     ]
   );
 };

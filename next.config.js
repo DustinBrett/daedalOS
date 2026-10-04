@@ -51,8 +51,13 @@ const nextConfig = {
   transpilePackages: [
     "@ffmpeg/ffmpeg",
     "@jitl/quickjs-wasmfile-release-sync",
+    "@noble/ciphers",
+    "@noble/curves",
+    "@noble/hashes",
+    "@scure/base",
     "mediainfo.js",
     "multiformats",
+    "nostr-tools",
     "prettier",
   ],
   webpack: (config) => {

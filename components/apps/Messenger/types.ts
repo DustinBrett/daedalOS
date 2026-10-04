@@ -1,34 +1,54 @@
-import { type Event, type Filter } from "nostr-tools";
-
-type RelayPolicy = { read: boolean; write: boolean };
+import { type WindowNostr } from "nostr-tools/nip07";
+import { type EventTemplate, type VerifiedEvent } from "nostr-tools/pure";
 
 declare global {
   interface Window {
-    nostr?: {
-      getPublicKey: () => Promise<string>;
-      getRelays: () => Promise<Record<string, RelayPolicy>>;
-      nip04: {
-        decrypt: (publicKey: string, cipherText: string) => Promise<string>;
-        encrypt: (publicKey: string, plainText: string) => Promise<string>;
-      };
-      signEvent: (event: Event) => Promise<Event>;
-    };
+    nostr?: WindowNostr;
   }
 }
 
-export type NostrEvents = {
-  enabled: boolean;
-  filter: Filter[];
+export type Signer = {
+  decrypt: (
+    pubkey: string,
+    payload: string,
+    legacy?: boolean
+  ) => Promise<string>;
+  encrypt: (
+    pubkey: string,
+    plaintext: string,
+    legacy?: boolean
+  ) => Promise<string>;
+  publicKey: string;
+  secretKey?: Uint8Array;
+  signEvent: (event: EventTemplate) => Promise<VerifiedEvent>;
+};
+
+export type RelayStatus = "connected" | "connecting";
+
+export type DirectMessage = {
+  content: string;
+  created_at: number;
+  id: string;
+  legacy?: boolean;
+  pubkey: string;
+  recipient: string;
+  status?: "failed" | "sending";
 };
 
 export type NostrContacts = {
-  contactKeys: string[];
-  events: Event[];
-  lastEvents: Record<string, Event>;
-  unreadEvents: Event[];
+  chatKeys: string[];
+  lastMessages: Record<string, DirectMessage>;
+  requestKeys: string[];
+  spamKeys: string[];
+  unreadMessages: DirectMessage[];
 };
 
-export interface Metadata {
+export type Nip05Json = {
+  names?: Record<string, string>;
+  relays?: Record<string, string[]>;
+};
+
+export type ProfileData = {
   about?: string;
   banner?: string;
   display_name?: string;
@@ -37,9 +57,7 @@ export interface Metadata {
   picture?: string;
   username?: string;
   website?: string;
-}
-
-export type ProfileData = Metadata & { npub?: string };
+};
 
 export type NostrProfile = {
   about?: string;
@@ -47,11 +65,10 @@ export type NostrProfile = {
   created_at?: number;
   data?: ProfileData;
   nip05?: string;
+  npub?: string;
   picture?: string;
   userName?: string;
   website?: string;
 };
 
-export type ChatEvents = [string, Event[]][];
-
-export type DecryptedContent = Record<string, false | string>;
+export type ChatMessages = [string, DirectMessage[]][];

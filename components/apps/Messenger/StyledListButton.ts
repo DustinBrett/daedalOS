@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledGetMoreMessages = styled.li`
+const StyledListButton = styled.li`
   background-color: rgb(68 69 70 / 50%);
 
   &:hover {
@@ -22,4 +22,4 @@ const StyledGetMoreMessages = styled.li`
   }
 `;
 
-export default StyledGetMoreMessages;
+export default StyledListButton;

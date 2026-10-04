@@ -3,57 +3,39 @@ import {
   type TimeScale,
   useHistoryContext,
 } from "components/apps/Messenger/HistoryContext";
-import StyledGetMoreMessages from "components/apps/Messenger/StyledGetMoreMessages";
+import StyledListButton from "components/apps/Messenger/StyledListButton";
 import Button from "styles/common/Button";
-import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
+import { MILLISECONDS_IN_SECOND } from "utils/constants";
 
-const TimeScaleLabel: Partial<Record<TimeScale, string>> = {
-  day: "Retrieve last 7 days of messages",
-  month: "Retrieve last 90 days of messages",
-  trimester: "Retrieve all messages",
-  week: "Retrieve last 30 days of messages",
+const NEXT_TIME_SCALE: Partial<Record<TimeScale, [TimeScale, string]>> = {
+  month: ["trimester", "Retrieve last 90 days of messages"],
+  trimester: ["infinite", "Retrieve all messages"],
+  week: ["month", "Retrieve last 30 days of messages"],
 };
 
-const GetMoreMessages: FC<{
-  setSince: React.Dispatch<React.SetStateAction<number>>;
-}> = ({ setSince }) => {
+const GetMoreMessages: FC = () => {
   const { setTimeScale, timeScale } = useHistoryContext();
   const [disabled, setDisabled] = useState<boolean>(false);
+  const nextTimeScale = NEXT_TIME_SCALE[timeScale];
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  if (timeScale === "infinite") return <></>;
+  if (!nextTimeScale) return <></>;
 
-  const updateTimeScale = (since: number, scale: TimeScale): void => {
-    setSince(since);
-    setTimeScale(scale);
-    setDisabled(true);
-    setTimeout(() => setDisabled(false), MILLISECONDS_IN_SECOND);
-  };
+  const [scale, label] = nextTimeScale;
 
   return (
-    <StyledGetMoreMessages>
+    <StyledListButton>
       <Button
         disabled={disabled}
         onClick={() => {
-          switch (timeScale) {
-            case "day":
-              updateTimeScale(MILLISECONDS_IN_DAY * 7, "week");
-              break;
-            case "week":
-              updateTimeScale(MILLISECONDS_IN_DAY * 30, "month");
-              break;
-            case "month":
-              updateTimeScale(MILLISECONDS_IN_DAY * 90, "trimester");
-              break;
-            default:
-              updateTimeScale(0, "infinite");
-              break;
-          }
+          setTimeScale(scale);
+          setDisabled(true);
+          setTimeout(() => setDisabled(false), MILLISECONDS_IN_SECOND);
         }}
       >
-        {TimeScaleLabel[timeScale]}
+        {label}
       </Button>
-    </StyledGetMoreMessages>
+    </StyledListButton>
   );
 };
 

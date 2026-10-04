@@ -1,25 +1,19 @@
 /// <reference types="dom-chromium-ai" />
 
 import { type ChatCompletionMessageParam } from "@mlc-ai/web-llm";
-import { type MarkedOptions } from "components/apps/Marked/useMarked";
 
 declare global {
-  var ai: {
-    languageModel: AILanguageModelFactory;
-    summarizer: AISummarizerFactory;
-  };
-  var marked: {
-    parse: (markdownString: string, options: MarkedOptions) => string;
-  };
   interface Window {
     initialAiPrompt?: string;
   }
 }
 
-export type MessageTypes = "ai" | "user";
+export type ChatHistory = { content: string; role: "assistant" | "user" }[];
+
+type MessageTypes = "ai" | "user";
 
 export type Message = {
-  formattedText: string;
+  images?: Blob[];
   text: string;
   type: MessageTypes;
   withCanvas?: boolean;
@@ -27,36 +21,23 @@ export type Message = {
 
 export type ConvoStyles = "balanced" | "creative" | "precise";
 
-export type WorkerMessage = {
-  hasWindowAI: boolean;
-  id: number;
-  imagePrompt?: string;
-  offscreenCanvas?: OffscreenCanvas;
-  streamId?: number;
-  style: ConvoStyles;
-  summarizeText?: string;
-  text: string;
-};
+export type ResponseError = "context" | "failed";
 
-export type AIResponse = {
-  complete?: boolean;
-  formattedResponse: string;
-  response: string;
-  streamId?: number;
-};
+export type WorkerMessage =
+  | "init"
+  | { cancel: number }
+  | {
+      id: number;
+      imagePrompt: string;
+      offscreenCanvas: OffscreenCanvas;
+    }
+  | {
+      id: number;
+      messages: ChatCompletionMessageParam[];
+      style: ConvoStyles;
+    };
 
-export type WebLlmProgress = {
-  progress: {
-    progress: number;
-    text: string;
-    timeElapsed: number;
-  };
-};
-
-export type WorkerResponse = {
-  data: "canceled" | AIResponse | WebLlmProgress;
-};
-
-export type Prompt = (AILanguageModelPrompt | ChatCompletionMessageParam) & {
-  streamId?: number;
-};
+export type WorkerResponse =
+  | { done: true; error?: ResponseError; id: number }
+  | { id: number; text: string }
+  | { progress: string };

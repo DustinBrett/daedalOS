@@ -1,9 +1,10 @@
 import { memo, useCallback, useRef, useState } from "react";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
-import { createMessageEvent } from "components/apps/Messenger/functions";
 import { Send } from "components/apps/Messenger/Icons";
-import { useMessageContext } from "components/apps/Messenger/MessageContext";
-import { useNostr } from "components/apps/Messenger/NostrContext";
+import {
+  useIsLegacyChat,
+  useMessageContext,
+} from "components/apps/Messenger/MessageContext";
 import StyledSendMessage from "components/apps/Messenger/StyledSendMessage";
 import Button from "styles/common/Button";
 import { haltEvent } from "utils/functions";
@@ -11,29 +12,11 @@ import { haltEvent } from "utils/functions";
 const SendMessage: FC<{ recipientPublicKey: string }> = ({
   recipientPublicKey,
 }) => {
-  const { sendingEvent } = useMessageContext();
-  const { publish } = useNostr();
+  const { sendMessage } = useMessageContext();
+  const legacy = useIsLegacyChat(recipientPublicKey);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [canSend, setCanSend] = useState(false);
   const isUnknownKey = recipientPublicKey === UNKNOWN_PUBLIC_KEY;
-  const sendMessage = useCallback(
-    async (message: string) => {
-      const event = await createMessageEvent(message, recipientPublicKey);
-
-      sendingEvent(event);
-
-      try {
-        publish(event);
-      } catch {
-        // Ignore error during publish
-      }
-
-      if (inputRef.current?.value) inputRef.current.value = "";
-
-      setCanSend(false);
-    },
-    [publish, recipientPublicKey, sendingEvent]
-  );
   const updateHeight = useCallback(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "0px";
@@ -43,6 +26,25 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
       )}px`;
     }
   }, []);
+  const send = useCallback(async () => {
+    const input = inputRef.current;
+    const message = input?.value.trim();
+
+    if (!input || !message) return;
+
+    // Clear first so a slow extension signature can't be sent twice
+    input.value = "";
+    setCanSend(false);
+    updateHeight();
+
+    try {
+      await sendMessage(recipientPublicKey, message, legacy);
+    } catch {
+      input.value = message;
+      setCanSend(true);
+      updateHeight();
+    }
+  }, [legacy, recipientPublicKey, sendMessage, updateHeight]);
 
   return (
     <StyledSendMessage>
@@ -51,19 +53,14 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
         aria-label="Type a message"
         disabled={isUnknownKey}
         onChange={() => {
-          setCanSend(Boolean(inputRef.current?.value));
+          setCanSend(Boolean(inputRef.current?.value.trim()));
           updateHeight();
         }}
-        onKeyDown={async (event) => {
-          const { key, shiftKey } = event;
-          const message = inputRef.current?.value.trim();
-
-          if (message && key === "Enter" && !shiftKey) {
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
-            await sendMessage(message);
-          } else setCanSend(Boolean(message));
-
-          updateHeight();
+            send();
+          }
         }}
         placeholder="Type a message..."
         autoFocus
@@ -71,9 +68,7 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
       <Button
         aria-label="Send"
         disabled={isUnknownKey || !canSend}
-        onClick={() =>
-          inputRef.current?.value && sendMessage(inputRef.current.value)
-        }
+        onClick={send}
         onContextMenuCapture={haltEvent}
       >
         <Send />

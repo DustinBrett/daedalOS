@@ -1,189 +1,414 @@
 import {
+  EncryptedDirectMessage,
+  Metadata,
+  PrivateDirectMessage,
+  Seal,
+} from "nostr-tools/kinds";
+import {
+  decrypt as nip04Decrypt,
+  encrypt as nip04Encrypt,
+} from "nostr-tools/nip04";
+import { type WindowNostr } from "nostr-tools/nip07";
+import { decode, npubEncode, nsecEncode } from "nostr-tools/nip19";
+import {
+  getConversationKey,
+  decrypt as nip44Decrypt,
+  encrypt as nip44Encrypt,
+} from "nostr-tools/nip44";
+import { createWrap } from "nostr-tools/nip59";
+import {
   type Event,
-  generatePrivateKey,
+  finalizeEvent,
+  generateSecretKey,
   getEventHash,
   getPublicKey,
-  getSignature,
-  nip04,
-  nip19,
-  validateEvent,
-  type VerifiedEvent,
-  verifiedSymbol,
-  verifySignature,
-} from "nostr-tools";
-// eslint-disable-next-line import/consistent-type-specifier-style
-import type { NIP05Result } from "nostr-tools/nip05";
-// eslint-disable-next-line import/consistent-type-specifier-style
-import type { ProfilePointer } from "nostr-tools/nip19";
+  type UnsignedEvent,
+  verifyEvent,
+} from "nostr-tools/pure";
+import { bytesToHex, hexToBytes } from "nostr-tools/utils";
 import {
   BASE_NIP05_URL,
-  BASE_RW_RELAYS,
-  DM_KIND,
   GROUP_TIME_GAP_IN_SECONDS,
-  METADATA_KIND,
+  MAX_GIFT_WRAP_AGE_IN_SECONDS,
+  MIN_DUPLICATE_SPAM_LENGTH,
   PRIVATE_KEY_IDB_NAME,
-  PUBLIC_KEY_IDB_NAME,
   TIME_FORMAT,
+  USE_EXTENSION_IDB_NAME,
 } from "components/apps/Messenger/constants";
 import {
-  type ChatEvents,
-  type DecryptedContent,
-  type NostrEvents,
+  type ChatMessages,
+  type DirectMessage,
+  type Nip05Json,
   type NostrProfile,
   type ProfileData,
+  type RelayStatus,
+  type Signer,
 } from "components/apps/Messenger/types";
 import { type MenuItem } from "contexts/menu/useMenuContextState";
 import { MILLISECONDS_IN_DAY, MILLISECONDS_IN_SECOND } from "utils/constants";
 import { toSorted, writeTextToClipboard } from "utils/functions";
 
-export const getRelayUrls = async (): Promise<string[]> => {
-  if (window.nostr?.getRelays) {
+const HEX_KEY = /^[\da-f]{64}$/i;
+
+export const NIP05_ADDRESS = /^(?:[\w.+-]+@)?[\w-]+(?:\.[\w-]+)+$/;
+
+const isHexKey = (key: string): boolean => HEX_KEY.test(key);
+
+export const getUnixTime = (): number =>
+  Math.floor(Date.now() / MILLISECONDS_IN_SECOND);
+
+const parseSecretKey = (key: string): Uint8Array | undefined => {
+  const trimmedKey = key.trim();
+
+  if (isHexKey(trimmedKey)) return hexToBytes(trimmedKey);
+
+  try {
+    const { data, type } = decode(trimmedKey);
+
+    return type === "nsec" ? data : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+const localSigner = (secretKey: Uint8Array): Signer => ({
+  decrypt: (pubkey, payload, legacy) =>
+    Promise.resolve(
+      legacy
+        ? nip04Decrypt(secretKey, pubkey, payload)
+        : nip44Decrypt(payload, getConversationKey(secretKey, pubkey))
+    ),
+  encrypt: (pubkey, plaintext, legacy) =>
+    Promise.resolve(
+      legacy
+        ? nip04Encrypt(secretKey, pubkey, plaintext)
+        : nip44Encrypt(plaintext, getConversationKey(secretKey, pubkey))
+    ),
+  publicKey: getPublicKey(secretKey),
+  secretKey,
+  signEvent: (event) => Promise.resolve(finalizeEvent(event, secretKey)),
+});
+
+const extensionSigner = (nostr: WindowNostr, publicKey: string): Signer => {
+  const cipher = (
+    legacy?: boolean
+  ): NonNullable<WindowNostr["nip44"]> | undefined =>
+    legacy ? nostr.nip04 : nostr.nip44;
+
+  return {
+    decrypt: async (pubkey, payload, legacy) => {
+      const nip = cipher(legacy);
+
+      if (!nip) throw new Error("Unsupported by extension");
+
+      return nip.decrypt(pubkey, payload);
+    },
+    encrypt: async (pubkey, plaintext, legacy) => {
+      const nip = cipher(legacy);
+
+      if (!nip) throw new Error("Unsupported by extension");
+
+      return nip.encrypt(pubkey, plaintext);
+    },
+    publicKey,
+    signEvent: (event) => nostr.signEvent(event),
+  };
+};
+
+const saveSecretKey = (secretKey: Uint8Array): Signer => {
+  localStorage.setItem(PRIVATE_KEY_IDB_NAME, bytesToHex(secretKey));
+
+  return localSigner(secretKey);
+};
+
+export const importSecretKey = (key: string): Signer | undefined => {
+  const secretKey = parseSecretKey(key);
+
+  return secretKey ? saveSecretKey(secretKey) : undefined;
+};
+
+export const getSigner = async (): Promise<Signer> => {
+  if (localStorage.getItem(USE_EXTENSION_IDB_NAME) && window.nostr) {
     try {
-      return [
-        ...new Set([
-          ...BASE_RW_RELAYS,
-          ...Object.entries(await window.nostr.getRelays()).map(([url]) =>
-            url.endsWith("/") ? url.slice(0, -1) : url
-          ),
-        ]),
-      ];
+      return extensionSigner(window.nostr, await window.nostr.getPublicKey());
     } catch {
-      // Ignore failure to get relays
+      localStorage.removeItem(USE_EXTENSION_IDB_NAME);
     }
   }
 
-  return BASE_RW_RELAYS;
+  return saveSecretKey(
+    parseSecretKey(localStorage.getItem(PRIVATE_KEY_IDB_NAME) || "") ||
+      generateSecretKey()
+  );
 };
 
-export const toHexKey = (key: string): string => {
-  if (
-    key.startsWith("nprofile") ||
-    key.startsWith("npub") ||
-    key.startsWith("nsec")
-  ) {
-    try {
-      const { data } = nip19.decode(key);
+export const decodePublicKey = (address: string): string => {
+  const key = address.trim().replace(/^nostr:/, "");
 
-      if (typeof data === "string") return data;
-
-      if (
-        typeof data === "object" &&
-        typeof (data as ProfilePointer).pubkey === "string"
-      ) {
-        return (data as ProfilePointer).pubkey;
-      }
-    } catch {
-      return key;
-    }
-  }
-
-  return key;
-};
-
-export const getPrivateKey = (): string =>
-  localStorage.getItem(PRIVATE_KEY_IDB_NAME) || "";
-
-export const maybeGetExistingPublicKey = async (): Promise<string> => {
-  const idbKey = localStorage.getItem(PUBLIC_KEY_IDB_NAME) || "";
-  let publicKey = "";
+  if (isHexKey(key)) return key.toLowerCase();
 
   try {
-    publicKey = (await window.nostr?.getPublicKey()) || "";
+    const { data, type } = decode(key);
+
+    if (type === "npub") return data;
+    if (type === "nprofile") return data.pubkey;
   } catch {
-    // Ignore failure to get public key
-  }
-
-  return publicKey || idbKey || "";
-};
-
-export const getPublicHexKey = (existingPublicKey?: string): string => {
-  if (existingPublicKey) return toHexKey(existingPublicKey);
-
-  const newPrivateKey = generatePrivateKey();
-  const newPublicKey = getPublicKey(newPrivateKey);
-
-  localStorage.setItem(PUBLIC_KEY_IDB_NAME, newPublicKey);
-  localStorage.setItem(PRIVATE_KEY_IDB_NAME, newPrivateKey);
-
-  return toHexKey(newPublicKey);
-};
-
-export const getKeyFromTags = (tags: string[][] = []): string => {
-  const [, key = ""] = tags.find(([tag]) => tag === "p") || [];
-
-  return key;
-};
-
-const decryptedContent: DecryptedContent = {};
-
-export const decryptMessage = async (
-  id: string,
-  content: string,
-  pubkey: string
-): Promise<false | string> => {
-  if (decryptedContent[id] || decryptedContent[id] === false) {
-    return decryptedContent[id];
-  }
-
-  decryptedContent[id] = content;
-
-  try {
-    const message = await (window.nostr?.nip04
-      ? window.nostr.nip04.decrypt(pubkey, content)
-      : nip04.decrypt(toHexKey(getPrivateKey()), pubkey, content));
-
-    decryptedContent[id] = message;
-
-    return message;
-  } catch {
-    decryptedContent[id] = "";
-
-    return "";
-  }
-};
-
-const encryptMessage = async (
-  content: string,
-  pubkey: string
-): Promise<string> => {
-  try {
-    return await (window.nostr?.nip04
-      ? window.nostr.nip04.encrypt(pubkey, content)
-      : nip04.encrypt(toHexKey(getPrivateKey()), pubkey, content));
-  } catch {
-    // Ignore failure to decrypt
+    // Not a NIP-19 address
   }
 
   return "";
 };
 
-export const getMessages = (
-  authorPublicKey: string,
-  recipientPublicKey?: string,
-  since = 0
-): NostrEvents => ({
-  enabled: Boolean(authorPublicKey) || Boolean(recipientPublicKey),
-  filter: [
-    {
-      ...(recipientPublicKey ? { "#p": [recipientPublicKey] } : {}),
-      authors: [authorPublicKey],
-      kinds: [DM_KIND],
-      since,
-    },
-    {
-      ...(recipientPublicKey ? { authors: [recipientPublicKey] } : {}),
-      "#p": [authorPublicKey],
-      kinds: [DM_KIND],
-      since,
-    },
-  ],
-});
+export const shortNpub = (publicKey: string): string => {
+  const npub = npubEncode(publicKey);
 
-const ascCreatedAt = (a: Event, b: Event): number =>
-  a.created_at - b.created_at;
+  return `${npub.slice(0, 10)}…${npub.slice(-4)}`;
+};
 
-export const descCreatedAt = (a: Event, b: Event): number =>
-  b.created_at - a.created_at;
+export const fetchNip05Json = async (url: string): Promise<Nip05Json> => {
+  try {
+    const response = await fetch(url);
+
+    return response.ok ? ((await response.json()) as Nip05Json) : {};
+  } catch {
+    return {};
+  }
+};
+
+const nip05Lookups: Record<string, Promise<string>> = {};
+
+const lookupNip05 = (address: string): Promise<string> => {
+  if (!NIP05_ADDRESS.test(address)) return Promise.resolve("");
+
+  const [name, domain] = address.includes("@")
+    ? address.split("@")
+    : ["_", address];
+
+  nip05Lookups[address] ||= fetchNip05Json(
+    `https://${domain}${BASE_NIP05_URL}?name=${encodeURIComponent(name)}`
+  ).then(({ names = {} }) => {
+    const [, key = ""] =
+      Object.entries(names).find(
+        ([userName]) => userName.toLowerCase() === name.toLowerCase()
+      ) || [];
+
+    return isHexKey(key) ? key.toLowerCase() : "";
+  });
+
+  return nip05Lookups[address];
+};
+
+export const getNip05Domain = async (
+  nip05?: string,
+  pubkey?: string
+): Promise<string> =>
+  nip05 && pubkey && (await lookupNip05(nip05)) === pubkey
+    ? nip05.split("@").pop() || ""
+    : "";
+
+export const resolveAddress = async (
+  address: string,
+  knownKeys: string[]
+): Promise<string> => {
+  const input = address.trim();
+  const publicKey = decodePublicKey(input);
+
+  if (publicKey) return publicKey;
+  if (NIP05_ADDRESS.test(input)) return lookupNip05(input);
+
+  // Contacts without a name are shown as a shortened npub
+  const [, prefix = "", suffix = ""] =
+    /^(npub1\w{5,})(?:(?:…|\.{3})(\w+))?$/.exec(input) || [];
+  const matches = prefix
+    ? knownKeys.filter((key) => {
+        const npub = npubEncode(key);
+
+        return npub.startsWith(prefix) && npub.endsWith(suffix);
+      })
+    : [];
+
+  return matches.length === 1 ? matches[0] : "";
+};
+
+const getKeyFromTags = (tags: string[][] = []): string => {
+  const [, key = ""] = tags.find(([tag]) => tag === "p") || [];
+
+  return key;
+};
+
+export const getContactKey = (
+  { pubkey, recipient }: DirectMessage,
+  publicKey: string
+): string => (pubkey === publicKey ? recipient : pubkey);
+
+const LINK = /https?:\/\/|www\.|nostr:|\b(?:naddr|nevent|note|nprofile|npub)1/i;
+
+const normalizeText = (content: string): string => content.trim().toLowerCase();
+
+export const findSpamKeys = (
+  strangerMessages: DirectMessage[]
+): Set<string> => {
+  const sendersByText: Record<string, Set<string>> = {};
+
+  strangerMessages.forEach(({ content, pubkey }) => {
+    const text = normalizeText(content);
+
+    if (text.length >= MIN_DUPLICATE_SPAM_LENGTH) {
+      (sendersByText[text] ||= new Set()).add(pubkey);
+    }
+  });
+
+  return new Set(
+    strangerMessages
+      .filter(
+        ({ content }) =>
+          LINK.test(content) ||
+          (sendersByText[normalizeText(content)]?.size ?? 0) > 1
+      )
+      .map(({ pubkey }) => pubkey)
+  );
+};
+
+const createGiftWrap = async (
+  signer: Signer,
+  rumor: UnsignedEvent & { id: string },
+  recipient: string
+): Promise<Event> =>
+  createWrap(
+    await signer.signEvent({
+      content: await signer.encrypt(recipient, JSON.stringify(rumor)),
+      created_at:
+        getUnixTime() -
+        Math.floor(Math.random() * MAX_GIFT_WRAP_AGE_IN_SECONDS),
+      kind: Seal,
+      tags: [],
+    }),
+    recipient
+  );
+
+export const createMessage = async (
+  signer: Signer,
+  recipient: string,
+  content: string,
+  legacy = false
+): Promise<{
+  message: DirectMessage;
+  recipientEvent: Event;
+  selfEvent?: Event;
+}> => {
+  const { publicKey } = signer;
+  const created_at = getUnixTime();
+  const tags = [["p", recipient]];
+
+  if (legacy) {
+    const event = await signer.signEvent({
+      content: await signer.encrypt(recipient, content, true),
+      created_at,
+      kind: EncryptedDirectMessage,
+      tags,
+    });
+
+    return {
+      message: {
+        content,
+        created_at,
+        id: event.id,
+        legacy,
+        pubkey: publicKey,
+        recipient,
+      },
+      recipientEvent: event,
+    };
+  }
+
+  const rumor = {
+    content,
+    created_at,
+    kind: PrivateDirectMessage,
+    pubkey: publicKey,
+    tags,
+  };
+  const sealedRumor = { ...rumor, id: getEventHash(rumor) };
+
+  return {
+    message: {
+      content,
+      created_at,
+      id: sealedRumor.id,
+      pubkey: publicKey,
+      recipient,
+    },
+    recipientEvent: await createGiftWrap(signer, sealedRumor, recipient),
+    selfEvent:
+      recipient === publicKey
+        ? undefined
+        : await createGiftWrap(signer, sealedRumor, publicKey),
+  };
+};
+
+export const unwrapMessage = async (
+  signer: Signer,
+  event: Event
+): Promise<DirectMessage | undefined> => {
+  const { publicKey } = signer;
+
+  try {
+    if (event.kind === EncryptedDirectMessage) {
+      const recipient = getKeyFromTags(event.tags);
+
+      return {
+        content: await signer.decrypt(
+          event.pubkey === publicKey ? recipient : event.pubkey,
+          event.content,
+          true
+        ),
+        created_at: event.created_at,
+        id: event.id,
+        legacy: true,
+        pubkey: event.pubkey,
+        recipient,
+      };
+    }
+
+    const seal = JSON.parse(
+      await signer.decrypt(event.pubkey, event.content)
+    ) as Event;
+
+    if (seal.kind !== Seal || !verifyEvent(seal)) return undefined;
+
+    const rumor = JSON.parse(
+      await signer.decrypt(seal.pubkey, seal.content)
+    ) as Event;
+    const recipients = rumor.tags.filter(([tag]) => tag === "p");
+    const [[, recipient = ""] = []] = recipients;
+
+    // Without these checks anyone could impersonate any sender
+    if (
+      rumor.kind !== PrivateDirectMessage ||
+      rumor.pubkey !== seal.pubkey ||
+      rumor.id !== getEventHash(rumor) ||
+      recipients.length !== 1 ||
+      (rumor.pubkey !== publicKey && recipient !== publicKey)
+    ) {
+      return undefined;
+    }
+
+    return {
+      content: rumor.content,
+      created_at: rumor.created_at,
+      id: rumor.id,
+      pubkey: rumor.pubkey,
+      recipient,
+    };
+  } catch {
+    return undefined;
+  }
+};
+
+export const descCreatedAt = (
+  a: Pick<DirectMessage, "created_at">,
+  b: Pick<DirectMessage, "created_at">
+): number => b.created_at - a.created_at;
 
 export const shortTimeStamp = (timestamp: number): string => {
   const now = Date.now();
@@ -206,71 +431,33 @@ export const shortTimeStamp = (timestamp: number): string => {
 
 export const copyKeyMenuItems = (
   hexKey: string,
-  nsecHex?: string
+  secretKey?: Uint8Array
 ): MenuItem[] => [
   {
-    action: () => writeTextToClipboard(nip19.npubEncode(hexKey)),
+    action: () => writeTextToClipboard(npubEncode(hexKey)),
     label: "Copy npub address",
   },
-  ...(nsecHex
-    ? [
-        {
-          action: () => writeTextToClipboard(nip19.nsecEncode(nsecHex)),
-          label: "Copy nsec address",
-        },
-      ]
-    : [
-        {
-          action: () => writeTextToClipboard(hexKey),
-          label: "Copy hex address",
-        },
-      ]),
+  secretKey
+    ? {
+        action: () => writeTextToClipboard(nsecEncode(secretKey)),
+        label: "Copy nsec address",
+      }
+    : {
+        action: () => writeTextToClipboard(hexKey),
+        label: "Copy hex address",
+      },
 ];
 
-const signEvent = async (event: Event): Promise<Event> => {
-  let signedEvent = event as VerifiedEvent;
-
-  signedEvent.pubkey = window.nostr?.getPublicKey
-    ? await window.nostr.getPublicKey()
-    : getPublicKey(getPrivateKey());
-  signedEvent.id = getEventHash(event);
-
-  if (window.nostr?.signEvent) {
-    signedEvent = (await window.nostr.signEvent(signedEvent)) as VerifiedEvent;
-  } else {
-    signedEvent.sig = getSignature(signedEvent, toHexKey(getPrivateKey()));
-  }
-
-  if (validateEvent(signedEvent) && verifySignature(signedEvent)) {
-    signedEvent[verifiedSymbol] = true;
-  }
-
-  return signedEvent;
-};
-
-const getUnixTime = (): number =>
-  Math.floor(Date.now() / MILLISECONDS_IN_SECOND);
-
-export const createProfileEvent = async (
+export const createProfileEvent = (
+  signer: Signer,
   profile: ProfileData
 ): Promise<Event> =>
-  signEvent({
+  signer.signEvent({
     content: JSON.stringify(profile),
     created_at: getUnixTime(),
-    kind: METADATA_KIND,
-    tags: [] as string[][],
-  } as Event);
-
-export const createMessageEvent = async (
-  message: string,
-  recipientPublicKey: string
-): Promise<Event> =>
-  signEvent({
-    content: await encryptMessage(message, recipientPublicKey),
-    created_at: getUnixTime(),
-    kind: DM_KIND,
-    tags: [["p", recipientPublicKey]],
-  } as Event);
+    kind: Metadata,
+    tags: [],
+  });
 
 const VALID_PICTURE_PROTOCOLS = new Set(["http", "https", "data"]);
 
@@ -285,7 +472,6 @@ export const dataToProfile = (
     display_name,
     name,
     nip05,
-    npub,
     picture,
     username,
     website,
@@ -298,103 +484,19 @@ export const dataToProfile = (
     created_at,
     data,
     nip05,
+    npub: npubEncode(publicKey),
     picture: VALID_PICTURE_PROTOCOLS.has(protocol) ? picture : undefined,
-    userName:
-      display_name ||
-      name ||
-      username ||
-      (
-        npub ||
-        (publicKey.startsWith("npub") ? publicKey : nip19.npubEncode(publicKey))
-      ).slice(0, 12),
+    userName: display_name || name || username || shortNpub(publicKey),
     website,
   };
 };
 
-export const getPublicHexFromNostrAddress = (key: string): string => {
-  const nprofile = key.startsWith("nprofile");
-  const nsec = key.startsWith("nsec");
-
-  if (nprofile || nsec || key.startsWith("npub")) {
-    try {
-      const { data } = nip19.decode(key) || {};
-      const hex = nprofile
-        ? (data as ProfilePointer)?.pubkey
-        : (data as string);
-
-      return nsec ? getPublicKey(hex) : hex;
-    } catch {
-      return "";
-    }
-  }
-
-  try {
-    return toHexKey(nip19.npubEncode(key));
-  } catch {
-    return "";
-  }
-};
-
-const verifiedNip05Addresses: Record<string, number | string> = {};
-
-const TIMEOUT_ERRORS = new Set([408, 504]);
-
-export const getNip05Domain = async (
-  nip05address?: string,
-  pubkey?: string
-): Promise<string> => {
-  if (!nip05address || !pubkey) return "";
-
-  try {
-    const [userName, domain] = nip05address.split("@");
-
-    if (verifiedNip05Addresses[pubkey] === domain) return domain;
-    if (
-      typeof verifiedNip05Addresses[pubkey] === "number" &&
-      !TIMEOUT_ERRORS.has(verifiedNip05Addresses[pubkey])
-    ) {
-      return "";
-    }
-
-    const nostrJson = await fetch(
-      `https://${domain}${BASE_NIP05_URL}?name=${userName}`
-    );
-
-    if (nostrJson.ok) {
-      const { names = {} } = ((await nostrJson.json()) as NIP05Result) || {};
-      let verified = false;
-
-      if (userName === "_") {
-        const [userKey, ...otherKeys] = Object.values(names);
-        const keyValue = otherKeys.length === 0 ? userKey : names[userName];
-
-        verified = keyValue === pubkey;
-      } else if (names[userName]) {
-        verified = names[userName] === pubkey;
-      }
-
-      if (verified) {
-        verifiedNip05Addresses[pubkey] = domain;
-      }
-
-      return verified ? domain : "";
-    }
-    verifiedNip05Addresses[pubkey] = nostrJson.status;
-  } catch {
-    verifiedNip05Addresses[pubkey] = 0;
-  }
-
-  return "";
-};
-
-export const getWebSocketStatusIcon = (status?: number): string => {
+export const getWebSocketStatusIcon = (status?: RelayStatus): string => {
   switch (status) {
-    case WebSocket.prototype.CONNECTING:
-      return "🟡";
-    case WebSocket.prototype.OPEN:
+    case "connected":
       return "🟢";
-    case WebSocket.prototype.CLOSING:
-      return "🟠";
+    case "connecting":
+      return "🟡";
     default:
       return "🔴";
   }
@@ -443,27 +545,27 @@ export const prettyChatTimestamp = (timestamp: number): string => {
   });
 };
 
-export const groupChatEvents = (events: Event[]): ChatEvents => {
-  if (events.length === 0) return [];
+export const groupMessages = (messages: DirectMessage[]): ChatMessages => {
+  if (messages.length === 0) return [];
 
-  const sortedEvents = toSorted(events, ascCreatedAt);
-  const [oldestEvent, ...remainingEvents] = sortedEvents;
-  const groupedEvents: ChatEvents = [
-    [prettyChatTimestamp(oldestEvent.created_at), [oldestEvent]],
+  const [oldestMessage, ...remainingMessages] = toSorted(messages, (a, b) =>
+    descCreatedAt(b, a)
+  );
+  const groupedMessages: ChatMessages = [
+    [prettyChatTimestamp(oldestMessage.created_at), [oldestMessage]],
   ];
 
-  remainingEvents.forEach((event) => {
-    const { created_at } = event;
-    const [, lastGroupedEvents] = groupedEvents[groupedEvents.length - 1];
-    const { created_at: last_created_at } =
-      lastGroupedEvents[lastGroupedEvents.length - 1];
+  remainingMessages.forEach((message) => {
+    const { created_at } = message;
+    const [, lastGroup] = groupedMessages[groupedMessages.length - 1];
+    const { created_at: last_created_at } = lastGroup[lastGroup.length - 1];
 
     if (Math.abs(created_at - last_created_at) < GROUP_TIME_GAP_IN_SECONDS) {
-      lastGroupedEvents.push(event);
+      lastGroup.push(message);
     } else {
-      groupedEvents.push([prettyChatTimestamp(created_at), [event]]);
+      groupedMessages.push([prettyChatTimestamp(created_at), [message]]);
     }
   });
 
-  return groupedEvents;
+  return groupedMessages;
 };

@@ -1,39 +1,64 @@
-import {
-  type Filter,
-  type Event as NostrEvent,
-  type Relay,
-  type Sub,
-} from "nostr-tools";
-// eslint-disable-next-line import/consistent-type-specifier-style
-import type { NIP05Result } from "nostr-tools/nip05";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type Filter } from "nostr-tools/filter";
+import { Contacts, Metadata } from "nostr-tools/kinds";
+import { type Event } from "nostr-tools/pure";
+import { type Relay } from "nostr-tools/relay";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   BASE_NIP05_URL,
-  METADATA_KIND,
   NOTIFICATION_SOUND,
-  SEEN_EVENTS_DEBOUNCE_MS,
 } from "components/apps/Messenger/constants";
 import {
   dataToProfile,
+  decodePublicKey,
   descCreatedAt,
-  getKeyFromTags,
+  fetchNip05Json,
+  findSpamKeys,
+  getContactKey,
   getNip05Domain,
-  getPublicHexKey,
-  maybeGetExistingPublicKey,
-  toHexKey,
 } from "components/apps/Messenger/functions";
 import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { useMessageContext } from "components/apps/Messenger/MessageContext";
 import { useNostr } from "components/apps/Messenger/NostrContext";
 import {
-  type Metadata,
+  type DirectMessage,
   type NostrContacts,
   type NostrProfile,
+  type ProfileData,
+  type Signer,
 } from "components/apps/Messenger/types";
 import { useProcessesActions } from "contexts/process";
 import directory from "contexts/process/directory";
 import { PACKAGE_DATA, PROCESS_DELIMITER } from "utils/constants";
 import { toSorted } from "utils/functions";
+
+const subscribe = (
+  relay: Relay,
+  filters: Filter[],
+  onevent: (event: Event) => void,
+  signer: Signer
+): (() => void) => {
+  let closed = false;
+  let subscription = relay.subscribe(filters, {
+    onclose: (reason) => {
+      // Relays may refuse DM queries until the NIP-42 AUTH they asked for
+      if (!closed && reason.includes("auth-required")) {
+        relay
+          .auth(signer.signEvent)
+          .then(() => {
+            if (!closed) subscription = relay.subscribe(filters, { onevent });
+          })
+          // eslint-disable-next-line unicorn/no-useless-undefined
+          .catch(() => undefined);
+      }
+    },
+    onevent,
+  });
+
+  return () => {
+    closed = true;
+    subscription.close();
+  };
+};
 
 export const useNostrEvents = ({
   enabled = true,
@@ -42,157 +67,201 @@ export const useNostrEvents = ({
 }: {
   enabled?: boolean;
   filter: Filter[];
-  onEvent?: (event: NostrEvent) => void;
-}): NostrEvent[] => {
-  const { connectedRelays } = useNostr();
-  const [events, setEvents] = useState<NostrEvent[]>([]);
-  const seenEventIds = useRef<Record<string, NostrEvent>>({});
+  onEvent: (event: Event) => void;
+}): void => {
+  const { relays, signer } = useNostr();
   const filterString = useMemo(() => JSON.stringify(filter), [filter]);
-  const seenDebounceTimer = useRef(0);
-  const subscribe = useCallback(
-    (relay: Relay, subFilter: Filter[]): Sub => {
-      const sub = relay.sub(subFilter);
-
-      sub.on("event", (event: NostrEvent) => {
-        if (seenEventIds.current[event.id]) return;
-
-        seenEventIds.current[event.id] = event;
-
-        onEvent?.(event);
-
-        if (seenDebounceTimer.current) {
-          window.clearTimeout(seenDebounceTimer.current);
-        }
-
-        seenDebounceTimer.current = window.setTimeout(
-          () => {
-            seenDebounceTimer.current = 0;
-
-            setEvents((currentEvents) =>
-              currentEvents.some(({ id }) => id === event.id)
-                ? currentEvents
-                : Object.values(seenEventIds.current)
-            );
-          },
-          seenDebounceTimer.current ? SEEN_EVENTS_DEBOUNCE_MS : 0
-        );
-      });
-
-      return sub;
-    },
-    [onEvent]
-  );
+  const onEventRef = useRef(onEvent);
+  const subscriptions = useRef({
+    closers: new Map<Relay, () => void>(),
+    key: "",
+    seenIds: new Set<string>(),
+  });
 
   useEffect(() => {
-    if (!enabled) return;
+    onEventRef.current = onEvent;
+  }, [onEvent]);
 
-    const relaySubs = connectedRelays.map((relay) => ({
-      relay,
-      sub: subscribe(relay, JSON.parse(filterString) as Filter[]),
-    }));
+  useEffect(() => {
+    const { current } = subscriptions;
+    const key = enabled ? filterString : "";
 
-    // eslint-disable-next-line consistent-return
-    return () => relaySubs.forEach(({ sub }) => sub.unsub());
-  }, [connectedRelays, enabled, filterString, subscribe]);
+    if (current.key !== key) {
+      current.closers.forEach((close) => close());
+      current.closers.clear();
+      current.key = key;
+    }
 
-  return events;
+    current.closers.forEach((close, relay) => {
+      if (!relays.includes(relay)) {
+        close();
+        current.closers.delete(relay);
+      }
+    });
+
+    if (!key) return;
+
+    const filters = JSON.parse(key) as Filter[];
+
+    relays.forEach((relay) => {
+      if (current.closers.has(relay)) return;
+
+      current.closers.set(
+        relay,
+        subscribe(
+          relay,
+          filters,
+          (event) => {
+            if (current.seenIds.has(event.id)) return;
+
+            current.seenIds.add(event.id);
+            onEventRef.current(event);
+          },
+          signer
+        )
+      );
+    });
+  }, [enabled, filterString, relays, signer]);
+
+  useEffect(() => {
+    const { current } = subscriptions;
+
+    return () => {
+      current.closers.forEach((close) => close());
+      current.closers.clear();
+      current.key = "";
+    };
+  }, []);
 };
 
-export const useNip05 = (): NIP05Result => {
-  const [nip05, setNip05] = useState<NIP05Result>();
-  const updateNip05 = useCallback(async (url: string): Promise<boolean> => {
-    const nostrJson = await fetch(url);
-
-    if (nostrJson.ok) {
-      const { names = {} } = ((await nostrJson.json()) as NIP05Result) || {};
-
-      setNip05({ names });
-    }
-
-    return nostrJson.ok;
-  }, []);
-  const fetchNip05Json = useCallback(async (): Promise<void> => {
-    if (!(await updateNip05(BASE_NIP05_URL))) {
-      setNip05({ relays: {} } as NIP05Result);
-    }
-  }, [updateNip05]);
+export const useWellKnownNames = (): Record<string, string> => {
+  const [names, setNames] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (!nip05) fetchNip05Json();
-  }, [fetchNip05Json, nip05]);
+    fetchNip05Json(BASE_NIP05_URL).then(({ names: wellKnownNames = {} }) =>
+      setNames(wellKnownNames)
+    );
+  }, []);
 
-  return nip05 || ({} as NIP05Result);
+  return names;
 };
 
 export const useNostrContacts = (
   publicKey: string,
   wellKnownNames: Record<string, string>
 ): NostrContacts => {
-  const globalContacts = useMemo(
+  const { messages } = useMessageContext();
+  const { blockedKeys, seenEventIds } = useHistoryContext();
+  const globalKeys = useMemo(
     () =>
       [
-        ...(PACKAGE_DATA?.author?.npub
-          ? new Set([
-              toHexKey(PACKAGE_DATA.author.npub),
-              ...Object.values(wellKnownNames || {}),
-            ])
-          : Object.values(wellKnownNames || {})),
-      ]
-        .filter(Boolean)
-        .map((key) => toHexKey(key)),
-    [wellKnownNames]
+        ...new Set(
+          [PACKAGE_DATA.author.npub, ...Object.values(wellKnownNames)].map(
+            decodePublicKey
+          )
+        ),
+      ].filter((key) => key && key !== publicKey && !blockedKeys.includes(key)),
+    [blockedKeys, publicKey, wellKnownNames]
   );
-  const { events } = useMessageContext();
-  const contactKeys = useMemo(() => {
-    const keys = new Set(
-      toSorted(events, descCreatedAt)
-        .map(({ pubkey, tags }) =>
-          pubkey === publicKey ? getKeyFromTags(tags) || "" : pubkey
-        )
-        .filter((pubkey) => !globalContacts.includes(pubkey))
+
+  return useMemo(() => {
+    const lastMessages: Record<string, DirectMessage> = {};
+    const repliedKeys = new Set<string>();
+    const seenIds = new Set(seenEventIds);
+
+    toSorted(messages, descCreatedAt).forEach((message) => {
+      const key = getContactKey(message, publicKey);
+
+      if (message.pubkey === publicKey) repliedKeys.add(key);
+      if (key !== publicKey) lastMessages[key] ||= message;
+    });
+
+    const strangerKeys = Object.keys(lastMessages).filter(
+      (key) => !globalKeys.includes(key) && !repliedKeys.has(key)
+    );
+    const spamKeys = findSpamKeys(
+      messages.filter(({ pubkey }) => strangerKeys.includes(pubkey))
     );
 
-    return [...globalContacts, ...keys].filter((key) => key !== publicKey);
-  }, [events, globalContacts, publicKey]);
-  const lastEvents = useMemo(
-    () =>
-      Object.fromEntries(
-        contactKeys.map((pubkey) => [
-          pubkey,
-          events
-            .filter((event) =>
-              [event.pubkey, getKeyFromTags(event.tags)].includes(pubkey)
-            )
-            .sort(descCreatedAt)[0],
-        ])
+    return {
+      chatKeys: [
+        ...globalKeys,
+        ...Object.keys(lastMessages).filter(
+          (key) => !globalKeys.includes(key) && repliedKeys.has(key)
+        ),
+      ],
+      lastMessages,
+      requestKeys: strangerKeys.filter((key) => !spamKeys.has(key)),
+      spamKeys: strangerKeys.filter((key) => spamKeys.has(key)),
+      unreadMessages: messages.filter(
+        ({ id, pubkey }) => pubkey !== publicKey && !seenIds.has(id)
       ),
-    [contactKeys, events]
-  );
-  const { seenEventIds } = useHistoryContext();
-  const unreadEvents = useMemo(
-    () =>
-      events.filter(
-        ({ id, pubkey }) => pubkey !== publicKey && !seenEventIds.includes(id)
-      ),
-    [events, publicKey, seenEventIds]
-  );
-
-  return { contactKeys, events, lastEvents, unreadEvents };
+    };
+  }, [globalKeys, messages, publicKey, seenEventIds]);
 };
 
-export const usePublicKey = (): string => {
-  const [publicKey, setPublicKey] = useState<string>("");
-  const initialized = useRef(false);
+export const useFollows = (): string[] => {
+  const { query, signer } = useNostr();
+  const [follows, setFollows] = useState<string[]>([]);
 
   useEffect(() => {
-    if (initialized.current) return;
+    query({ authors: [signer.publicKey], kinds: [Contacts] }).then((events) => {
+      const [latest] = toSorted(events, descCreatedAt);
 
-    initialized.current = true;
+      setFollows([
+        ...new Set(
+          (latest?.tags || [])
+            .filter(([tag]) => tag === "p")
+            .map(([, key = ""]) => decodePublicKey(key))
+            .filter(Boolean)
+        ),
+      ]);
+    });
+  }, [query, signer.publicKey]);
 
-    maybeGetExistingPublicKey().then(getPublicHexKey).then(setPublicKey);
-  }, []);
+  return follows;
+};
 
-  return publicKey;
+const mergeProfile =
+  ({ content, created_at, pubkey }: Event) =>
+  (currentProfiles: Record<string, NostrProfile>) => {
+    if ((currentProfiles[pubkey]?.created_at ?? 0) >= created_at) {
+      return currentProfiles;
+    }
+
+    try {
+      return {
+        ...currentProfiles,
+        [pubkey]: dataToProfile(
+          pubkey,
+          JSON.parse(content) as ProfileData,
+          created_at
+        ),
+      };
+    } catch {
+      return currentProfiles;
+    }
+  };
+
+export const useProfiles = (publicKeys: string[]): void => {
+  const { query } = useNostr();
+  const { profiles, setProfiles } = useHistoryContext();
+  const requestedKeys = useRef(new Set<string>());
+  const missingKeys = publicKeys.filter(
+    (key) => !profiles[key] && !requestedKeys.current.has(key)
+  );
+  const missingKeysString = missingKeys.join(",");
+
+  useEffect(() => {
+    if (!missingKeysString) return;
+
+    const authors = missingKeysString.split(",");
+
+    authors.forEach((key) => requestedKeys.current.add(key));
+    query({ authors, kinds: [Metadata] }).then((events) =>
+      events.forEach((event) => setProfiles(mergeProfile(event)))
+    );
+  }, [missingKeysString, query, setProfiles]);
 };
 
 export const useUnreadStatus = (id: string, unreadCount: number): void => {
@@ -231,43 +300,15 @@ export const useNostrProfile = (
   isVisible = true
 ): NostrProfile => {
   const { profiles, setProfiles } = useHistoryContext();
-  const onEvent = useCallback(
-    ({ content, created_at, pubkey }: NostrEvent) => {
-      if (
-        !publicKey ||
-        publicKey !== pubkey ||
-        (profiles?.[publicKey]?.created_at as number) >= created_at
-      ) {
-        return;
-      }
-
-      try {
-        const metadata = JSON.parse(content) as Metadata;
-
-        if (metadata) {
-          setProfiles((currentProfiles) => ({
-            ...currentProfiles,
-            [publicKey]: dataToProfile(publicKey, metadata, created_at),
-          }));
-        }
-      } catch {
-        // Ignore errors parsing profile data
-      }
-    },
-    [profiles, publicKey, setProfiles]
-  );
   const profileFilter = useMemo(
     () => ({
-      enabled: !!publicKey && isVisible,
-      filter: [
-        {
-          authors: [publicKey],
-          kinds: [METADATA_KIND],
-        },
-      ],
-      onEvent,
+      enabled: Boolean(publicKey) && isVisible,
+      filter: [{ authors: [publicKey], kinds: [Metadata] }],
+      onEvent: (event: Event) => {
+        if (event.pubkey === publicKey) setProfiles(mergeProfile(event));
+      },
     }),
-    [isVisible, onEvent, publicKey]
+    [isVisible, publicKey, setProfiles]
   );
 
   useNostrEvents(profileFilter);

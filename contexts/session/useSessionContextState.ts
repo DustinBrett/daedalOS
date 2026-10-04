@@ -67,7 +67,7 @@ const useSessionContextState = (): {
   const [themeName, setThemeName] = useState(DEFAULT_THEME);
   const [clockSource, setClockSource] = useState(DEFAULT_CLOCK_SOURCE);
   const [cursor, setCursor] = useState<string | undefined>();
-  const [aiEnabled, setAiEnabled] = useState(false);
+  const [aiEnabled, setAiEnabled] = useState<boolean>();
   const [closeEffect, setCloseEffect] = useState(DEFAULT_CLOSE_EFFECT);
   const [lazyZoo, setLazyZoo] = useState(false);
   const [windowStates, setWindowStates] = useState(
@@ -300,7 +300,9 @@ const useSessionContextState = (): {
           if (session.clockSource) setClockSource(session.clockSource);
           if (session.closeEffect) setCloseEffect(session.closeEffect);
           if (session.cursor) setCursor(session.cursor);
-          if (session.aiEnabled) setAiEnabled(session.aiEnabled);
+          if (typeof session.aiEnabled === "boolean") {
+            setAiEnabled(session.aiEnabled);
+          }
           if (session.themeName) setThemeName(session.themeName);
           if (session.wallpaperImage) {
             setWallpaper(session.wallpaperImage, session.wallpaperFit);

@@ -222,6 +222,8 @@ export const DESKTOP_PATH = `${HOME}/Desktop`;
 
 export const START_MENU_PATH = `${HOME}/Start Menu`;
 
+export const AI_PROMPT_EVENT = "aiprompt";
+
 export const AI_TITLE = "Talos";
 
 export const AI_WINDOW_ID = "ai-chat-window";
@@ -379,7 +381,7 @@ export const PACKAGE_DATA = {
   author: {
     email: "dustinbrett@gmail.com",
     name: "Dustin Brett",
-    npub: "npub10uc7hg6wdxhhd7ee8x9c5lr9d0ux7272rv2m0mc03ds54q7quxjss02r3p",
+    npub: "npub10l3amzckl56834tgsvdafrg5dtux9aam9maqvudjfsjtnjjdduaqj0sehy",
     url: "https://dustinbrett.com",
   },
   description: "Desktop environment in the browser",

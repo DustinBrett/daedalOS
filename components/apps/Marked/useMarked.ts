@@ -7,9 +7,10 @@ import { useProcess } from "contexts/process";
 import { useLinkHandler } from "hooks/useLinkHandler";
 import { loadFiles } from "utils/functions";
 
-export type MarkedOptions = {
-  headerIds: boolean;
-  mangle: boolean;
+type MarkedOptions = {
+  breaks?: boolean;
+  headerIds?: boolean;
+  mangle?: boolean;
 };
 
 declare global {

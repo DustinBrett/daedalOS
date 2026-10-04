@@ -110,20 +110,8 @@ const StyledChatLog = styled.ol`
       }
     }
 
-    &.cant-decrypt {
+    &.failed {
       background-color: #910000;
-      position: relative;
-
-      &::after {
-        content: "🔐";
-        font-size: 12px;
-        left: 6px;
-        margin-left: 0 !important;
-        position: absolute;
-        text-align: right;
-        top: -4px;
-        width: 100% !important;
-      }
     }
   }
 `;

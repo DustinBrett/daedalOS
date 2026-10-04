@@ -1,3 +1,18 @@
+import { GENERATE_RESPONSE } from "components/system/Taskbar/AI/constants";
+import {
+  type ChatHistory,
+  type Message,
+} from "components/system/Taskbar/AI/types";
+
+type Thoughts = {
+  answer: string;
+  thinking?: boolean;
+  thoughts?: string;
+};
+
+const THINK_START = "<think>";
+const THINK_END = "</think>";
+
 export const formatWebLlmProgress = (text: string): string => {
   if (text === "Start to fetch params") return "Fetching parameters";
   if (text.startsWith("Finish loading on WebGPU")) return "";
@@ -44,23 +59,18 @@ export const formatWebLlmProgress = (text: string): string => {
 };
 
 export const speakMessage = (text: string): void => {
-  const [voice] = window.speechSynthesis.getVoices();
+  const voice = window.speechSynthesis
+    .getVoices()
+    .find(({ default: isDefault }) => isDefault);
   const utterance = new SpeechSynthesisUtterance(text);
 
-  utterance.voice = voice;
+  if (voice) utterance.voice = voice;
   utterance.pitch = 0.9;
   utterance.rate = 1.5;
   utterance.volume = 0.5;
 
+  window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utterance);
-};
-
-export const responseTweaks = (text: string): string => {
-  let newText = text;
-
-  newText = text.replace("</think></p>", "</p></think>");
-
-  return newText;
 };
 
 export const escapeHtml = (unSafeHtml: string): string =>
@@ -70,3 +80,36 @@ export const escapeHtml = (unSafeHtml: string): string =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
+export const splitThoughts = (text: string): Thoughts => {
+  const response = text.trimStart();
+  const thoughtsStart = response.startsWith(THINK_START)
+    ? THINK_START.length
+    : 0;
+  const thoughtsEnd = response.indexOf(THINK_END);
+
+  if (thoughtsEnd === -1) {
+    return thoughtsStart
+      ? { answer: "", thinking: true, thoughts: response.slice(thoughtsStart) }
+      : { answer: response.trimEnd() };
+  }
+
+  return {
+    answer: response.slice(thoughtsEnd + THINK_END.length).trim(),
+    thoughts: response.slice(thoughtsStart, thoughtsEnd).trim(),
+  };
+};
+
+export const toChatHistory = (messages: Message[]): ChatHistory =>
+  messages.flatMap(({ text, type, withCanvas }) => {
+    const content =
+      type === "user"
+        ? text
+        : withCanvas
+          ? GENERATE_RESPONSE
+          : splitThoughts(text).answer;
+
+    return content
+      ? [{ content, role: type === "user" ? "user" : "assistant" }]
+      : [];
+  });

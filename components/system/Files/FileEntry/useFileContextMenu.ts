@@ -24,11 +24,13 @@ import {
 } from "contexts/menu/useMenuContextState";
 import { useProcessesActions, useProcessesRef } from "contexts/process";
 import processDirectory from "contexts/process/directory";
-import { useAiEnabled, useSessionActions } from "contexts/session";
+import { useSessionActions } from "contexts/session";
 import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
-import { useWindowAI } from "hooks/useWindowAI";
+import { useShowAI } from "hooks/useWindowAI";
 import {
+  AI_PROMPT_EVENT,
   AI_TITLE,
+  AI_WINDOW_ID,
   AUDIO_PLAYLIST_EXTENSIONS,
   CURSOR_FILE_EXTENSIONS,
   DESKTOP_PATH,
@@ -90,7 +92,6 @@ const useFileContextMenu = (
     setWallpaper,
     updateRecentFiles,
   } = useSessionActions();
-  const aiEnabled = useAiEnabled();
   const baseName = basename(path);
   const isFocusedEntry = useMemo(
     () => focusedEntries.includes(baseName),
@@ -109,7 +110,7 @@ const useFileContextMenu = (
   } = useFileSystemActions();
   const rootFs = useRootFs();
   const { contextMenu } = useMenuActions();
-  const hasWindowAI = useWindowAI();
+  const showAI = useShowAI();
   const { openTransferDialog } = useTransferDialog();
   const { onContextMenuCapture, ...contextMenuHandlers } = useMemo(
     () =>
@@ -529,19 +530,12 @@ const useFileContextMenu = (
           });
         }
 
-        if (
-          (aiEnabled || (hasWindowAI && "summarizer" in window.ai)) &&
-          SUMMARIZABLE_FILE_EXTENSIONS.has(urlExtension)
-        ) {
+        if (showAI && SUMMARIZABLE_FILE_EXTENSIONS.has(urlExtension)) {
           const aiCommand = (command: string): void => {
             window.initialAiPrompt = `${command}: ${url}`;
 
-            const newTopicButton = document.querySelector<HTMLButtonElement>(
-              "main > section > footer > button.new-topic"
-            );
-
-            if (newTopicButton) {
-              newTopicButton?.click();
+            if (document.querySelector(`#${AI_WINDOW_ID}`)) {
+              window.dispatchEvent(new Event(AI_PROMPT_EVENT));
             } else {
               getNavButtonByTitle(AI_TITLE)?.click();
             }
@@ -670,7 +664,6 @@ const useFileContextMenu = (
         return menuItems[0] === MENU_SEPERATOR ? menuItems.slice(1) : menuItems;
       }),
     [
-      aiEnabled,
       archiveFiles,
       baseName,
       changeUrl,
@@ -683,7 +676,6 @@ const useFileContextMenu = (
       extractFiles,
       fileManagerId,
       focusedEntries,
-      hasWindowAI,
       isFocusedEntry,
       lstat,
       mapFs,
@@ -705,6 +697,7 @@ const useFileContextMenu = (
       setIconPositions,
       setRenaming,
       setWallpaper,
+      showAI,
       stats,
       unMapFs,
       updateFolder,

@@ -13,15 +13,70 @@ const StyledContacts = styled(motion.ol)`
   width: 100%;
 
   li {
+    align-items: center;
     border-radius: 10px;
     color: #fff;
     cursor: pointer;
+    display: flex;
     margin: 8px;
     padding: 8px;
     position: relative;
 
     button {
       cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+      accent-color: #2d88ff;
+      cursor: pointer;
+      height: 16px;
+      margin: 0 10px 0 2px;
+      min-width: 16px;
+    }
+
+    &.toolbar {
+      cursor: default;
+      gap: 4px;
+      margin-bottom: 0;
+      padding: 0 8px;
+
+      &:hover {
+        background-color: transparent;
+      }
+
+      h2,
+      label {
+        color: #e4e6eb;
+        flex: 1;
+        font-size: 15px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      label {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        font-size: 13px;
+      }
+
+      button {
+        border-radius: 6px;
+        color: #2d88ff;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 4px 6px;
+        width: auto;
+
+        &:hover:not(:disabled) {
+          background-color: #3a3b3c;
+        }
+
+        &:disabled {
+          cursor: default;
+          opacity: 40%;
+        }
+      }
     }
 
     &:hover {

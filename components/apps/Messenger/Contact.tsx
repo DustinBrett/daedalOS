@@ -1,44 +1,45 @@
-import { type Event } from "nostr-tools";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   copyKeyMenuItems,
-  decryptMessage,
   shortTimeStamp,
 } from "components/apps/Messenger/functions";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import Profile from "components/apps/Messenger/Profile";
+import { type DirectMessage } from "components/apps/Messenger/types";
 import { useMenuActions } from "contexts/menu";
 import { useIsVisible } from "hooks/useIsVisible";
 import Button from "styles/common/Button";
 import { MENU_SEPERATOR, MILLISECONDS_IN_MINUTE } from "utils/constants";
 
 type ContactProps = {
-  lastEvent: Event;
+  block: () => void;
+  deleteChat: () => void;
+  lastMessage?: DirectMessage;
   onClick: () => void;
+  onSelect?: () => void;
   pubkey: string;
   publicKey: string;
-  unreadEvent: boolean;
+  selected?: boolean;
+  unread: boolean;
 };
 
 const Contact: FC<ContactProps> = ({
-  lastEvent,
+  block,
+  deleteChat,
+  lastMessage,
   onClick,
+  onSelect,
   pubkey,
   publicKey,
-  unreadEvent,
+  selected,
+  unread,
 }) => {
-  const {
-    content = "",
-    created_at = 0,
-    id,
-    pubkey: eventPubkey,
-  } = lastEvent || {};
-  const [decryptedContent, setDecryptedContent] = useState("");
+  const { content = "", created_at = 0, pubkey: sender } = lastMessage || {};
   const [timeStamp, setTimeStamp] = useState("");
   const elementRef = useRef<HTMLLIElement | null>(null);
   const isVisible = useIsVisible(elementRef);
   const { nip05, picture, userName } = useNostrProfile(pubkey, isVisible);
-  const unreadClass = unreadEvent ? "unread" : undefined;
+  const unreadClass = unread ? "unread" : undefined;
   const { contextMenu } = useMenuActions();
   const { onContextMenuCapture } = useMemo(
     () =>
@@ -50,17 +51,12 @@ const Contact: FC<ContactProps> = ({
         },
         MENU_SEPERATOR,
         ...copyKeyMenuItems(pubkey),
+        MENU_SEPERATOR,
+        ...(lastMessage ? [{ action: deleteChat, label: "Delete chat" }] : []),
+        { action: block, label: "Block" },
       ]),
-    [contextMenu, onClick, pubkey]
+    [block, contextMenu, deleteChat, lastMessage, onClick, pubkey]
   );
-
-  useEffect(() => {
-    if (content && isVisible) {
-      decryptMessage(id, content, pubkey).then(
-        (message) => message && setDecryptedContent(message)
-      );
-    }
-  }, [content, id, isVisible, pubkey]);
 
   useEffect(() => {
     let interval = 0;
@@ -83,7 +79,15 @@ const Contact: FC<ContactProps> = ({
       className={unreadClass}
       onContextMenuCapture={onContextMenuCapture}
     >
-      <Button onClick={onClick}>
+      {onSelect && (
+        <input
+          aria-label={`Select ${userName || ""}`}
+          checked={selected}
+          onChange={onSelect}
+          type="checkbox"
+        />
+      )}
+      <Button onClick={onSelect || onClick}>
         <Profile
           nip05={nip05}
           picture={picture}
@@ -92,8 +96,8 @@ const Contact: FC<ContactProps> = ({
         >
           <div>
             <div className={unreadClass}>
-              {eventPubkey === publicKey ? "You: " : ""}
-              {decryptedContent || content}
+              {sender === publicKey ? "You: " : ""}
+              {content}
             </div>
             {timeStamp ? "·" : ""}
             <div>{timeStamp}</div>

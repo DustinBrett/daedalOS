@@ -1,11 +1,8 @@
 import dynamic from "next/dynamic";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef } from "react";
 import ChatProfile from "components/apps/Messenger/ChatProfile";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
-import {
-  decryptMessage,
-  prettyChatTimestamp,
-} from "components/apps/Messenger/functions";
+import { prettyChatTimestamp } from "components/apps/Messenger/functions";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import {
   Avatar,
@@ -17,35 +14,19 @@ import {
   useMessages,
 } from "components/apps/Messenger/MessageContext";
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
-import { type DecryptedContent } from "components/apps/Messenger/types";
 import { clsx } from "utils/functions";
 
 const SanitizedContent = dynamic(
   () => import("components/apps/Messenger/SanitizedContent")
 );
 
+const STATUS_LABELS = { failed: "Not sent", sending: "Sending" };
+
 const ChatLog: FC<{ recipientPublicKey: string }> = ({
   recipientPublicKey,
 }) => {
   const { publicKey } = useMessageContext();
-  const { allEventsReceived, messages } = useMessages(recipientPublicKey);
-  const [decryptedContent, setDecryptedContent] = useState<DecryptedContent>(
-    {}
-  );
-  const decryptMessages = useCallback(
-    () =>
-      [...messages].reverse().forEach(([, eventGroup]) =>
-        [...eventGroup].reverse().forEach(({ content, id }) =>
-          decryptMessage(id, content, recipientPublicKey).then((message) =>
-            setDecryptedContent((currentDecryptedContent) => ({
-              ...currentDecryptedContent,
-              [id]: message || false,
-            }))
-          )
-        )
-      ),
-    [messages, recipientPublicKey]
-  );
+  const messages = useMessages(recipientPublicKey);
   const listRef = useRef<HTMLOListElement>(null);
   const isUnknownKey = recipientPublicKey === UNKNOWN_PUBLIC_KEY;
   const { picture, userName } = useNostrProfile(
@@ -53,24 +34,23 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
   );
 
   useEffect(() => {
-    if (messages) {
-      decryptMessages();
+    if (messages.length > 0) {
       listRef.current?.scrollTo(0, listRef.current.scrollHeight);
     }
-  }, [decryptMessages, messages]);
+  }, [messages]);
 
   return (
     <StyledChatLog ref={listRef} aria-label="Messages" aria-live="polite">
       {!isUnknownKey && (
         <>
           <ChatProfile publicKey={recipientPublicKey} />
-          {messages.map(([timestamp, eventGroup], gropupIndex) =>
-            eventGroup.map(
-              ({ content, created_at, id, pubkey }, messageIndex) => (
+          {messages.map(([timestamp, group], groupIndex) =>
+            group.map(
+              ({ content, created_at, id, pubkey, status }, messageIndex) => (
                 <li
                   key={id}
                   className={clsx({
-                    "cant-decrypt": decryptedContent[id] === false,
+                    failed: status === "failed",
                     received: publicKey !== pubkey,
                     sent: publicKey === pubkey,
                   })}
@@ -86,22 +66,16 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
                       )}
                     </div>
                   )}
-                  <SanitizedContent
-                    content={decryptedContent[id] || content}
-                    decrypted={typeof decryptedContent[id] === "string"}
-                  />
+                  <SanitizedContent content={content} />
                   {publicKey === pubkey &&
-                    gropupIndex === messages.length - 1 &&
-                    messageIndex === eventGroup.length - 1 && (
+                    (status ||
+                      (groupIndex === messages.length - 1 &&
+                        messageIndex === group.length - 1)) && (
                       <div
                         className="status"
-                        title={allEventsReceived ? "Sent" : "Sending"}
+                        title={status ? STATUS_LABELS[status] : "Sent"}
                       >
-                        {allEventsReceived ? (
-                          <CheckFullCircle />
-                        ) : (
-                          <CheckCircle />
-                        )}
+                        {status ? <CheckCircle /> : <CheckFullCircle />}
                       </div>
                     )}
                 </li>

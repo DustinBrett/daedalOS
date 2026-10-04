@@ -1,58 +1,55 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useAiEnabled, useSessionLoaded } from "contexts/session";
 
-type AIAvailability = {
-  availability?: () => Promise<"available" | "unavailable">;
-  capabilities?: () => Promise<{ available: AICapabilityAvailability }>;
-};
+const LANGUAGES = ["en"];
 
-export const isAvailable = async (ai: AIAvailability): Promise<boolean> => {
-  try {
-    if (typeof ai.availability === "function") {
-      return (await ai.availability()) === "available";
-    }
+export const TEXT_EXPECTATIONS = {
+  expectedInputs: [{ languages: LANGUAGES, type: "text" }],
+  expectedOutputs: [{ languages: LANGUAGES, type: "text" }],
+} satisfies LanguageModelCreateCoreOptions;
 
-    if (typeof ai.capabilities === "function") {
-      return (await ai.capabilities()).available === "readily";
-    }
-  } catch {
-    return false;
-  }
+export const IMAGE_EXPECTATIONS = {
+  ...TEXT_EXPECTATIONS,
+  expectedInputs: [...TEXT_EXPECTATIONS.expectedInputs, { type: "image" }],
+} satisfies LanguageModelCreateCoreOptions;
 
-  return false;
-};
-
-let HAS_WINDOW_AI = false;
-
-const supportsAI = async (): Promise<boolean> => {
-  if (
-    typeof window === "undefined" ||
-    !("ai" in window) ||
-    !("languageModel" in window.ai) ||
-    typeof window.ai.languageModel !== "object"
-  ) {
-    return false;
+export const getAvailability = async (
+  options: LanguageModelCreateCoreOptions = TEXT_EXPECTATIONS
+): Promise<Availability> => {
+  if (typeof window === "undefined" || !("LanguageModel" in window)) {
+    return "unavailable";
   }
 
   try {
-    HAS_WINDOW_AI = await isAvailable(globalThis.ai.languageModel);
-
-    return HAS_WINDOW_AI;
+    return await LanguageModel.availability(options);
   } catch {
-    return false;
+    return "unavailable";
   }
 };
 
-export const useWindowAI = (): boolean => {
-  const [hasAI, setHasAI] = useState<boolean>(HAS_WINDOW_AI);
-  const checkAI = useCallback(async () => {
-    const hasWindowAi = await supportsAI();
+let cachedAvailability: Availability = "unavailable";
+let availabilityCheck: Promise<Availability> | undefined;
 
-    if (hasWindowAi) setHasAI(true);
-  }, []);
+export const useWindowAI = (): Availability => {
+  const [availability, setAvailability] = useState(cachedAvailability);
 
   useEffect(() => {
-    if (!hasAI) requestAnimationFrame(checkAI);
-  }, [checkAI, hasAI]);
+    availabilityCheck ||= getAvailability().then((newAvailability) => {
+      cachedAvailability = newAvailability;
 
-  return hasAI;
+      return newAvailability;
+    });
+    availabilityCheck.then(setAvailability);
+  }, []);
+
+  return availability;
+};
+
+export const useShowAI = (): boolean => {
+  const aiEnabled = useAiEnabled();
+  const sessionLoaded = useSessionLoaded();
+  const windowAI = useWindowAI();
+
+  // Waits for the session so a saved choice to hide it doesn't flash
+  return aiEnabled ?? (sessionLoaded && windowAI === "available");
 };

@@ -12,7 +12,7 @@ const { Provider, useContextActions, useStateSelector } =
 const NO_SORT_ORDER: Partial<SortOrder> = [];
 const NO_WINDOW_STATE = Object.create(null) as WindowState;
 
-export const useAiEnabled = (): boolean =>
+export const useAiEnabled = (): boolean | undefined =>
   useStateSelector((state) => state.aiEnabled);
 
 export const useClockSource = (): SessionContextState["clockSource"] =>

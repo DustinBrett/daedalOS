@@ -175,8 +175,11 @@ In fullscreen the Windows key opens the Start Menu, Windows key combos work in p
 ### Messenger
 
 - Encrypted direct messaging client
-- Utilizes [Nostr Protocol](https://nostr.com/) ([NIP-04](https://github.com/nostr-protocol/nips/blob/master/04.md))
+- Utilizes [Nostr Protocol](https://nostr.com/) ([NIP-17](https://github.com/nostr-protocol/nips/blob/master/17.md), [NIP-04](https://github.com/nostr-protocol/nips/blob/master/04.md) for older clients)
 - Automatic public/private key creation
+- Sign in with a [NIP-07](https://github.com/nostr-protocol/nips/blob/master/07.md) extension or nsec
+- Message requests, spam folder, bulk delete & blocking
+- Default contacts from the author npub & the site's `/.well-known/nostr.json` ([NIP-05](https://github.com/nostr-protocol/nips/blob/master/05.md))
 
 ### [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 

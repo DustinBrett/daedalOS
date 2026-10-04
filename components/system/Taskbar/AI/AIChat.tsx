@@ -1,15 +1,27 @@
+import DOMPurify from "dompurify";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { readPdfText } from "components/apps/PDF/functions";
 import {
+  createSession,
+  createSummarizer,
+  readStream,
+  summarize,
+  summarizeWithSession,
+  toPrompt,
+} from "components/system/Taskbar/AI/builtInAI";
+import {
   AI_WORKER,
   DEFAULT_CONVO_STYLE,
+  GENERATE_RESPONSE,
+  SYSTEM_PROMPT,
 } from "components/system/Taskbar/AI/constants";
 import {
   escapeHtml,
   formatWebLlmProgress,
-  responseTweaks,
   speakMessage,
+  splitThoughts,
+  toChatHistory,
 } from "components/system/Taskbar/AI/functions";
 import {
   AIIcon,
@@ -17,6 +29,7 @@ import {
   ChatIcon,
   CopyIcon,
   EditIcon,
+  ImageIcon,
   PersonIcon,
   SaveIcon,
   SendFilledIcon,
@@ -27,11 +40,9 @@ import {
 } from "components/system/Taskbar/AI/icons";
 import StyledAIChat from "components/system/Taskbar/AI/StyledAIChat";
 import {
-  type AIResponse,
   type ConvoStyles,
   type Message,
-  type MessageTypes,
-  type WebLlmProgress,
+  type ResponseError,
   type WorkerResponse,
 } from "components/system/Taskbar/AI/types";
 import useAITransition from "components/system/Taskbar/AI/useAITransition";
@@ -39,11 +50,17 @@ import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import useFocusable from "components/system/Window/useFocusable";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { useSessionActions } from "contexts/session";
+import { useLinkHandler } from "hooks/useLinkHandler";
 import { useSnapshots } from "hooks/useSnapshots";
-import { useWindowAI } from "hooks/useWindowAI";
+import {
+  getAvailability,
+  IMAGE_EXPECTATIONS,
+  useWindowAI,
+} from "hooks/useWindowAI";
 import useWorker from "hooks/useWorker";
 import Button from "styles/common/Button";
 import {
+  AI_PROMPT_EVENT,
   AI_TITLE,
   AI_WINDOW_ID,
   DESKTOP_PATH,
@@ -51,10 +68,14 @@ import {
   SAVE_PATH,
 } from "utils/constants";
 import {
+  bufferToBlob,
   canvasToBuffer,
   clsx,
   getExtension,
+  getMimeType,
+  haltEvent,
   label,
+  loadFiles,
   viewWidth,
 } from "utils/functions";
 
@@ -62,7 +83,57 @@ type AIChatProps = {
   toggleAI: () => void;
 };
 
-const STREAMING_SUPPORT = true;
+type Session = {
+  controller: AbortController;
+  imageInput: boolean;
+  session: Promise<LanguageModel>;
+};
+
+const GENERATE_COMMAND = /^generate:(.+)$/is;
+const SUMMARIZE_COMMAND = /^summarize:\s*(\/.+)$/i;
+const SUPPORTED_IMAGE_TYPES = /^image\/(?:avif|bmp|gif|jpeg|png|webp)$/;
+const MARKED_LIB = "/Program Files/Marked/marked.min.js";
+// DeepSeek's 4096 token context also has to hold its reasoning
+const MAX_WEB_LLM_SUMMARIZE_LENGTH = 8000;
+const NOTHING_TO_SUMMARIZE = "There's no text I can summarize in that file.";
+
+const markdownCache = new Map<string, string>();
+
+const formatMarkdown = (markdown: string, cache = true): string => {
+  const cachedHtml = markdownCache.get(markdown);
+
+  if (cachedHtml !== undefined) return cachedHtml;
+  if (!window.marked) return escapeHtml(markdown);
+
+  const html = DOMPurify.sanitize(
+    window.marked.parse(markdown, { breaks: true })
+  );
+
+  if (cache) markdownCache.set(markdown, html);
+
+  return html;
+};
+
+const htmlToText = (html: string): string =>
+  new DOMParser().parseFromString(html, "text/html").body.textContent || "";
+
+const isSupportedImage = ({ type }: Blob): boolean =>
+  SUPPORTED_IMAGE_TYPES.test(type);
+
+const BlobImage: FC<{ blob: Blob }> = ({ blob }) => {
+  const [src, setSrc] = useState("");
+
+  useEffect(() => {
+    const url = URL.createObjectURL(blob);
+
+    setSrc(url);
+
+    return () => URL.revokeObjectURL(url);
+  }, [blob]);
+
+  // eslint-disable-next-line unicorn/no-null
+  return src ? <img alt="Attachment" src={src} /> : null;
+};
 
 const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   const {
@@ -79,48 +150,12 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   const [primaryColor, secondaryColor, tertiaryColor] =
     taskbarColor.ai[convoStyle];
   const [promptText, setPromptText] = useState("");
+  const [attachments, setAttachments] = useState<Blob[]>([]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const typing = promptText.length > 0;
+  const typing = promptText.length > 0 || attachments.length > 0;
   const [conversation, setConversation] = useState<Message[]>([]);
-  const addMessage = useCallback(
-    (
-      text: string | undefined,
-      type: MessageTypes,
-      formattedText?: string,
-      streamId?: number,
-      withCanvas = false
-    ): void => {
-      if (text) {
-        setConversation((prevMessages) => {
-          const newMessage = {
-            formattedText: responseTweaks(formattedText || text),
-            text,
-            type,
-            withCanvas,
-          };
-
-          if (streamId) {
-            const newMessages = [...prevMessages];
-
-            newMessages[streamId] = newMessage;
-
-            return newMessages;
-          }
-
-          return [...prevMessages, newMessage];
-        });
-      }
-    },
-    []
-  );
-  const addUserPrompt = useCallback(() => {
-    if (promptText) {
-      addMessage(escapeHtml(promptText), "user");
-      (textAreaRef.current as HTMLTextAreaElement).value = "";
-      setPromptText("");
-    }
-  }, [addMessage, promptText]);
   const lastAiMessageIndex = useMemo(
     () =>
       conversation.length -
@@ -129,17 +164,92 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     [conversation]
   );
   const [responding, setResponding] = useState(false);
-  const [canceling, setCanceling] = useState(false);
-  const [failedSession, setFailedSession] = useState(false);
-  const sessionIdRef = useRef<number>(0);
-  const hasWindowAI = useWindowAI();
-  const aiWorker = useWorker<void>(AI_WORKER);
-  const stopResponse = useCallback(() => {
-    if (aiWorker.current && responding) {
-      aiWorker.current.postMessage("cancel");
-      setCanceling(true);
-    }
-  }, [aiWorker, responding]);
+  const [responseError, setResponseError] = useState<ResponseError>();
+  const [progressMessage, setProgressMessage] = useState("");
+  const [, setMarkedLoaded] = useState(false);
+  const windowAI = useWindowAI();
+  const builtInAI = windowAI !== "unavailable";
+  const [imageInput, setImageInput] = useState(false);
+  const requestCountRef = useRef(0);
+  const requestIdRef = useRef(0);
+  const requestAbortRef = useRef<AbortController>(undefined);
+  const sessionRef = useRef<Session>(undefined);
+  const updateResponse = useCallback((id: number, text: string): void => {
+    if (id !== requestIdRef.current) return;
+
+    setProgressMessage("");
+    setConversation((messages) => {
+      const lastMessage = messages[messages.length - 1];
+
+      return lastMessage?.type === "ai" && !lastMessage.withCanvas
+        ? [...messages.slice(0, -1), { ...lastMessage, text }]
+        : [...messages, { text, type: "ai" }];
+    });
+  }, []);
+  const finishResponse = useCallback(
+    (id: number, error?: ResponseError): void => {
+      if (id !== requestIdRef.current) return;
+
+      requestIdRef.current = 0;
+      setProgressMessage("");
+      setResponding(false);
+      if (error) setResponseError(error);
+    },
+    []
+  );
+  const onWorkerMessage = useCallback(
+    ({ data }: MessageEvent<WorkerResponse>): void => {
+      if ("progress" in data) {
+        setProgressMessage(formatWebLlmProgress(data.progress));
+      } else if ("text" in data) updateResponse(data.id, data.text);
+      else finishResponse(data.id, data.error);
+    },
+    [finishResponse, updateResponse]
+  );
+  const aiWorker = useWorker(AI_WORKER, onWorkerMessage);
+  const cancelResponse = useCallback((): void => {
+    const id = requestIdRef.current;
+
+    if (!id) return;
+
+    requestIdRef.current = 0;
+    requestAbortRef.current?.abort();
+    aiWorker.current?.postMessage({ cancel: id });
+    setProgressMessage("");
+    setResponding(false);
+  }, [aiWorker]);
+  const resetSession = useCallback((): void => {
+    sessionRef.current?.controller.abort();
+    sessionRef.current = undefined;
+  }, []);
+  const getSession = useCallback(
+    (history: Message[], withImages: boolean): Promise<LanguageModel> => {
+      if (sessionRef.current && withImages && !sessionRef.current.imageInput) {
+        resetSession();
+      }
+
+      if (!sessionRef.current) {
+        const controller = new AbortController();
+        const session = createSession(
+          convoStyle,
+          withImages,
+          toChatHistory(history),
+          controller.signal,
+          setProgressMessage
+        );
+
+        sessionRef.current = { controller, imageInput: withImages, session };
+        session.catch(() => {
+          if (sessionRef.current?.session === session) {
+            sessionRef.current = undefined;
+          }
+        });
+      }
+
+      return sessionRef.current.session;
+    },
+    [convoStyle, resetSession]
+  );
   const [hiddenThoughts, setHiddenThoughts] = useState<number[]>([]);
   const toggleThought = useCallback((index: number) => {
     setHiddenThoughts((prevHiddenThoughts) => {
@@ -150,13 +260,16 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       return [...prevHiddenThoughts, index];
     });
   }, []);
+  const canvasRefs = useRef<Record<number, HTMLCanvasElement>>({});
   const newTopic = useCallback(() => {
-    stopResponse();
-    sessionIdRef.current = 0;
+    cancelResponse();
+    resetSession();
+    markdownCache.clear();
+    canvasRefs.current = {};
     setConversation([]);
     setHiddenThoughts([]);
-    setFailedSession(false);
-  }, [stopResponse]);
+    setResponseError(undefined);
+  }, [cancelResponse, resetSession]);
   const changeConvoStyle = useCallback(
     (newConvoStyle: ConvoStyles) => {
       if (convoStyle !== newConvoStyle) {
@@ -177,75 +290,237 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   );
   const [scrollbarVisible, setScrollbarVisible] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(-1);
-  const [progressMessage, setProgressMessage] = useState<string>("");
   const autoSizeText = useCallback(() => {
-    const textArea = textAreaRef.current as HTMLTextAreaElement;
+    const textArea = textAreaRef.current;
+
+    if (!textArea) return;
 
     textArea.style.height = "auto";
     textArea.style.height = `${textArea.scrollHeight}px`;
+    textArea.parentElement?.style.setProperty(
+      "--composer-height",
+      textArea.style.height
+    );
   }, []);
   const { exists, readFile, stat } = useFileSystemActions();
-  const canvasRefs = useRef<Record<number, HTMLCanvasElement>>({});
-  const sendMessage = useCallback(async () => {
-    const { text } = conversation[conversation.length - 1];
+  const readDocument = useCallback(
+    async (path: string): Promise<string> => {
+      if (!(await exists(path)) || (await stat(path)).isDirectory()) return "";
 
-    setResponding(true);
+      const contents = await readFile(path);
+      const extension = getExtension(path);
 
-    sessionIdRef.current ||= Date.now();
-
-    let summarizeText = "";
-    const lcText = text.toLowerCase();
-    const isSummarize = lcText.startsWith("summarize: /");
-    const isGenerate = lcText.startsWith("generate: ");
-
-    if (isSummarize) {
-      const docPath = text.slice(11).trim();
-
-      if ((await exists(docPath)) && !(await stat(docPath)).isDirectory()) {
-        const docText = await readFile(docPath);
-        const extension = getExtension(docPath);
-
-        if ([".htm", ".html", ".whtml"].includes(extension)) {
-          const domContent = new DOMParser().parseFromString(
-            docText.toString(),
-            "text/html"
-          );
-
-          summarizeText = domContent.body.textContent || "";
-        } else if (extension === ".pdf") {
-          summarizeText = await readPdfText(docText);
-        }
+      if (extension === ".pdf") return readPdfText(contents);
+      if (![".htm", ".html", ".whtml"].includes(extension)) {
+        return contents.toString();
       }
-    } else if (isGenerate) {
-      addMessage(
-        text.slice(10).trim(),
-        "ai",
-        "I'll try to create that.",
-        conversation.length,
-        true
+
+      const { body } = new DOMParser().parseFromString(
+        contents.toString(),
+        "text/html"
       );
 
-      return;
-    }
+      body
+        .querySelectorAll("noscript, script, style, template")
+        .forEach((element) => element.remove());
 
-    aiWorker.current?.postMessage({
-      hasWindowAI,
-      id: sessionIdRef.current,
-      streamId: STREAMING_SUPPORT ? conversation.length : undefined,
-      style: convoStyle,
-      summarizeText,
-      text,
-    });
-  }, [
-    addMessage,
-    aiWorker,
-    conversation,
-    convoStyle,
-    exists,
-    hasWindowAI,
-    readFile,
-    stat,
-  ]);
+      return body.textContent || "";
+    },
+    [exists, readFile, stat]
+  );
+  const sendRequest = useCallback(
+    async (messages: Message[]): Promise<void> => {
+      const { images = [], text } = messages[messages.length - 1];
+      const history = messages.slice(0, -1);
+      const imagePrompt = GENERATE_COMMAND.exec(text)?.[1].trim();
+      const [, documentPath] = SUMMARIZE_COMMAND.exec(text) || [];
+      const controller = new AbortController();
+      const { signal } = controller;
+      const id = ++requestCountRef.current;
+      const onText = (newText: string): void => updateResponse(id, newText);
+
+      requestIdRef.current = id;
+      requestAbortRef.current = controller;
+      setResponding(true);
+      setResponseError(undefined);
+
+      if (imagePrompt) {
+        // The session is rebuilt from history since it never sees this exchange
+        resetSession();
+        setConversation([
+          ...messages,
+          { text: imagePrompt, type: "ai", withCanvas: true },
+        ]);
+
+        return;
+      }
+
+      try {
+        if (builtInAI && documentPath) {
+          resetSession();
+
+          // Created before reading the document to keep the user activation
+          const summarizer = await createSummarizer(signal, setProgressMessage);
+
+          try {
+            const documentText = await readDocument(documentPath);
+
+            setProgressMessage("");
+
+            if (!documentText) onText(NOTHING_TO_SUMMARIZE);
+            else if (summarizer) {
+              await summarize(summarizer, documentText, signal, onText);
+            } else {
+              await summarizeWithSession(
+                await getSession(history, false),
+                documentText,
+                signal,
+                onText
+              );
+            }
+          } finally {
+            summarizer?.destroy();
+          }
+
+          finishResponse(id);
+        } else if (builtInAI) {
+          const session = await getSession(history, images.length > 0);
+
+          setProgressMessage("");
+          await readStream(
+            session.promptStreaming(toPrompt(text, images), { signal }),
+            onText
+          );
+          finishResponse(id);
+        } else {
+          const documentText = documentPath
+            ? await readDocument(documentPath)
+            : "";
+
+          if (documentPath && !documentText) {
+            onText(NOTHING_TO_SUMMARIZE);
+            finishResponse(id);
+          } else if (!signal.aborted) {
+            aiWorker.current?.postMessage({
+              id,
+              messages: [
+                { content: SYSTEM_PROMPT, role: "system" },
+                ...toChatHistory(history),
+                {
+                  content: documentText
+                    ? `Summarize:\n\n${documentText.slice(0, MAX_WEB_LLM_SUMMARIZE_LENGTH)}`
+                    : text,
+                  role: "user",
+                },
+              ],
+              style: convoStyle,
+            });
+          }
+        }
+      } catch (error) {
+        if (!signal.aborted) {
+          console.error("Failed to create response.", error);
+          finishResponse(
+            id,
+            (error as Error).name === "QuotaExceededError"
+              ? "context"
+              : "failed"
+          );
+        }
+      }
+    },
+    [
+      aiWorker,
+      builtInAI,
+      convoStyle,
+      finishResponse,
+      getSession,
+      readDocument,
+      resetSession,
+      updateResponse,
+    ]
+  );
+  const submitPrompt = useCallback(
+    (text: string, images: Blob[], history: Message[]): void => {
+      const messages: Message[] = [
+        ...history,
+        { ...(images.length > 0 && { images }), text, type: "user" },
+      ];
+
+      setConversation(messages);
+      sendRequest(messages);
+    },
+    [sendRequest]
+  );
+  const addUserPrompt = useCallback(() => {
+    const text = promptText.trim();
+
+    if (responding || (!text && attachments.length === 0)) return;
+
+    submitPrompt(text, attachments, conversation);
+    (textAreaRef.current as HTMLTextAreaElement).value = "";
+    setPromptText("");
+    setAttachments([]);
+  }, [attachments, conversation, promptText, responding, submitPrompt]);
+  const retry = useCallback(() => {
+    const messages =
+      conversation[conversation.length - 1]?.type === "ai"
+        ? conversation.slice(0, -1)
+        : conversation;
+
+    if (messages.length === 0) return;
+
+    setConversation(messages);
+    sendRequest(messages);
+  }, [conversation, sendRequest]);
+  const addImages = useCallback((images: Blob[]): void => {
+    const supportedImages = images.filter(isSupportedImage);
+
+    if (supportedImages.length > 0) {
+      setAttachments((currentImages) => [...currentImages, ...supportedImages]);
+    }
+  }, []);
+  const dropImages = useCallback(
+    async ({ dataTransfer }: React.DragEvent<HTMLElement>): Promise<void> => {
+      let filePaths: unknown = [];
+
+      try {
+        filePaths = JSON.parse(
+          dataTransfer.getData("application/json") || "[]"
+        );
+      } catch {
+        // Ignore failed JSON parsing
+      }
+
+      addImages([...dataTransfer.files]);
+
+      if (Array.isArray(filePaths)) {
+        addImages(
+          await Promise.all(
+            (filePaths as string[])
+              .filter((filePath) =>
+                SUPPORTED_IMAGE_TYPES.test(getMimeType(filePath))
+              )
+              .map(async (filePath) =>
+                bufferToBlob(await readFile(filePath), getMimeType(filePath))
+              )
+          )
+        );
+      }
+    },
+    [addImages, readFile]
+  );
+  const openLink = useLinkHandler();
+  const onConversationClick = useCallback(
+    ({ nativeEvent, target }: React.MouseEvent<HTMLElement>): void => {
+      const link = (target as HTMLElement).closest("a");
+
+      if (link) {
+        openLink(nativeEvent, link.href, link.pathname, link.textContent || "");
+      }
+    },
+    [openLink]
+  );
   const { createSnapshot } = useSnapshots();
   const saveCanvasImage = useCallback(
     async (
@@ -272,7 +547,25 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
 
   useEffect(() => {
     textAreaRef.current?.focus(PREVENT_SCROLL);
+    loadFiles([MARKED_LIB]).then(() => setMarkedLoaded(true));
   }, []);
+
+  useEffect(
+    () => () => {
+      requestAbortRef.current?.abort();
+      resetSession();
+      markdownCache.clear();
+    },
+    [resetSession]
+  );
+
+  useEffect(() => {
+    if (builtInAI) {
+      getAvailability(IMAGE_EXPECTATIONS).then((availability) =>
+        setImageInput(availability !== "unavailable")
+      );
+    }
+  }, [builtInAI]);
 
   useEffect(() => {
     const updateFullWidth = (): void => setFullWidth(getFullWidth);
@@ -283,7 +576,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   }, [getFullWidth]);
 
   useEffect(() => {
-    if (conversation.length > 0 || failedSession) {
+    if (conversation.length > 0 || responseError) {
       requestAnimationFrame(() => {
         sectionRef.current?.scrollTo({
           behavior: "smooth",
@@ -298,69 +591,42 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         sectionRef.current instanceof HTMLElement &&
         sectionRef.current.scrollHeight > sectionRef.current.clientHeight
     );
-  }, [autoSizeText, conversation, failedSession]);
+  }, [autoSizeText, conversation, responseError]);
 
   useEffect(() => {
-    if (
-      aiWorker.current &&
-      conversation.length > 0 &&
-      conversation[conversation.length - 1].type === "user"
-    ) {
-      sendMessage();
-    }
-  }, [aiWorker, conversation, sendMessage]);
+    requestAnimationFrame(autoSizeText);
+  }, [/* effect dep */ attachments, autoSizeText]);
 
   useEffect(() => {
-    if (!window.initialAiPrompt) return;
+    let timer = 0;
+    const runInitialPrompt = (): void => {
+      window.clearTimeout(timer);
+      // Deferred so a StrictMode remount can't send it to a terminated worker
+      timer = window.setTimeout(() => {
+        const prompt = window.initialAiPrompt;
 
-    if (window.initialAiPrompt === promptText) {
-      if (conversation.length === 0 && aiWorker.current) {
+        if (!prompt) return;
+
         window.initialAiPrompt = "";
-        addUserPrompt();
-      }
-    } else {
-      setPromptText(window.initialAiPrompt);
-    }
-  }, [addUserPrompt, aiWorker, conversation.length, promptText]);
-
-  useEffect(() => {
-    const workerRef = aiWorker.current;
-    const workerResponse = ({ data }: WorkerResponse): void => {
-      const isStreaming = (data as AIResponse).streamId;
-
-      if (!isStreaming) {
-        const doneResponding = typeof data === "string" || "response" in data;
-
-        setResponding(!doneResponding);
-      }
-
-      if (data === "canceled") {
-        setCanceling(false);
-      } else if ((data as WebLlmProgress).progress) {
-        const {
-          progress: { text },
-        } = data as WebLlmProgress;
-
-        setProgressMessage(formatWebLlmProgress(text));
-      } else if ((data as AIResponse).response || isStreaming) {
-        const { complete, formattedResponse, response, streamId } =
-          data as AIResponse;
-
-        if (complete) setResponding(false);
-        else addMessage(response, "ai", formattedResponse, streamId);
-      } else if ((data as AIResponse).response === "") {
-        setFailedSession(true);
-      }
+        newTopic();
+        submitPrompt(prompt, [], []);
+        textAreaRef.current?.focus(PREVENT_SCROLL);
+      }, 0);
     };
 
-    workerRef?.addEventListener("message", workerResponse);
+    runInitialPrompt();
+    window.addEventListener(AI_PROMPT_EVENT, runInitialPrompt);
 
-    return () => workerRef?.removeEventListener("message", workerResponse);
-  }, [addMessage, aiWorker]);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener(AI_PROMPT_EVENT, runInitialPrompt);
+    };
+  }, [newTopic, submitPrompt]);
 
   return (
     <StyledAIChat
       ref={setContainerElement}
+      $attachments={attachments.length > 0}
       $primaryColor={primaryColor}
       $responding={responding}
       $scrollbarVisible={scrollbarVisible}
@@ -372,6 +638,13 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       aria-label={AI_TITLE}
       id={AI_WINDOW_ID}
       role="dialog"
+      {...(imageInput && {
+        onDragOver: haltEvent,
+        onDrop: (event) => {
+          haltEvent(event);
+          dropImages(event);
+        },
+      })}
       {...aiTransition}
       {...focusableProps}
     >
@@ -443,9 +716,21 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
             </div>
           </div>
         </div>
-        <div className="conversation">
-          {conversation.map(
-            ({ formattedText, text, type, withCanvas }, index) => (
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+        <div className="conversation" onClick={onConversationClick}>
+          {conversation.map(({ images, text, type, withCanvas }, index) => {
+            const isLast = index === conversation.length - 1;
+            const isResponding = responding && isLast;
+            const { answer, thinking, thoughts } =
+              type === "ai" && !withCanvas
+                ? splitThoughts(text)
+                : { answer: text };
+            const showThoughts =
+              Boolean(thoughts) && !hiddenThoughts.includes(index);
+            const canToggleThoughts =
+              Boolean(thoughts) && !(thinking && isResponding);
+
+            return (
               // eslint-disable-next-line react/no-array-index-key
               <div key={index} className={type}>
                 {(index === 0 || conversation[index - 1].type !== type) && (
@@ -454,43 +739,56 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                     {type === "user" ? "You" : "AI"}
                   </div>
                 )}
-                {text.startsWith("<think>") && (
+                {(thinking || thoughts) && (
                   <button
                     className={clsx({
                       thinking: true,
-                      "thinking-responding":
-                        responding && index === conversation.length - 1,
+                      "thinking-responding": !canToggleThoughts,
                     })}
                     type="button"
-                    {...((!responding || index < conversation.length - 1) &&
-                      text.includes("</think>") && {
-                        "aria-expanded": !hiddenThoughts.includes(index),
-                        onClick: () => toggleThought(index),
-                      })}
+                    {...(canToggleThoughts && {
+                      "aria-expanded": showThoughts,
+                      onClick: () => toggleThought(index),
+                    })}
                   >
-                    {text.includes("</think>") ||
-                    !responding ||
-                    index < conversation.length - 1
-                      ? "Thoughts"
-                      : "Thinking..."}
+                    {thinking && isResponding ? "Thinking..." : "Thoughts"}
                   </button>
                 )}
-                <div
-                  // eslint-disable-next-line react/no-danger
-                  dangerouslySetInnerHTML={{ __html: formattedText }}
-                  className={clsx({
-                    "hide-think": hiddenThoughts.includes(index),
-                    message: true,
-                  })}
-                />
+                {showThoughts && (
+                  <div
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{
+                      __html: formatMarkdown(thoughts as string, !isResponding),
+                    }}
+                    className="thoughts markdown"
+                  />
+                )}
+                {(answer || withCanvas) && (
+                  <div
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{
+                      __html: withCanvas
+                        ? GENERATE_RESPONSE
+                        : type === "ai"
+                          ? formatMarkdown(answer, !isResponding)
+                          : escapeHtml(answer),
+                    }}
+                    className={clsx({ markdown: type === "ai", message: true })}
+                  />
+                )}
+                {images && (
+                  <div className="images">
+                    {images.map((image, imageIndex) => (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <BlobImage key={imageIndex} blob={image} />
+                    ))}
+                  </div>
+                )}
                 <div
                   className={clsx({
                     controls: true,
-                    hidden:
-                      responding &&
-                      !withCanvas &&
-                      index === conversation.length - 1,
-                    invisible: responding && !!withCanvas,
+                    hidden: isResponding && !withCanvas,
+                    invisible: responding && Boolean(withCanvas),
                     last: index === lastAiMessageIndex,
                   })}
                 >
@@ -498,7 +796,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                     className="control"
                     onClick={() => {
                       try {
-                        navigator.clipboard?.writeText(text);
+                        navigator.clipboard?.writeText(answer);
                         setCopiedIndex(index);
                         setTimeout(() => setCopiedIndex(-1), 5000);
                       } catch {
@@ -518,6 +816,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                           textAreaRef.current.value = text;
                           textAreaRef.current.focus(PREVENT_SCROLL);
                           setPromptText(text);
+                          setAttachments(images || []);
                         }
                       }}
                       type="button"
@@ -529,7 +828,9 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   {"speechSynthesis" in window && type === "ai" && (
                     <button
                       className="control"
-                      onClick={() => speakMessage(text)}
+                      onClick={() =>
+                        speakMessage(htmlToText(formatMarkdown(answer)))
+                      }
                       type="button"
                       {...label("Read aloud")}
                     >
@@ -567,8 +868,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                 {withCanvas && (
                   <div
                     className={clsx({
-                      generating:
-                        responding && index === conversation.length - 1,
+                      generating: isResponding,
                       "image-container": true,
                     })}
                   >
@@ -589,15 +889,9 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
 
                           aiWorker.current?.postMessage(
                             {
-                              hasWindowAI,
-                              id: sessionIdRef.current,
+                              id: requestIdRef.current,
                               imagePrompt: text,
                               offscreenCanvas,
-                              streamId: STREAMING_SUPPORT
-                                ? conversation.length
-                                : undefined,
-                              style: convoStyle,
-                              text,
                             },
                             [offscreenCanvas]
                           );
@@ -617,37 +911,66 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   </div>
                 )}
               </div>
-            )
-          )}
+            );
+          })}
           {responding && (
             <div className="responding">
               <button
-                className={`stop${canceling ? " canceling" : ""}`}
-                disabled={Boolean(progressMessage) || canceling}
-                onClick={stopResponse}
+                className="stop"
+                disabled={Boolean(progressMessage)}
+                onClick={cancelResponse}
                 type="button"
               >
-                {!progressMessage && !canceling && <StopIcon />}
-                {canceling ? "Canceling" : progressMessage || "Stop Responding"}
+                {!progressMessage && <StopIcon />}
+                {progressMessage || "Stop Responding"}
               </button>
             </div>
           )}
-          {failedSession && (
+          {responseError && (
             <div className="failed-session">
               <WarningIcon />
-              It might be time to move onto a new topic.
-              <button onClick={newTopic} type="button">
-                Let&apos;s start over.
+              {responseError === "context"
+                ? "It might be time to move onto a new topic."
+                : "Something went wrong."}
+              <button
+                onClick={responseError === "context" ? newTopic : retry}
+                type="button"
+              >
+                {responseError === "context"
+                  ? "Let's start over."
+                  : "Try again."}
               </button>
             </div>
           )}
         </div>
       </section>
       <footer>
+        {attachments.length > 0 && (
+          <ol className="attachments">
+            {attachments.map((image, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <li key={index}>
+                <BlobImage blob={image} />
+                <button
+                  className="remove"
+                  onClick={() =>
+                    setAttachments((currentImages) =>
+                      currentImages.filter((_, i) => i !== index)
+                    )
+                  }
+                  type="button"
+                  {...label("Remove image")}
+                >
+                  <CloseIcon />
+                </button>
+              </li>
+            ))}
+          </ol>
+        )}
         <textarea
           ref={textAreaRef}
           aria-label="Ask me anything"
-          disabled={failedSession}
+          disabled={responseError === "context"}
           onBlur={autoSizeText}
           onChange={(event) => {
             setPromptText(event.target.value);
@@ -657,11 +980,13 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) {
               event.preventDefault();
-
-              if (!canceling && !responding) addUserPrompt();
+              addUserPrompt();
             }
 
             autoSizeText();
+          }}
+          onPaste={({ clipboardData }) => {
+            if (imageInput) addImages([...clipboardData.files]);
           }}
           placeholder="Ask me anything..."
         />
@@ -673,17 +998,42 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         >
           <ChatIcon />
         </button>
+        {imageInput && (
+          <>
+            <button
+              className="add-image"
+              onClick={() => fileInputRef.current?.click()}
+              type="button"
+              {...label("Add an image")}
+            >
+              <ImageIcon />
+            </button>
+            <input
+              ref={fileInputRef}
+              accept="image/*"
+              onChange={({ target: { files } }) => {
+                addImages([...(files || [])]);
+                if (fileInputRef.current) fileInputRef.current.value = "";
+              }}
+              tabIndex={-1}
+              type="file"
+              aria-hidden
+              hidden
+              multiple
+            />
+          </>
+        )}
         <button
           aria-disabled={!typing || undefined}
           className="submit"
-          disabled={canceling || responding}
+          disabled={responding}
           {...(typing && {
             onClick: addUserPrompt,
           })}
           type="button"
           {...label("Submit")}
         >
-          {!canceling && typing ? <SendFilledIcon /> : <SendIcon />}
+          {typing ? <SendFilledIcon /> : <SendIcon />}
         </button>
       </footer>
     </StyledAIChat>
