@@ -94,11 +94,9 @@ export const getExtension = (url: string): string => {
 };
 
 export const writeTextToClipboard = (text: string): void => {
-  try {
-    navigator.clipboard?.writeText(text);
-  } catch {
+  navigator.clipboard?.writeText(text).catch(() => {
     // Ignore failure to write to clipboard
-  }
+  });
 };
 
 export const sendMouseClick = (target: HTMLElement, count = 1): void => {

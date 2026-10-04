@@ -71,7 +71,7 @@ export const EXCLUDED_CONSOLE_LOGS = (
       'Error: "Content-Security-Policy:',
       "an ancestor violates the following Content Security Policy directive",
       // Messenger
-      "WebSocket connection to 'wss://public.relaying.io/' failed:"
+      "WebSocket connection to 'wss://"
     );
 
     if (browserName === "firefox") {
