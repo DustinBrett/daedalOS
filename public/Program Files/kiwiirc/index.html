@@ -16,9 +16,36 @@
         font-weight: bold;
         padding: 1em;
     }
+    @media screen and (max-width: 569px) {
+        /* Kiwi hides this above 500px but drawers the state browser up to 569px */
+        .kiwi-personal .kiwi-personal-existing-networks {
+            display: inherit;
+        }
+        /* Kiwi only renders its own drawer toggle in buffer headers */
+        .kiwi-wrap[data-activebuffer=""]:not(.kiwi-wrap--statebrowser-drawopen) ~ .kiwi-drawer-toggle {
+            display: block;
+        }
+    }
+    .kiwi-drawer-toggle {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        width: 32px;
+        line-height: 32px;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--brand-default-fg);
+        font-size: 20px;
+        opacity: 0.8;
+        cursor: pointer;
+    }
     </style>
   <link href="static/css/app.e3f54fec.css" rel="preload" as="style"><link href="static/js/app.590b085d.js" rel="preload" as="script"><link href="static/js/vendor.4fec47b8.js" rel="preload" as="script"><link href="static/css/app.e3f54fec.css" rel="stylesheet"></head>
   <body style="width:100%">
     <div id="app"></div>
+    <button class="kiwi-drawer-toggle" type="button" title="Networks" onclick="kiwi.state.$emit('statebrowser.show')"><i class="fa fa-bars" aria-hidden="true"></i></button>
   <script type="text/javascript" src="static/js/vendor.4fec47b8.js"></script><script type="text/javascript" src="static/js/app.590b085d.js"></script></body>
 </html>

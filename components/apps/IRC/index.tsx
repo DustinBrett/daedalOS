@@ -7,7 +7,7 @@ import processDirectory from "contexts/process/directory";
 import { IFRAME_CONFIG } from "utils/constants";
 
 type KiwiIrcClient = {
-  on: (
+  on: ((
     event: "irc.join" | "irc.part",
     callback: (
       channelData: {
@@ -17,7 +17,15 @@ type KiwiIrcClient = {
         name: string;
       }
     ) => void
-  ) => void;
+  ) => void) &
+    ((
+      event: "active.component.toggle" | "server.tab.show",
+      callback: () => void
+    ) => void);
+  state: {
+    $emit: (event: string) => void;
+    ui: { is_narrow: boolean };
+  };
 };
 
 const IRC: FC<ComponentProcessProps> = ({ id }) => {
@@ -54,6 +62,17 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
           )
         )
       );
+
+      // Kiwi only closes its narrow drawer on buffer clicks, leaving server
+      // tabs (channel list) and app settings opened underneath it
+      const hideNarrowStateBrowser = (): void => {
+        if (kiwiWindow.kiwi.state.ui.is_narrow) {
+          kiwiWindow.kiwi.state.$emit("statebrowser.hide");
+        }
+      };
+
+      kiwiWindow?.kiwi.on("server.tab.show", hideNarrowStateBrowser);
+      kiwiWindow?.kiwi.on("active.component.toggle", hideNarrowStateBrowser);
 
       linkElement(id, "peekElement", iframeRef.current);
     }
