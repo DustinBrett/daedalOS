@@ -21,6 +21,7 @@ type ColumnsProps = {
   columns: ColumnsObject;
   directory: string;
   files: Files;
+  id?: string;
   setColumns: React.Dispatch<React.SetStateAction<ColumnsObject | undefined>>;
 };
 
@@ -28,12 +29,13 @@ const Columns: FC<ColumnsProps> = ({
   columns,
   directory,
   files,
+  id,
   setColumns,
 }) => {
   const { sizes } = useTheme();
   const draggingRef = useRef("");
   const lastClientX = useRef(0);
-  const { setSortOrder } = useSessionActions();
+  const { setSortOrder, setWindowStates } = useSessionActions();
   const [, sortedBy = "name", ascending] = useSortOrder(directory);
   const onPointerDownCapture = useCallback(
     (name: string) => (event: React.PointerEvent<HTMLLIElement>) => {
@@ -47,31 +49,31 @@ const Columns: FC<ColumnsProps> = ({
   );
   const onPointerMoveCapture = useCallback(
     (event: React.PointerEvent<HTMLLIElement>) => {
-      if (draggingRef.current) {
-        const dragName = draggingRef.current as ColumnName;
+      const dragName = draggingRef.current as ColumnName;
+      const movement = event.clientX - lastClientX.current;
 
-        setColumns((currentColumns) => {
-          if (!currentColumns?.[dragName]) return currentColumns;
-
-          const newColumns = { ...currentColumns };
-          const newSize =
-            newColumns[dragName].width + event.clientX - lastClientX.current;
-
-          if (
-            newSize < sizes.fileManager.columnMinWidth ||
-            Math.abs(lastClientX.current - event.clientX) > MAX_STEPS_PER_RESIZE
-          ) {
-            return newColumns;
-          }
-
-          newColumns[dragName].width = newSize;
-          lastClientX.current = event.clientX;
-
-          return newColumns;
-        });
+      if (
+        !dragName ||
+        Math.abs(movement) > MAX_STEPS_PER_RESIZE ||
+        columns[dragName].width + movement < sizes.fileManager.columnMinWidth
+      ) {
+        return;
       }
+
+      lastClientX.current = event.clientX;
+
+      setColumns(
+        (currentColumns) =>
+          currentColumns && {
+            ...currentColumns,
+            [dragName]: {
+              ...currentColumns[dragName],
+              width: currentColumns[dragName].width + movement,
+            },
+          }
+      );
     },
-    [setColumns, sizes.fileManager.columnMinWidth]
+    [columns, setColumns, sizes.fileManager.columnMinWidth]
   );
   const onPointerUpCapture = useCallback(
     (name: string) => (event: React.PointerEvent<HTMLLIElement>) => {
@@ -80,6 +82,13 @@ const Columns: FC<ColumnsProps> = ({
       if (draggingRef.current) {
         draggingRef.current = "";
         lastClientX.current = 0;
+
+        if (id) {
+          setWindowStates((currentWindowStates) => ({
+            ...currentWindowStates,
+            [id]: { ...currentWindowStates[id], columns },
+          }));
+        }
       } else {
         const sortBy = name as SortBy;
 
@@ -91,7 +100,7 @@ const Columns: FC<ColumnsProps> = ({
         );
       }
     },
-    [ascending, directory, files, setSortOrder]
+    [ascending, columns, directory, files, id, setSortOrder, setWindowStates]
   );
 
   return (

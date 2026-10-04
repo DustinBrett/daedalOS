@@ -1,4 +1,5 @@
 import { type Position } from "react-rnd";
+import { type Columns } from "components/system/Files/FileManager/Columns/constants";
 import { type SortBy } from "components/system/Files/FileManager/useSortBy";
 import { type FileManagerViewNames } from "components/system/Files/Views";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
@@ -13,6 +14,7 @@ declare global {
 export type UpdateFiles = (newFile?: string, oldFile?: string) => Promise<void>;
 
 export type WindowState = {
+  columns?: Columns;
   maximized?: boolean;
   position?: Position;
   size?: Size;

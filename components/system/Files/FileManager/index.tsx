@@ -22,7 +22,12 @@ import {
   FileManagerViews,
 } from "components/system/Files/Views";
 import { useFileSystemActions, useRootFs } from "contexts/fileSystem";
-import { useForegroundId, useSessionActions, useView } from "contexts/session";
+import {
+  useForegroundId,
+  useSessionActions,
+  useView,
+  useWindowState,
+} from "contexts/session";
 import {
   FOCUSABLE_ELEMENT,
   MOUNTABLE_EXTENSIONS,
@@ -82,8 +87,9 @@ const FileManager: FC<FileManagerProps> = ({
     return sessionView || DEFAULT_VIEW;
   }, [isDesktop, isStartMenu, sessionView]);
   const isDetailsView = useMemo(() => view === "details", [view]);
+  const { columns: savedColumns = DEFAULT_COLUMNS } = useWindowState(id || "");
   const [columns, setColumns] = useState<ColumnsObject | undefined>(() =>
-    isDetailsView ? DEFAULT_COLUMNS : undefined
+    isDetailsView ? savedColumns : undefined
   );
   const [currentUrl, setCurrentUrl] = useState(url);
   const [renaming, setRenaming] = useState("");
@@ -136,9 +142,9 @@ const FileManager: FC<FileManagerProps> = ({
   const setView = useCallback(
     (newView: FileManagerViewNames) => {
       setViews((currentViews) => ({ ...currentViews, [url]: newView }));
-      setColumns(newView === "details" ? DEFAULT_COLUMNS : undefined);
+      setColumns(newView === "details" ? savedColumns : undefined);
     },
-    [setViews, url]
+    [savedColumns, setViews, url]
   );
   const keyShortcuts = useFileKeyboardShortcuts(
     files,
@@ -242,8 +248,8 @@ const FileManager: FC<FileManagerProps> = ({
   }, [foregroundId, id, isDesktop, isStartMenu, loading]);
 
   useEffect(() => {
-    setColumns(isDetailsView ? DEFAULT_COLUMNS : undefined);
-  }, [isDetailsView]);
+    setColumns(isDetailsView ? savedColumns : undefined);
+  }, [isDetailsView, savedColumns]);
 
   // Focusing the desktop must deactivate the foreground window, as no window
   // blur fires when its focused element was already removed by navigation
@@ -287,6 +293,7 @@ const FileManager: FC<FileManagerProps> = ({
             columns={columns}
             directory={url}
             files={files}
+            id={id}
             setColumns={setColumns}
           />
         )}
