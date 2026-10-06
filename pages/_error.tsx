@@ -1,8 +1,7 @@
 import { type ErrorProps } from "next/error";
-import { memo } from "react";
 
-const PageError = ({ statusCode = 0 }: ErrorProps): React.ReactElement => (
+const PageError: FC<ErrorProps> = ({ statusCode = 0 }) => (
   <>Error status code: {statusCode}</>
 );
 
-export default memo(PageError);
+export default PageError;

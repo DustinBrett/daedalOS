@@ -65,10 +65,10 @@ const useClassiCube = ({
     }, TRANSITIONS_IN_MILLISECONDS.WINDOW);
 
     return () => window.clearTimeout(timeoutId);
-    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [
     componentWindow,
     contentWindow?.CCModule,
+    // eslint-disable-next-line react/exhaustive-effect-dependencies
     maximized,
     size,
     titleBar.height,

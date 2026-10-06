@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { type DraggableEventHandler } from "react-draggable";
 import { type Props, type RndResizeCallback } from "react-rnd";
 import { useTheme } from "styled-components";
@@ -21,6 +21,8 @@ const enableIframeCapture = (enable = true): void =>
     // eslint-disable-next-line no-param-reassign
     iframe.style.pointerEvents = enable ? "initial" : "none";
   });
+
+const disableIframeCapture = (): void => enableIframeCapture(false);
 
 const useRnd = (id: string): Props => {
   const {
@@ -47,102 +49,78 @@ const useRnd = (id: string): Props => {
       !hideMaximizeButton &&
       (wasMaximized ?? coversViewport(size))
   );
-  const onDragStop: DraggableEventHandler = useCallback(
-    (_event, { x, y }) => {
-      enableIframeCapture();
+  const onDragStop: DraggableEventHandler = (_event, { x, y }) => {
+    enableIframeCapture();
 
-      const newPosition = { x, y };
+    const newPosition = { x, y };
 
-      if (
-        !isWindowOutsideBounds(
-          { position: newPosition, size },
-          getWindowViewport(),
-          true
-        )
-      ) {
-        setPosition(newPosition);
-        setWindowStates((currentWindowStates) => ({
-          ...currentWindowStates,
-          [id]: {
-            ...currentWindowStates[id],
-            position: newPosition,
-          },
-        }));
-      }
-    },
-    [id, setPosition, setWindowStates, size]
-  );
-  const onResizeStop: RndResizeCallback = useCallback(
-    (
-      _event,
-      _direction,
-      { style: { height, transform, width } },
-      _delta,
-      resizePosition
-    ) => {
-      const [, x, y] =
-        /translate\((-?\d+)px, (-?\d+)px\)/.exec(transform) || [];
-      const newPosition =
-        typeof x === "string" && typeof y === "string"
-          ? { x: pxToNum(x), y: pxToNum(y) }
-          : resizePosition;
+    if (
+      !isWindowOutsideBounds(
+        { position: newPosition, size },
+        getWindowViewport(),
+        true
+      )
+    ) {
+      setPosition(newPosition);
+      setWindowStates((currentWindowStates) => ({
+        ...currentWindowStates,
+        [id]: {
+          ...currentWindowStates[id],
+          position: newPosition,
+        },
+      }));
+    }
+  };
+  const onResizeStop: RndResizeCallback = (
+    _event,
+    _direction,
+    { style: { height, transform, width } },
+    _delta,
+    resizePosition
+  ) => {
+    const [, x, y] = /translate\((-?\d+)px, (-?\d+)px\)/.exec(transform) || [];
+    const newPosition =
+      typeof x === "string" && typeof y === "string"
+        ? { x: pxToNum(x), y: pxToNum(y) }
+        : resizePosition;
 
-      enableIframeCapture();
+    enableIframeCapture();
 
-      const newSize = { height: pxToNum(height), width: pxToNum(width) };
+    const newSize = { height: pxToNum(height), width: pxToNum(width) };
 
-      if (newPosition.y < 0) {
-        if (lockAspectRatio) {
-          newSize.width *=
-            1 + newPosition.y / (newSize.height - titleBar.height);
-        }
-
-        newSize.height += newPosition.y;
-        newPosition.y = 0;
+    if (newPosition.y < 0) {
+      if (lockAspectRatio) {
+        newSize.width *= 1 + newPosition.y / (newSize.height - titleBar.height);
       }
 
-      if (
-        !isWindowOutsideBounds(
-          { position: newPosition, size: newSize },
-          getWindowViewport(),
-          true
-        )
-      ) {
-        setSize(newSize);
-        setPosition(newPosition);
-        setWindowStates((currentWindowStates) => ({
-          ...currentWindowStates,
-          [id]: {
-            ...currentWindowStates[id],
-            position: newPosition,
-            size: newSize,
-          },
-        }));
-      }
-    },
-    [
-      id,
-      lockAspectRatio,
-      setPosition,
-      setSize,
-      setWindowStates,
-      titleBar.height,
-    ]
-  );
-  const contentAspectRatio = useMemo(
-    () =>
-      lockAspectRatio &&
-      Number(size.width) / (Number(size.height) - titleBar.height),
-    [lockAspectRatio, size.height, size.width, titleBar.height]
-  );
-  const disableIframeCapture = useCallback(
-    () => enableIframeCapture(false),
-    []
-  );
-  const enableResizing = useMemo(
-    () => (allowResizing && !maximized ? RESIZING_ENABLED : RESIZING_DISABLED),
-    [allowResizing, maximized]
-  );
+      newSize.height += newPosition.y;
+      newPosition.y = 0;
+    }
+
+    if (
+      !isWindowOutsideBounds(
+        { position: newPosition, size: newSize },
+        getWindowViewport(),
+        true
+      )
+    ) {
+      setSize(newSize);
+      setPosition(newPosition);
+      setWindowStates((currentWindowStates) => ({
+        ...currentWindowStates,
+        [id]: {
+          ...currentWindowStates[id],
+          position: newPosition,
+          size: newSize,
+        },
+      }));
+    }
+  };
+  const contentAspectRatio =
+    lockAspectRatio &&
+    Number(size.width) / (Number(size.height) - titleBar.height);
+  const enableResizing =
+    allowResizing && !maximized ? RESIZING_ENABLED : RESIZING_DISABLED;
 
   useLayoutEffect(() => {
     if (openMaximized) maximize(id, true);

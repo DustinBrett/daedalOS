@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   copyKeyMenuItems,
   shortTimeStamp,
@@ -41,27 +41,24 @@ const Contact: FC<ContactProps> = ({
   const { nip05, picture, userName } = useNostrProfile(pubkey, isVisible);
   const unreadClass = unread ? "unread" : undefined;
   const { contextMenu } = useMenuActions();
-  const { onContextMenuCapture } = useMemo(
-    () =>
-      contextMenu?.(() => [
-        {
-          action: onClick,
-          icon: "🔐",
-          label: "Start end-to-end encrypted chat",
-        },
-        MENU_SEPERATOR,
-        ...copyKeyMenuItems(pubkey),
-        MENU_SEPERATOR,
-        ...(lastMessage ? [{ action: deleteChat, label: "Delete chat" }] : []),
-        { action: block, label: "Block" },
-      ]),
-    [block, contextMenu, deleteChat, lastMessage, onClick, pubkey]
-  );
+  const { onContextMenuCapture } = contextMenu(() => [
+    {
+      action: onClick,
+      icon: "🔐",
+      label: "Start end-to-end encrypted chat",
+    },
+    MENU_SEPERATOR,
+    ...copyKeyMenuItems(pubkey),
+    MENU_SEPERATOR,
+    ...(lastMessage ? [{ action: deleteChat, label: "Delete chat" }] : []),
+    { action: block, label: "Block" },
+  ]);
 
   useEffect(() => {
     let interval = 0;
 
     if (created_at) {
+      // eslint-disable-next-line react/set-state-in-effect -- The relative timestamp is refreshed on an interval
       setTimeStamp(shortTimeStamp(created_at));
 
       interval = window.setInterval(
@@ -108,4 +105,4 @@ const Contact: FC<ContactProps> = ({
   );
 };
 
-export default memo(Contact);
+export default Contact;

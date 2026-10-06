@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { memo, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import ChatProfile from "components/apps/Messenger/ChatProfile";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import { prettyChatTimestamp } from "components/apps/Messenger/functions";
@@ -88,4 +88,4 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
   );
 };
 
-export default memo(ChatLog);
+export default ChatLog;

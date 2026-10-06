@@ -1,4 +1,3 @@
-import { memo, useCallback } from "react";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledPeekViewport from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekViewport";
 import RndWindow from "components/system/Window/RndWindow";
@@ -26,14 +25,11 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   const { zIndex, ...focusableProps } = useFocusable(id);
   const rndProps = useRnd(id);
   const windowTransitions = useWindowTransitions(id, rndProps.position);
-  const linkViewportEntry = useCallback(
-    (viewportEntry: HTMLDivElement) => {
-      if (Component && !peekElement && viewportEntry) {
-        linkElement(id, "peekElement", viewportEntry);
-      }
-    },
-    [Component, id, linkElement, peekElement]
-  );
+  const linkViewportEntry = (viewportEntry: HTMLDivElement): void => {
+    if (Component && !peekElement && viewportEntry) {
+      linkElement(id, "peekElement", viewportEntry);
+    }
+  };
 
   return (
     <RndWindow id={id} rndProps={rndProps} zIndex={zIndex}>
@@ -57,4 +53,4 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
   );
 };
 
-export default memo(Window);
+export default Window;

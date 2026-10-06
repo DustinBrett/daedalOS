@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports -- PDF re-maps every page as each one finishes loading
 import { memo, useEffect, useRef } from "react";
 import { useProcess, useProcessesActions } from "contexts/process";
 

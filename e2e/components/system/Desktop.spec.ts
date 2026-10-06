@@ -5,31 +5,41 @@ import {
   NEW_FILE_LABEL,
   NEW_FILE_LABEL_TEXT,
   NEW_FOLDER_LABEL,
+  RICH_TEXT_FILE_LABEL,
+  RICH_TEXT_FILE_LABEL_TEXT,
 } from "e2e/constants";
 import {
   appIsOpen,
   captureConsoleLogs,
+  clickCloseWindow,
   clickContextMenuEntry,
   clickDesktop,
+  closePage,
   contextMenuEntryIsHidden,
   contextMenuEntryIsVisible,
   contextMenuHasCount,
   contextMenuIsVisible,
   desktopEntriesAreVisible,
+  desktopEntryHasBlobIcon,
   desktopEntryIsHidden,
+  desktopEntryIsRenaming,
   desktopEntryIsVisible,
   desktopIsVisible,
   disableWallpaper,
+  doubleClickDesktopEntry,
   filterMenuItems,
   loadApp,
   pressDesktopKeys,
   selectArea,
+  windowIsHidden,
+  windowTitlebarHasBlobIcon,
 } from "e2e/functions";
 
 test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp());
 test.beforeEach(desktopIsVisible);
+test.afterEach(closePage);
 
 test("has file entry", desktopEntriesAreVisible);
 
@@ -82,6 +92,8 @@ test.describe("has context menu", () => {
       await clickContextMenuEntry(/^Folder$/, { page });
 
       await desktopEntryIsVisible(NEW_FOLDER_LABEL, { page });
+      // Reloading before the lazy rename box loads aborts its chunk
+      await desktopEntryIsRenaming({ page });
 
       await page.reload();
 
@@ -96,6 +108,7 @@ test.describe("has context menu", () => {
       await clickContextMenuEntry(/^Text Document$/, { page });
 
       await desktopEntryIsVisible(NEW_FILE_LABEL, { page });
+      await desktopEntryIsRenaming({ page });
 
       await page.reload();
 
@@ -119,6 +132,29 @@ test.describe("has context menu", () => {
       });
 
       await desktopEntryIsVisible(NEW_FILE_LABEL, { page });
+    });
+
+    test("can reopen added file with icon", async ({ page }) => {
+      const uploadPromise = page.waitForEvent("filechooser");
+
+      await clickContextMenuEntry(/^Add file\(s\)$/, { page });
+
+      await (
+        await uploadPromise
+      ).setFiles({
+        buffer: Buffer.from("<p>Note</p>"),
+        mimeType: "text/html",
+        name: RICH_TEXT_FILE_LABEL_TEXT,
+      });
+
+      // Windows copy the desktop icon's blob, so closing one can't revoke it
+      await desktopEntryHasBlobIcon(RICH_TEXT_FILE_LABEL, { page });
+      await doubleClickDesktopEntry(RICH_TEXT_FILE_LABEL, { page });
+      await windowTitlebarHasBlobIcon({ page });
+      await clickCloseWindow({ page });
+      await windowIsHidden({ page });
+      await doubleClickDesktopEntry(RICH_TEXT_FILE_LABEL, { page });
+      await windowTitlebarHasBlobIcon({ page });
     });
   });
 

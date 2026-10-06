@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { type Props, Rnd } from "react-rnd";
 import { useProcess, useProcessesActions } from "contexts/process";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
@@ -26,27 +26,21 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, rndProps, zIndex }) => {
   const { linkElement } = useProcessesActions();
   const { Component, componentWindow, maximized, minimized } = useProcess(id);
   const rndRef = useRef<null | Rnd>(null);
-  const style = useMemo<React.CSSProperties>(
-    () => ({
-      pointerEvents: minimized ? "none" : undefined,
-      zIndex,
-    }),
-    [minimized, zIndex]
-  );
-  const linkComponentWindow = useCallback(
-    (rndEntry: Rnd) => {
-      rndRef.current = rndEntry;
+  const style: React.CSSProperties = {
+    pointerEvents: minimized ? "none" : undefined,
+    zIndex,
+  };
+  const linkComponentWindow = (rndEntry: Rnd): void => {
+    rndRef.current = rndEntry;
 
-      const rndWindowElements =
-        rndEntry?.resizableElement?.current?.children || [];
-      const [windowContainer] = rndWindowElements as HTMLElement[];
+    const rndWindowElements =
+      rndEntry?.resizableElement?.current?.children || [];
+    const [windowContainer] = rndWindowElements as HTMLElement[];
 
-      if (Component && !componentWindow && windowContainer) {
-        linkElement(id, "componentWindow", windowContainer);
-      }
-    },
-    [Component, componentWindow, id, linkElement]
-  );
+    if (Component && !componentWindow && windowContainer) {
+      linkElement(id, "componentWindow", windowContainer);
+    }
+  };
 
   useEffect(() => {
     if (!maximized) {
@@ -68,4 +62,4 @@ const RndWindow: FC<RndWindowProps> = ({ children, id, rndProps, zIndex }) => {
   );
 };
 
-export default memo(RndWindow);
+export default RndWindow;

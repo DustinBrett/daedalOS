@@ -1,5 +1,5 @@
 import { basename, dirname, join } from "path";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StyledPaint from "components/apps/Paint/StyledPaint";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledLoading from "components/system/Apps/StyledLoading";
@@ -50,18 +50,16 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
   const [loaded, setLoaded] = useState(false);
   const [jsPaintInstance, setJsPaintInstance] = useState<JsPaint>();
   const { prependFileToTitle } = useTitle(id);
-  const setWallpaperFromCanvas = useCallback(
+  const setWallpaperFromCanvas =
     (fit: WallpaperFit) =>
-      (canvas: HTMLCanvasElement): void => {
-        const wallpaperPath = join(PICUTRES_PATH, "wallpaper.png");
+    (canvas: HTMLCanvasElement): void => {
+      const wallpaperPath = join(PICUTRES_PATH, "wallpaper.png");
 
-        canvas.toBlob(async (blob) => {
-          await writeFile(wallpaperPath, await blobToBuffer(blob), true);
-          setWallpaper(wallpaperPath, fit);
-        });
-      },
-    [setWallpaper, writeFile]
-  );
+      canvas.toBlob(async (blob) => {
+        await writeFile(wallpaperPath, await blobToBuffer(blob), true);
+        setWallpaper(wallpaperPath, fit);
+      });
+    };
   const { onDragOver, onDrop } = useFileDrop({ id });
 
   useEffect(() => {
@@ -203,4 +201,4 @@ const Paint: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Paint);
+export default Paint;

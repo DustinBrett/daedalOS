@@ -1,10 +1,15 @@
-import { memo } from "react";
 import useTic80 from "components/apps/Tic80/useTic80";
-import AppContainer from "components/system/Apps/AppContainer";
+import AppContainer, {
+  useAppContainer,
+} from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
-const Tic80: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer id={id} useHook={useTic80} />
-);
+const Tic80: FC<ComponentProcessProps> = ({ id }) => {
+  const containerProps = useAppContainer(id);
 
-export default memo(Tic80);
+  useTic80(containerProps);
+
+  return <AppContainer {...containerProps} />;
+};
+
+export default Tic80;

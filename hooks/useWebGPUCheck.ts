@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type GPUAdapter = {
   limits: {
@@ -50,11 +50,11 @@ const supportsWebGPU = async (): Promise<boolean> => {
 
 export const useWebGPUCheck = (): boolean => {
   const [hasWebGPU, setHasWebGPU] = useState<boolean>(HAS_WEB_GPU);
-  const checkWebGPU = useCallback(async () => {
+  const checkWebGPU = async (): Promise<void> => {
     const sufficientLimits = await supportsWebGPU();
 
     if (sufficientLimits) setHasWebGPU(true);
-  }, []);
+  };
 
   useEffect(() => {
     if (!hasWebGPU) requestAnimationFrame(checkWebGPU);

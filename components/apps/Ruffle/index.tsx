@@ -1,11 +1,16 @@
-import { memo } from "react";
 import StyledRuffle from "components/apps/Ruffle/StyledRuffle";
 import useRuffle from "components/apps/Ruffle/useRuffle";
-import AppContainer from "components/system/Apps/AppContainer";
+import AppContainer, {
+  useAppContainer,
+} from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
-const Ruffle: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer id={id} StyledComponent={StyledRuffle} useHook={useRuffle} />
-);
+const Ruffle: FC<ComponentProcessProps> = ({ id }) => {
+  const containerProps = useAppContainer(id);
 
-export default memo(Ruffle);
+  useRuffle(containerProps);
+
+  return <AppContainer {...containerProps} StyledComponent={StyledRuffle} />;
+};
+
+export default Ruffle;

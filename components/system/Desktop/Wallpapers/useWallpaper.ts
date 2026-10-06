@@ -1,5 +1,5 @@
 import { join } from "path";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
 import {
   BASE_CANVAS_SELECTOR,
@@ -51,8 +51,30 @@ import {
   parseBgPosition,
   preloadImage,
 } from "utils/functions";
+import { loadImageDecoder } from "utils/loaders";
 
 let slideshowFiles: Record<string, string[]> = {};
+
+// Module-level so the self-scheduling loaders below still compile
+const keepSlideshowFiles = (wallpaperImage: string): void => {
+  slideshowFiles = { [wallpaperImage]: slideshowFiles[wallpaperImage] || [] };
+};
+
+const setWallpaperDestroy = (cleanUp: () => void): void => {
+  window.WallpaperDestroy = () => {
+    cleanUp();
+    window.WallpaperDestroy = undefined;
+  };
+};
+
+const isCrossOriginFrame = (): boolean => {
+  try {
+    return window.location.origin !== window.top?.location.origin;
+  } catch {
+    // Can't read origin, assume top window
+    return true;
+  }
+};
 
 const useWallpaper = (
   desktopRef: React.RefObject<HTMLElement | null>
@@ -64,10 +86,7 @@ const useWallpaper = (
   const wallpaperImage = useWallpaperImage();
   const wallpaperFit = useWallpaperFit();
   const { colors } = useTheme();
-  const [wallpaperName] = useMemo(
-    () => wallpaperImage.split(" "),
-    [wallpaperImage]
-  );
+  const [wallpaperName] = wallpaperImage.split(" ");
   const isAlt = wallpaperImage.endsWith(" ALT");
   const wallpaperWorker = useWorker<void>(
     sessionLoaded ? WALLPAPER_WORKERS[wallpaperName] : undefined
@@ -75,242 +94,208 @@ const useWallpaper = (
   const wallpaperTimerRef = useRef(0);
   const wallpaperLoadAbortRef = useRef<AbortController>(undefined);
   const failedOffscreenContext = useRef(false);
-  const resetWallpaper = useCallback(
-    (keepCanvas?: boolean): void => {
-      desktopRef.current?.querySelector(BASE_VIDEO_SELECTOR)?.remove();
+  const resetWallpaper = (keepCanvas?: boolean): void => {
+    desktopRef.current?.querySelector(BASE_VIDEO_SELECTOR)?.remove();
 
-      if (!keepCanvas) {
-        desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
+    if (!keepCanvas) {
+      desktopRef.current?.querySelector(BASE_CANVAS_SELECTOR)?.remove();
 
-        window.WallpaperDestroy?.();
-      }
+      window.WallpaperDestroy?.();
+    }
 
-      if (wallpaperName !== "SLIDESHOW") {
-        document.documentElement.style.removeProperty("--after-background");
-        document.documentElement.style.removeProperty("--before-background");
-      }
-    },
-    [desktopRef, wallpaperName]
-  );
-  const loadWallpaper = useCallback(
-    async (keepCanvas?: boolean) => {
-      if (
-        !desktopRef.current ||
-        window.DEBUG_DISABLE_WALLPAPER ||
-        getSearchParam("disableWallpaper") === "true"
-      ) {
-        return;
-      }
+    if (wallpaperName !== "SLIDESHOW") {
+      document.documentElement.style.removeProperty("--after-background");
+      document.documentElement.style.removeProperty("--before-background");
+    }
+  };
+  const loadWallpaper = async (keepCanvas?: boolean): Promise<void> => {
+    if (
+      !desktopRef.current ||
+      window.DEBUG_DISABLE_WALLPAPER ||
+      getSearchParam("disableWallpaper") === "true"
+    ) {
+      return;
+    }
 
-      let config: undefined | WallpaperConfig;
-      const { matches: prefersReducedMotion } = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      );
-      let isTopWindow = !window.top || window === window.top;
+    let config: undefined | WallpaperConfig;
+    const { matches: prefersReducedMotion } = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+    let isTopWindow = !window.top || window === window.top;
 
-      if (!isTopWindow) {
-        try {
-          isTopWindow = window.location.origin !== window.top?.location.origin;
-        } catch {
-          // Can't read origin, assume top window
-          isTopWindow = true;
-        }
-      }
+    if (!isTopWindow) isTopWindow = isCrossOriginFrame();
 
-      if (wallpaperName === "GALAXY") {
-        config = {
-          faceOn: isAlt,
-          speed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
-        };
-      } else if (wallpaperName === "VANTA") {
-        config = {
-          material: {
-            options: {
-              wireframe: isAlt || !isTopWindow,
-            },
+    if (wallpaperName === "GALAXY") {
+      config = {
+        faceOn: isAlt,
+        speed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
+      };
+    } else if (wallpaperName === "VANTA") {
+      config = {
+        material: {
+          options: {
+            wireframe: isAlt || !isTopWindow,
           },
-          waveSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
-        };
-      } else if (wallpaperImage.startsWith("MATRIX")) {
-        config = {
-          animationSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
-          volumetric: wallpaperImage.startsWith("MATRIX 3D"),
-          ...(isTopWindow && !isAlt
-            ? {}
-            : {
-                fallSpeed: -0.09,
-                forwardSpeed: -0.25,
-              }),
-        };
-      } else if (wallpaperName === "STABLE_DIFFUSION") {
-        const promptsFilePath = `${PICTURES_FOLDER}/${PROMPT_FILE}`;
-
-        if (await exists(promptsFilePath)) {
-          config = {
-            prompts: JSON.parse(
-              (await readFile(promptsFilePath))?.toString() || "[]"
-            ) as [string, string][],
-          };
-        }
-      }
-
-      document.documentElement.style.setProperty(
-        "background",
-        document.documentElement.style.background.replace(/".*"/, "")
-      );
-
-      resetWallpaper(keepCanvas);
-
-      if (
-        !failedOffscreenContext.current &&
-        wallpaperWorker.current &&
-        hasOffscreenCanvasSupport()
-      ) {
-        // GALAXY renders at up to 1.5x native resolution so its point stars
-        // stay pin-sharp on hiDPI screens; capped to bound the fill cost on
-        // phones, and its quality governor adapts if a GPU can't keep up
-        const canvasScale =
-          wallpaperName === "GALAXY"
-            ? Math.min(window.devicePixelRatio || 1, 1.5)
-            : 1;
-        const workerConfig = { config, devicePixelRatio: canvasScale };
-
-        if (keepCanvas) {
-          wallpaperWorker.current.postMessage(workerConfig);
-        } else {
-          const offscreen = createOffscreenCanvas(
-            desktopRef.current,
-            canvasScale
-          );
-
-          wallpaperWorker.current.postMessage(
-            { canvas: offscreen, ...workerConfig },
-            [offscreen]
-          );
-
-          if (wallpaperName === "STABLE_DIFFUSION") {
-            const loadingStatus = document.createElement("div");
-
-            loadingStatus.id = "loading-status";
-            loadingStatus.setAttribute("role", "status");
-
-            desktopRef.current?.append(loadingStatus);
-
-            window.WallpaperDestroy = () => {
-              loadingStatus.remove();
-              window.WallpaperDestroy = undefined;
-            };
-
-            wallpaperWorker.current.addEventListener(
-              "message",
-              ({ data }: { data: WallpaperMessage }) => {
-                // Show the live region before its content changes,
-                // otherwise the announcement is unreliable
-                loadingStatus.style.display = data.message ? "block" : "none";
-
-                if (data.type === "[error]") {
-                  setWallpaper(DEFAULT_WALLPAPER);
-                } else if (data.type) {
-                  loadingStatus.textContent = data.message || "";
-                } else if (!data.message) {
-                  wallpaperTimerRef.current = window.setTimeout(
-                    () => loadWallpaper(true),
-                    MILLISECONDS_IN_MINUTE *
-                      (window.STABLE_DIFFUSION_DELAY_IN_MIN_OVERRIDE ??
-                        STABLE_DIFFUSION_DELAY_IN_MIN)
-                  );
-                }
-              }
-            );
-          } else {
-            wallpaperWorker.current.addEventListener(
-              "message",
-              ({ data }: { data: WallpaperMessage }) => {
-                if (data.type === "[error]") {
-                  if (data.message.includes("getContext")) {
-                    failedOffscreenContext.current = true;
-                    loadWallpaper();
-                  } else {
-                    setWallpaper("SLIDESHOW");
-                  }
-                }
-              }
-            );
-          }
-
-          if (wallpaperName === "GALAXY") {
-            const stopInput = listenGalaxyInput({
-              onTilt: (x, y) =>
-                wallpaperWorker.current?.postMessage({
-                  type: "tilt",
-                  x,
-                  y,
-                }),
-              onVisibility: (visible) =>
-                wallpaperWorker.current?.postMessage({
-                  type: "visibility",
-                  visible,
-                }),
-            });
-
-            window.WallpaperDestroy = () => {
-              stopInput();
-              window.WallpaperDestroy = undefined;
-            };
-          }
-        }
-      } else if (WALLPAPER_PATHS[wallpaperName]) {
-        const fallbackWallpaper = (): void =>
-          setWallpaper(
-            wallpaperName === DEFAULT_WALLPAPER
-              ? "SLIDESHOW"
-              : DEFAULT_WALLPAPER
-          );
-
-        WALLPAPER_PATHS[wallpaperName]()
-          .then(({ default: wallpaper }) =>
-            wallpaper?.(desktopRef.current, config, fallbackWallpaper)
-          )
-          .catch(fallbackWallpaper);
-      } else {
-        setWallpaper(DEFAULT_WALLPAPER);
-      }
-    },
-    [
-      desktopRef,
-      exists,
-      isAlt,
-      readFile,
-      resetWallpaper,
-      setWallpaper,
-      wallpaperImage,
-      wallpaperName,
-      wallpaperWorker,
-    ]
-  );
-  const getAllImages = useCallback(
-    async (baseDirectory: string): Promise<string[]> =>
-      (await readdir(baseDirectory)).reduce<Promise<string[]>>(
-        async (images, entry) => {
-          const entryPath = join(baseDirectory, entry);
-
-          return [
-            ...(await images),
-            ...((await lstat(entryPath)).isDirectory()
-              ? await getAllImages(entryPath)
-              : [
-                  IMAGE_FILE_EXTENSIONS.has(getExtension(entryPath)) &&
-                  !UNSUPPORTED_SLIDESHOW_EXTENSIONS.has(getExtension(entryPath))
-                    ? entryPath
-                    : "",
-                ]),
-          ].filter(Boolean);
         },
-        Promise.resolve([])
-      ),
-    [readdir, lstat]
-  );
-  const loadFileWallpaper = useCallback(async () => {
+        waveSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
+      };
+    } else if (wallpaperImage.startsWith("MATRIX")) {
+      config = {
+        animationSpeed: prefersReducedMotion ? REDUCED_MOTION_PERCENT : 1,
+        volumetric: wallpaperImage.startsWith("MATRIX 3D"),
+        ...(isTopWindow && !isAlt
+          ? {}
+          : {
+              fallSpeed: -0.09,
+              forwardSpeed: -0.25,
+            }),
+      };
+    } else if (wallpaperName === "STABLE_DIFFUSION") {
+      const promptsFilePath = `${PICTURES_FOLDER}/${PROMPT_FILE}`;
+
+      if (await exists(promptsFilePath)) {
+        config = {
+          prompts: JSON.parse(
+            (await readFile(promptsFilePath))?.toString() || "[]"
+          ) as [string, string][],
+        };
+      }
+    }
+
+    document.documentElement.style.setProperty(
+      "background",
+      document.documentElement.style.background.replace(/".*"/, "")
+    );
+
+    resetWallpaper(keepCanvas);
+
+    if (
+      !failedOffscreenContext.current &&
+      wallpaperWorker.current &&
+      hasOffscreenCanvasSupport()
+    ) {
+      // GALAXY renders at up to 1.5x native resolution so its point stars
+      // stay pin-sharp on hiDPI screens; capped to bound the fill cost on
+      // phones, and its quality governor adapts if a GPU can't keep up
+      const canvasScale =
+        wallpaperName === "GALAXY"
+          ? Math.min(window.devicePixelRatio || 1, 1.5)
+          : 1;
+      const workerConfig = { config, devicePixelRatio: canvasScale };
+
+      if (keepCanvas) {
+        wallpaperWorker.current.postMessage(workerConfig);
+      } else {
+        const offscreen = createOffscreenCanvas(
+          desktopRef.current,
+          canvasScale
+        );
+
+        wallpaperWorker.current.postMessage(
+          { canvas: offscreen, ...workerConfig },
+          [offscreen]
+        );
+
+        if (wallpaperName === "STABLE_DIFFUSION") {
+          const loadingStatus = document.createElement("div");
+
+          loadingStatus.id = "loading-status";
+          loadingStatus.setAttribute("role", "status");
+
+          desktopRef.current?.append(loadingStatus);
+
+          setWallpaperDestroy(() => loadingStatus.remove());
+
+          wallpaperWorker.current.addEventListener(
+            "message",
+            ({ data }: { data: WallpaperMessage }) => {
+              // Show the live region before its content changes,
+              // otherwise the announcement is unreliable
+              loadingStatus.style.display = data.message ? "block" : "none";
+
+              if (data.type === "[error]") {
+                setWallpaper(DEFAULT_WALLPAPER);
+              } else if (data.type) {
+                loadingStatus.textContent = data.message || "";
+              } else if (!data.message) {
+                wallpaperTimerRef.current = window.setTimeout(
+                  () => loadWallpaper(true),
+                  MILLISECONDS_IN_MINUTE *
+                    (window.STABLE_DIFFUSION_DELAY_IN_MIN_OVERRIDE ??
+                      STABLE_DIFFUSION_DELAY_IN_MIN)
+                );
+              }
+            }
+          );
+        } else {
+          wallpaperWorker.current.addEventListener(
+            "message",
+            ({ data }: { data: WallpaperMessage }) => {
+              if (data.type === "[error]") {
+                if (data.message.includes("getContext")) {
+                  failedOffscreenContext.current = true;
+                  loadWallpaper();
+                } else {
+                  setWallpaper("SLIDESHOW");
+                }
+              }
+            }
+          );
+        }
+
+        if (wallpaperName === "GALAXY") {
+          const stopInput = listenGalaxyInput({
+            onTilt: (x, y) =>
+              wallpaperWorker.current?.postMessage({
+                type: "tilt",
+                x,
+                y,
+              }),
+            onVisibility: (visible) =>
+              wallpaperWorker.current?.postMessage({
+                type: "visibility",
+                visible,
+              }),
+          });
+
+          setWallpaperDestroy(stopInput);
+        }
+      }
+    } else if (WALLPAPER_PATHS[wallpaperName]) {
+      const fallbackWallpaper = (): void =>
+        setWallpaper(
+          wallpaperName === DEFAULT_WALLPAPER ? "SLIDESHOW" : DEFAULT_WALLPAPER
+        );
+
+      WALLPAPER_PATHS[wallpaperName]()
+        .then(({ default: wallpaper }) =>
+          wallpaper?.(desktopRef.current, config, fallbackWallpaper)
+        )
+        .catch(fallbackWallpaper);
+    } else {
+      setWallpaper(DEFAULT_WALLPAPER);
+    }
+  };
+  const getAllImages = async (baseDirectory: string): Promise<string[]> =>
+    (await readdir(baseDirectory)).reduce<Promise<string[]>>(
+      async (images, entry) => {
+        const entryPath = join(baseDirectory, entry);
+
+        return [
+          ...(await images),
+          ...((await lstat(entryPath)).isDirectory()
+            ? await getAllImages(entryPath)
+            : [
+                IMAGE_FILE_EXTENSIONS.has(getExtension(entryPath)) &&
+                !UNSUPPORTED_SLIDESHOW_EXTENSIONS.has(getExtension(entryPath))
+                  ? entryPath
+                  : "",
+              ]),
+        ].filter(Boolean);
+      },
+      Promise.resolve([])
+    );
+  const loadFileWallpaper = async (): Promise<void> => {
     let loadController: AbortController | undefined;
     let [, currentWallpaperUrl] =
       /url\((.*)\)/.exec(
@@ -333,9 +318,7 @@ const useWallpaper = (
     if (isSlideshow) {
       resetWallpaper();
 
-      slideshowFiles = {
-        [wallpaperImage]: slideshowFiles[wallpaperImage] || [],
-      };
+      keepSlideshowFiles(wallpaperImage);
 
       if (slideshowFiles[wallpaperImage].length === 0) {
         const slideshowFilePath = `${PICTURES_FOLDER}/${SLIDESHOW_FILE}`;
@@ -412,7 +395,7 @@ const useWallpaper = (
         readFile(wallpaperImage),
         isNative
           ? Promise.resolve()
-          : import("utils/imageDecoder").then((m) => m.decodeImageToBuffer),
+          : loadImageDecoder().then((m) => m.decodeImageToBuffer),
       ]);
       let fileData = initialData;
 
@@ -530,21 +513,7 @@ const useWallpaper = (
     } else {
       loadWallpaper();
     }
-  }, [
-    colors,
-    desktopRef,
-    exists,
-    getAllImages,
-    isAlt,
-    loadWallpaper,
-    readFile,
-    resetWallpaper,
-    updateFolder,
-    wallpaperFit,
-    wallpaperImage,
-    wallpaperName,
-    writeFile,
-  ]);
+  };
 
   useEffect(() => {
     if (sessionLoaded) {

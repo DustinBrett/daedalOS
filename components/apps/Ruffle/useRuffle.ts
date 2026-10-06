@@ -1,5 +1,5 @@
 import { basename, extname } from "path";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { type RufflePlayer } from "components/apps/Ruffle/types";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
@@ -18,19 +18,21 @@ const useRuffle = ({
   const [player, setPlayer] = useState<RufflePlayer>();
   const { appendFileToTitle } = useTitle(id);
   const { readFile } = useFileSystemActions();
-  const loadFlash = useCallback(async () => {
+  const loadFlash = async (): Promise<void> => {
     containerRef.current?.classList.remove("drop");
 
-    try {
-      await player?.load({ data: await readFile(url) });
-    } catch {
-      // Ruffle handles error reporting
-    } finally {
-      setLoading(false);
+    if (player) {
+      try {
+        await player.load({ data: await readFile(url) });
+      } catch {
+        // Ruffle handles error reporting
+      }
     }
 
+    setLoading(false);
+
     appendFileToTitle(basename(url, extname(url)));
-  }, [appendFileToTitle, containerRef, player, readFile, setLoading, url]);
+  };
 
   useEffect(() => {
     loadFiles(libs).then(() => {

@@ -1,6 +1,7 @@
 import { AnimatePresence, useIsPresent } from "motion/react";
 import dynamic from "next/dynamic";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+// eslint-disable-next-line no-restricted-imports -- TaskbarEntries re-maps every entry on any process change
+import { memo, useEffect, useRef, useState } from "react";
 import StyledTaskbarEntry from "components/system/Taskbar/TaskbarEntry/StyledTaskbarEntry";
 import useTaskbarTransition from "components/system/Taskbar/TaskbarEntry/useTaskbarTransition";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
@@ -30,60 +31,42 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   const { linkElement, minimize, open } = useProcessesActions();
   const { minimized, progress, singleton } = useProcess(id);
   const isPresent = useIsPresent();
-  const linkTaskbarEntry = useCallback(
-    (taskbarEntry: HTMLButtonElement | null) => {
-      if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);
-    },
-    [id, linkElement]
-  );
+  const linkTaskbarEntry = (taskbarEntry: HTMLButtonElement | null): void => {
+    if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);
+  };
   const [isPeekVisible, setIsPeekVisible] = useState(false);
   const hidePeekTimerRef = useRef(0);
-  const hidePeek = useCallback(
-    ({ currentTarget }: React.MouseEvent<HTMLElement>): void => {
-      hidePeekTimerRef.current = window.setTimeout(
-        () => setIsPeekVisible(false),
-        currentTarget.querySelector(".peekWindow:not([inert])") ? 200 : 0
-      );
-    },
-    []
-  );
-  const resetPeekTimer = useCallback(() => {
+  const hidePeek = ({ currentTarget }: React.MouseEvent<HTMLElement>): void => {
+    hidePeekTimerRef.current = window.setTimeout(
+      () => setIsPeekVisible(false),
+      currentTarget.querySelector(".peekWindow:not([inert])") ? 200 : 0
+    );
+  };
+  const resetPeekTimer = (): void => {
     if (hidePeekTimerRef.current) {
       window.clearTimeout(hidePeekTimerRef.current);
       hidePeekTimerRef.current = 0;
     }
-  }, []);
-  const showPeek = useCallback(() => {
+  };
+  const showPeek = (): void => {
     resetPeekTimer();
     setIsPeekVisible(true);
-  }, [resetPeekTimer]);
-  const closePeek = useCallback(() => {
+  };
+  const closePeek = (): void => {
     resetPeekTimer();
     setIsPeekVisible(false);
-  }, [resetPeekTimer]);
-  const onClick = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
-    (event): void => {
-      if (event.shiftKey && !singleton) {
-        const [pid] = id.split(PROCESS_DELIMITER);
+  };
+  const onClick: React.MouseEventHandler<HTMLButtonElement> = (event): void => {
+    if (event.shiftKey && !singleton) {
+      const [pid] = id.split(PROCESS_DELIMITER);
 
-        open(pid);
-      } else {
-        if (minimized || isForeground) minimize(id);
+      open(pid);
+    } else {
+      if (minimized || isForeground) minimize(id);
 
-        setForegroundId(isForeground ? nextFocusableId : id);
-      }
-    },
-    [
-      id,
-      isForeground,
-      minimize,
-      minimized,
-      nextFocusableId,
-      open,
-      setForegroundId,
-      singleton,
-    ]
-  );
+      setForegroundId(isForeground ? nextFocusableId : id);
+    }
+  };
   useEffect(() => {
     const onKeyDown = ({ key }: KeyboardEvent): void => {
       if (key === "Escape") closePeek();
@@ -96,15 +79,12 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [closePeek, isPeekVisible]);
   const titlebarContextMenu = useTitlebarContextMenu(id);
-  const onContextMenuCapture = useCallback<
-    React.MouseEventHandler<HTMLElement>
-  >(
-    (event) => {
-      closePeek();
-      titlebarContextMenu.onContextMenuCapture?.(event);
-    },
-    [closePeek, titlebarContextMenu]
-  );
+  const onContextMenuCapture: React.MouseEventHandler<HTMLElement> = (
+    event
+  ) => {
+    closePeek();
+    titlebarContextMenu.onContextMenuCapture?.(event);
+  };
 
   return (
     <StyledTaskbarEntry

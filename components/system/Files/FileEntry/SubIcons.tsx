@@ -1,4 +1,3 @@
-import { memo, useMemo } from "react";
 import {
   FileEntryIconSize,
   type FileManagerViewNames,
@@ -45,6 +44,62 @@ const SHORT_IMAGE_TRANSFORM_16 = "matrix(0.4, 0.14, 0, 0.8, -0.5, 2)";
 
 const NON_SUB_ICONS = new Set([SHORTCUT_ICON, FOLDER_FRONT_ICON]);
 
+const getBaseStyle = (
+  baseIcon: string,
+  icon: string,
+  imgSize: SharedSubIconProps["imgSize"],
+  isFirstImage: boolean,
+  totalSubIcons: number
+): React.CSSProperties | undefined => {
+  if (icon === FOLDER_FRONT_ICON) return { zIndex: 3 };
+
+  if (baseIcon === FOLDER_BACK_ICON) {
+    const hasMultipleSubIcons = totalSubIcons - 1 > 1;
+    const isSmallImage = imgSize === 16;
+    const shortTransform = isSmallImage
+      ? SHORT_IMAGE_TRANSFORM_16
+      : SHORT_IMAGE_TRANSFORM;
+    const wideTransform = isSmallImage
+      ? WIDE_IMAGE_TRANSFORM_16
+      : WIDE_IMAGE_TRANSFORM;
+    const transform = isFirstImage
+      ? hasMultipleSubIcons
+        ? shortTransform
+        : wideTransform
+      : wideTransform;
+
+    return {
+      objectFit: "cover",
+      transform: `${transform} translateZ(0px)`,
+      zIndex: isFirstImage ? 2 : 1,
+    };
+  }
+
+  return undefined;
+};
+
+const getIconView = (
+  icon: string,
+  view: FileManagerViewNames
+): (typeof FileEntryIconSize)[keyof typeof FileEntryIconSize] => {
+  const isSub =
+    !NON_SUB_ICONS.has(icon) &&
+    !icon.startsWith("blob:") &&
+    !icon.startsWith(ICON_CACHE) &&
+    !icon.startsWith(YT_ICON_CACHE);
+
+  if (icon === SHORTCUT_ICON && view === "details") {
+    return {
+      displaySize: 16,
+      imgSize: 48,
+    };
+  }
+
+  return FileEntryIconSize[
+    isSub ? (view === "details" ? "detailsSub" : "sub") : view
+  ];
+};
+
 const SubIcon: FC<SubIconProps> = ({
   alt,
   baseIcon,
@@ -56,57 +111,17 @@ const SubIcon: FC<SubIconProps> = ({
   totalSubIcons,
   view,
 }) => {
-  const iconView = useMemo(() => {
-    const isSub =
-      !NON_SUB_ICONS.has(icon) &&
-      !icon.startsWith("blob:") &&
-      !icon.startsWith(ICON_CACHE) &&
-      !icon.startsWith(YT_ICON_CACHE);
-
-    if (icon === SHORTCUT_ICON && view === "details") {
-      return {
-        displaySize: 16,
-        imgSize: 48,
-      };
-    }
-
-    return FileEntryIconSize[
-      isSub ? (view === "details" ? "detailsSub" : "sub") : view
-    ];
-  }, [icon, view]);
-
-  const baseStyle = useMemo((): React.CSSProperties | undefined => {
-    if (icon === FOLDER_FRONT_ICON) return { zIndex: 3 };
-
-    if (baseIcon === FOLDER_BACK_ICON) {
-      const hasMultipleSubIcons = totalSubIcons - 1 > 1;
-      const isSmallImage = imgSize === 16;
-      const shortTransform = isSmallImage
-        ? SHORT_IMAGE_TRANSFORM_16
-        : SHORT_IMAGE_TRANSFORM;
-      const wideTransform = isSmallImage
-        ? WIDE_IMAGE_TRANSFORM_16
-        : WIDE_IMAGE_TRANSFORM;
-      const transform = isFirstImage
-        ? hasMultipleSubIcons
-          ? shortTransform
-          : wideTransform
-        : wideTransform;
-
-      return {
-        objectFit: "cover",
-        transform: `${transform} translateZ(0px)`,
-        zIndex: isFirstImage ? 2 : 1,
-      };
-    }
-
-    return undefined;
-  }, [baseIcon, icon, imgSize, isFirstImage, totalSubIcons]);
-  const style = useMemo(
-    () =>
-      isHidden ? { ...baseStyle, visibility: "hidden" as const } : baseStyle,
-    [baseStyle, isHidden]
+  const iconView = getIconView(icon, view);
+  const baseStyle = getBaseStyle(
+    baseIcon,
+    icon,
+    imgSize,
+    isFirstImage,
+    totalSubIcons
   );
+  const style = isHidden
+    ? { ...baseStyle, visibility: "hidden" as const }
+    : baseStyle;
 
   return (
     <Icon
@@ -119,8 +134,6 @@ const SubIcon: FC<SubIconProps> = ({
   );
 };
 
-const MemoizedSubIcon = memo(SubIcon);
-
 const SubIcons: FC<SubIconsProps> = ({
   alt,
   icon,
@@ -131,31 +144,21 @@ const SubIcons: FC<SubIconsProps> = ({
   subIcons,
   view,
 }) => {
-  const icons = useMemo(
-    () =>
-      showShortcutIcon
-        ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
-        : subIcons,
-    [showShortcutIcon, subIcons]
-  );
-  const filteredSubIcons = useMemo(() => {
-    const iconsLength = icons?.length;
-
-    if (
-      iconsLength &&
-      view === "details" &&
-      icons[iconsLength - 1] === FOLDER_FRONT_ICON
-    ) {
-      return [];
-    }
-
-    return icons || [];
-  }, [icons, view]);
+  const icons = showShortcutIcon
+    ? subIcons?.filter((iconEntry) => iconEntry !== SHORTCUT_ICON)
+    : subIcons;
+  const iconsLength = icons?.length;
+  const filteredSubIcons =
+    iconsLength &&
+    view === "details" &&
+    icons[iconsLength - 1] === FOLDER_FRONT_ICON
+      ? []
+      : icons || [];
 
   return (
     <>
       {filteredSubIcons.map((entryIcon, subIconIndex) => (
-        <MemoizedSubIcon
+        <SubIcon
           key={entryIcon}
           alt={alt}
           baseIcon={icon}
@@ -175,4 +178,4 @@ const SubIcons: FC<SubIconsProps> = ({
   );
 };
 
-export default memo(SubIcons);
+export default SubIcons;

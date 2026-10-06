@@ -4,7 +4,7 @@ import {
   type PanzoomEventDetail,
   type PanzoomObject,
 } from "@panzoom/panzoom/dist/src/types";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useTitle from "components/system/Window/useTitle";
 import { useProcess } from "contexts/process";
 import useResizeObserver from "hooks/useResizeObserver";
@@ -25,42 +25,40 @@ type PanZoom = Partial<
 
 const usePanZoom = (
   id: string,
-  imgElement: HTMLImageElement | null,
-  containerElement: HTMLElement | null
+  imgElement?: HTMLImageElement | null,
+  containerElement?: HTMLElement | null
 ): PanZoom => {
   const [panZoom, setPanZoom] = useState<ReturnType<typeof Panzoom>>();
-  const { getScale, reset, zoomIn, zoomOut, zoomToPoint, zoomWithWheel } =
-    panZoom || {};
+  const { reset, zoomIn, zoomOut, zoomToPoint, zoomWithWheel } = panZoom || {};
+  const [currentScale, setCurrentScale] = useState<number>();
   const { closing, componentWindow, url = "" } = useProcess(id);
   const { prependFileToTitle } = useTitle(id);
-  const zoomUpdate = useCallback<EventListener>(
-    (panZoomEvent) => {
-      const { detail: { scale = 0, x = 0, y = 0 } = {} } =
-        (panZoomEvent as PanZoomEvent) || {};
+  const zoomUpdate: EventListener = (panZoomEvent) => {
+    const { detail: { scale = 0, x = 0, y = 0 } = {} } =
+      (panZoomEvent as PanZoomEvent) || {};
 
-      if (url && scale) {
-        const { minScale, step } = panZoomConfig;
-        const isMinScale = scale < minScale + step;
+    setCurrentScale(scale);
 
-        if (isMinScale && (x || y)) {
-          window.setTimeout(() => panZoom?.reset(), 50);
-        }
+    if (url && scale) {
+      const { minScale, step } = panZoomConfig;
+      const isMinScale = scale < minScale + step;
 
-        if (!closing) {
-          prependFileToTitle(
-            isMinScale
-              ? basename(url)
-              : `${basename(url)} (${Math.floor(scale * 100)}%)`
-          );
-        }
+      if (isMinScale && (x || y)) {
+        window.setTimeout(() => panZoom?.reset(), 50);
       }
-    },
-    [closing, panZoom, prependFileToTitle, url]
-  );
-  const zoomWheel = useCallback(
-    (event: WheelEvent) => zoomWithWheel?.(event, { step: 0.3 }),
-    [zoomWithWheel]
-  );
+
+      if (!closing) {
+        prependFileToTitle(
+          isMinScale
+            ? basename(url)
+            : `${basename(url)} (${Math.floor(scale * 100)}%)`
+        );
+      }
+    }
+  };
+  const zoomWheel = (event: WheelEvent): void => {
+    zoomWithWheel?.(event, { step: 0.3 });
+  };
 
   useResizeObserver(componentWindow, reset);
 
@@ -78,13 +76,14 @@ const usePanZoom = (
 
   useEffect(() => {
     if (imgElement && !panZoom) {
+      // eslint-disable-next-line react/set-state-in-effect -- Creates the Panzoom instance once the image mounts
       setPanZoom(Panzoom(imgElement, panZoomConfig));
     }
 
     return () => panZoom?.destroy();
   }, [imgElement, panZoom]);
 
-  return { reset, scale: getScale?.(), zoomIn, zoomOut, zoomToPoint };
+  return { reset, scale: currentScale, zoomIn, zoomOut, zoomToPoint };
 };
 
 export default usePanZoom;

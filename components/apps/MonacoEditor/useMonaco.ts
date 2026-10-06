@@ -1,7 +1,7 @@
 import { basename, dirname } from "path";
 import loader from "@monaco-editor/loader";
 import type * as Monaco from "monaco-editor";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   config,
   theme,
@@ -37,20 +37,20 @@ const useMonaco = ({
   const { prependFileToTitle } = useTitle(id);
   const [editor, setEditor] = useState<Monaco.editor.IStandaloneCodeEditor>();
   const [monaco, setMonaco] = useState<typeof Monaco>();
-  const createModelUri = useCallback(
-    (modelUrl: string, instance = 0): Monaco.Uri | undefined => {
-      const uriName = `${modelUrl}${URL_DELIMITER}${instance}`;
-      const models = monaco?.editor.getModels();
+  const createModelUri = (
+    modelUrl: string,
+    instance = 0
+  ): Monaco.Uri | undefined => {
+    const uriName = `${modelUrl}${URL_DELIMITER}${instance}`;
+    const models = monaco?.editor.getModels();
 
-      return models?.some(
-        (model) => (model as Model)._associatedResource.path === uriName
-      )
-        ? createModelUri(modelUrl, instance + 1)
-        : monaco?.Uri.parse(uriName);
-    },
-    [monaco?.Uri, monaco?.editor]
-  );
-  const createModel = useCallback(async () => {
+    return models?.some(
+      (model) => (model as Model)._associatedResource.path === uriName
+    )
+      ? createModelUri(modelUrl, instance + 1)
+      : monaco?.Uri.parse(uriName);
+  };
+  const createModel = async (): Promise<Monaco.editor.ITextModel> => {
     const newModel = monaco?.editor.createModel(
       (await readFile(url)).toString(),
       detectLanguage(getExtension(url)),
@@ -60,15 +60,15 @@ const useMonaco = ({
     newModel?.onDidChangeContent(() => prependFileToTitle(basename(url), true));
 
     return newModel as Monaco.editor.ITextModel;
-  }, [createModelUri, monaco?.editor, prependFileToTitle, readFile, url]);
-  const loadFile = useCallback(async () => {
+  };
+  const loadFile = async (): Promise<void> => {
     if (monaco && editor && url.startsWith("/")) {
       editor.getModel()?.dispose();
       editor.setModel(await createModel());
     }
 
     prependFileToTitle(basename(url || DEFAULT_TEXT_FILE_SAVE_PATH));
-  }, [createModel, editor, monaco, prependFileToTitle, url]);
+  };
 
   useEffect(() => {
     if (!monaco) {

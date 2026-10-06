@@ -2,7 +2,7 @@ import { type Filter } from "nostr-tools/filter";
 import { Contacts, Metadata } from "nostr-tools/kinds";
 import { type Event } from "nostr-tools/pure";
 import { type Relay } from "nostr-tools/relay";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BASE_NIP05_URL,
   NOTIFICATION_SOUND,
@@ -70,7 +70,7 @@ export const useNostrEvents = ({
   onEvent: (event: Event) => void;
 }): void => {
   const { relays, signer } = useNostr();
-  const filterString = useMemo(() => JSON.stringify(filter), [filter]);
+  const filterString = JSON.stringify(filter);
   const onEventRef = useRef(onEvent);
   const subscriptions = useRef({
     closers: new Map<Relay, () => void>(),
@@ -152,52 +152,45 @@ export const useNostrContacts = (
 ): NostrContacts => {
   const { messages } = useMessageContext();
   const { blockedKeys, seenEventIds } = useHistoryContext();
-  const globalKeys = useMemo(
-    () =>
-      [
-        ...new Set(
-          [PACKAGE_DATA.author.npub, ...Object.values(wellKnownNames)].map(
-            decodePublicKey
-          )
-        ),
-      ].filter((key) => key && key !== publicKey && !blockedKeys.includes(key)),
-    [blockedKeys, publicKey, wellKnownNames]
+  const globalKeys = [
+    ...new Set(
+      [PACKAGE_DATA.author.npub, ...Object.values(wellKnownNames)].map(
+        decodePublicKey
+      )
+    ),
+  ].filter((key) => key && key !== publicKey && !blockedKeys.includes(key));
+  const lastMessages: Record<string, DirectMessage> = {};
+  const repliedKeys = new Set<string>();
+  const seenIds = new Set(seenEventIds);
+
+  toSorted(messages, descCreatedAt).forEach((message) => {
+    const key = getContactKey(message, publicKey);
+
+    if (message.pubkey === publicKey) repliedKeys.add(key);
+    if (key !== publicKey && !lastMessages[key]) lastMessages[key] = message;
+  });
+
+  const strangerKeys = Object.keys(lastMessages).filter(
+    (key) => !globalKeys.includes(key) && !repliedKeys.has(key)
+  );
+  const spamKeys = findSpamKeys(
+    messages.filter(({ pubkey }) => strangerKeys.includes(pubkey))
   );
 
-  return useMemo(() => {
-    const lastMessages: Record<string, DirectMessage> = {};
-    const repliedKeys = new Set<string>();
-    const seenIds = new Set(seenEventIds);
-
-    toSorted(messages, descCreatedAt).forEach((message) => {
-      const key = getContactKey(message, publicKey);
-
-      if (message.pubkey === publicKey) repliedKeys.add(key);
-      if (key !== publicKey) lastMessages[key] ||= message;
-    });
-
-    const strangerKeys = Object.keys(lastMessages).filter(
-      (key) => !globalKeys.includes(key) && !repliedKeys.has(key)
-    );
-    const spamKeys = findSpamKeys(
-      messages.filter(({ pubkey }) => strangerKeys.includes(pubkey))
-    );
-
-    return {
-      chatKeys: [
-        ...globalKeys,
-        ...Object.keys(lastMessages).filter(
-          (key) => !globalKeys.includes(key) && repliedKeys.has(key)
-        ),
-      ],
-      lastMessages,
-      requestKeys: strangerKeys.filter((key) => !spamKeys.has(key)),
-      spamKeys: strangerKeys.filter((key) => spamKeys.has(key)),
-      unreadMessages: messages.filter(
-        ({ id, pubkey }) => pubkey !== publicKey && !seenIds.has(id)
+  return {
+    chatKeys: [
+      ...globalKeys,
+      ...Object.keys(lastMessages).filter(
+        (key) => !globalKeys.includes(key) && repliedKeys.has(key)
       ),
-    };
-  }, [globalKeys, messages, publicKey, seenEventIds]);
+    ],
+    lastMessages,
+    requestKeys: strangerKeys.filter((key) => !spamKeys.has(key)),
+    spamKeys: strangerKeys.filter((key) => spamKeys.has(key)),
+    unreadMessages: messages.filter(
+      ({ id, pubkey }) => pubkey !== publicKey && !seenIds.has(id)
+    ),
+  };
 };
 
 export const useFollows = (): string[] => {
@@ -247,15 +240,16 @@ export const useProfiles = (publicKeys: string[]): void => {
   const { query } = useNostr();
   const { profiles, setProfiles } = useHistoryContext();
   const requestedKeys = useRef(new Set<string>());
-  const missingKeys = publicKeys.filter(
-    (key) => !profiles[key] && !requestedKeys.current.has(key)
-  );
-  const missingKeysString = missingKeys.join(",");
+  const missingKeysString = publicKeys
+    .filter((key) => !profiles[key])
+    .join(",");
 
   useEffect(() => {
-    if (!missingKeysString) return;
+    const authors = missingKeysString
+      .split(",")
+      .filter((key) => key && !requestedKeys.current.has(key));
 
-    const authors = missingKeysString.split(",");
+    if (authors.length === 0) return;
 
     authors.forEach((key) => requestedKeys.current.add(key));
     query({ authors, kinds: [Metadata] }).then((events) =>
@@ -265,7 +259,7 @@ export const useProfiles = (publicKeys: string[]): void => {
 };
 
 export const useUnreadStatus = (id: string, unreadCount: number): void => {
-  const [currentUnreadCount, setCurrentUnreadCount] = useState(unreadCount);
+  const currentUnreadCount = useRef(unreadCount);
   const { title } = useProcessesActions();
   const [pid] = id.split(PROCESS_DELIMITER);
 
@@ -277,12 +271,12 @@ export const useUnreadStatus = (id: string, unreadCount: number): void => {
   }, [pid, title, unreadCount]);
 
   useEffect(() => {
-    if (unreadCount > currentUnreadCount) {
+    if (unreadCount > currentUnreadCount.current) {
       new Audio(NOTIFICATION_SOUND).play();
     }
 
-    setCurrentUnreadCount(unreadCount);
-  }, [currentUnreadCount, unreadCount]);
+    currentUnreadCount.current = unreadCount;
+  }, [unreadCount]);
 };
 
 export const useNip05Domain = (nip05?: string, publicKey?: string): string => {
@@ -300,16 +294,13 @@ export const useNostrProfile = (
   isVisible = true
 ): NostrProfile => {
   const { profiles, setProfiles } = useHistoryContext();
-  const profileFilter = useMemo(
-    () => ({
-      enabled: Boolean(publicKey) && isVisible,
-      filter: [{ authors: [publicKey], kinds: [Metadata] }],
-      onEvent: (event: Event) => {
-        if (event.pubkey === publicKey) setProfiles(mergeProfile(event));
-      },
-    }),
-    [isVisible, publicKey, setProfiles]
-  );
+  const profileFilter = {
+    enabled: Boolean(publicKey) && isVisible,
+    filter: [{ authors: [publicKey], kinds: [Metadata] }],
+    onEvent: (event: Event) => {
+      if (event.pubkey === publicKey) setProfiles(mergeProfile(event));
+    },
+  };
 
   useNostrEvents(profileFilter);
 

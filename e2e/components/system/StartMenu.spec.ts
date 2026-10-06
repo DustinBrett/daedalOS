@@ -9,6 +9,7 @@ import {
   clickDesktop,
   clickStartButton,
   clickStartMenuEntry,
+  closePage,
   contextMenuEntryIsVisible,
   contextMenuHasCount,
   desktopEntriesAreVisible,
@@ -30,6 +31,7 @@ test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp());
 test.beforeEach(async ({ page }) => clickStartButton({ page }));
 test.beforeEach(startMenuIsVisible);
+test.afterEach(closePage);
 
 test.describe("has sidebar", () => {
   test("has buttons", async ({ page }) => {

@@ -24,6 +24,15 @@ class SilentAudioContext {
   });
 }
 
+// Takes the window, so the compiler keys the cleanup on it rather than on SDL2
+const closeAudio = (contentWindow?: Window): void => {
+  try {
+    contentWindow?.Module?.SDL2?.audioContext.close();
+  } catch {
+    // Ignore errors during closing
+  }
+};
+
 const useSpaceCadet = ({
   containerRef,
   id,
@@ -101,18 +110,7 @@ const useSpaceCadet = ({
     return cleanup;
   }, [getContentWindow, id, libs, loading, mountEmFs, setLoading]);
 
-  useEffect(
-    () => () => {
-      if (contentWindow?.Module) {
-        try {
-          contentWindow.Module.SDL2?.audioContext.close();
-        } catch {
-          // Ignore errors during closing
-        }
-      }
-    },
-    [contentWindow?.Module]
-  );
+  useEffect(() => () => closeAudio(contentWindow), [contentWindow]);
 };
 
 export default useSpaceCadet;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   type FullscreenDocument,
   type FullscreenElement,
@@ -75,43 +75,40 @@ const useViewportContextState = (): ViewportContextState => {
     null
   );
   const restoreDesktopRef = useRef(false);
-  const toggleFullscreen = useCallback(
-    async (
-      element?: HTMLElement | null,
-      navigationUI?: FullscreenNavigationUI
-    ): Promise<void> => {
-      // State can be stale, the document always knows what is in fullscreen
-      const currentFullscreenElement = getFullscreenElement();
+  const toggleFullscreen = async (
+    element?: HTMLElement | null,
+    navigationUI?: FullscreenNavigationUI
+  ): Promise<void> => {
+    // State can be stale, the document always knows what is in fullscreen
+    const currentFullscreenElement = getFullscreenElement();
 
-      if (
-        currentFullscreenElement &&
-        (!element || element === currentFullscreenElement)
-      ) {
-        await exitFullscreen();
+    if (
+      currentFullscreenElement &&
+      (!element || element === currentFullscreenElement)
+    ) {
+      await exitFullscreen();
 
-        if (restoreDesktopRef.current) {
-          restoreDesktopRef.current = false;
-          await enterFullscreen(document.documentElement, {
-            navigationUI: "hide",
-          });
-        }
-      } else {
-        // Only Chrome switches full screen elements without exiting
-        const mustExit =
-          Boolean(currentFullscreenElement) && (isFirefox() || isSafari());
-
-        restoreDesktopRef.current =
-          mustExit && currentFullscreenElement === document.documentElement;
-
-        if (mustExit) await exitFullscreen();
-
-        await enterFullscreen(element || document.documentElement, {
-          navigationUI: navigationUI || "hide",
+      if (restoreDesktopRef.current) {
+        restoreDesktopRef.current = false;
+        await enterFullscreen(document.documentElement, {
+          navigationUI: "hide",
         });
       }
-    },
-    []
-  );
+    } else {
+      // Only Chrome switches full screen elements without exiting
+      const mustExit =
+        Boolean(currentFullscreenElement) && (isFirefox() || isSafari());
+
+      restoreDesktopRef.current =
+        mustExit && currentFullscreenElement === document.documentElement;
+
+      if (mustExit) await exitFullscreen();
+
+      await enterFullscreen(element || document.documentElement, {
+        navigationUI: navigationUI || "hide",
+      });
+    }
+  };
 
   useEffect(() => {
     const onFullscreenChange = (): void => {
@@ -134,10 +131,7 @@ const useViewportContextState = (): ViewportContextState => {
     };
   }, []);
 
-  return useMemo(
-    () => ({ fullscreenElement, toggleFullscreen }),
-    [fullscreenElement, toggleFullscreen]
-  );
+  return { fullscreenElement, toggleFullscreen };
 };
 
 export default useViewportContextState;

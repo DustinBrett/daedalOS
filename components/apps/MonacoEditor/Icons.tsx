@@ -1,6 +1,4 @@
-import { memo } from "react";
-
-export const SaveIcon = memo(() => (
+export const SaveIcon: FC = () => (
   <svg
     aria-hidden="true"
     viewBox="0 0 16 16"
@@ -12,9 +10,9 @@ export const SaveIcon = memo(() => (
       fillRule="evenodd"
     />
   </svg>
-));
+);
 
-export const ErrorIcon = memo(() => (
+export const ErrorIcon: FC = () => (
   <svg
     aria-hidden="true"
     className="error"
@@ -28,9 +26,9 @@ export const ErrorIcon = memo(() => (
       fillRule="evenodd"
     />
   </svg>
-));
+);
 
-export const InfoIcon = memo(() => (
+export const InfoIcon: FC = () => (
   <svg
     aria-hidden="true"
     className="info"
@@ -44,9 +42,9 @@ export const InfoIcon = memo(() => (
       fillRule="evenodd"
     />
   </svg>
-));
+);
 
-export const WarningIcon = memo(() => (
+export const WarningIcon: FC = () => (
   <svg
     aria-hidden="true"
     className="warning"
@@ -60,4 +58,4 @@ export const WarningIcon = memo(() => (
       fillRule="evenodd"
     />
   </svg>
-));
+);

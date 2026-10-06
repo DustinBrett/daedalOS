@@ -1,6 +1,7 @@
 import { basename } from "path";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+// eslint-disable-next-line no-restricted-imports -- ResultSection re-maps every result whenever the results update
+import { memo, useEffect, useRef, useState } from "react";
 import {
   getModifiedTime,
   getShortcutInfo,
@@ -35,6 +36,15 @@ const INITIAL_INFO = {
   icon: UNKNOWN_ICON,
 } as ResultInfo;
 
+const highlightSearchTerm = (text: string, searchTerm: string): string => {
+  try {
+    return text.replace(new RegExp(`(${searchTerm})`, "i"), "<span>$1</span>");
+  } catch {
+    // Ignore failure to wrap search text
+    return text;
+  }
+};
+
 const ResultEntry: FC<ResultEntryProps> = ({
   active,
   details,
@@ -48,66 +58,11 @@ const ResultEntry: FC<ResultEntryProps> = ({
   const { updateRecentFiles } = useSessionActions();
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>(INITIAL_INFO);
-  const extension = useMemo(
-    () => getExtension(info?.url || url),
-    [info?.url, url]
-  );
-  const baseName = useMemo(() => basename(url, SHORTCUT_EXTENSION), [url]);
-  const name = useMemo(() => {
-    let text = baseName;
-
-    try {
-      text = text.replace(
-        new RegExp(`(${searchTerm})`, "i"),
-        "<span>$1</span>"
-      );
-    } catch {
-      // Ignore failure to wrap search text
-    }
-
-    return text;
-  }, [baseName, searchTerm]);
-  const isYTUrl = useMemo(
-    () => (info?.url ? isYouTubeUrl(info.url) : false),
-    [info?.url]
-  );
-  const baseUrl = isYTUrl ? url : url || info?.url;
-  const lastModified = useMemo(
-    () =>
-      stats && !stats.isDirectory()
-        ? `Last modified: ${new Date(
-            getModifiedTime(baseUrl, stats)
-          ).toLocaleString(DEFAULT_LOCALE, {
-            dateStyle: "short",
-            timeStyle: "short",
-          })}`
-        : "",
-    [baseUrl, stats]
-  );
   const [hovered, setHovered] = useState(false);
   const elementRef = useRef<HTMLLIElement | null>(null);
   const isVisible = useIsVisible(elementRef, ".list");
-  const isAppShortcut = useMemo(
-    () =>
-      info?.pid
-        ? url === info.url && getExtension(url) === SHORTCUT_EXTENSION
-        : false,
-    [info?.pid, info?.url, url]
-  );
-  const isDirectory = useMemo(
-    () => stats?.isDirectory() || (!extension && !isYTUrl),
-    [extension, isYTUrl, stats]
-  );
-  const isNostrUrl = useMemo(
-    () => (info?.url ? info.url.startsWith("nostr:") : false),
-    [info?.url]
-  );
   const { onContextMenuCapture } = useResultsContextMenu(info?.url);
   const abortController = useRef<AbortController>(undefined);
-  const maybeHovered = useCallback(
-    () => !details && setHovered(true),
-    [details]
-  );
 
   useEffect(() => {
     const activeEntry = details || hovered;
@@ -132,14 +87,41 @@ const ResultEntry: FC<ResultEntryProps> = ({
 
   useEffect(
     () => () => {
+      const { current: controller } = abortController;
+
+      if (!controller) return;
+
       try {
-        abortController.current?.abort();
+        controller.abort();
       } catch {
         // Failed to abort getResultInfo
       }
     },
     []
   );
+
+  const extension = getExtension(info?.url || url);
+  const baseName = basename(url, SHORTCUT_EXTENSION);
+  const name = highlightSearchTerm(baseName, searchTerm);
+  const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
+  const baseUrl = isYTUrl ? url : url || info?.url;
+  const lastModified =
+    stats && !stats.isDirectory()
+      ? `Last modified: ${new Date(
+          getModifiedTime(baseUrl, stats)
+        ).toLocaleString(DEFAULT_LOCALE, {
+          dateStyle: "short",
+          timeStyle: "short",
+        })}`
+      : "";
+  const isAppShortcut = info?.pid
+    ? url === info.url && getExtension(url) === SHORTCUT_EXTENSION
+    : false;
+  const isDirectory = stats?.isDirectory() || (!extension && !isYTUrl);
+  const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
+  const maybeHovered = (): void => {
+    if (!details) setHovered(true);
+  };
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions

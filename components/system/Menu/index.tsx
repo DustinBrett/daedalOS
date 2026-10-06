@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type Position } from "react-rnd";
 import MenuItemEntry from "components/system/Menu/MenuItemEntry";
 import menuTransition from "components/system/Menu/menuTransition";
@@ -34,20 +34,19 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   } = subMenu || baseMenu || {};
   const [offset, setOffset] = useState<Position>(topLeftPosition);
   const menuRef = useRef<HTMLElement | null>(null);
-  const resetMenu = useCallback(
-    ({ relatedTarget }: Partial<React.FocusEvent | React.MouseEvent> = {}) => {
-      if (
-        !(relatedTarget instanceof HTMLElement) ||
-        !menuRef.current?.contains(relatedTarget)
-      ) {
-        setMenu(Object.create(null) as MenuState);
-      }
-    },
-    [setMenu]
-  );
+  const resetMenu = ({
+    relatedTarget,
+  }: Partial<React.FocusEvent | React.MouseEvent> = {}): void => {
+    if (
+      !(relatedTarget instanceof HTMLElement) ||
+      !menuRef.current?.contains(relatedTarget)
+    ) {
+      setMenu(Object.create(null) as MenuState);
+    }
+  };
   const isSubMenu = Boolean(subMenu);
   const offsetCalculated = useRef<Partial<DOMRect>>({});
-  const calculateOffset = useCallback(() => {
+  const calculateOffset = (): void => {
     if (!menuRef.current) return;
 
     const {
@@ -109,17 +108,15 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
     }
 
     setOffset(newOffset);
-  }, [staticX, staticY, subMenu, x, y]);
-  const menuCallbackRef = useCallback(
-    (ref: HTMLElement) => {
-      menuRef.current = ref;
-      calculateOffset();
-    },
-    [calculateOffset]
-  );
+  };
+  const menuCallbackRef = (ref: HTMLElement): void => {
+    menuRef.current = ref;
+    calculateOffset();
+  };
 
   useEffect(() => {
     if ((subMenu || baseMenu)?.items && (x || y)) calculateOffset();
+    // eslint-disable-next-line react/exhaustive-effect-dependencies
   }, [baseMenu, calculateOffset, subMenu, x, y]);
 
   useEffect(() => {
@@ -176,7 +173,7 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
 
   useEffect(() => {
     if (!items) offsetCalculated.current = {};
-    // eslint-disable-next-line react-hooks-addons/no-unused-deps
+    // eslint-disable-next-line react/exhaustive-effect-dependencies
   }, [items, offset.x, offset.y, subMenu]);
 
   useEffect(() => {
@@ -219,4 +216,4 @@ const Menu: FC<MenuProps> = ({ subMenu }) => {
   null;
 };
 
-export default memo(Menu);
+export default Menu;

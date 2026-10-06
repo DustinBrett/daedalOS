@@ -1,5 +1,5 @@
 import { basename, dirname } from "path";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddressBar from "components/apps/FileExplorer/AddressBar";
 import {
   Back,
@@ -44,43 +44,34 @@ const Navigation: FC<NavigationProps> = ({
   const menu = useMenu();
   const { canGoBack, canGoForward, history, moveHistory, position } =
     useHistory(url, id);
-  const recentItemsMenu = useMemo(
-    () =>
-      history
-        .map((historyUrl, index) => ({
-          action: () => moveHistory(index - position),
-          checked: position === index,
-          label: basename(historyUrl) || ROOT_NAME,
-          primary: position === index,
-        }))
-        .reverse(),
-    [history, moveHistory, position]
-  );
-  const { onContextMenuCapture } = useMemo(
-    () => contextMenu?.(() => recentItemsMenu),
-    [contextMenu, recentItemsMenu]
-  );
+  const recentItemsMenu = history
+    .map((historyUrl, index) => ({
+      action: () => moveHistory(index - position),
+      checked: position === index,
+      label: basename(historyUrl) || ROOT_NAME,
+      primary: position === index,
+    }))
+    .reverse();
+  const { onContextMenuCapture } = contextMenu(() => recentItemsMenu);
   const [isRecentMenuOpen, setIsRecentMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement | null>(null);
   const [removeSearch, setRemoveSearch] = useState(false);
-  const resizeCallback = useCallback<ResizeObserverCallback>(
-    ([{ contentRect }]) => {
-      const tooSmallForSearch = contentRect.width < 260;
+  const resizeCallback: ResizeObserverCallback = ([{ contentRect }]) => {
+    const tooSmallForSearch = contentRect.width < 260;
 
-      if (removeSearch && !tooSmallForSearch) {
-        setRemoveSearch(false);
-      } else if (!removeSearch && tooSmallForSearch) {
-        setRemoveSearch(true);
-      }
-    },
-    [removeSearch]
-  );
+    if (removeSearch && !tooSmallForSearch) {
+      setRemoveSearch(false);
+    } else if (!removeSearch && tooSmallForSearch) {
+      setRemoveSearch(true);
+    }
+  };
 
   useEffect(() => {
+    // eslint-disable-next-line react/set-state-in-effect -- Lags a render so a click that blurs the open menu closes it instead of reopening
     setIsRecentMenuOpen(recentItemsMenu === menu.items);
   }, [menu.items, recentItemsMenu]);
 
-  useResizeObserver(navRef.current, resizeCallback);
+  useResizeObserver(navRef, resizeCallback);
 
   return (
     <StyledNavigation
@@ -156,4 +147,4 @@ const Navigation: FC<NavigationProps> = ({
   );
 };
 
-export default memo(Navigation);
+export default Navigation;

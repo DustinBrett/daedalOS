@@ -1,6 +1,5 @@
-import { useCallback } from "react";
 import useNextFocusable from "components/system/Window/useNextFocusable";
-import { useProcessesActions, useProcessesRef } from "contexts/process";
+import { getProcess, useProcessesActions } from "contexts/process";
 import { useSessionActions } from "contexts/session";
 import { PREVENT_SCROLL } from "utils/constants";
 
@@ -15,17 +14,13 @@ const useWindowActions = (id: string): WindowActions => {
   const { removeFromStack, setForegroundId, setWindowStates } =
     useSessionActions();
   const { closeWithTransition, maximize, minimize } = useProcessesActions();
-  const processesRef = useProcessesRef();
-  const onMinimize = useCallback(
-    (keepForegroundId?: boolean): void => {
-      minimize(id);
-      if (!keepForegroundId) setForegroundId(nextFocusableId);
-    },
-    [id, minimize, nextFocusableId, setForegroundId]
-  );
-  const onMaximize = useCallback((): void => {
+  const onMinimize = (keepForegroundId?: boolean): void => {
+    minimize(id);
+    if (!keepForegroundId) setForegroundId(nextFocusableId);
+  };
+  const onMaximize = (): void => {
     const triggerMaximize = (): void => {
-      const maximized = !processesRef.current[id]?.maximized;
+      const maximized = !getProcess(id)?.maximized;
 
       maximize(id, maximized);
       setWindowStates((currentWindowStates) => ({
@@ -33,28 +28,22 @@ const useWindowActions = (id: string): WindowActions => {
         [id]: { ...currentWindowStates[id], maximized },
       }));
       setForegroundId(id);
-      processesRef.current[id]?.componentWindow?.focus(PREVENT_SCROLL);
+      getProcess(id)?.componentWindow?.focus(PREVENT_SCROLL);
     };
     const [currentAnimation] =
-      processesRef.current[id]?.componentWindow?.getAnimations() || [];
+      getProcess(id)?.componentWindow?.getAnimations() || [];
 
     if (currentAnimation?.finished) {
       currentAnimation.finished.then(triggerMaximize);
     } else {
       triggerMaximize();
     }
-  }, [id, maximize, processesRef, setForegroundId, setWindowStates]);
-  const onClose = useCallback((): void => {
+  };
+  const onClose = (): void => {
     removeFromStack(id);
     closeWithTransition(id);
     setForegroundId(nextFocusableId);
-  }, [
-    closeWithTransition,
-    id,
-    nextFocusableId,
-    removeFromStack,
-    setForegroundId,
-  ]);
+  };
 
   return { onClose, onMaximize, onMinimize };
 };

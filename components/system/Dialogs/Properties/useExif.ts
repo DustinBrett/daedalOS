@@ -16,6 +16,11 @@ const maybeConvertValue = (value: EXIFData): number | string => {
 
 const FILTER_KEYS = new Set(["UserComment"]);
 
+const readExif = async (fileData: Buffer): Promise<EXIFObject> =>
+  (await import("exif-js")).default.readFromBinaryFile(
+    fileData.buffer
+  ) as EXIFObject;
+
 const useExif = (
   fileData: Buffer | undefined,
   currentExif: Record<string, unknown> | undefined,
@@ -23,10 +28,7 @@ const useExif = (
 ): void => {
   useEffect(() => {
     if (fileData && !currentExif) {
-      import("exif-js").then(({ default: EXIF }) => {
-        const { thumbnail, ...data } = EXIF.readFromBinaryFile(
-          fileData?.buffer
-        ) as EXIFObject;
+      readExif(fileData).then(({ thumbnail, ...data }) => {
         const { blob, ...thumbnailData } = (thumbnail as EXIFObject) || {};
         const thumbEntries = Object.entries(thumbnailData);
         const exifEntries = Object.entries(data);

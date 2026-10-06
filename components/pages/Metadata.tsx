@@ -1,5 +1,4 @@
 import Head from "next/head";
-import { memo } from "react";
 import { useCursor } from "components/pages/hooks/useCursor";
 import { useFaviconAndTitle } from "components/pages/hooks/useFaviconAndTitle";
 import desktopIcons from "public/.index/desktopIcons.json";
@@ -13,30 +12,32 @@ import {
 
 const { alias, author, description } = PACKAGE_DATA;
 
-const PreloadIcons = memo(() =>
-  desktopIcons.map((icon) => {
-    const isSubIcon = icon.includes("/16x16/");
-    const dynamicIcon = !isSubIcon && isDynamicIcon(icon);
-    const extension = getExtension(icon);
+const PreloadIcons: FC = () => (
+  <>
+    {desktopIcons.map((icon) => {
+      const isSubIcon = icon.includes("/16x16/");
+      const dynamicIcon = !isSubIcon && isDynamicIcon(icon);
+      const extension = getExtension(icon);
 
-    return (
-      <link
-        key={icon}
-        as="image"
-        href={dynamicIcon || isSubIcon ? undefined : icon}
-        imageSrcSet={
-          dynamicIcon
-            ? imageSrcs(icon, 48, extension)
-            : isSubIcon
-              ? imageSrcs(icon.replace("16x16/", ""), 16, extension)
-              : undefined
-        }
-        rel="preload"
-        type={getMimeType(extension)}
-        {...HIGH_PRIORITY_ELEMENT}
-      />
-    );
-  })
+      return (
+        <link
+          key={icon}
+          as="image"
+          href={dynamicIcon || isSubIcon ? undefined : icon}
+          imageSrcSet={
+            dynamicIcon
+              ? imageSrcs(icon, 48, extension)
+              : isSubIcon
+                ? imageSrcs(icon.replace("16x16/", ""), 16, extension)
+                : undefined
+          }
+          rel="preload"
+          type={getMimeType(extension)}
+          {...HIGH_PRIORITY_ELEMENT}
+        />
+      );
+    })}
+  </>
 );
 
 const Metadata: FC = () => {
@@ -68,4 +69,4 @@ const Metadata: FC = () => {
   );
 };
 
-export default memo(Metadata);
+export default Metadata;

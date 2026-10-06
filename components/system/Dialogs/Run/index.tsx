@@ -1,5 +1,5 @@
 import { basename, join } from "path";
-import { memo, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { ADDRESS_INPUT_PROPS } from "components/apps/FileExplorer/AddressBar";
 import { parseCommand } from "components/apps/Terminal/functions";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -64,153 +64,135 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(!runHistory[0]);
   const [running, setRunning] = useState(false);
-  const checkIsEmpty: React.ChangeEventHandler | React.KeyboardEventHandler =
-    useCallback(
-      ({ target }: React.ChangeEvent | React.KeyboardEvent): void =>
-        setIsEmptyInput(!(target as HTMLInputElement)?.value),
-      []
-    );
-  const runResource = useCallback(
-    async (resource?: string) => {
-      if (!resource) return;
+  const checkIsEmpty: React.ChangeEventHandler | React.KeyboardEventHandler = ({
+    target,
+  }: React.ChangeEvent | React.KeyboardEvent): void =>
+    setIsEmptyInput(!(target as HTMLInputElement)?.value);
+  const runResource = async (resource?: string): Promise<void> => {
+    if (!resource) return;
 
-      setRunning(true);
+    setRunning(true);
 
-      const addRunHistoryEntry = (): void =>
-        setRunHistory((currentRunHistory) =>
-          currentRunHistory[0] === resource
-            ? currentRunHistory
-            : [resource, ...currentRunHistory]
-        );
-      const [resourcePid, ...resourceUrl] = parseCommand(resource);
-      let resourcePath = resource;
-      let closeOnExecute = true;
-      const resourceExists = await exists(resourcePath);
+    const addRunHistoryEntry = (): void =>
+      setRunHistory((currentRunHistory) =>
+        currentRunHistory[0] === resource
+          ? currentRunHistory
+          : [resource, ...currentRunHistory]
+      );
+    const [resourcePid, ...resourceUrl] = parseCommand(resource);
+    let resourcePath = resource;
+    let closeOnExecute = true;
+    const resourceExists = await exists(resourcePath);
 
-      if (!resourceExists) {
-        resourcePath =
-          resourceUrl.length > 0 ? resourceUrl.join(" ") : resourcePid;
+    if (!resourceExists) {
+      resourcePath =
+        resourceUrl.length > 0 ? resourceUrl.join(" ") : resourcePid;
+    }
+
+    const isNostr = resourcePath.startsWith("nostr:");
+
+    if (isNostr) open("Messenger", { url: resourcePath });
+
+    const isIpfs = resourcePath.startsWith("ipfs://");
+
+    if (resourceExists || isNostr || isIpfs || (await exists(resourcePath))) {
+      if (isIpfs) {
+        try {
+          const ipfsData = await getIpfsResource(resourcePath);
+
+          resourcePath = join(
+            DESKTOP_PATH,
+            await createPath(
+              await getIpfsFileName(resourcePath, ipfsData),
+              DESKTOP_PATH,
+              ipfsData
+            )
+          );
+          updateFolder(DESKTOP_PATH, basename(resourcePath));
+        } catch {
+          // Ignore failure to get ipfs resource
+        }
       }
 
-      const isNostr = resourcePath.startsWith("nostr:");
-
-      if (isNostr) open("Messenger", { url: resourcePath });
-
-      const isIpfs = resourcePath.startsWith("ipfs://");
-
-      if (resourceExists || isNostr || isIpfs || (await exists(resourcePath))) {
-        if (isIpfs) {
-          try {
-            const ipfsData = await getIpfsResource(resourcePath);
-
-            resourcePath = join(
-              DESKTOP_PATH,
-              await createPath(
-                await getIpfsFileName(resourcePath, ipfsData),
-                DESKTOP_PATH,
-                ipfsData
-              )
-            );
-            updateFolder(DESKTOP_PATH, basename(resourcePath));
-          } catch {
-            // Ignore failure to get ipfs resource
-          }
-        }
-
-        if ((await lstat(resourcePath)).isDirectory()) {
-          open("FileExplorer", { url: resourcePath }, "");
-          addRunHistoryEntry();
-        } else if (
-          resourcePid &&
-          resourceUrl.length > 0 &&
-          resourcePath !== resource
-        ) {
-          const [pid] =
-            Object.entries(processDirectory)
-              .filter(([, { dialogProcess }]) => !dialogProcess)
-              .find(
-                ([processName]) =>
-                  processName.toLowerCase() === resourcePid.toLowerCase()
-              ) || [];
-
-          if (pid) {
-            const openUrl =
-              pid === "Browser" && isIpfs
-                ? resourceUrl.join(" ")
-                : resourcePath;
-
-            open(pid, { url: openUrl });
-            addRunHistoryEntry();
-            if (openUrl) updateRecentFiles(openUrl, pid);
-          } else {
-            notFound(resourcePid);
-            closeOnExecute = false;
-          }
-        } else {
-          const extension = getExtension(resourcePath);
-
-          if (extension === SHORTCUT_EXTENSION) {
-            const { pid, url } = getShortcutInfo(await readFile(resourcePath));
-
-            if (pid) {
-              open(pid, { url });
-              if (url) updateRecentFiles(url, pid);
-            }
-          } else {
-            const basePid = getProcessByFileExtension(extension) || "OpenWith";
-            const openUrl =
-              basePid === "Browser" && isIpfs ? resource : resourcePath;
-
-            open(basePid, { url: openUrl });
-            if (openUrl && basePid) updateRecentFiles(openUrl, basePid);
-          }
-
-          addRunHistoryEntry();
-        }
-      } else {
+      if ((await lstat(resourcePath)).isDirectory()) {
+        open("FileExplorer", { url: resourcePath }, "");
+        addRunHistoryEntry();
+      } else if (
+        resourcePid &&
+        resourceUrl.length > 0 &&
+        resourcePath !== resource
+      ) {
         const [pid] =
           Object.entries(processDirectory)
             .filter(([, { dialogProcess }]) => !dialogProcess)
             .find(
               ([processName]) =>
-                processName.toLowerCase() ===
-                (
-                  resourceAliasMap[resourcePid.toLowerCase()] || resourcePid
-                ).toLowerCase()
+                processName.toLowerCase() === resourcePid.toLowerCase()
             ) || [];
 
         if (pid) {
-          open(
-            pid,
-            resourcePath === resourcePid ? undefined : { url: resourcePath }
-          );
+          const openUrl =
+            pid === "Browser" && isIpfs ? resourceUrl.join(" ") : resourcePath;
+
+          open(pid, { url: openUrl });
           addRunHistoryEntry();
-        } else if (utilCommandMap[resource.toLowerCase()]) {
-          utilCommandMap[resource.toLowerCase()]();
-          addRunHistoryEntry();
+          if (openUrl) updateRecentFiles(openUrl, pid);
         } else {
-          notFound(resource);
+          notFound(resourcePid);
           closeOnExecute = false;
         }
+      } else {
+        const extension = getExtension(resourcePath);
+
+        if (extension === SHORTCUT_EXTENSION) {
+          const { pid, url } = getShortcutInfo(await readFile(resourcePath));
+
+          if (pid) {
+            open(pid, { url });
+            if (url) updateRecentFiles(url, pid);
+          }
+        } else {
+          const basePid = getProcessByFileExtension(extension) || "OpenWith";
+          const openUrl =
+            basePid === "Browser" && isIpfs ? resource : resourcePath;
+
+          open(basePid, { url: openUrl });
+          if (openUrl && basePid) updateRecentFiles(openUrl, basePid);
+        }
+
+        addRunHistoryEntry();
       }
+    } else {
+      const [pid] =
+        Object.entries(processDirectory)
+          .filter(([, { dialogProcess }]) => !dialogProcess)
+          .find(
+            ([processName]) =>
+              processName.toLowerCase() ===
+              (
+                resourceAliasMap[resourcePid.toLowerCase()] || resourcePid
+              ).toLowerCase()
+          ) || [];
 
-      setRunning(false);
+      if (pid) {
+        open(
+          pid,
+          resourcePath === resourcePid ? undefined : { url: resourcePath }
+        );
+        addRunHistoryEntry();
+      } else if (utilCommandMap[resource.toLowerCase()]) {
+        utilCommandMap[resource.toLowerCase()]();
+        addRunHistoryEntry();
+      } else {
+        notFound(resource);
+        closeOnExecute = false;
+      }
+    }
 
-      if (closeOnExecute) closeWithTransition(id);
-    },
-    [
-      closeWithTransition,
-      createPath,
-      exists,
-      id,
-      lstat,
-      open,
-      readFile,
-      setRunHistory,
-      updateFolder,
-      updateRecentFiles,
-    ]
-  );
+    setRunning(false);
+
+    if (closeOnExecute) closeWithTransition(id);
+  };
 
   useLayoutEffect(() => {
     if (foregroundId === id) {
@@ -320,4 +302,4 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Run);
+export default Run;

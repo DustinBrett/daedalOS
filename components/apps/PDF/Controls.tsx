@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { memo } from "react";
+import type * as PrintJs from "print-js";
 import {
   Add,
   Download,
@@ -20,6 +20,8 @@ declare global {
     InstallTrigger?: boolean;
   }
 }
+
+const loadPrintJs = (): Promise<typeof PrintJs> => import("print-js");
 
 const Controls: FC<ComponentProcessProps> = ({ id }) => {
   const { readFile } = useFileSystemActions();
@@ -145,7 +147,7 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
               }, 5 * MILLISECONDS_IN_SECOND);
             }
 
-            const { default: printJs } = await import("print-js");
+            const { default: printJs } = await loadPrintJs();
 
             printJs({
               base64: true,
@@ -162,4 +164,4 @@ const Controls: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Controls);
+export default Controls;

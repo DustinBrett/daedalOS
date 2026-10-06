@@ -1,5 +1,5 @@
 import { basename, dirname } from "path";
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getSaveFileInfo } from "components/apps/MonacoEditor/functions";
 import {
   ErrorIcon,
@@ -132,7 +132,7 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
                   className="pretty"
                   onClick={async () => {
                     try {
-                      editor?.setValue(
+                      editor.setValue(
                         await prettyPrint(language, editor.getValue())
                       );
 
@@ -159,8 +159,13 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
                 <Button
                   onClick={() => {
                     try {
-                      editor?.focus();
-                      editor?.getAction("editor.action.gotoLine")?.run();
+                      editor.focus();
+
+                      const goToLine = editor.getAction(
+                        "editor.action.gotoLine"
+                      );
+
+                      if (goToLine) goToLine.run();
                     } catch {
                       // Ignore focus issues
                     }
@@ -191,4 +196,4 @@ const StatusBar: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(StatusBar);
+export default StatusBar;

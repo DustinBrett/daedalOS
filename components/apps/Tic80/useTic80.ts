@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
@@ -24,37 +24,33 @@ const useTic80 = ({
     "canvas { image-rendering: pixelated; }",
     true
   );
-  const loadComputer = useCallback(
-    async (fileUrl?: string) => {
-      const loadApp = async (blobUrl?: string): Promise<void> => {
-        const contentWindow = getContentWindow?.();
+  const loadApp = async (blobUrl?: string): Promise<void> => {
+    const contentWindow = getContentWindow?.();
 
-        if (!contentWindow) return;
+    if (!contentWindow) return;
 
-        loadedUrl.current = url;
-        setLoading(true);
+    loadedUrl.current = url;
+    setLoading(true);
 
-        const canvas = contentWindow.document.querySelector(
-          "#canvas"
-        ) as HTMLCanvasElement;
+    const canvas = contentWindow.document.querySelector(
+      "#canvas"
+    ) as HTMLCanvasElement;
 
-        canvas.addEventListener("contextmenu", haltEvent);
+    canvas.addEventListener("contextmenu", haltEvent);
 
-        contentWindow.Module = {
-          arguments: blobUrl ? [blobUrl] : undefined,
-          canvas,
-          postRun: () => setLoading(false),
-        };
+    contentWindow.Module = {
+      arguments: blobUrl ? [blobUrl] : undefined,
+      canvas,
+      postRun: () => setLoading(false),
+    };
 
-        await loadFiles(libs, undefined, undefined, undefined, contentWindow);
+    await loadFiles(libs, undefined, undefined, undefined, contentWindow);
 
-        if (blobUrl) appendFileToTitle(basename(url));
-      };
-
-      loadApp(fileUrl ? `${bufferToUrl(await readFile(fileUrl))}?e=.tic` : "");
-    },
-    [appendFileToTitle, getContentWindow, libs, readFile, setLoading, url]
-  );
+    if (blobUrl) appendFileToTitle(basename(url));
+  };
+  const loadComputer = async (fileUrl?: string): Promise<void> => {
+    loadApp(fileUrl ? `${bufferToUrl(await readFile(fileUrl))}?e=.tic` : "");
+  };
 
   useEffect(() => {
     if (url !== loadedUrl.current && !closing) loadComputer(url);

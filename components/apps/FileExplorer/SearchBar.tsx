@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { memo, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search } from "components/apps/FileExplorer/NavigationIcons";
 import StyledSearch from "components/apps/FileExplorer/StyledSearch";
 import { getResultInfo } from "components/system/Taskbar/Search/functions";
@@ -79,11 +79,11 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
       getItems()
         .then((items) => {
           if (items.length === 0) {
-            contextMenu?.(() => []).onContextMenuCapture();
+            contextMenu(() => []).onContextMenuCapture();
           } else if (searchBarRef.current?.value) {
             const searchBarRect = searchBarRef.current.getBoundingClientRect();
 
-            contextMenu?.(() => items).onContextMenuCapture(
+            contextMenu(() => items).onContextMenuCapture(
               undefined,
               searchBarRect,
               {
@@ -104,7 +104,7 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
       searchBarRef.current.value = "";
       setSearchTerm("");
     }
-    // eslint-disable-next-line react-hooks-addons/no-unused-deps
+    // eslint-disable-next-line react/exhaustive-effect-dependencies
   }, [searchBarRef, url]);
 
   return (
@@ -125,4 +125,4 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
   );
 };
 
-export default memo(SearchBar);
+export default SearchBar;

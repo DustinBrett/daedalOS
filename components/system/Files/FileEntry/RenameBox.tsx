@@ -1,5 +1,5 @@
 import { extname } from "path";
-import { memo, useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useTheme } from "styled-components";
 import { measureText } from "components/system/Files/FileEntry/functions";
 import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
@@ -30,30 +30,29 @@ const RenameBox: FC<RenameBoxProps> = ({
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const saveRename = (): void => renameFile(path, inputRef.current?.value);
   const { formats, sizes } = useTheme();
-  const isDetails = useMemo(() => view === "details", [view]);
-  const updateDimensions = useCallback(
-    (textArea: EventTarget | HTMLTextAreaElement | null): void => {
-      if (textArea instanceof HTMLTextAreaElement) {
-        const width = measureText(
-          textArea.value,
-          sizes.fileEntry.fontSize,
-          formats.systemFont
-        );
+  const isDetails = view === "details";
+  const updateDimensions = (
+    textArea: EventTarget | HTMLTextAreaElement | null
+  ): void => {
+    if (textArea instanceof HTMLTextAreaElement) {
+      const width = measureText(
+        textArea.value,
+        sizes.fileEntry.fontSize,
+        formats.systemFont
+      );
 
-        // Force height to re-calculate
-        if (!isDetails) textArea.setAttribute("style", "height: 1px");
+      // Force height to re-calculate
+      if (!isDetails) textArea.setAttribute("style", "height: 1px");
 
-        const newWidth = `width: ${width + TEXT_WIDTH_PADDING}px`;
-        const newHeight = `height: ${textArea.scrollHeight + TEXT_HEIGHT_PADDING}px`;
+      const newWidth = `width: ${width + TEXT_WIDTH_PADDING}px`;
+      const newHeight = `height: ${textArea.scrollHeight + TEXT_HEIGHT_PADDING}px`;
 
-        textArea.setAttribute(
-          "style",
-          isDetails ? newWidth : `${newHeight}; ${newWidth}`
-        );
-      }
-    },
-    [formats.systemFont, isDetails, sizes.fileEntry.fontSize]
-  );
+      textArea.setAttribute(
+        "style",
+        isDetails ? newWidth : `${newHeight}; ${newWidth}`
+      );
+    }
+  };
 
   useLayoutEffect(() => {
     requestAnimationFrame(() => updateDimensions(inputRef.current));
@@ -86,4 +85,4 @@ const RenameBox: FC<RenameBoxProps> = ({
   );
 };
 
-export default memo(RenameBox);
+export default RenameBox;

@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from "react";
 import {
   CLOSE,
   MAXIMIZE,
@@ -22,10 +21,7 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
   const { contextMenu } = useMenuActions();
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const { setForegroundId } = useSessionActions();
-  const focusWindow = useCallback(
-    () => setForegroundId(id),
-    [id, setForegroundId]
-  );
+  const focusWindow = (): void => setForegroundId(id);
   const {
     allowResizing = true,
     hideMaximizeButton,
@@ -37,74 +33,55 @@ const useTitlebarContextMenu = (id: string): ContextMenuCapture => {
     unmute,
   } = useProcess(id);
 
-  return useMemo(
-    () =>
-      contextMenu?.(() => {
-        const isMaxOrMin = maximized || minimized;
-        const showMaxOrMin = !hideMaximizeButton || !hideMinimizeButton;
-        const canMute =
-          typeof mute === "function" && typeof unmute === "function";
+  return contextMenu(() => {
+    const isMaxOrMin = maximized || minimized;
+    const showMaxOrMin = !hideMaximizeButton || !hideMinimizeButton;
+    const canMute = typeof mute === "function" && typeof unmute === "function";
 
-        focusWindow();
+    focusWindow();
 
-        return [
-          showMaxOrMin && {
-            action: () => {
-              if (minimized) onMinimize();
-              else onMaximize();
+    return [
+      showMaxOrMin && {
+        action: () => {
+          if (minimized) onMinimize();
+          else onMaximize();
 
-              focusWindow();
+          focusWindow();
+        },
+        disabled: !isMaxOrMin,
+        icon: isMaxOrMin ? RESTORE : RESTORE_DISABLED,
+        label: "Restore",
+      },
+      !hideMinimizeButton && {
+        action: onMinimize,
+        disabled: minimized,
+        icon: minimized ? MINIMIZE_DISABLED : MINIMIZE,
+        label: "Minimize",
+      },
+      !hideMaximizeButton && {
+        action: onMaximize,
+        disabled: isMaxOrMin || !allowResizing,
+        icon: isMaxOrMin ? MAXIMIZE_DISABLED : MAXIMIZE,
+        label: "Maximize",
+      },
+      showMaxOrMin && MENU_SEPERATOR,
+      ...(canMute
+        ? [
+            {
+              action: () => (muted ? unmute() : mute()),
+              label: muted ? "Unmute" : "Mute",
             },
-            disabled: !isMaxOrMin,
-            icon: isMaxOrMin ? RESTORE : RESTORE_DISABLED,
-            label: "Restore",
-          },
-          !hideMinimizeButton && {
-            action: onMinimize,
-            disabled: minimized,
-            icon: minimized ? MINIMIZE_DISABLED : MINIMIZE,
-            label: "Minimize",
-          },
-          !hideMaximizeButton && {
-            action: onMaximize,
-            disabled: isMaxOrMin || !allowResizing,
-            icon: isMaxOrMin ? MAXIMIZE_DISABLED : MAXIMIZE,
-            label: "Maximize",
-          },
-          showMaxOrMin && MENU_SEPERATOR,
-          ...(canMute
-            ? [
-                {
-                  action: () => (muted ? unmute() : mute()),
-                  label: muted ? "Unmute" : "Mute",
-                },
-                MENU_SEPERATOR,
-              ]
-            : []),
-          {
-            action: onClose,
-            icon: CLOSE,
-            label: "Close",
-            primary: true,
-          },
-        ].filter(Boolean) as MenuItem[];
-      }),
-    [
-      allowResizing,
-      contextMenu,
-      focusWindow,
-      hideMaximizeButton,
-      hideMinimizeButton,
-      maximized,
-      minimized,
-      mute,
-      muted,
-      onClose,
-      onMaximize,
-      onMinimize,
-      unmute,
-    ]
-  );
+            MENU_SEPERATOR,
+          ]
+        : []),
+      {
+        action: onClose,
+        icon: CLOSE,
+        label: "Close",
+        primary: true,
+      },
+    ].filter(Boolean) as MenuItem[];
+  });
 };
 
 export default useTitlebarContextMenu;

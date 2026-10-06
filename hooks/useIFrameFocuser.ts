@@ -1,17 +1,16 @@
 import { useEffect } from "react";
-import { useProcessesRef } from "contexts/process";
+import { getProcesses } from "contexts/process";
 import { useSessionActions } from "contexts/session";
 import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
 
 const useIFrameFocuser = (): void => {
   const { setForegroundId } = useSessionActions();
-  const processesRef = useProcessesRef();
 
   useEffect(() => {
     const focusIframeWindow = (): void => {
       if (document.activeElement instanceof HTMLIFrameElement) {
         const [id] =
-          Object.entries(processesRef.current).find(([, { componentWindow }]) =>
+          Object.entries(getProcesses()).find(([, { componentWindow }]) =>
             componentWindow?.contains(document.activeElement)
           ) || [];
 
@@ -21,7 +20,7 @@ const useIFrameFocuser = (): void => {
             "click",
             ({ target }) => {
               const [focusId = ""] =
-                Object.entries(processesRef.current).find(
+                Object.entries(getProcesses()).find(
                   ([, { componentWindow }]) =>
                     target instanceof HTMLElement &&
                     componentWindow?.contains(target)
@@ -38,7 +37,7 @@ const useIFrameFocuser = (): void => {
     window.addEventListener("blur", focusIframeWindow, { passive: true });
 
     return () => window.removeEventListener("blur", focusIframeWindow);
-  }, [processesRef, setForegroundId]);
+  }, [setForegroundId]);
 };
 
 export default useIFrameFocuser;

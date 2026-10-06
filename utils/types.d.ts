@@ -50,3 +50,7 @@ declare module "ani-cursor/dist/parser" {
     metadata: { iDispRate?: number };
   };
 }
+
+declare module "next/dist/compiled/babel/core" {
+  export * from "@babel/core";
+}

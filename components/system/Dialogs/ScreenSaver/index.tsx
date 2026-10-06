@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledScreenSaver from "components/system/Dialogs/ScreenSaver/StyledScreenSaver";
 import { useFileSystemActions } from "contexts/fileSystem";
@@ -36,30 +36,25 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
   const { readFile } = useFileSystemActions();
   const [srcDoc, setSrcDoc] = useState<Record<string, string>>({});
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const loadScreenSaver = useCallback(
-    async () =>
-      setSrcDoc({
-        [url]: (await readFile(url)).toString(),
-      }),
-    [readFile, url]
-  );
-  const closeScreenSaver = useCallback(
-    (event?: Event) => {
-      // Stops the tap from also clicking what was under the screen saver
-      if (event?.type === "touchstart" && event.cancelable) {
-        event.preventDefault();
-      }
+  const loadScreenSaver = async (): Promise<void> =>
+    setSrcDoc({
+      [url]: (await readFile(url)).toString(),
+    });
+  const closeScreenSaver = (event?: Event): void => {
+    // Stops the tap from also clicking what was under the screen saver
+    if (event?.type === "touchstart" && event.cancelable) {
+      event.preventDefault();
+    }
 
-      if (iframeRef.current) {
-        iframeRef.current.style.display = "none";
-      }
+    if (iframeRef.current) {
+      iframeRef.current.style.display = "none";
+    }
 
-      close(id);
-    },
-    [close, id]
-  );
+    close(id);
+  };
 
   useEffect(() => {
+    // eslint-disable-next-line react/set-state-in-effect -- False positive: state is only set after an await
     if (url && !srcDoc[url]) loadScreenSaver();
   }, [loadScreenSaver, srcDoc, url]);
 
@@ -95,4 +90,4 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(ScreenSaver);
+export default ScreenSaver;

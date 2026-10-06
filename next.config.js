@@ -45,6 +45,7 @@ const nextConfig = {
   ],
   output: "export",
   productionBrowserSourceMaps: false,
+  reactCompiler: true,
   reactProductionProfiling: false,
   reactStrictMode: !isProduction,
   // These ship syntax newer than the browserslist targets (e.g. ??=, #private)

@@ -1,5 +1,5 @@
 import { basename, dirname, extname, join } from "path";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ExitFullscreen,
   Fullscreen,
@@ -28,6 +28,7 @@ import {
   haltEvent,
   label,
 } from "utils/functions";
+import { loadImageDecoder } from "utils/loaders";
 
 const { maxScale, minScale } = panZoomConfig;
 
@@ -38,23 +39,23 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const [brokenImage, setBrokenImage] = useState(false);
   const { prependFileToTitle } = useTitle(id);
   const { readdir, readFile } = useFileSystemActions();
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const imageRef = useRef<HTMLImageElement | null>(null);
-  const imageContainerRef = useRef<HTMLDivElement | null>(null);
+  const [container, setContainer] = useState<HTMLDivElement | null>();
+  const [image, setImage] = useState<HTMLImageElement | null>();
+  const [imageContainer, setImageContainer] = useState<HTMLElement | null>();
   const { reset, scale, zoomIn, zoomOut, zoomToPoint } = usePanZoom(
     id,
-    imageRef.current,
-    imageContainerRef.current
+    image,
+    imageContainer
   );
   const { fullscreenElement, toggleFullscreen } = useViewport();
-  const loadPhoto = useCallback(async (): Promise<void> => {
+  const loadPhoto = async (): Promise<void> => {
     const ext = getExtension(url);
     const isNative = NATIVE_IMAGE_FORMATS.has(ext);
     const [initialContents, decoder] = await Promise.all([
       readFile(url),
       isNative
         ? Promise.resolve()
-        : import("utils/imageDecoder").then((m) => m.decodeImageToBuffer),
+        : loadImageDecoder().then((m) => m.decodeImageToBuffer),
     ]);
     let fileContents = initialContents;
 
@@ -77,45 +78,42 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
       };
     });
     prependFileToTitle(basename(url));
-  }, [prependFileToTitle, readFile, reset, url]);
-  const onKeyDown = useCallback(
-    async ({ key }: KeyboardEvent): Promise<void> => {
-      // eslint-disable-next-line default-case
-      switch (key) {
-        case "ArrowRight":
-        case "ArrowLeft": {
-          const directory = await readdir(dirname(url));
-          const currentIndex = directory.indexOf(basename(url));
-          const nextPhoto = (index: number, next: boolean): void => {
-            if (index === -1) return;
+  };
+  const onKeyDown = async ({ key }: KeyboardEvent): Promise<void> => {
+    // eslint-disable-next-line default-case
+    switch (key) {
+      case "ArrowRight":
+      case "ArrowLeft": {
+        const directory = await readdir(dirname(url));
+        const currentIndex = directory.indexOf(basename(url));
+        const nextPhoto = (index: number, next: boolean): void => {
+          if (index === -1) return;
 
-            const nextIndex = index + (next ? 1 : -1);
+          const nextIndex = index + (next ? 1 : -1);
 
-            if (nextIndex === -1 || nextIndex === directory.length) {
-              return;
-            }
+          if (nextIndex === -1 || nextIndex === directory.length) {
+            return;
+          }
 
-            const nextUrl = directory[nextIndex];
+          const nextUrl = directory[nextIndex];
 
-            if (IMAGE_FILE_EXTENSIONS.has(getExtension(nextUrl))) {
-              setUrl(id, join(dirname(url), nextUrl));
-            } else {
-              nextPhoto(nextIndex, next);
-            }
-          };
+          if (IMAGE_FILE_EXTENSIONS.has(getExtension(nextUrl))) {
+            setUrl(id, join(dirname(url), nextUrl));
+          } else {
+            nextPhoto(nextIndex, next);
+          }
+        };
 
-          nextPhoto(currentIndex, key === "ArrowRight");
+        nextPhoto(currentIndex, key === "ArrowRight");
 
-          break;
-        }
+        break;
       }
-    },
-    [id, readdir, setUrl, url]
-  );
-  const isFullscreen =
-    fullscreenElement === containerRef.current && containerRef.current !== null;
+    }
+  };
+  const isFullscreen = Boolean(container) && fullscreenElement === container;
 
   useEffect(() => {
+    // eslint-disable-next-line react/set-state-in-effect -- False positive: state is only set after an await
     if (url && !src[url] && !closing) loadPhoto();
   }, [closing, loadPhoto, src, url]);
 
@@ -127,7 +125,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledPhotos
-      ref={containerRef}
+      ref={setContainer}
       $showImage={Boolean(src[url] && !brokenImage)}
       className={url ? "" : "drop"}
       onContextMenu={haltEvent}
@@ -150,7 +148,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
         </Button>
       </nav>
       <figure
-        ref={imageContainerRef}
+        ref={setImageContainer}
         {...useDoubleClick((event) => {
           if (scale === minScale) {
             zoomToPoint?.(minScale * 2, event, { animate: true });
@@ -160,7 +158,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
         })}
       >
         <img
-          ref={imageRef}
+          ref={setImage}
           alt={basename(url, extname(url))}
           decoding="async"
           loading="eager"
@@ -181,7 +179,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
       <nav className="bottom" role="presentation">
         <Button
           disabled={!url}
-          onClick={() => toggleFullscreen(containerRef.current, "show")}
+          onClick={() => toggleFullscreen(container, "show")}
           {...label(isFullscreen ? "Exit full-screen" : "Full-screen")}
         >
           {isFullscreen ? <ExitFullscreen /> : <Fullscreen />}
@@ -191,4 +189,4 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Photos);
+export default Photos;

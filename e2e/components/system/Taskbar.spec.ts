@@ -1,12 +1,12 @@
 import { test } from "@playwright/test";
 import {
   CLOCK_MENU_ITEMS,
+  SHOW_TALOS_MENU_ITEM,
   START_BUTTON_MENU_ITEMS,
   TASKBAR_ENTRIES_MENU_ITEMS,
   TASKBAR_ENTRY_MENU_ITEMS,
   TEST_APP_ICON,
   TEST_APP_TITLE,
-  WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS,
 } from "e2e/constants";
 import {
   calendarIsVisible,
@@ -19,6 +19,7 @@ import {
   clockCanvasIsHidden,
   clockCanvasMaybeIsVisible,
   clockTextIsVisible,
+  closePage,
   contextMenuEntryIsVisible,
   contextMenuHasCount,
   contextMenuIsVisible,
@@ -26,12 +27,14 @@ import {
   disableWallpaper,
   fileExplorerEntriesAreVisible,
   flyIsVisible,
-  hasBuiltInAI,
   hoverOnTaskbarEntry,
   loadApp,
   loadTestApp,
+  offersTalos,
   sheepIsVisible,
   startButtonIsVisible,
+  talosButtonIsHidden,
+  talosButtonIsVisible,
   taskbarEntriesAreVisible,
   taskbarEntryHasIcon,
   taskbarEntryHasTooltip,
@@ -47,6 +50,7 @@ import {
 
 test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
+test.afterEach(closePage);
 
 test.describe("elements", () => {
   test.beforeEach(loadApp());
@@ -189,9 +193,7 @@ test.describe("entries", () => {
 
     test("has items", async ({ browserName, page }) => {
       const entries = TASKBAR_ENTRIES_MENU_ITEMS(
-        (!WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName) &&
-          !process.env.CI) ||
-          (await hasBuiltInAI({ page }))
+        await offersTalos({ browserName, page })
       );
 
       await contextMenuHasCount(entries.length, { page });
@@ -200,6 +202,15 @@ test.describe("entries", () => {
         // eslint-disable-next-line no-await-in-loop
         await contextMenuEntryIsVisible(label, { page });
       }
+    });
+
+    test("has Talos button off until shown", async ({ browserName, page }) => {
+      test.skip(!(await offersTalos({ browserName, page })), "no AI support");
+
+      await talosButtonIsHidden({ page });
+      // Fails if it was on, as the menu entry toggles it
+      await clickContextMenuEntry(SHOW_TALOS_MENU_ITEM, { page });
+      await talosButtonIsVisible({ page });
     });
   });
 });

@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useTheme } from "styled-components";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { useProcess } from "contexts/process";
@@ -10,16 +9,12 @@ const useDefaultSize = (id: string): Size => {
     sizes: { titleBar },
   } = useTheme();
 
-  return useMemo(
-    () =>
-      defaultSize
-        ? {
-            height: Number(defaultSize.height) + titleBar.height,
-            width: defaultSize.width,
-          }
-        : DEFAULT_WINDOW_SIZE,
-    [defaultSize, titleBar.height]
-  );
+  return defaultSize
+    ? {
+        height: Number(defaultSize.height) + titleBar.height,
+        width: defaultSize.width,
+      }
+    : DEFAULT_WINDOW_SIZE;
 };
 
 export default useDefaultSize;

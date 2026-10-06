@@ -1,6 +1,6 @@
 import { basename, dirname } from "path";
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getModifiedTime } from "components/system/Files/FileEntry/functions";
 import SubIcons from "components/system/Files/FileEntry/SubIcons";
 import { UNKNOWN_ICON } from "components/system/Files/FileManager/icons";
@@ -35,46 +35,9 @@ const Details: FC<{
   const [info, setInfo] = useState<ResultInfo>({
     icon: UNKNOWN_ICON,
   } as ResultInfo);
-  const extension = useMemo(
-    () => getExtension(info?.url || url),
-    [info?.url, url]
-  );
   const { updateRecentFiles } = useSessionActions();
-  const openFile = useCallback(() => {
-    openApp(info?.pid, { url: info?.url });
-    if (info?.url && info?.pid) updateRecentFiles(info?.url, info?.pid);
-  }, [info?.pid, info?.url, openApp, updateRecentFiles]);
   const elementRef = useRef<HTMLDivElement>(null);
-  const isYTUrl = useMemo(
-    () => (info?.url ? isYouTubeUrl(info.url) : false),
-    [info?.url]
-  );
-  const isNostrUrl = useMemo(
-    () => (info?.url ? info.url.startsWith("nostr:") : false),
-    [info?.url]
-  );
-  const isAppShortcut = useMemo(
-    () =>
-      info?.pid
-        ? url === info.url && getExtension(url) === SHORTCUT_EXTENSION
-        : false,
-    [info?.pid, info?.url, url]
-  );
-  const isDirectory = useMemo(
-    () => stats?.isDirectory() || (!extension && !isYTUrl && !isNostrUrl),
-    [extension, isNostrUrl, isYTUrl, stats]
-  );
-  const baseUrl = isYTUrl || isNostrUrl ? url : info?.url;
   const currentUrlRef = useRef(url);
-  const name = useMemo(
-    () =>
-      baseUrl === "/"
-        ? ROOT_NAME
-        : baseUrl
-          ? basename(baseUrl, SHORTCUT_EXTENSION)
-          : "",
-    [baseUrl]
-  );
 
   useEffect(() => {
     stat(url).then(
@@ -89,6 +52,26 @@ const Details: FC<{
     elementRef.current?.scrollTo({ behavior: "smooth", top: 0 });
     currentUrlRef.current = url;
   }, [url]);
+
+  const extension = getExtension(info?.url || url);
+  const openFile = (): void => {
+    openApp(info?.pid, { url: info?.url });
+    if (info?.url && info?.pid) updateRecentFiles(info?.url, info?.pid);
+  };
+  const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
+  const isNostrUrl = info?.url ? info.url.startsWith("nostr:") : false;
+  const isAppShortcut = info?.pid
+    ? url === info.url && getExtension(url) === SHORTCUT_EXTENSION
+    : false;
+  const isDirectory =
+    stats?.isDirectory() || (!extension && !isYTUrl && !isNostrUrl);
+  const baseUrl = isYTUrl || isNostrUrl ? url : info?.url;
+  const name =
+    baseUrl === "/"
+      ? ROOT_NAME
+      : baseUrl
+        ? basename(baseUrl, SHORTCUT_EXTENSION)
+        : "";
 
   return info?.url && stats ? (
     <StyledDetails ref={elementRef}>
@@ -165,4 +148,4 @@ const Details: FC<{
   );
 };
 
-export default memo(Details);
+export default Details;

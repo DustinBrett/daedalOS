@@ -20,6 +20,7 @@ import {
   CONTEXT_MENU_SELECTOR,
   CURSOR_SPACE_LENGTH,
   DEFAULT_SESSION,
+  DESKTOP_ENTRIES_RENAMING_SELECTOR,
   DESKTOP_ENTRIES_SELECTOR,
   DESKTOP_SELECTOR,
   EXACT,
@@ -47,6 +48,7 @@ import {
   START_MENU_SELECTOR,
   START_MENU_SIDEBAR_SELECTOR,
   TAB_SPACE_LENGTH,
+  TALOS_LABEL,
   TASKBAR_ENTRIES_SELECTOR,
   TASKBAR_ENTRY_LABEL_SUFFIX,
   TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR,
@@ -60,6 +62,7 @@ import {
   TYPE_DELAY,
   UNKNOWN_ICON_PATH,
   WEBGL_OFFSCREEN_NOT_SUPPORTED_BROWSERS,
+  WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS,
   WINDOW_SELECTOR,
   WINDOW_TITLEBAR_ICON_SELECTOR,
   WINDOW_TITLEBAR_SELECTOR,
@@ -169,6 +172,11 @@ export const disableWallpaper = ({ page }: TestProps): Promise<Disposable> =>
   });
 
 // action
+// Closing only the context lets Firefox close IndexedDB under the live page, so
+// pending BrowserFS work throws "Can't start a transaction on a closed database"
+export const closePage = async ({ page }: TestProps): Promise<void> =>
+  page.close();
+
 export const mockPictureSlideshowRequest = async ({
   page,
 }: TestProps): Promise<() => Promise<void>> => {
@@ -423,6 +431,12 @@ export const clickTaskbarEntry = async (
     .getByLabel(taskbarEntryLabel(label), EXACT)
     .click(right ? RIGHT_CLICK : undefined);
 
+export const doubleClickDesktopEntry = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  page.locator(DESKTOP_ENTRIES_SELECTOR).getByLabel(label).dblclick();
+
 export const fileExplorerRenameEntry = async (
   newName: string,
   { page }: TestProps
@@ -518,7 +532,7 @@ export const getHostname = async ({ page }: TestProps): Promise<string> =>
   page.evaluate(() => window.location.hostname);
 
 // Mirrors getAvailability in hooks/useWindowAI
-export const hasBuiltInAI = async ({ page }: TestProps): Promise<boolean> =>
+const hasBuiltInAI = async ({ page }: TestProps): Promise<boolean> =>
   page.evaluate(async () => {
     if (!("LanguageModel" in window)) return false;
 
@@ -533,6 +547,15 @@ export const hasBuiltInAI = async ({ page }: TestProps): Promise<boolean> =>
       return false;
     }
   });
+
+// Mirrors when the taskbar menu offers the Talos button
+export const offersTalos = async ({
+  browserName,
+  page,
+}: TestPropsWithBrowser): Promise<boolean> =>
+  (!WEBGPU_HEADLESS_NOT_SUPPORTED_BROWSERS.has(browserName) &&
+    !process.env.CI) ||
+  hasBuiltInAI({ page });
 
 export const windowAnimationIsFinished = async ({
   page,
@@ -591,6 +614,20 @@ export const windowIsMaximized = async (
     ).toBe(maximized)
   ).toPass();
 
+export const windowTitlebarHasBlobIcon = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(async () =>
+    expect(
+      await page
+        .locator(`${WINDOW_TITLEBAR_ICON_SELECTOR}>img`)
+        .evaluate(
+          ({ complete, naturalWidth, src }: HTMLImageElement) =>
+            complete && naturalWidth > 0 && src.startsWith("blob:")
+        )
+    ).toBeTruthy()
+  ).toPass();
+
 // expect->locator
 export const canvasBackgroundIsHidden = async ({
   page,
@@ -604,6 +641,11 @@ export const contextMenuIsVisible = async ({
   page,
 }: TestProps): Promise<void> =>
   expect(page.locator(CONTEXT_MENU_SELECTOR)).toBeVisible();
+
+export const desktopEntryIsRenaming = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(page.locator(DESKTOP_ENTRIES_RENAMING_SELECTOR)).toBeVisible();
 
 export const desktopIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(page.locator(DESKTOP_SELECTOR)).toBeVisible();
@@ -770,6 +812,14 @@ export const searchResultEntryIsVisible = async (
     page.locator(SEARCH_MENU_RESULTS_SELECTOR).getByTitle(label)
   ).toBeVisible();
 
+export const talosButtonIsHidden = async ({ page }: TestProps): Promise<void> =>
+  expect(page.locator(TASKBAR_SELECTOR).getByLabel(TALOS_LABEL)).toBeHidden();
+
+export const talosButtonIsVisible = async ({
+  page,
+}: TestProps): Promise<void> =>
+  expect(page.locator(TASKBAR_SELECTOR).getByLabel(TALOS_LABEL)).toBeVisible();
+
 export const taskbarEntryIsHidden = async (
   label: RegExp | string,
   { page }: TestProps
@@ -794,9 +844,14 @@ export const taskbarEntryPeekIsHidden = async ({
 export const taskbarEntryPeekImageIsVisible = async ({
   page,
 }: TestProps): Promise<void> =>
-  expect(async () =>
-    expect(page.locator(TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR)).toBeVisible()
-  ).toPass();
+  // Mounts transparent, so a visible image alone doesn't mean it was shown
+  expect(async () => {
+    await expect(page.locator(TASKBAR_ENTRY_PEEK_SELECTOR)).toHaveCSS(
+      "opacity",
+      "1"
+    );
+    await expect(page.locator(TASKBAR_ENTRY_PEEK_IMAGE_SELECTOR)).toBeVisible();
+  }).toPass();
 
 export const startMenuEntryIsVisible = async (
   label: RegExp | string,
@@ -853,6 +908,14 @@ export const clockCanvasIsHidden = async ({ page }: TestProps): Promise<void> =>
 
 const clockCanvasIsVisible = async ({ page }: TestProps): Promise<void> =>
   expect(clockCanvasLocator(page)).toBeVisible();
+
+export const desktopEntryHasBlobIcon = async (
+  label: RegExp,
+  { page }: TestProps
+): Promise<void> =>
+  expect(
+    page.locator(DESKTOP_ENTRIES_SELECTOR).getByLabel(label).locator("img")
+  ).toHaveAttribute("src", /^blob:/);
 
 export const taskbarEntryHasIcon = async (
   label: RegExp,

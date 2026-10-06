@@ -19,7 +19,6 @@ export default defineConfig({
   jsPlugins: [
     "eslint-plugin-no-relative-import-paths",
     "eslint-plugin-perfectionist",
-    "eslint-plugin-react-hooks-addons",
     "eslint-plugin-regexp",
   ],
   options: {
@@ -82,6 +81,19 @@ export default defineConfig({
       },
     ],
     "no-relative-import-paths/no-relative-import-paths": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        paths: [
+          {
+            importNames: ["memo"],
+            message:
+              "React Compiler already memoizes components, only list items that re-render with unchanged props need memo()",
+            name: "react",
+          },
+        ],
+      },
+    ],
     "no-unused-vars": [
       "error",
       {
@@ -127,7 +139,6 @@ export default defineConfig({
         VariableDeclarator: { array: false, object: true },
       },
     ],
-    "react-hooks-addons/no-unused-deps": "error",
     "react/function-component-definition": [
       "error",
       {
@@ -270,19 +281,10 @@ export default defineConfig({
       "unicorn/prefer-number-coercion",
       "unicorn/require-post-message-target-origin",
     ]),
-    // React Compiler rules (not adopted yet)
+    // The compiler memoizes functions and objects declared in render
     ...off([
-      "react/exhaustive-effect-dependencies",
-      "react/hooks",
-      "react/immutability",
-      "react/invariant",
-      "react/memo-dependencies",
-      "react/preserve-manual-memoization",
-      "react/purity",
-      "react/refs",
-      "react/rule-suppression",
-      "react/set-state-in-effect",
-      "react/todo",
+      "react/exhaustive-deps",
+      "react/jsx-no-constructed-context-values",
     ]),
   },
 });

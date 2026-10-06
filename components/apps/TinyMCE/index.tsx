@@ -1,17 +1,20 @@
-import { memo } from "react";
 import StyledTinyMceEditor from "components/apps/TinyMCE/StyledTinyMceEditor";
 import useTinyMCE from "components/apps/TinyMCE/useTinyMCE";
-import AppContainer from "components/system/Apps/AppContainer";
+import AppContainer, {
+  useAppContainer,
+} from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
-const TinyMCE: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer
-    id={id}
-    StyledComponent={StyledTinyMceEditor}
-    useHook={useTinyMCE}
-  >
-    <div id={id} />
-  </AppContainer>
-);
+const TinyMCE: FC<ComponentProcessProps> = ({ id }) => {
+  const containerProps = useAppContainer(id);
 
-export default memo(TinyMCE);
+  useTinyMCE(containerProps);
+
+  return (
+    <AppContainer {...containerProps} StyledComponent={StyledTinyMceEditor}>
+      <div id={id} />
+    </AppContainer>
+  );
+};
+
+export default TinyMCE;

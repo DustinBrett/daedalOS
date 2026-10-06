@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { useRef } from "react";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { useIsLegacyChat } from "components/apps/Messenger/MessageContext";
 import Profile from "components/apps/Messenger/Profile";
@@ -47,4 +47,4 @@ const ChatProfile: FC<{ publicKey: string }> = ({ publicKey }) => {
   );
 };
 
-export default memo(ChatProfile);
+export default ChatProfile;

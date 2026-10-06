@@ -1,4 +1,4 @@
-import { Fragment, memo, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { type PropertiesMetaData } from "components/system/Dialogs/Properties";
 import Buttons from "components/system/Dialogs/Properties/Buttons";
 import StyledDetailsTab from "components/system/Dialogs/Properties/StyledDetailsTab";
@@ -21,10 +21,7 @@ const DetailsTab: FC<TabProps> = ({
   setMetaData,
   url,
 }) => {
-  const loading = useMemo(
-    () => !(metaData.exif || metaData.mediaType),
-    [metaData]
-  );
+  const loading = !(metaData.exif || metaData.mediaType);
   const { readFile } = useFileSystemActions();
   const [fileData, setFileData] = useState<Buffer | undefined>();
 
@@ -100,4 +97,4 @@ const DetailsTab: FC<TabProps> = ({
   );
 };
 
-export default memo(DetailsTab);
+export default DetailsTab;

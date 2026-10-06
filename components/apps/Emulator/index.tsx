@@ -1,15 +1,16 @@
-import { memo } from "react";
 import StyledEmulator from "components/apps/Emulator/StyledEmulator";
 import useEmulator from "components/apps/Emulator/useEmulator";
-import AppContainer from "components/system/Apps/AppContainer";
+import AppContainer, {
+  useAppContainer,
+} from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
-const Emulator: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer
-    id={id}
-    StyledComponent={StyledEmulator}
-    useHook={useEmulator}
-  />
-);
+const Emulator: FC<ComponentProcessProps> = ({ id }) => {
+  const containerProps = useAppContainer(id);
 
-export default memo(Emulator);
+  useEmulator(containerProps);
+
+  return <AppContainer {...containerProps} StyledComponent={StyledEmulator} />;
+};
+
+export default Emulator;

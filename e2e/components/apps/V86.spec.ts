@@ -1,10 +1,11 @@
-import { expect, test } from "@playwright/test";
-import { WINDOW_TITLEBAR_SELECTOR } from "e2e/constants";
+import { test } from "@playwright/test";
 import {
   captureConsoleLogs,
+  closePage,
   disableWallpaper,
   loadApp,
   windowsAreVisible,
+  windowTitlebarTextIsVisible,
 } from "e2e/functions";
 
 const APP = "V86";
@@ -13,6 +14,7 @@ const DISK_IMAGE_URL = `/System/${DISK_IMAGE}`;
 
 test.beforeEach(captureConsoleLogs("apps"));
 test.beforeEach(disableWallpaper);
+test.afterEach(closePage);
 
 test.describe("loads disk image", () => {
   for (const deviceMemory of [0.25, 8, 32]) {
@@ -27,9 +29,10 @@ test.describe("loads disk image", () => {
       await loadApp({ app: APP, url: DISK_IMAGE_URL })({ page });
       await windowsAreVisible({ page });
 
-      await expect(page.locator(WINDOW_TITLEBAR_SELECTOR)).toContainText(
-        `Virtual x86 - ${DISK_IMAGE}`
-      );
+      // Booting takes seconds in Firefox when the suite runs in parallel
+      await windowTitlebarTextIsVisible(`Virtual x86 - ${DISK_IMAGE}`, {
+        page,
+      });
     });
   }
 });

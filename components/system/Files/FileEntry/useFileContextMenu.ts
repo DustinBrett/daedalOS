@@ -1,6 +1,6 @@
 import { basename, dirname, extname, join } from "path";
-import { useMemo } from "react";
 import { type URLTrack } from "webamp";
+import type * as WebampFunctions from "components/apps/Webamp/functions";
 import useTransferDialog, {
   type ObjectReader,
 } from "components/system/Dialogs/Transfer/useTransferDialog";
@@ -22,7 +22,7 @@ import {
   type ContextMenuCapture,
   type MenuItem,
 } from "contexts/menu/useMenuContextState";
-import { useProcessesActions, useProcessesRef } from "contexts/process";
+import { getProcess, useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSessionActions } from "contexts/session";
 import { getNavButtonByTitle } from "hooks/useGlobalKeyboardShortcuts";
@@ -47,6 +47,7 @@ import {
   TEXT_EDITORS,
   VIDEO_FILE_EXTENSIONS,
 } from "utils/constants";
+import { type transcode } from "utils/ffmpeg";
 import {
   AUDIO_DECODE_FORMATS,
   AUDIO_ENCODE_FORMATS,
@@ -58,12 +59,47 @@ import {
   isYouTubeUrl,
   saveUnpositionedDesktopIcons,
 } from "utils/functions";
+import { type convert } from "utils/imagemagick";
 import {
   IMAGE_DECODE_FORMATS,
   IMAGE_ENCODE_FORMATS,
 } from "utils/imagemagick/formats";
+import type * as SheetJs from "utils/sheetjs";
 
 const { alias } = PACKAGE_DATA;
+
+const loadTranscodeFunction = async (
+  isAudioVideo: boolean
+): Promise<typeof convert | typeof transcode> =>
+  isAudioVideo
+    ? (await import("utils/ffmpeg")).transcode
+    : (await import("utils/imagemagick")).convert;
+
+const loadSheetJs = (): Promise<typeof SheetJs> => import("utils/sheetjs");
+
+const loadWebampFunctions = (): Promise<typeof WebampFunctions> =>
+  import("components/apps/Webamp/functions");
+
+const canShareFile = (
+  mountList: string[] | undefined,
+  path: string,
+  stats: FileStat,
+  shareData: ShareData
+): boolean => {
+  try {
+    const isFileMounted = mountList?.some(
+      (mountPath) => mountPath !== "/" && path.startsWith(`${mountPath}/`)
+    );
+
+    return (
+      !isFileMounted && isExistingFile(stats) && navigator.canShare?.(shareData)
+    );
+  } catch {
+    // Ignore failure to use Share API
+  }
+
+  return false;
+};
 
 const useFileContextMenu = (
   url: string,
@@ -84,7 +120,6 @@ const useFileContextMenu = (
   readOnly?: boolean
 ): ContextMenuCapture => {
   const { close, minimize, open, url: changeUrl } = useProcessesActions();
-  const processesRef = useProcessesRef();
   const {
     setCursor,
     setForegroundId,
@@ -92,11 +127,6 @@ const useFileContextMenu = (
     setWallpaper,
     updateRecentFiles,
   } = useSessionActions();
-  const baseName = basename(path);
-  const isFocusedEntry = useMemo(
-    () => focusedEntries.includes(baseName),
-    [baseName, focusedEntries]
-  );
   const openFile = useFile(url, path);
   const {
     copyEntries,
@@ -112,599 +142,517 @@ const useFileContextMenu = (
   const { contextMenu } = useMenuActions();
   const showAI = useShowAI();
   const { openTransferDialog } = useTransferDialog();
-  const { onContextMenuCapture, ...contextMenuHandlers } = useMemo(
-    () =>
-      contextMenu?.(() => {
-        const urlExtension = getExtension(url);
-        const { process: extensionProcesses = [] } =
-          urlExtension in extensions ? extensions[urlExtension] : {};
-        const openWith = extensionProcesses.filter(
-          (process) => process !== pid
-        );
-        const openWithFiltered = openWith.filter((id) => id !== pid);
-        const isSingleSelection =
-          focusedEntries.length === 1 || !isFocusedEntry;
-        const absoluteEntries = (): string[] =>
-          isSingleSelection
-            ? [path]
-            : [
-                ...new Set([
-                  path,
-                  ...focusedEntries.map((entry) => join(dirname(path), entry)),
-                ]),
-              ];
-        const menuItems: MenuItem[] = [];
-        const pathExtension = getExtension(path);
-        const isShortcut = pathExtension === SHORTCUT_EXTENSION;
-        const remoteMount = rootFs?.mountList.some(
-          (mountPath) =>
-            mountPath === path && isMountedFolder(rootFs?.mntMap[mountPath])
-        );
+  const baseName = basename(path);
+  const isFocusedEntry = focusedEntries.includes(baseName);
+  const { onContextMenuCapture, ...contextMenuHandlers } = contextMenu(() => {
+    const urlExtension = getExtension(url);
+    const { process: extensionProcesses = [] } =
+      urlExtension in extensions ? extensions[urlExtension] : {};
+    const openWith = extensionProcesses.filter((process) => process !== pid);
+    const openWithFiltered = openWith.filter((id) => id !== pid);
+    const isSingleSelection = focusedEntries.length === 1 || !isFocusedEntry;
+    const absoluteEntries = (): string[] =>
+      isSingleSelection
+        ? [path]
+        : [
+            ...new Set([
+              path,
+              ...focusedEntries.map((entry) => join(dirname(path), entry)),
+            ]),
+          ];
+    const menuItems: MenuItem[] = [];
+    const pathExtension = getExtension(path);
+    const isShortcut = pathExtension === SHORTCUT_EXTENSION;
+    const remoteMount = rootFs?.mountList.some(
+      (mountPath) =>
+        mountPath === path && isMountedFolder(rootFs?.mntMap[mountPath])
+    );
 
-        if (!readOnly && !remoteMount) {
-          const defaultProcess = getProcessByFileExtension(urlExtension);
+    if (!readOnly && !remoteMount) {
+      const defaultProcess = getProcessByFileExtension(urlExtension);
 
-          menuItems.push(
-            { action: () => moveEntries(absoluteEntries()), label: "Cut" },
-            { action: () => copyEntries(absoluteEntries()), label: "Copy" },
-            MENU_SEPERATOR
-          );
+      menuItems.push(
+        { action: () => moveEntries(absoluteEntries()), label: "Cut" },
+        { action: () => copyEntries(absoluteEntries()), label: "Copy" },
+        MENU_SEPERATOR
+      );
 
-          if (
-            defaultProcess ||
-            isShortcut ||
-            (!pathExtension && !urlExtension)
-          ) {
-            menuItems.push({
-              action: () =>
-                absoluteEntries().forEach(async (entry) => {
-                  const shortcutProcess =
-                    defaultProcess && !(await lstat(entry)).isDirectory()
-                      ? defaultProcess
-                      : "FileExplorer";
+      if (defaultProcess || isShortcut || (!pathExtension && !urlExtension)) {
+        menuItems.push({
+          action: () =>
+            absoluteEntries().forEach(async (entry) => {
+              const shortcutProcess =
+                defaultProcess && !(await lstat(entry)).isDirectory()
+                  ? defaultProcess
+                  : "FileExplorer";
 
-                  newShortcut(entry, shortcutProcess);
-                }),
-              label: "Create shortcut",
+              newShortcut(entry, shortcutProcess);
+            }),
+          label: "Create shortcut",
+        });
+      }
+
+      menuItems.push(
+        {
+          action: () => {
+            if (dirname(path) === DESKTOP_PATH) {
+              saveUnpositionedDesktopIcons(setIconPositions);
+            }
+
+            absoluteEntries().forEach((entry) => deleteLocalPath(entry));
+          },
+          label: "Delete",
+        },
+        { action: () => setRenaming(baseName), label: "Rename" },
+        MENU_SEPERATOR,
+        {
+          action: () => {
+            const activePid = `Properties${PROCESS_DELIMITER}${url}`;
+            const activeProcess = getProcess(activePid);
+
+            if (activeProcess) {
+              if (activeProcess.minimized) minimize(activePid);
+
+              setForegroundId(activePid);
+            } else {
+              open("Properties", {
+                shortcutPath: isShortcut ? path : undefined,
+                url: isShortcut ? path : url,
+              });
+            }
+          },
+          label: "Properties",
+        }
+      );
+
+      if (path) {
+        if (path === join(DESKTOP_PATH, ROOT_SHORTCUT)) {
+          if (typeof FileSystemHandle === "function") {
+            const mapFileSystemDirectory = (directory: string): void => {
+              mapFs(directory)
+                .then((mappedFolder) => {
+                  updateFolder("/", mappedFolder);
+                  open("FileExplorer", {
+                    url: join("/", mappedFolder),
+                  });
+                })
+                .catch(() => {
+                  // Ignore failure to map
+                });
+            };
+            const showMapDirectory = "showDirectoryPicker" in window;
+            const showMapOpfs =
+              typeof navigator.storage?.getDirectory === "function" &&
+              "createWritable" in FileSystemFileHandle.prototype;
+
+            menuItems.unshift(
+              ...(showMapDirectory
+                ? [
+                    {
+                      action: () => mapFileSystemDirectory("/"),
+                      label: "Map directory",
+                    },
+                  ]
+                : []),
+              ...(showMapOpfs
+                ? [
+                    {
+                      action: () => mapFileSystemDirectory("/OPFS"),
+                      label: "Map OPFS",
+                    },
+                  ]
+                : []),
+              ...(showMapDirectory || showMapOpfs ? [MENU_SEPERATOR] : [])
+            );
+          }
+        } else {
+          menuItems.unshift(MENU_SEPERATOR);
+
+          const canDecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
+          const canDecodeImage = IMAGE_DECODE_FORMATS.has(pathExtension);
+          const canDecodeVideo = VIDEO_DECODE_FORMATS.has(pathExtension);
+
+          if (canDecodeAudio || canDecodeImage || canDecodeVideo) {
+            const isAudioVideo = canDecodeAudio || canDecodeVideo;
+            const ENCODE_FORMATS = isAudioVideo
+              ? canDecodeAudio
+                ? AUDIO_ENCODE_FORMATS
+                : VIDEO_ENCODE_FORMATS
+              : IMAGE_ENCODE_FORMATS;
+
+            menuItems.unshift(MENU_SEPERATOR, {
+              label: "Convert to",
+              menu: ENCODE_FORMATS.filter(
+                (format) => format !== pathExtension
+              ).map((format) => {
+                const extension = format.replace(".", "");
+
+                return {
+                  action: async () => {
+                    openTransferDialog(undefined, path, "Converting");
+
+                    const directory = dirname(path);
+                    const closeDialog = (): void =>
+                      close(`Transfer${PROCESS_DELIMITER}${path}`);
+
+                    try {
+                      const transcodeFunction =
+                        await loadTranscodeFunction(isAudioVideo);
+                      const objectReaders = absoluteEntries().map<ObjectReader>(
+                        (absoluteEntry) => {
+                          let aborted = false;
+
+                          return {
+                            abort: () => {
+                              aborted = true;
+                            },
+                            directory,
+                            name: basename(absoluteEntry),
+                            operation: "Converting",
+                            read: async () => {
+                              if (aborted) return;
+
+                              try {
+                                const [
+                                  [transcodedFileName, transcodedFileData],
+                                ] = await transcodeFunction(
+                                  [
+                                    [
+                                      absoluteEntry,
+                                      await readFile(absoluteEntry),
+                                    ],
+                                  ],
+                                  extension
+                                );
+
+                                updateFolder(
+                                  directory,
+                                  await createPath(
+                                    basename(transcodedFileName),
+                                    directory,
+                                    transcodedFileData
+                                  )
+                                );
+                              } catch {
+                                // Ignore failure to transcode
+                              }
+                            },
+                          };
+                        }
+                      );
+
+                      openTransferDialog(objectReaders, path);
+                    } catch (error) {
+                      closeDialog();
+
+                      if ("message" in (error as Error)) {
+                        console.error((error as Error).message);
+                      }
+                    }
+                  },
+                  label: extension.toUpperCase(),
+                };
+              }),
             });
           }
 
-          menuItems.push(
-            {
-              action: () => {
-                if (dirname(path) === DESKTOP_PATH) {
-                  saveUnpositionedDesktopIcons(setIconPositions);
-                }
+          const canDecodeSpreadsheet =
+            SPREADSHEET_FORMATS.includes(pathExtension);
 
-                absoluteEntries().forEach((entry) => deleteLocalPath(entry));
-              },
-              label: "Delete",
-            },
-            { action: () => setRenaming(baseName), label: "Rename" },
-            MENU_SEPERATOR,
-            {
-              action: () => {
-                const activePid = Object.keys(processesRef.current).find(
-                  (p) => p === `Properties${PROCESS_DELIMITER}${url}`
-                );
+          if (canDecodeSpreadsheet) {
+            menuItems.unshift(MENU_SEPERATOR, {
+              label: "Convert to",
+              menu: SPREADSHEET_FORMATS.filter(
+                (format) => format !== pathExtension
+              ).map((format) => {
+                const extension = format.replace(".", "");
 
-                if (activePid) {
-                  if (processesRef.current[activePid].minimized) {
-                    minimize(activePid);
-                  }
-
-                  setForegroundId(activePid);
-                } else {
-                  open("Properties", {
-                    shortcutPath: isShortcut ? path : undefined,
-                    url: isShortcut ? path : url,
-                  });
-                }
-              },
-              label: "Properties",
-            }
-          );
-
-          if (path) {
-            if (path === join(DESKTOP_PATH, ROOT_SHORTCUT)) {
-              if (typeof FileSystemHandle === "function") {
-                const mapFileSystemDirectory = (directory: string): void => {
-                  mapFs(directory)
-                    .then((mappedFolder) => {
-                      updateFolder("/", mappedFolder);
-                      open("FileExplorer", {
-                        url: join("/", mappedFolder),
-                      });
-                    })
-                    .catch(() => {
-                      // Ignore failure to map
-                    });
-                };
-                const showMapDirectory = "showDirectoryPicker" in window;
-                const showMapOpfs =
-                  typeof navigator.storage?.getDirectory === "function" &&
-                  "createWritable" in FileSystemFileHandle.prototype;
-
-                menuItems.unshift(
-                  ...(showMapDirectory
-                    ? [
-                        {
-                          action: () => mapFileSystemDirectory("/"),
-                          label: "Map directory",
-                        },
-                      ]
-                    : []),
-                  ...(showMapOpfs
-                    ? [
-                        {
-                          action: () => mapFileSystemDirectory("/OPFS"),
-                          label: "Map OPFS",
-                        },
-                      ]
-                    : []),
-                  ...(showMapDirectory || showMapOpfs ? [MENU_SEPERATOR] : [])
-                );
-              }
-            } else {
-              menuItems.unshift(MENU_SEPERATOR);
-
-              const canDecodeAudio = AUDIO_DECODE_FORMATS.has(pathExtension);
-              const canDecodeImage = IMAGE_DECODE_FORMATS.has(pathExtension);
-              const canDecodeVideo = VIDEO_DECODE_FORMATS.has(pathExtension);
-
-              if (canDecodeAudio || canDecodeImage || canDecodeVideo) {
-                const isAudioVideo = canDecodeAudio || canDecodeVideo;
-                const ENCODE_FORMATS = isAudioVideo
-                  ? canDecodeAudio
-                    ? AUDIO_ENCODE_FORMATS
-                    : VIDEO_ENCODE_FORMATS
-                  : IMAGE_ENCODE_FORMATS;
-
-                menuItems.unshift(MENU_SEPERATOR, {
-                  label: "Convert to",
-                  menu: ENCODE_FORMATS.filter(
-                    (format) => format !== pathExtension
-                  ).map((format) => {
-                    const extension = format.replace(".", "");
-
-                    return {
-                      action: async () => {
-                        openTransferDialog(undefined, path, "Converting");
-
-                        const directory = dirname(path);
-                        const closeDialog = (): void =>
-                          close(`Transfer${PROCESS_DELIMITER}${path}`);
-
-                        try {
-                          const transcodeFunction = isAudioVideo
-                            ? (await import("utils/ffmpeg")).transcode
-                            : (await import("utils/imagemagick")).convert;
-                          const objectReaders =
-                            absoluteEntries().map<ObjectReader>(
-                              (absoluteEntry) => {
-                                let aborted = false;
-
-                                return {
-                                  abort: () => {
-                                    aborted = true;
-                                  },
-                                  directory,
-                                  name: basename(absoluteEntry),
-                                  operation: "Converting",
-                                  read: async () => {
-                                    if (aborted) return;
-
-                                    try {
-                                      const [
-                                        [
-                                          transcodedFileName,
-                                          transcodedFileData,
-                                        ],
-                                      ] = await transcodeFunction(
-                                        [
-                                          [
-                                            absoluteEntry,
-                                            await readFile(absoluteEntry),
-                                          ],
-                                        ],
-                                        extension
-                                      );
-
-                                      updateFolder(
-                                        directory,
-                                        await createPath(
-                                          basename(transcodedFileName),
-                                          directory,
-                                          transcodedFileData
-                                        )
-                                      );
-                                    } catch {
-                                      // Ignore failure to transcode
-                                    }
-                                  },
-                                };
-                              }
-                            );
-
-                          openTransferDialog(objectReaders, path);
-                        } catch (error) {
-                          closeDialog();
-
-                          if ("message" in (error as Error)) {
-                            console.error((error as Error).message);
-                          }
-                        }
-                      },
-                      label: extension.toUpperCase(),
-                    };
-                  }),
-                });
-              }
-
-              const canDecodeSpreadsheet =
-                SPREADSHEET_FORMATS.includes(pathExtension);
-
-              if (canDecodeSpreadsheet) {
-                menuItems.unshift(MENU_SEPERATOR, {
-                  label: "Convert to",
-                  menu: SPREADSHEET_FORMATS.filter(
-                    (format) => format !== pathExtension
-                  ).map((format) => {
-                    const extension = format.replace(".", "");
-
-                    return {
-                      action: () => {
-                        absoluteEntries().forEach(async (absoluteEntry) => {
-                          const newFilePath = `${dirname(
-                            absoluteEntry
-                          )}/${basename(
-                            absoluteEntry,
-                            extname(absoluteEntry)
-                          )}.${extension}`;
-                          const [{ convertSheet }, sheetBuffer] =
-                            await Promise.all([
-                              import("utils/sheetjs"),
-                              readFile(absoluteEntry),
-                            ]);
-                          const workBook = await convertSheet(
-                            sheetBuffer,
-                            extension
-                          );
-                          const workBookDirName = dirname(path);
-
-                          updateFolder(
-                            workBookDirName,
-                            await createPath(
-                              basename(newFilePath),
-                              workBookDirName,
-                              Buffer.from(workBook)
-                            )
-                          );
-                        });
-                      },
-                      label: extension.toUpperCase(),
-                    };
-                  }),
-                });
-              }
-
-              const canEncodePlaylist =
-                pathExtension !== ".m3u" &&
-                AUDIO_PLAYLIST_EXTENSIONS.has(pathExtension);
-
-              if (canEncodePlaylist) {
-                menuItems.unshift(MENU_SEPERATOR, {
+                return {
                   action: () => {
                     absoluteEntries().forEach(async (absoluteEntry) => {
                       const newFilePath = `${dirname(absoluteEntry)}/${basename(
                         absoluteEntry,
                         extname(absoluteEntry)
-                      )}.m3u`;
-                      const [
-                        { createM3uPlaylist, tracksFromPlaylist },
-                        fileBuffer,
-                      ] = await Promise.all([
-                        import("components/apps/Webamp/functions"),
-                        readFile(absoluteEntry),
-                      ]);
-                      const playlist = createM3uPlaylist(
-                        (await tracksFromPlaylist(
-                          fileBuffer.toString(),
-                          getExtension(absoluteEntry)
-                        )) as URLTrack[]
+                      )}.${extension}`;
+                      const [{ convertSheet }, sheetBuffer] = await Promise.all(
+                        [loadSheetJs(), readFile(absoluteEntry)]
                       );
-                      const playlistDirName = dirname(path);
+                      const workBook = await convertSheet(
+                        sheetBuffer,
+                        extension
+                      );
+                      const workBookDirName = dirname(path);
 
                       updateFolder(
-                        playlistDirName,
+                        workBookDirName,
                         await createPath(
                           basename(newFilePath),
-                          playlistDirName,
-                          Buffer.from(playlist)
+                          workBookDirName,
+                          Buffer.from(workBook)
                         )
                       );
                     });
                   },
-                  label: "Convert to M3U",
-                });
-              }
-
-              const opensInFileExplorer = pid === "FileExplorer";
-
-              if (
-                isSingleSelection &&
-                !opensInFileExplorer &&
-                !isYouTubeUrl(url)
-              ) {
-                const baseFileName = basename(url);
-                const shareData: ShareData = {
-                  text: `${baseFileName} - ${alias}`,
-                  title: baseFileName,
-                  url: `${window.location.origin}?url=${url}`,
+                  label: extension.toUpperCase(),
                 };
-
-                try {
-                  const isFileMounted = rootFs?.mountList.some(
-                    (mountPath) =>
-                      mountPath !== "/" && path.startsWith(`${mountPath}/`)
-                  );
-
-                  if (
-                    !isFileMounted &&
-                    isExistingFile(stats) &&
-                    navigator.canShare?.(shareData)
-                  ) {
-                    menuItems.unshift({
-                      action: () => navigator.share(shareData),
-                      label: "Share",
-                      SvgIcon: Share,
-                    });
-                  }
-                } catch {
-                  // Ignore failure to use Share API
-                }
-              }
-
-              menuItems.unshift(
-                {
-                  action: () => archiveFiles(absoluteEntries()),
-                  label: "Add to archive...",
-                },
-                ...(EXTRACTABLE_EXTENSIONS.has(urlExtension) ||
-                MOUNTABLE_EXTENSIONS.has(urlExtension)
-                  ? [
-                      {
-                        action: () => extractFiles(url),
-                        label: "Extract Here",
-                      },
-                      MENU_SEPERATOR,
-                    ]
-                  : []),
-                {
-                  action: () => downloadFiles(absoluteEntries()),
-                  label: "Download",
-                }
-              );
-
-              if (!isShortcut && !opensInFileExplorer) {
-                TEXT_EDITORS.forEach((textEditor) => {
-                  if (
-                    textEditor !== defaultProcess &&
-                    !openWithFiltered.includes(textEditor)
-                  ) {
-                    openWithFiltered.push(textEditor);
-                  }
-                });
-              }
-            }
-          }
-
-          menuItems.unshift(MENU_SEPERATOR);
-        }
-
-        if (remoteMount) {
-          menuItems.push(MENU_SEPERATOR, {
-            action: () =>
-              unMapFs(
-                path,
-                rootFs?.mntMap[path].getName() !== "FileSystemAccess"
-              ),
-            label: "Disconnect",
-          });
-        }
-
-        if (EDITABLE_IMAGE_FILE_EXTENSIONS.has(urlExtension)) {
-          menuItems.unshift({
-            action: () => {
-              open("Paint", { url });
-              if (url) updateRecentFiles(url, "Paint");
-            },
-            label: "Edit",
-          });
-        }
-
-        if (CURSOR_FILE_EXTENSIONS.has(urlExtension)) {
-          menuItems.unshift({
-            action: () => setCursor(url),
-            label: "Set as mouse pointer",
-          });
-        }
-
-        if (showAI && SUMMARIZABLE_FILE_EXTENSIONS.has(urlExtension)) {
-          const aiCommand = (command: string): void => {
-            window.initialAiPrompt = `${command}: ${url}`;
-
-            if (document.querySelector(`#${AI_WINDOW_ID}`)) {
-              window.dispatchEvent(new Event(AI_PROMPT_EVENT));
-            } else {
-              getNavButtonByTitle(AI_TITLE)?.click();
-            }
-          };
-
-          menuItems.unshift(MENU_SEPERATOR, {
-            action: () => aiCommand("Summarize"),
-            label: "Summarize Text (AI)",
-          });
-        }
-
-        const hasBackgroundVideoExtension =
-          VIDEO_FILE_EXTENSIONS.has(urlExtension);
-
-        if (
-          hasBackgroundVideoExtension ||
-          (IMAGE_FILE_EXTENSIONS.has(urlExtension) &&
-            !CURSOR_FILE_EXTENSIONS.has(urlExtension) &&
-            urlExtension !== ".svg")
-        ) {
-          menuItems.unshift({
-            label: "Set as background",
-            ...(hasBackgroundVideoExtension
-              ? {
-                  action: () => setWallpaper(url),
-                }
-              : {
-                  menu: [
-                    {
-                      action: () => setWallpaper(url, "fill"),
-                      label: "Fill",
-                    },
-                    {
-                      action: () => setWallpaper(url, "fit"),
-                      label: "Fit",
-                    },
-                    {
-                      action: () => setWallpaper(url, "stretch"),
-                      label: "Stretch",
-                    },
-                    {
-                      action: () => setWallpaper(url, "tile"),
-                      label: "Tile",
-                    },
-                    {
-                      action: () => setWallpaper(url, "center"),
-                      label: "Center",
-                    },
-                  ],
-                }),
-          });
-        }
-
-        if (openWithFiltered.length > 0) {
-          menuItems.unshift({
-            label: "Open with",
-            menu: [
-              ...openWithFiltered.map((id): MenuItem => {
-                const { icon, title: label } = processDirectory[id] || {};
-                const action = (): void => {
-                  openFile(id, icon);
-                };
-
-                return { action, icon, label };
               }),
-              MENU_SEPERATOR,
-              {
-                action: () => open("OpenWith", { url }),
-                label: "Choose another app",
-              },
-            ],
-            primary: !pid,
-          });
-        }
-
-        if (pid) {
-          const { icon: pidIcon } = processDirectory[pid] || {};
-
-          if (
-            isShortcut &&
-            url &&
-            url !== "/" &&
-            !url.startsWith("http:") &&
-            !url.startsWith("https:") &&
-            !url.startsWith("nostr:")
-          ) {
-            const isFolder = urlExtension === "" || urlExtension === ".zip";
-
-            menuItems.unshift({
-              action: () => open("FileExplorer", { url: dirname(url) }, ""),
-              label: `Open ${isFolder ? "folder" : "file"} location`,
             });
           }
 
+          const canEncodePlaylist =
+            pathExtension !== ".m3u" &&
+            AUDIO_PLAYLIST_EXTENSIONS.has(pathExtension);
+
+          if (canEncodePlaylist) {
+            menuItems.unshift(MENU_SEPERATOR, {
+              action: () => {
+                absoluteEntries().forEach(async (absoluteEntry) => {
+                  const newFilePath = `${dirname(absoluteEntry)}/${basename(
+                    absoluteEntry,
+                    extname(absoluteEntry)
+                  )}.m3u`;
+                  const [
+                    { createM3uPlaylist, tracksFromPlaylist },
+                    fileBuffer,
+                  ] = await Promise.all([
+                    loadWebampFunctions(),
+                    readFile(absoluteEntry),
+                  ]);
+                  const playlist = createM3uPlaylist(
+                    (await tracksFromPlaylist(
+                      fileBuffer.toString(),
+                      getExtension(absoluteEntry)
+                    )) as URLTrack[]
+                  );
+                  const playlistDirName = dirname(path);
+
+                  updateFolder(
+                    playlistDirName,
+                    await createPath(
+                      basename(newFilePath),
+                      playlistDirName,
+                      Buffer.from(playlist)
+                    )
+                  );
+                });
+              },
+              label: "Convert to M3U",
+            });
+          }
+
+          const opensInFileExplorer = pid === "FileExplorer";
+
+          if (isSingleSelection && !opensInFileExplorer && !isYouTubeUrl(url)) {
+            const baseFileName = basename(url);
+            const shareData: ShareData = {
+              text: `${baseFileName} - ${alias}`,
+              title: baseFileName,
+              url: `${window.location.origin}?url=${url}`,
+            };
+
+            if (canShareFile(rootFs?.mountList, path, stats, shareData)) {
+              menuItems.unshift({
+                action: () => navigator.share(shareData),
+                label: "Share",
+                SvgIcon: Share,
+              });
+            }
+          }
+
+          menuItems.unshift(
+            {
+              action: () => archiveFiles(absoluteEntries()),
+              label: "Add to archive...",
+            },
+            ...(EXTRACTABLE_EXTENSIONS.has(urlExtension) ||
+            MOUNTABLE_EXTENSIONS.has(urlExtension)
+              ? [
+                  {
+                    action: () => extractFiles(url),
+                    label: "Extract Here",
+                  },
+                  MENU_SEPERATOR,
+                ]
+              : []),
+            {
+              action: () => downloadFiles(absoluteEntries()),
+              label: "Download",
+            }
+          );
+
+          if (!isShortcut && !opensInFileExplorer) {
+            TEXT_EDITORS.forEach((textEditor) => {
+              if (
+                textEditor !== defaultProcess &&
+                !openWithFiltered.includes(textEditor)
+              ) {
+                openWithFiltered.push(textEditor);
+              }
+            });
+          }
+        }
+      }
+
+      menuItems.unshift(MENU_SEPERATOR);
+    }
+
+    if (remoteMount) {
+      menuItems.push(MENU_SEPERATOR, {
+        action: () =>
+          unMapFs(path, rootFs?.mntMap[path].getName() !== "FileSystemAccess"),
+        label: "Disconnect",
+      });
+    }
+
+    if (EDITABLE_IMAGE_FILE_EXTENSIONS.has(urlExtension)) {
+      menuItems.unshift({
+        action: () => {
+          open("Paint", { url });
+          if (url) updateRecentFiles(url, "Paint");
+        },
+        label: "Edit",
+      });
+    }
+
+    if (CURSOR_FILE_EXTENSIONS.has(urlExtension)) {
+      menuItems.unshift({
+        action: () => setCursor(url),
+        label: "Set as mouse pointer",
+      });
+    }
+
+    if (showAI && SUMMARIZABLE_FILE_EXTENSIONS.has(urlExtension)) {
+      const aiCommand = (command: string): void => {
+        window.initialAiPrompt = `${command}: ${url}`;
+
+        if (document.querySelector(`#${AI_WINDOW_ID}`)) {
+          window.dispatchEvent(new Event(AI_PROMPT_EVENT));
+        } else {
+          getNavButtonByTitle(AI_TITLE)?.click();
+        }
+      };
+
+      menuItems.unshift(MENU_SEPERATOR, {
+        action: () => aiCommand("Summarize"),
+        label: "Summarize Text (AI)",
+      });
+    }
+
+    const hasBackgroundVideoExtension = VIDEO_FILE_EXTENSIONS.has(urlExtension);
+
+    if (
+      hasBackgroundVideoExtension ||
+      (IMAGE_FILE_EXTENSIONS.has(urlExtension) &&
+        !CURSOR_FILE_EXTENSIONS.has(urlExtension) &&
+        urlExtension !== ".svg")
+    ) {
+      menuItems.unshift({
+        label: "Set as background",
+        ...(hasBackgroundVideoExtension
+          ? {
+              action: () => setWallpaper(url),
+            }
+          : {
+              menu: [
+                {
+                  action: () => setWallpaper(url, "fill"),
+                  label: "Fill",
+                },
+                {
+                  action: () => setWallpaper(url, "fit"),
+                  label: "Fit",
+                },
+                {
+                  action: () => setWallpaper(url, "stretch"),
+                  label: "Stretch",
+                },
+                {
+                  action: () => setWallpaper(url, "tile"),
+                  label: "Tile",
+                },
+                {
+                  action: () => setWallpaper(url, "center"),
+                  label: "Center",
+                },
+              ],
+            }),
+      });
+    }
+
+    if (openWithFiltered.length > 0) {
+      menuItems.unshift({
+        label: "Open with",
+        menu: [
+          ...openWithFiltered.map((id): MenuItem => {
+            const { icon, title: label } = processDirectory[id] || {};
+            const action = (): void => {
+              openFile(id, icon);
+            };
+
+            return { action, icon, label };
+          }),
+          MENU_SEPERATOR,
+          {
+            action: () => open("OpenWith", { url }),
+            label: "Choose another app",
+          },
+        ],
+        primary: !pid,
+      });
+    }
+
+    if (pid) {
+      const { icon: pidIcon } = processDirectory[pid] || {};
+
+      if (
+        isShortcut &&
+        url &&
+        url !== "/" &&
+        !url.startsWith("http:") &&
+        !url.startsWith("https:") &&
+        !url.startsWith("nostr:")
+      ) {
+        const isFolder = urlExtension === "" || urlExtension === ".zip";
+
+        menuItems.unshift({
+          action: () => open("FileExplorer", { url: dirname(url) }, ""),
+          label: `Open ${isFolder ? "folder" : "file"} location`,
+        });
+      }
+
+      if (
+        fileManagerId &&
+        pid === "FileExplorer" &&
+        !MOUNTABLE_EXTENSIONS.has(urlExtension)
+      ) {
+        menuItems.unshift({
+          action: () => {
+            openFile(pid, pidIcon);
+          },
+          label: "Open in new window",
+        });
+      }
+
+      menuItems.unshift({
+        action: () => {
           if (
-            fileManagerId &&
             pid === "FileExplorer" &&
+            fileManagerId &&
             !MOUNTABLE_EXTENSIONS.has(urlExtension)
           ) {
-            menuItems.unshift({
-              action: () => {
-                openFile(pid, pidIcon);
-              },
-              label: "Open in new window",
-            });
+            changeUrl(fileManagerId, url);
+          } else {
+            openFile(pid, pidIcon);
           }
+        },
+        icon: pidIcon,
+        label: VIDEO_FILE_EXTENSIONS.has(urlExtension) ? "Play" : "Open",
+        primary: true,
+      });
+    }
 
-          menuItems.unshift({
-            action: () => {
-              if (
-                pid === "FileExplorer" &&
-                fileManagerId &&
-                !MOUNTABLE_EXTENSIONS.has(urlExtension)
-              ) {
-                changeUrl(fileManagerId, url);
-              } else {
-                openFile(pid, pidIcon);
-              }
-            },
-            icon: pidIcon,
-            label: VIDEO_FILE_EXTENSIONS.has(urlExtension) ? "Play" : "Open",
-            primary: true,
-          });
-        }
-
-        return menuItems[0] === MENU_SEPERATOR ? menuItems.slice(1) : menuItems;
-      }),
-    [
-      archiveFiles,
-      baseName,
-      changeUrl,
-      close,
-      contextMenu,
-      copyEntries,
-      createPath,
-      deleteLocalPath,
-      downloadFiles,
-      extractFiles,
-      fileManagerId,
-      focusedEntries,
-      isFocusedEntry,
-      lstat,
-      mapFs,
-      minimize,
-      moveEntries,
-      newShortcut,
-      open,
-      openFile,
-      openTransferDialog,
-      path,
-      pid,
-      processesRef,
-      readFile,
-      readOnly,
-      rootFs?.mntMap,
-      rootFs?.mountList,
-      setCursor,
-      setForegroundId,
-      setIconPositions,
-      setRenaming,
-      setWallpaper,
-      showAI,
-      stats,
-      unMapFs,
-      updateFolder,
-      updateRecentFiles,
-      url,
-    ]
-  );
+    return menuItems[0] === MENU_SEPERATOR ? menuItems.slice(1) : menuItems;
+  });
 
   return {
     onContextMenuCapture: (event?: React.MouseEvent | React.TouchEvent) => {

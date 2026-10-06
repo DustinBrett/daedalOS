@@ -6,7 +6,7 @@ const NO_PROCESS = Object.create(null) as Process;
 
 export const hasProcess = (process: Process): boolean => process !== NO_PROCESS;
 
-const { Provider, useContextActions, useStateSelector } =
+const { getCurrentState, Provider, useContextActions, useStateSelector } =
   contextActionSelectorFactory(useProcessContextState);
 
 export const useNextFocusableId = (id: string, stackOrder: string[]): string =>
@@ -23,8 +23,11 @@ export const useProcess = (id: string): Process =>
 export const useProcesses = (): Processes =>
   useStateSelector((state) => state.processes);
 
-export const useProcessesRef = (): React.RefObject<Processes> =>
-  useStateSelector((state) => state.processesRef);
+// Non-subscribing reads for handlers and same-commit mounts
+export const getProcesses = (): Processes => getCurrentState().processes;
+
+export const getProcess = (id: string): Process | undefined =>
+  getCurrentState().processes[id];
 
 export {
   Provider as ProcessProvider,

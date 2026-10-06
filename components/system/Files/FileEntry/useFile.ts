@@ -1,7 +1,10 @@
 import { basename, extname, join } from "path";
-import { useCallback } from "react";
 import { useFileSystemActions } from "contexts/fileSystem";
-import { useProcessesActions, useProcessesRef } from "contexts/process";
+import {
+  getProcess,
+  getProcesses,
+  useProcessesActions,
+} from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { useSessionActions } from "contexts/session";
 import {
@@ -9,83 +12,77 @@ import {
   FOLDER_BACK_ICON,
   PROCESS_DELIMITER,
 } from "utils/constants";
-import { isYouTubeUrl } from "utils/functions";
+import { copyBufferUrl, isYouTubeUrl } from "utils/functions";
+import type * as Ipfs from "utils/ipfs";
 
 type UseFile = (pid: string, icon?: string) => Promise<void>;
+
+const loadIpfs = (): Promise<typeof Ipfs> => import("utils/ipfs");
 
 const useFile = (url: string, path: string): UseFile => {
   const { setForegroundId, updateRecentFiles } = useSessionActions();
   const { createPath, updateFolder } = useFileSystemActions();
   const { minimize, open, url: setUrl } = useProcessesActions();
-  const processesRef = useProcessesRef();
 
-  return useCallback(
-    async (pid: string, icon?: string) => {
-      const {
-        icon: processIcon,
-        preferProcessIcon,
-        singleton,
-      } = processDirectory[pid] || {};
-      const activePid = singleton
-        ? Object.keys(processesRef.current).find(
-            (id) => id === pid || id.startsWith(`${pid}${PROCESS_DELIMITER}`)
-          )
-        : "";
-      let runUrl = url;
+  return async (pid: string, icon?: string) => {
+    const {
+      icon: processIcon,
+      preferProcessIcon,
+      singleton,
+    } = processDirectory[pid] || {};
+    const activePid = singleton
+      ? Object.keys(getProcesses()).find(
+          (id) => id === pid || id.startsWith(`${pid}${PROCESS_DELIMITER}`)
+        )
+      : "";
+    let runUrl = url;
 
-      if (url.startsWith("ipfs://")) {
-        const { getIpfsFileName, getIpfsResource } = await import("utils/ipfs");
-        const ipfsData = await getIpfsResource(url);
+    if (url.startsWith("ipfs://")) {
+      const { getIpfsFileName, getIpfsResource } = await loadIpfs();
+      const ipfsData = await getIpfsResource(url);
 
-        runUrl = join(
+      runUrl = join(
+        DESKTOP_PATH,
+        await createPath(
+          await getIpfsFileName(url, ipfsData),
           DESKTOP_PATH,
-          await createPath(
-            await getIpfsFileName(url, ipfsData),
-            DESKTOP_PATH,
-            ipfsData
-          )
+          ipfsData
+        )
+      );
+
+      updateFolder(DESKTOP_PATH, basename(runUrl));
+    }
+
+    if (activePid) {
+      setUrl(activePid, runUrl);
+      if (getProcess(activePid)?.minimized) minimize(activePid);
+      setForegroundId(activePid);
+    } else {
+      const windowIcon =
+        singleton || icon === FOLDER_BACK_ICON || preferProcessIcon
+          ? processIcon
+          : icon;
+
+      // A window's icons revoke blob URLs on close, so it gets its own copy
+      open(
+        pid || "OpenWith",
+        { url: runUrl },
+        windowIcon?.startsWith("blob:")
+          ? await copyBufferUrl(windowIcon).catch(() => processIcon)
+          : windowIcon
+      );
+
+      const recentUrl = runUrl || path;
+
+      if (recentUrl && pid) {
+        updateRecentFiles(
+          recentUrl,
+          pid,
+          isYouTubeUrl(recentUrl) ? basename(path, extname(path)) : undefined
         );
-
-        updateFolder(DESKTOP_PATH, basename(runUrl));
       }
-
-      if (activePid) {
-        setUrl(activePid, runUrl);
-        if (processesRef.current[activePid].minimized) minimize(activePid);
-        setForegroundId(activePid);
-      } else {
-        open(
-          pid || "OpenWith",
-          { url: runUrl },
-          singleton || icon === FOLDER_BACK_ICON || preferProcessIcon
-            ? processIcon
-            : icon
-        );
-
-        const recentUrl = runUrl || path;
-
-        if (recentUrl && pid) {
-          updateRecentFiles(
-            recentUrl,
-            pid,
-            isYouTubeUrl(recentUrl) ? basename(path, extname(path)) : undefined
-          );
-        }
-      }
-    },
-    [
-      createPath,
-      minimize,
-      open,
-      path,
-      processesRef,
-      setForegroundId,
-      setUrl,
-      updateFolder,
-      updateRecentFiles,
-      url,
-    ]
-  );
+    }
+  };
 };
 
 export default useFile;

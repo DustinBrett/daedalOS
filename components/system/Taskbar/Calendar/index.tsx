@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import {
   celebrate,
@@ -25,32 +25,27 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
   const [calendar, setCalendar] = useState<ICalendar>(() =>
     createCalendar(date)
   );
-  const today = useMemo(() => new Date(), []);
-  const isCurrentDate = useMemo(
-    () =>
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear(),
-    [date, today]
-  );
-  const changeMonth = useCallback(
-    (direction: number): void => {
-      const newDate = new Date(date);
-      const newMonth = newDate.getMonth() + direction;
+  // eslint-disable-next-line react/hook-use-state
+  const [today] = useState(() => new Date());
+  const isCurrentDate =
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear();
+  const changeMonth = (direction: number): void => {
+    const newDate = new Date(date);
+    const newMonth = newDate.getMonth() + direction;
 
-      newDate.setDate(1);
-      newDate.setMonth(newMonth);
+    newDate.setDate(1);
+    newDate.setMonth(newMonth);
 
-      const isCurrentMonth =
-        (newMonth === 12 ? 0 : newMonth === -1 ? 11 : newMonth) ===
-        today.getMonth();
+    const isCurrentMonth =
+      (newMonth === 12 ? 0 : newMonth === -1 ? 11 : newMonth) ===
+      today.getMonth();
 
-      if (isCurrentMonth) newDate.setDate(today.getDate());
+    if (isCurrentMonth) newDate.setDate(today.getDate());
 
-      setDate(newDate);
-      setCalendar(createCalendar(newDate));
-    },
-    [date, today]
-  );
+    setDate(newDate);
+    setCalendar(createCalendar(newDate));
+  };
   const calendarRef = useRef<HTMLTableElement>(null);
   const {
     sizes: {
@@ -58,15 +53,13 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
     },
   } = useTheme();
   const calendarTransition = useTaskbarItemTransition(maxHeight, false);
-  const finePointer = useMemo(() => hasFinePointer(), []);
-  const spotlightCell = useCallback(
-    (tdRef: HTMLTableCellElement | null): void => {
-      if (finePointer && tdRef && !tdRef.classList.contains("today")) {
-        spotlightEffect(tdRef, true, 2, true);
-      }
-    },
-    [finePointer]
-  );
+  // eslint-disable-next-line react/hook-use-state
+  const [finePointer] = useState(hasFinePointer);
+  const spotlightCell = (tdRef: HTMLTableCellElement | null): void => {
+    if (finePointer && tdRef && !tdRef.classList.contains("today")) {
+      spotlightEffect(tdRef, true, 2, true);
+    }
+  };
 
   useEffect(() => {
     const calendarElement = calendarRef.current;
@@ -164,4 +157,4 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
   );
 };
 
-export default memo(Calendar);
+export default Calendar;

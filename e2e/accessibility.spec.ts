@@ -26,6 +26,7 @@ import {
   clickMinimizeWindow,
   clickSearchButton,
   clickStartButton,
+  closePage,
   contextMenuIsVisible,
   desktopEntriesAreVisible,
   disableWallpaper,
@@ -43,6 +44,7 @@ import {
 
 test.beforeEach(captureConsoleLogs());
 test.beforeEach(disableWallpaper);
+test.afterEach(closePage);
 
 test.describe("desktop shell", () => {
   test.beforeEach(loadApp());

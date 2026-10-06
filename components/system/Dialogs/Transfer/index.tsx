@@ -1,5 +1,5 @@
 import { basename, dirname } from "path";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledButton from "components/system/Dialogs/StyledButton";
 import StyledTransfer from "components/system/Dialogs/Transfer/StyledTransfer";
@@ -29,86 +29,82 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   const [currentTransfer, setCurrentTransfer] = useState<[string, File]>();
   const [cd = "", { name = "" } = {}] = currentTransfer || [];
   const [progress, setProgress] = useState<number>(0);
-  const currentOperation = useRef<Operation>(undefined);
-  const actionName = useMemo(() => {
-    if (closing || !hasProcess(process)) return currentOperation.current;
+  const { operation: objectOperation } =
+    (fileReaders as ObjectReaders)?.[0] || {};
+  const liveOperation: Operation | undefined =
+    closing || !hasProcess(process)
+      ? undefined
+      : objectOperation ||
+        (url && !fileReaders ? baseOperation || "Extracting" : "Copying");
+  // Keeps the last operation shown while the dialog closes
+  const [lastOperation, setLastOperation] = useState(liveOperation);
 
-    let operation: Operation = "Copying";
-    const { operation: objectOperation } =
-      (fileReaders as ObjectReaders)?.[0] || {};
+  if (liveOperation && liveOperation !== lastOperation) {
+    setLastOperation(liveOperation);
+  }
 
-    if (objectOperation) operation = objectOperation;
-    else if (url && !fileReaders) operation = baseOperation || "Extracting";
-
-    currentOperation.current = operation;
-
-    return operation;
-  }, [baseOperation, closing, fileReaders, process, url]);
+  const actionName = liveOperation || lastOperation;
   const processing = useRef(false);
-  const completeTransfer = useCallback(() => {
+  const completeTransfer = (): void => {
     processing.current = false;
     closeWithTransition(id);
-  }, [closeWithTransition, id]);
-  const processObjectReader = useCallback(
-    ([reader, ...remainingReaders]: ObjectReaders) => {
-      const isComplete = remainingReaders.length === 0;
+  };
+  const processObjectReader = ([
+    reader,
+    ...remainingReaders
+  ]: ObjectReaders): void => {
+    const isComplete = remainingReaders.length === 0;
 
-      reader.read().then(() => {
-        setProgress((currentProgress) => currentProgress + 1);
+    reader.read().then(() => {
+      setProgress((currentProgress) => currentProgress + 1);
 
-        if (isComplete) {
-          reader.done?.();
-          completeTransfer();
+      if (isComplete) {
+        reader.done?.();
+        completeTransfer();
+      } else {
+        const [{ directory, name: nextName }] = remainingReaders;
+
+        setCurrentTransfer([directory, { name: nextName } as File]);
+      }
+    });
+
+    if (!isComplete) processObjectReader(remainingReaders);
+  };
+  const processFileReader = ([
+    [file, directory, reader],
+    ...remainingReaders
+  ]: FileReaders): void => {
+    let fileProgress = 0;
+
+    setCurrentTransfer([directory, file]);
+
+    reader.addEventListener(
+      "progress",
+      ({ loaded = 0 }) => {
+        const progressLoaded = loaded - fileProgress;
+
+        setProgress((currentProgress) => currentProgress + progressLoaded);
+        fileProgress = loaded;
+      },
+      { passive: true }
+    );
+    reader.addEventListener(
+      "loadend",
+      () => {
+        if (remainingReaders.length > 0) {
+          processFileReader(remainingReaders);
         } else {
-          const [{ directory, name: nextName }] = remainingReaders;
-
-          setCurrentTransfer([directory, { name: nextName } as File]);
+          completeTransfer();
         }
-      });
-
-      if (!isComplete) processObjectReader(remainingReaders);
-    },
-    [completeTransfer]
-  );
-  const processFileReader = useCallback(
-    ([[file, directory, reader], ...remainingReaders]: FileReaders) => {
-      let fileProgress = 0;
-
-      setCurrentTransfer([directory, file]);
-
-      reader.addEventListener(
-        "progress",
-        ({ loaded = 0 }) => {
-          const progressLoaded = loaded - fileProgress;
-
-          setProgress((currentProgress) => currentProgress + progressLoaded);
-          fileProgress = loaded;
-        },
-        { passive: true }
-      );
-      reader.addEventListener(
-        "loadend",
-        () => {
-          if (remainingReaders.length > 0) {
-            processFileReader(remainingReaders);
-          } else {
-            completeTransfer();
-          }
-        },
-        ONE_TIME_PASSIVE_EVENT
-      );
-      // eslint-disable-next-line unicorn/prefer-blob-reading-methods
-      reader.readAsArrayBuffer(file);
-    },
-    [completeTransfer]
-  );
-  const totalTransferSize = useMemo(
-    () =>
-      isFileReaders(fileReaders)
-        ? fileReaders.reduce((acc, [{ size = 0 }]) => acc + size, 0)
-        : fileReaders?.length || Number.POSITIVE_INFINITY,
-    [fileReaders]
-  );
+      },
+      ONE_TIME_PASSIVE_EVENT
+    );
+    // eslint-disable-next-line unicorn/prefer-blob-reading-methods
+    reader.readAsArrayBuffer(file);
+  };
+  const totalTransferSize = isFileReaders(fileReaders)
+    ? fileReaders.reduce((acc, [{ size = 0 }]) => acc + size, 0)
+    : fileReaders?.length || Number.POSITIVE_INFINITY;
   const closeOnEscape = useCloseOnEscape(id);
 
   useEffect(() => {
@@ -122,6 +118,7 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
           } else {
             const [{ directory, name: firstName }] = fileReaders;
 
+            // eslint-disable-next-line react/set-state-in-effect -- Shows the first file as the readers start
             setCurrentTransfer([directory, { name: firstName } as File]);
             processObjectReader(fileReaders);
           }
@@ -201,4 +198,4 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Transfer);
+export default Transfer;

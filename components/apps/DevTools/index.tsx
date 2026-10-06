@@ -1,13 +1,20 @@
-import { memo } from "react";
 import StyledDevTools from "components/apps/DevTools/StyledDevTools";
 import useEruda from "components/apps/DevTools/useEruda";
-import AppContainer from "components/system/Apps/AppContainer";
+import AppContainer, {
+  useAppContainer,
+} from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
-const DevTools: FC<ComponentProcessProps> = ({ id }) => (
-  <AppContainer id={id} StyledComponent={StyledDevTools} useHook={useEruda}>
-    <div />
-  </AppContainer>
-);
+const DevTools: FC<ComponentProcessProps> = ({ id }) => {
+  const containerProps = useAppContainer(id);
 
-export default memo(DevTools);
+  useEruda(containerProps);
+
+  return (
+    <AppContainer {...containerProps} StyledComponent={StyledDevTools}>
+      <div />
+    </AppContainer>
+  );
+};
+
+export default DevTools;

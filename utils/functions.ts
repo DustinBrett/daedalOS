@@ -253,6 +253,9 @@ export const imgDataToBuffer = (imageData: ImageData): Buffer => {
 
 export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
 
+export const copyBufferUrl = async (url: string): Promise<string> =>
+  URL.createObjectURL(await (await fetch(url)).blob());
+
 const rowBlank = (imageData: ImageData, width: number, y: number): boolean => {
   for (let x = 0; x < width; ++x) {
     if (imageData.data[y * width * 4 + x * 4 + 3] !== 0) return false;
@@ -1131,10 +1134,10 @@ const supportsModulePreload = (): boolean => {
   return HAS_MODULE_PRELOAD_SUPPORT;
 };
 
-let HAS_WEBP_SUPPORT = false;
+let HAS_WEBP_SUPPORT: boolean | undefined;
 
 export const supportsWebp = (): boolean => {
-  if (HAS_WEBP_SUPPORT) return true;
+  if (HAS_WEBP_SUPPORT !== undefined) return HAS_WEBP_SUPPORT;
 
   try {
     HAS_WEBP_SUPPORT = document
@@ -1145,7 +1148,7 @@ export const supportsWebp = (): boolean => {
     // Ignore failure to check for WebP support
   }
 
-  return HAS_WEBP_SUPPORT;
+  return Boolean(HAS_WEBP_SUPPORT);
 };
 
 const supportsImageSrcSet = (): boolean =>
@@ -1300,6 +1303,17 @@ export const toSorted = <T>(
   array: T[],
   compareFn?: (a: T, b: T) => number
 ): T[] => [...array].sort(compareFn);
+
+export const omitEntry = <T>(
+  record: Record<string, T>,
+  key: string
+): Record<string, T> => {
+  const newRecord = { ...record };
+
+  delete newRecord[key];
+
+  return newRecord;
+};
 
 export const notFound = (resource: string): void =>
   // eslint-disable-next-line no-alert

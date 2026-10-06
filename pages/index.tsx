@@ -1,4 +1,3 @@
-import { memo } from "react";
 import AppsLoader from "components/system/Apps/AppsLoader";
 import Desktop from "components/system/Desktop";
 import Taskbar from "components/system/Taskbar";
@@ -11,7 +10,7 @@ import { keepCanvasesReadable } from "utils/readableCanvas";
 // Before any app creates a canvas context
 if (typeof window !== "undefined") keepCanvasesReadable(window);
 
-const Index = (): React.ReactElement => {
+const Index: FC = () => {
   useIFrameFocuser();
   useUrlLoader();
   useGlobalKeyboardShortcuts();
@@ -25,4 +24,4 @@ const Index = (): React.ReactElement => {
   );
 };
 
-export default memo(Index);
+export default Index;

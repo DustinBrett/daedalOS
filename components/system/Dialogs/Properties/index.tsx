@@ -1,6 +1,6 @@
 import { basename, extname } from "path";
 import dynamic from "next/dynamic";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import GeneralTab from "components/system/Dialogs/Properties/GeneralTab";
 import StyledProperties from "components/system/Dialogs/Properties/StyledProperties";
@@ -55,7 +55,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   const [metaData, setMetaData] = useState<PropertiesMetaData>({});
   const onGeneral = currentTab === "general";
   const onDetails = currentTab === "details";
-  const extension = useMemo(() => extname(generalUrl), [generalUrl]);
+  const extension = extname(generalUrl);
 
   useEffect(() => {
     setIcon(id, icon);
@@ -83,16 +83,7 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
     shortcutPath,
   ]);
 
-  useEffect(
-    () => () => {
-      try {
-        getIconAbortController?.current?.abort?.();
-      } catch {
-        // Failed to abort getIcon
-      }
-    },
-    []
-  );
+  useEffect(() => () => getIconAbortController.current?.abort(), []);
 
   useEffect(() => propertiesRef.current?.focus(PREVENT_SCROLL), []);
 
@@ -146,4 +137,4 @@ const Properties: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Properties);
+export default Properties;

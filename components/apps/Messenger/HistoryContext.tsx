@@ -1,12 +1,4 @@
-import {
-  createContext,
-  memo,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   BLOCKED_KEYS_IDB_NAME,
   DELETED_CHATS_IDB_NAME,
@@ -36,19 +28,19 @@ const HistoryContext = createContext({} as History);
 
 export const useHistoryContext = (): History => useContext(HistoryContext);
 
+const readStoredState = <T extends object>(key: string, emptyValue: T): T => {
+  try {
+    return (JSON.parse(localStorage.getItem(key) || "null") as T) || emptyValue;
+  } catch {
+    return emptyValue;
+  }
+};
+
 const useStoredState = <T extends object>(
   key: string,
   emptyValue: T
 ): [T, React.Dispatch<React.SetStateAction<T>>] => {
-  const [value, setValue] = useState<T>(() => {
-    try {
-      return (
-        (JSON.parse(localStorage.getItem(key) || "null") as T) || emptyValue
-      );
-    } catch {
-      return emptyValue;
-    }
-  });
+  const [value, setValue] = useState<T>(() => readStoredState(key, emptyValue));
 
   useEffect(() => {
     if (Object.keys(value).length > 0) {
@@ -61,7 +53,7 @@ const useStoredState = <T extends object>(
   return [value, setValue];
 };
 
-export const HistoryProvider = memo<FC>(({ children }) => {
+export const HistoryProvider: FC = ({ children }) => {
   const { readFile, writeFile } = useFileSystemActions();
   const [timeScale, setTimeScale] = useState<TimeScale>("week");
   const [seenEventIds, setSeenEventIds] = useState<string[]>([]);
@@ -99,31 +91,20 @@ export const HistoryProvider = memo<FC>(({ children }) => {
 
   return (
     <HistoryContext
-      value={useMemo(
-        () => ({
-          blockedKeys,
-          deletedChats,
-          profiles,
-          seenEventIds,
-          setBlockedKeys,
-          setDeletedChats,
-          setProfiles,
-          setSeenEventIds,
-          setTimeScale,
-          timeScale,
-        }),
-        [
-          blockedKeys,
-          deletedChats,
-          profiles,
-          seenEventIds,
-          setBlockedKeys,
-          setDeletedChats,
-          timeScale,
-        ]
-      )}
+      value={{
+        blockedKeys,
+        deletedChats,
+        profiles,
+        seenEventIds,
+        setBlockedKeys,
+        setDeletedChats,
+        setProfiles,
+        setSeenEventIds,
+        setTimeScale,
+        timeScale,
+      }}
     >
       {children}
     </HistoryContext>
   );
-});
+};

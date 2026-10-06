@@ -1,10 +1,11 @@
 import { basename } from "path";
 import { expect, test } from "@playwright/test";
 import { OG_TAGS } from "e2e/constants";
-import { loadApp } from "e2e/functions";
+import { closePage, loadApp } from "e2e/functions";
 import desktopIcons from "public/.index/desktopIcons.json";
 
 test.beforeEach(loadApp());
+test.afterEach(closePage);
 
 test.describe("has correct tags", () => {
   test("has link preloads", async ({ page }) => {

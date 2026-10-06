@@ -1,5 +1,5 @@
 import { AnimatePresence } from "motion/react";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatLog from "components/apps/Messenger/ChatLog";
 import {
   inLeftOutRight,
@@ -69,58 +69,46 @@ const NostrChat: FC<NostrChatProps> = ({
   const [selectedKeys, setSelectedKeys] = useState<string[]>();
   const { chatKeys, lastMessages, requestKeys, spamKeys, unreadMessages } =
     useNostrContacts(publicKey, wellKnownNames);
-  const unreadKeys = useMemo(() => {
-    const unreadIds = new Set(unreadMessages.map(({ id }) => id));
-
-    return new Set(
-      [...chatKeys, ...requestKeys, ...spamKeys].filter((key) =>
-        unreadIds.has(lastMessages[key]?.id)
-      )
-    );
-  }, [chatKeys, lastMessages, requestKeys, spamKeys, unreadMessages]);
+  const unreadIds = new Set(unreadMessages.map(({ id }) => id));
+  const unreadKeys = new Set(
+    [...chatKeys, ...requestKeys, ...spamKeys].filter((key) =>
+      unreadIds.has(lastMessages[key]?.id)
+    )
+  );
   const listKeys = { chats: chatKeys, requests: requestKeys, spam: spamKeys }[
     view
   ].filter((key) => !hideReadMessages || unreadKeys.has(key));
   const { url: setUrl } = useProcessesActions();
   const { url } = useProcess(processId);
-  const markRead = useCallback(
-    (keys: string[]) => {
-      const ids = unreadMessages
-        .filter(({ pubkey }) => keys.includes(pubkey))
-        .map(({ id }) => id);
+  const markRead = (keys: string[]): void => {
+    const ids = unreadMessages
+      .filter(({ pubkey }) => keys.includes(pubkey))
+      .map(({ id }) => id);
 
-      if (ids.length > 0) {
-        setSeenEventIds((currentSeenEventIds) => [
-          ...new Set([...ids, ...currentSeenEventIds]),
-        ]);
-      }
-    },
-    [setSeenEventIds, unreadMessages]
-  );
-  const deleteChats = useCallback(
-    (keys: string[]) => {
-      setDeletedChats((currentDeletedChats) => ({
-        ...currentDeletedChats,
-        ...Object.fromEntries(
-          keys.map((key) => [
-            key,
-            Math.max(getUnixTime(), lastMessages[key]?.created_at ?? 0),
-          ])
-        ),
-      }));
-      setSelectedRecipientKey("");
-    },
-    [lastMessages, setDeletedChats]
-  );
-  const blockKeys = useCallback(
-    (keys: string[]) => {
-      setBlockedKeys((currentBlockedKeys) => [
-        ...new Set([...currentBlockedKeys, ...keys]),
+    if (ids.length > 0) {
+      setSeenEventIds((currentSeenEventIds) => [
+        ...new Set([...ids, ...currentSeenEventIds]),
       ]);
-      setSelectedRecipientKey("");
-    },
-    [setBlockedKeys]
-  );
+    }
+  };
+  const deleteChats = (keys: string[]): void => {
+    setDeletedChats((currentDeletedChats) => ({
+      ...currentDeletedChats,
+      ...Object.fromEntries(
+        keys.map((key) => [
+          key,
+          Math.max(getUnixTime(), lastMessages[key]?.created_at ?? 0),
+        ])
+      ),
+    }));
+    setSelectedRecipientKey("");
+  };
+  const blockKeys = (keys: string[]): void => {
+    setBlockedKeys((currentBlockedKeys) => [
+      ...new Set([...currentBlockedKeys, ...keys]),
+    ]);
+    setSelectedRecipientKey("");
+  };
   const changeView = (newView: View): void => {
     setView(newView);
     setSelectedKeys(undefined);
@@ -137,6 +125,7 @@ const NostrChat: FC<NostrChatProps> = ({
 
     const key = decodePublicKey(url);
 
+    // eslint-disable-next-line react/set-state-in-effect -- Opens the chat a nostr: url points to
     if (key) setSelectedRecipientKey(key);
 
     setUrl(processId, "");
@@ -276,4 +265,4 @@ const Messenger: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Messenger);
+export default Messenger;

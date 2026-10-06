@@ -1,6 +1,4 @@
-import { memo } from "react";
-
-export const Down = memo(() => (
+export const Down: FC = () => (
   <svg
     aria-hidden="true"
     viewBox="0 0 32 32"
@@ -8,9 +6,9 @@ export const Down = memo(() => (
   >
     <path d="m30.297 7.297 1.406 1.406L16 24.406.297 8.703l1.406-1.406L16 21.594z" />
   </svg>
-));
+);
 
-export const Up = memo(() => (
+export const Up: FC = () => (
   <svg
     aria-hidden="true"
     viewBox="0 0 32 32"
@@ -18,4 +16,4 @@ export const Up = memo(() => (
   >
     <path d="M30.547 23.953 16 9.422 1.453 23.953.047 22.547 16 6.578l15.953 15.969z" />
   </svg>
-));
+);

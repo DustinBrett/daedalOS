@@ -17,6 +17,7 @@ import {
   clickDesktop,
   clickSearchButton,
   clickStartButton,
+  closePage,
   disableWallpaper,
   fileExplorerEntriesAreVisible,
   loadApp,
@@ -30,6 +31,8 @@ import {
   windowAnimationIsFinished,
   windowsAreVisible,
 } from "e2e/functions";
+
+test.afterEach(closePage);
 
 // WebKit only mouse-focuses elements carrying an explicit tabindex attribute;
 // Chromium & Firefox focus any focusable element on click. These tests pin

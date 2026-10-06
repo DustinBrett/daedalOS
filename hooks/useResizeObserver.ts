@@ -1,28 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const useResizeObserver = (
-  element?: HTMLElement | null,
+  target?: HTMLElement | null | React.RefObject<HTMLElement | null>,
   callback?: ResizeObserverCallback
 ): void => {
-  const [resizeObserver, setResizeObserver] = useState<ResizeObserver>();
-
   useEffect(() => {
-    if (callback) {
-      setResizeObserver(new ResizeObserver(callback));
-    }
-  }, [callback]);
+    const element = target && "current" in target ? target.current : target;
+    const resizeObserver =
+      callback && element instanceof HTMLElement
+        ? new ResizeObserver(callback)
+        : undefined;
 
-  useEffect(() => {
-    if (element instanceof HTMLElement) {
-      resizeObserver?.observe(element);
-    }
+    if (element) resizeObserver?.observe(element);
 
-    return () => {
-      if (element instanceof HTMLElement) {
-        resizeObserver?.unobserve(element);
-      }
-    };
-  }, [element, resizeObserver]);
+    return () => resizeObserver?.disconnect();
+  }, [callback, target]);
 };
 
 export default useResizeObserver;

@@ -1,6 +1,5 @@
 import { AnimatePresence } from "motion/react";
 import dynamic from "next/dynamic";
-import { memo } from "react";
 import StyledTaskbarEntries from "components/system/Taskbar/TaskbarEntries/StyledTaskbarEntries";
 import { useProcesses } from "contexts/process";
 
@@ -35,4 +34,4 @@ const TaskbarEntries: FC<TaskbarEntriesProps> = ({ clockWidth, hasAI }) => {
   );
 };
 
-export default memo(TaskbarEntries);
+export default TaskbarEntries;

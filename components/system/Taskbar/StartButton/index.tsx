@@ -1,4 +1,3 @@
-import { memo, useCallback } from "react";
 import {
   importStartMenu,
   START_BUTTON_TITLE,
@@ -9,6 +8,7 @@ import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMe
 import { useMenuPreload } from "hooks/useMenuPreload";
 import { CLICK_FOCUSABLE_ELEMENT } from "utils/constants";
 import { label, preloadImage } from "utils/functions";
+import { loadSpawnFly } from "utils/loaders";
 
 type StartButtonProps = {
   startMenuVisible: boolean;
@@ -29,18 +29,18 @@ const StartButton: FC<StartButtonProps> = ({
   startMenuVisible,
   toggleStartMenu,
 }) => {
-  const onClick = useCallback(
-    async ({ ctrlKey, shiftKey }: React.MouseEvent): Promise<void> => {
-      toggleStartMenu();
+  const onClick = async ({
+    ctrlKey,
+    shiftKey,
+  }: React.MouseEvent): Promise<void> => {
+    toggleStartMenu();
 
-      if (ctrlKey && shiftKey) {
-        const { spawnFly } = await import("utils/spawnFly");
+    if (ctrlKey && shiftKey) {
+      const { spawnFly } = await loadSpawnFly();
 
-        await spawnFly();
-      }
-    },
-    [toggleStartMenu]
-  );
+      await spawnFly();
+    }
+  };
 
   return (
     <StyledTaskbarButton
@@ -60,4 +60,4 @@ const StartButton: FC<StartButtonProps> = ({
   );
 };
 
-export default memo(StartButton);
+export default StartButton;

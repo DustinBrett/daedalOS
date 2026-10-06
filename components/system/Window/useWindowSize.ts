@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useTheme } from "styled-components";
 import { minMaxSize } from "components/system/Window/functions";
 import { useProcess } from "contexts/process";
@@ -15,24 +14,21 @@ const useWindowSize = (id: string): WindowSize => {
     sizes: { titleBar },
   } = useTheme();
 
-  const updateWindowSize = useCallback(
-    (height: number, width: number) =>
-      setWindowStates((currentWindowStates) => ({
-        ...currentWindowStates,
-        [id]: {
-          ...currentWindowStates?.[id],
-          size: minMaxSize(
-            {
-              height: height + titleBar.height,
-              width,
-            },
-            lockAspectRatio,
-            titleBar.height
-          ),
-        },
-      })),
-    [id, lockAspectRatio, setWindowStates, titleBar.height]
-  );
+  const updateWindowSize = (height: number, width: number): void =>
+    setWindowStates((currentWindowStates) => ({
+      ...currentWindowStates,
+      [id]: {
+        ...currentWindowStates?.[id],
+        size: minMaxSize(
+          {
+            height: height + titleBar.height,
+            width,
+          },
+          lockAspectRatio,
+          titleBar.height
+        ),
+      },
+    }));
 
   return {
     updateWindowSize,

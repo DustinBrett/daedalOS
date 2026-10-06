@@ -1,5 +1,6 @@
+// eslint-disable-next-line import/no-unassigned-import
+import "utils/polyfills";
 import { type AppProps } from "next/app";
-import { memo } from "react";
 import { ErrorBoundary } from "components/pages/ErrorBoundary";
 import Metadata from "components/pages/Metadata";
 import StyledApp from "components/pages/StyledApp";
@@ -9,7 +10,7 @@ import { ProcessProvider } from "contexts/process";
 import { SessionProvider } from "contexts/session";
 import { ViewportProvider } from "contexts/viewport";
 
-const App = ({ Component: Index, pageProps }: AppProps): React.ReactElement => (
+const App: FC<AppProps> = ({ Component: Index, pageProps }) => (
   <ViewportProvider>
     <ProcessProvider>
       <FileSystemProvider>
@@ -28,4 +29,4 @@ const App = ({ Component: Index, pageProps }: AppProps): React.ReactElement => (
   </ViewportProvider>
 );
 
-export default memo(App);
+export default App;

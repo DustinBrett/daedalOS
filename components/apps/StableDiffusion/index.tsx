@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import StyledStableDiffusion from "components/apps/StableDiffusion/StyledStableDiffusion";
 import {
   type Prompt,
@@ -28,12 +28,12 @@ const NO_WEBGPU_SUPPORT = "No WebGPU Support";
 const StableDiffusion: FC<ComponentProcessProps> = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [prompt, setPrompt] = useState<Prompt>(DEFAULT_PROMPT);
-  const generatedAnImage = useRef(false);
+  const [generatedAnImage, setGeneratedAnImage] = useState(false);
   const sdWorker = useWorker<void>(SD_WORKER);
   const transferedCanvas = useRef(false);
-  const [status, setStatus] = useState<string>(NO_WEBGPU_SUPPORT);
+  const [status, setStatus] = useState("");
   const [generatedPrompt, setGeneratedPrompt] = useState("");
-  const generateImage = useCallback(async () => {
+  const generateImage = async (): Promise<void> => {
     if (canvasRef.current) {
       const config: StableDiffusionConfig = { prompts: [prompt] };
 
@@ -63,19 +63,15 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
         setStatus("");
       }
 
-      generatedAnImage.current = true;
+      setGeneratedAnImage(true);
     }
-  }, [prompt, sdWorker]);
+  };
   const hasWebGPU = useWebGPUCheck();
   const { onContextMenuCapture } = useCanvasContextMenu(
     canvasRef,
     prompt[0],
-    generatedAnImage.current && !status
+    generatedAnImage && !status
   );
-
-  useEffect(() => {
-    if (hasWebGPU && status === NO_WEBGPU_SUPPORT) setStatus("");
-  }, [hasWebGPU, status]);
 
   return (
     <StyledStableDiffusion>
@@ -117,12 +113,9 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
       <div className="image">
         <canvas
           ref={canvasRef}
-          // Busy only while actually generating (the WebGPU-unsupported
-          // status is an idle state), and never on an ancestor of the
+          // Busy only while generating, and never on an ancestor of the
           // role="status" region or its announcements may be withheld
-          aria-busy={
-            (Boolean(status) && status !== NO_WEBGPU_SUPPORT) || undefined
-          }
+          aria-busy={Boolean(status) || undefined}
           aria-label={generatedPrompt || "Generated image"}
           height={512}
           onContextMenuCapture={onContextMenuCapture}
@@ -130,11 +123,11 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
           width={512}
         />
         <div className="status" role="status">
-          {status}
+          {hasWebGPU ? status : NO_WEBGPU_SUPPORT}
         </div>
       </div>
     </StyledStableDiffusion>
   );
 };
 
-export default memo(StableDiffusion);
+export default StableDiffusion;

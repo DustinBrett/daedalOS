@@ -1,6 +1,6 @@
 import { basename, join } from "path";
 import dynamic from "next/dynamic";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StyledLoading from "components/system/Apps/StyledLoading";
 import FileEntry from "components/system/Files/FileEntry";
 import Columns from "components/system/Files/FileManager/Columns";
@@ -37,6 +37,7 @@ import {
   START_MENU_PATH,
 } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
+import { loadFileSystemFunctions } from "utils/loaders";
 
 const StyledEmpty = dynamic(
   () => import("components/system/Files/FileManager/StyledEmpty")
@@ -80,13 +81,12 @@ const FileManager: FC<FileManagerProps> = ({
   const { setForegroundId, setViews } = useSessionActions();
   const foregroundId = useForegroundId();
   const sessionView = useView(url);
-  const view = useMemo(() => {
-    if (isDesktop) return "icon";
-    if (isStartMenu) return "list";
-
-    return sessionView || DEFAULT_VIEW;
-  }, [isDesktop, isStartMenu, sessionView]);
-  const isDetailsView = useMemo(() => view === "details", [view]);
+  const view = isDesktop
+    ? "icon"
+    : isStartMenu
+      ? "list"
+      : sessionView || DEFAULT_VIEW;
+  const isDetailsView = view === "details";
   const { columns: savedColumns = DEFAULT_COLUMNS } = useWindowState(id || "");
   const [columns, setColumns] = useState<ColumnsObject | undefined>(() =>
     isDetailsView ? savedColumns : undefined
@@ -97,10 +97,7 @@ const FileManager: FC<FileManagerProps> = ({
   const fileManagerRef = useRef<HTMLOListElement | null>(null);
   const { blurEntry, focusableEntry, focusedEntries, focusEntry } =
     useFocusableEntries(fileManagerRef);
-  const focusFunctions = useMemo(
-    () => ({ blurEntry, focusEntry }),
-    [blurEntry, focusEntry]
-  );
+  const focusFunctions = { blurEntry, focusEntry };
   const { fileActions, files, folderActions, isLoading, updateFiles } =
     useFolder(url, setRenaming, focusFunctions, {
       hideFolders,
@@ -134,18 +131,11 @@ const FileManager: FC<FileManagerProps> = ({
     isDesktop,
     isStartMenu
   );
-  const loading = useMemo(() => {
-    if (hideLoading) return false;
-
-    return isLoading || url !== currentUrl;
-  }, [currentUrl, hideLoading, isLoading, url]);
-  const setView = useCallback(
-    (newView: FileManagerViewNames) => {
-      setViews((currentViews) => ({ ...currentViews, [url]: newView }));
-      setColumns(newView === "details" ? savedColumns : undefined);
-    },
-    [savedColumns, setViews, url]
-  );
+  const loading = hideLoading ? false : isLoading || url !== currentUrl;
+  const setView = (newView: FileManagerViewNames): void => {
+    setViews((currentViews) => ({ ...currentViews, [url]: newView }));
+    setColumns(newView === "details" ? savedColumns : undefined);
+  };
   const keyShortcuts = useFileKeyboardShortcuts(
     files,
     url,
@@ -163,15 +153,7 @@ const FileManager: FC<FileManagerProps> = ({
   const [permission, setPermission] = useState<PermissionState>("prompt");
   const requestingPermissions = useRef(false);
   const focusedOnLoad = useRef(false);
-  const onKeyDown = useMemo(
-    () => (renaming === "" ? keyShortcuts() : undefined),
-    [keyShortcuts, renaming]
-  );
-  const fileKeys = useMemo(() => Object.keys(files), [files]);
-  const isEmptyFolder = useMemo(
-    () => !isDesktop && !isStartMenu && !loading && fileKeys.length === 0,
-    [fileKeys.length, isDesktop, isStartMenu, loading]
-  );
+  const onKeyDown = renaming === "" ? keyShortcuts() : undefined;
 
   useEffect(() => {
     if (
@@ -181,7 +163,7 @@ const FileManager: FC<FileManagerProps> = ({
     ) {
       requestingPermissions.current = true;
 
-      import("contexts/fileSystem/functions").then(({ requestPermission }) =>
+      loadFileSystemFunctions().then(({ requestPermission }) =>
         requestPermission(currentUrl)
           .then((permissions) => {
             const isGranted = permissions === "granted";
@@ -228,6 +210,7 @@ const FileManager: FC<FileManagerProps> = ({
   useEffect(() => {
     if (url !== currentUrl) {
       folderActions.resetFiles();
+      // eslint-disable-next-line react/set-state-in-effect -- Resets alongside focus state kept in refs, which render can't write
       setCurrentUrl(url);
       setPermission("denied");
       focusedOnLoad.current = false;
@@ -248,15 +231,16 @@ const FileManager: FC<FileManagerProps> = ({
   }, [foregroundId, id, isDesktop, isStartMenu, loading]);
 
   useEffect(() => {
+    // eslint-disable-next-line react/set-state-in-effect -- Columns resize locally and only reload from saved widths here
     setColumns(isDetailsView ? savedColumns : undefined);
   }, [isDetailsView, savedColumns]);
 
   // Focusing the desktop must deactivate the foreground window, as no window
   // blur fires when its focused element was already removed by navigation
-  const onDesktopFocusCapture = useCallback(
-    () => setForegroundId(""),
-    [setForegroundId]
-  );
+  const onDesktopFocusCapture = (): void => setForegroundId("");
+  const fileKeys = Object.keys(files);
+  const isEmptyFolder =
+    !isDesktop && !isStartMenu && !loading && fileKeys.length === 0;
 
   return (
     <>
@@ -351,4 +335,4 @@ const FileManager: FC<FileManagerProps> = ({
   );
 };
 
-export default memo(FileManager);
+export default FileManager;

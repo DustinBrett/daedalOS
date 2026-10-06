@@ -1,5 +1,5 @@
 import { dirname, join } from "path";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import useTransferDialog from "components/system/Dialogs/Transfer/useTransferDialog";
 import { createFileReaders } from "components/system/Files/FileManager/functions";
 import { type FocusEntryFunctions } from "components/system/Files/FileManager/useFocusableEntries";
@@ -36,6 +36,23 @@ const scrollEntryIntoView = (
       ?.scrollIntoView();
   } catch {
     // Ignore error getting/scrolling element
+  }
+};
+
+const clickEntryButton = (
+  fileManagerRef: React.RefObject<HTMLOListElement | null>,
+  entry: string
+): void => {
+  try {
+    const entryButton = fileManagerRef.current?.querySelector(
+      `button[aria-label='${CSS.escape(entry.replace(SHORTCUT_EXTENSION, ""))}']`
+    );
+
+    if (entryButton instanceof HTMLElement) {
+      sendMouseClick(entryButton, 2);
+    }
+  } catch {
+    // Ignore error getting entry button
   }
 };
 
@@ -77,290 +94,252 @@ const useFileKeyboardShortcuts = (
     return () => document.removeEventListener("paste", pasteHandler);
   }, [foregroundId, id, isDesktop, newPath, openTransferDialog, url]);
 
-  return useCallback(
-    (file?: string): React.KeyboardEventHandler =>
-      (event) => {
-        if (isStartMenu) return;
+  return (file?: string): React.KeyboardEventHandler =>
+    (event) => {
+      if (isStartMenu) return;
 
-        const { altKey, ctrlKey, key, shiftKey, target } = event;
+      const { altKey, ctrlKey, key, shiftKey, target } = event;
 
-        if (shiftKey) {
-          if (ctrlKey && !isDesktop) {
-            const updateViewAndFocus = (
-              newView: FileManagerViewNames
-            ): void => {
-              setView?.(newView);
-              requestAnimationFrame(() =>
-                fileManagerRef.current?.focus(PREVENT_SCROLL)
-              );
-            };
-
-            // eslint-disable-next-line default-case
-            switch (key) {
-              case "#": // 3
-                updateViewAndFocus("icon");
-                break;
-              case "^": // 6
-                updateViewAndFocus("details");
-                break;
-            }
-          }
-
-          return;
-        }
-
-        const onDelete = (): void => {
-          if (focusedEntries.length > 0) {
-            haltEvent(event);
-
-            if (url === DESKTOP_PATH) {
-              saveUnpositionedDesktopIcons(setIconPositions);
-            }
-
-            focusedEntries.forEach(async (entry) => {
-              const path = join(url, entry);
-
-              if (await deletePath(path)) updateFiles(undefined, path);
-            });
-            blurEntry();
-          }
-        };
-
-        if (ctrlKey) {
-          const lKey = key.toLowerCase();
+      if (shiftKey) {
+        if (ctrlKey && !isDesktop) {
+          const updateViewAndFocus = (newView: FileManagerViewNames): void => {
+            setView?.(newView);
+            requestAnimationFrame(() =>
+              fileManagerRef.current?.focus(PREVENT_SCROLL)
+            );
+          };
 
           // eslint-disable-next-line default-case
-          switch (lKey) {
-            case "a":
-              haltEvent(event);
-              if (target instanceof HTMLOListElement) {
-                const [firstEntry] = target.querySelectorAll("button");
-
-                firstEntry?.focus(PREVENT_SCROLL);
-              }
-              Object.keys(files).forEach((fileName) => focusEntry(fileName));
-              break;
-            case "c":
-              haltEvent(event);
-              copyEntries(focusedEntries.map((entry) => join(url, entry)));
-              break;
-            case "d":
-              onDelete();
-              break;
-            case "r":
-              haltEvent(event);
-              updateFiles();
-              break;
-            case "x":
-              haltEvent(event);
-              moveEntries(focusedEntries.map((entry) => join(url, entry)));
-              break;
-            case "v":
-              event.stopPropagation();
-              if (
-                !(target instanceof HTMLInputElement) &&
-                !(target instanceof HTMLTextAreaElement)
-              ) {
-                pasteToFolder();
-              }
-              break;
-          }
-        } else if (altKey) {
-          const lKey = key.toLowerCase();
-
-          if (lKey === "n") {
-            haltEvent(event);
-            open("FileExplorer", { url });
-          } else if (key === "Enter" && focusedEntries.length > 0) {
-            haltEvent(event);
-            open("Properties", { url: join(url, focusedEntries[0]) });
-          }
-        } else {
           switch (key) {
-            case "F2":
-              if (focusedEntries.length > 0 && file) {
-                haltEvent(event);
-                setRenaming(file);
-              }
+            case "#": // 3
+              updateViewAndFocus("icon");
               break;
-            case "F5":
-              if (id) {
-                haltEvent(event);
-                updateFiles();
-              }
+            case "^": // 6
+              updateViewAndFocus("details");
               break;
-            case "Delete":
-              onDelete();
-              break;
-            case "Backspace":
-              if (id) {
-                haltEvent(event);
-                changeUrl(id, dirname(url));
-              }
-              break;
-            case "Enter":
-              if (
-                target instanceof HTMLButtonElement &&
-                fileManagerRef.current?.contains(target)
-              ) {
-                haltEvent(event);
-                sendMouseClick(target, 2);
-              } else if (
-                target instanceof HTMLOListElement &&
-                target === fileManagerRef.current &&
-                focusedEntries.length > 0
-              ) {
-                // WebKit leaves the list focused after clicking an entry
-                haltEvent(event);
-
-                try {
-                  const entryButton = fileManagerRef.current?.querySelector(
-                    `button[aria-label='${CSS.escape(
-                      focusedEntries[0].replace(SHORTCUT_EXTENSION, "")
-                    )}']`
-                  );
-
-                  if (entryButton instanceof HTMLElement) {
-                    sendMouseClick(entryButton, 2);
-                  }
-                } catch {
-                  // Ignore error getting entry button
-                }
-              }
-              break;
-            default:
-              if (key === "Home" || key === "End") {
-                haltEvent(event);
-
-                const fileNames = Object.keys(files);
-                const jumpToEntry =
-                  key === "Home" ? fileNames[0] : fileNames.at(-1);
-
-                if (jumpToEntry) {
-                  blurEntry();
-                  focusEntry(jumpToEntry);
-                  scrollEntryIntoView(fileManagerRef, jumpToEntry);
-                }
-              } else if (key.startsWith("Arrow")) {
-                haltEvent(event);
-
-                if (!(target instanceof HTMLElement)) return;
-
-                let targetElement = target;
-
-                if (!(target instanceof HTMLButtonElement)) {
-                  targetElement = target.querySelector(
-                    "button"
-                  ) as HTMLButtonElement;
-                  if (!targetElement) return;
-                }
-
-                const { height, width, x, y } =
-                  targetElement.getBoundingClientRect();
-                let movedElement =
-                  key === "ArrowUp" || key === "ArrowDown"
-                    ? document.elementFromPoint(
-                        x,
-                        y + height / 2 + (key === "ArrowUp" ? -height : height)
-                      )
-                    : document.elementFromPoint(
-                        x + width / 2 + (key === "ArrowLeft" ? -width : width),
-                        y
-                      );
-
-                if (movedElement instanceof HTMLOListElement) {
-                  const nearestLi = targetElement.closest("li");
-
-                  if (nearestLi instanceof HTMLLIElement) {
-                    const olChildren = [...movedElement.children].filter(
-                      (olChild) => olChild instanceof HTMLLIElement
-                    );
-                    const liPosition = olChildren.indexOf(nearestLi);
-
-                    if (
-                      liPosition !== -1 &&
-                      (key === "ArrowUp" || key === "ArrowDown")
-                    ) {
-                      movedElement =
-                        olChildren[
-                          key === "ArrowUp"
-                            ? liPosition === 0
-                              ? olChildren.length - 1
-                              : liPosition - 1
-                            : liPosition === olChildren.length - 1
-                              ? 0
-                              : liPosition + 1
-                        ].querySelector("button");
-                    }
-                  }
-                }
-
-                const closestButton = movedElement?.closest("button");
-                let dispatchElement: HTMLElement = closestButton as HTMLElement;
-
-                if (
-                  !(closestButton instanceof HTMLButtonElement) ||
-                  !fileManagerRef.current?.contains(closestButton)
-                ) {
-                  dispatchElement = targetElement;
-                }
-
-                dispatchElement?.dispatchEvent(
-                  new MouseEvent("mousedown", {
-                    bubbles: true,
-                  })
-                );
-              } else if (/^[\da-z]$/i.test(key)) {
-                haltEvent(event);
-
-                const fileNames = Object.keys(files);
-                const lastFocusedEntryIndex = fileNames.indexOf(
-                  focusedEntries[focusedEntries.length - 1]
-                );
-                const lowerCaseKey = key.toLowerCase();
-                const upperCaseKey = key.toUpperCase();
-                const fileNamesStartingFromLastFocusedEntry = [
-                  ...fileNames.slice(lastFocusedEntryIndex),
-                  ...fileNames.slice(0, lastFocusedEntryIndex),
-                ];
-                const focusOnEntry = fileNamesStartingFromLastFocusedEntry.find(
-                  (name) =>
-                    !focusedEntries.includes(name) &&
-                    (name.startsWith(lowerCaseKey) ||
-                      name.startsWith(upperCaseKey))
-                );
-
-                if (focusOnEntry) {
-                  blurEntry();
-                  focusEntry(focusOnEntry);
-                  scrollEntryIntoView(fileManagerRef, focusOnEntry);
-                }
-              }
           }
         }
-      },
-    [
-      blurEntry,
-      changeUrl,
-      copyEntries,
-      deletePath,
-      fileManagerRef,
-      files,
-      focusEntry,
-      focusedEntries,
-      id,
-      isDesktop,
-      isStartMenu,
-      moveEntries,
-      open,
-      pasteToFolder,
-      setIconPositions,
-      setRenaming,
-      setView,
-      updateFiles,
-      url,
-    ]
-  );
+
+        return;
+      }
+
+      const onDelete = (): void => {
+        if (focusedEntries.length > 0) {
+          haltEvent(event);
+
+          if (url === DESKTOP_PATH) {
+            saveUnpositionedDesktopIcons(setIconPositions);
+          }
+
+          focusedEntries.forEach(async (entry) => {
+            const path = join(url, entry);
+
+            if (await deletePath(path)) updateFiles(undefined, path);
+          });
+          blurEntry();
+        }
+      };
+
+      if (ctrlKey) {
+        const lKey = key.toLowerCase();
+
+        // eslint-disable-next-line default-case
+        switch (lKey) {
+          case "a":
+            haltEvent(event);
+            if (target instanceof HTMLOListElement) {
+              const [firstEntry] = target.querySelectorAll("button");
+
+              firstEntry?.focus(PREVENT_SCROLL);
+            }
+            Object.keys(files).forEach((fileName) => focusEntry(fileName));
+            break;
+          case "c":
+            haltEvent(event);
+            copyEntries(focusedEntries.map((entry) => join(url, entry)));
+            break;
+          case "d":
+            onDelete();
+            break;
+          case "r":
+            haltEvent(event);
+            updateFiles();
+            break;
+          case "x":
+            haltEvent(event);
+            moveEntries(focusedEntries.map((entry) => join(url, entry)));
+            break;
+          case "v":
+            event.stopPropagation();
+            if (
+              !(target instanceof HTMLInputElement) &&
+              !(target instanceof HTMLTextAreaElement)
+            ) {
+              pasteToFolder();
+            }
+            break;
+        }
+      } else if (altKey) {
+        const lKey = key.toLowerCase();
+
+        if (lKey === "n") {
+          haltEvent(event);
+          open("FileExplorer", { url });
+        } else if (key === "Enter" && focusedEntries.length > 0) {
+          haltEvent(event);
+          open("Properties", { url: join(url, focusedEntries[0]) });
+        }
+      } else {
+        switch (key) {
+          case "F2":
+            if (focusedEntries.length > 0 && file) {
+              haltEvent(event);
+              setRenaming(file);
+            }
+            break;
+          case "F5":
+            if (id) {
+              haltEvent(event);
+              updateFiles();
+            }
+            break;
+          case "Delete":
+            onDelete();
+            break;
+          case "Backspace":
+            if (id) {
+              haltEvent(event);
+              changeUrl(id, dirname(url));
+            }
+            break;
+          case "Enter":
+            if (
+              target instanceof HTMLButtonElement &&
+              fileManagerRef.current?.contains(target)
+            ) {
+              haltEvent(event);
+              sendMouseClick(target, 2);
+            } else if (
+              target instanceof HTMLOListElement &&
+              target === fileManagerRef.current &&
+              focusedEntries.length > 0
+            ) {
+              // WebKit leaves the list focused after clicking an entry
+              haltEvent(event);
+              clickEntryButton(fileManagerRef, focusedEntries[0]);
+            }
+            break;
+          default:
+            if (key === "Home" || key === "End") {
+              haltEvent(event);
+
+              const fileNames = Object.keys(files);
+              const jumpToEntry =
+                key === "Home" ? fileNames[0] : fileNames.at(-1);
+
+              if (jumpToEntry) {
+                blurEntry();
+                focusEntry(jumpToEntry);
+                scrollEntryIntoView(fileManagerRef, jumpToEntry);
+              }
+            } else if (key.startsWith("Arrow")) {
+              haltEvent(event);
+
+              if (!(target instanceof HTMLElement)) return;
+
+              let targetElement = target;
+
+              if (!(target instanceof HTMLButtonElement)) {
+                targetElement = target.querySelector(
+                  "button"
+                ) as HTMLButtonElement;
+                if (!targetElement) return;
+              }
+
+              const { height, width, x, y } =
+                targetElement.getBoundingClientRect();
+              let movedElement =
+                key === "ArrowUp" || key === "ArrowDown"
+                  ? document.elementFromPoint(
+                      x,
+                      y + height / 2 + (key === "ArrowUp" ? -height : height)
+                    )
+                  : document.elementFromPoint(
+                      x + width / 2 + (key === "ArrowLeft" ? -width : width),
+                      y
+                    );
+
+              if (movedElement instanceof HTMLOListElement) {
+                const nearestLi = targetElement.closest("li");
+
+                if (nearestLi instanceof HTMLLIElement) {
+                  const olChildren = [...movedElement.children].filter(
+                    (olChild) => olChild instanceof HTMLLIElement
+                  );
+                  const liPosition = olChildren.indexOf(nearestLi);
+
+                  if (
+                    liPosition !== -1 &&
+                    (key === "ArrowUp" || key === "ArrowDown")
+                  ) {
+                    movedElement =
+                      olChildren[
+                        key === "ArrowUp"
+                          ? liPosition === 0
+                            ? olChildren.length - 1
+                            : liPosition - 1
+                          : liPosition === olChildren.length - 1
+                            ? 0
+                            : liPosition + 1
+                      ].querySelector("button");
+                  }
+                }
+              }
+
+              const closestButton = movedElement?.closest("button");
+              let dispatchElement: HTMLElement = closestButton as HTMLElement;
+
+              if (
+                !(closestButton instanceof HTMLButtonElement) ||
+                !fileManagerRef.current?.contains(closestButton)
+              ) {
+                dispatchElement = targetElement;
+              }
+
+              dispatchElement?.dispatchEvent(
+                new MouseEvent("mousedown", {
+                  bubbles: true,
+                })
+              );
+            } else if (/^[\da-z]$/i.test(key)) {
+              haltEvent(event);
+
+              const fileNames = Object.keys(files);
+              const lastFocusedEntryIndex = fileNames.indexOf(
+                focusedEntries[focusedEntries.length - 1]
+              );
+              const lowerCaseKey = key.toLowerCase();
+              const upperCaseKey = key.toUpperCase();
+              const fileNamesStartingFromLastFocusedEntry = [
+                ...fileNames.slice(lastFocusedEntryIndex),
+                ...fileNames.slice(0, lastFocusedEntryIndex),
+              ];
+              const focusOnEntry = fileNamesStartingFromLastFocusedEntry.find(
+                (name) =>
+                  !focusedEntries.includes(name) &&
+                  (name.startsWith(lowerCaseKey) ||
+                    name.startsWith(upperCaseKey))
+              );
+
+              if (focusOnEntry) {
+                blurEntry();
+                focusEntry(focusOnEntry);
+                scrollEntryIntoView(fileManagerRef, focusOnEntry);
+              }
+            }
+        }
+      }
+    };
 };
 
 export default useFileKeyboardShortcuts;

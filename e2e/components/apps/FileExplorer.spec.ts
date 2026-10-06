@@ -44,6 +44,7 @@ import {
   clickFileExplorerNavButton,
   clickFileExplorerSearchBox,
   clickFirstDesktopEntry,
+  closePage,
   contextMenuEntryIsHidden,
   contextMenuEntryIsVisible,
   contextMenuHasCount,
@@ -83,6 +84,7 @@ test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => loadApp({ app: "FileExplorer" })({ page }));
 test.beforeEach(windowsAreVisible);
 test.beforeEach(fileExplorerEntriesAreVisible);
+test.afterEach(closePage);
 
 test("has address bar", async ({ page }) => {
   await fileExplorerAddressBarHasValue(TEST_APP_TITLE, { page });

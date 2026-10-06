@@ -37,7 +37,12 @@ export const EXCLUDED_CONSOLE_LOGS = (
     excludedConsoleLogs.push(
       "Found a sectioned h1 element with no specified font-size or margin properties.",
       "Use of the orientation sensor is deprecated.",
-      "WebGPU is disabled by blocklist"
+      "MouseEvent.mozInputSource is deprecated.",
+      "WebGPU is disabled by blocklist",
+      // Firefox 155 flags any site that stores data before a user activation
+      "has been classified as a bounce tracker",
+      // Playwright's Firefox driver, e.g. when a reload aborts a worker load
+      "chrome://juggler/"
     );
   }
 
@@ -122,6 +127,7 @@ export const CONTEXT_MENU_ENTRIES_SELECTOR = `${CONTEXT_MENU_SELECTOR}>ol>li`;
 export const DESKTOP_SELECTOR = `${NEXT_JS_CONTAINER_SELECTOR}>main`;
 export const BACKGROUND_CANVAS_SELECTOR = `${DESKTOP_SELECTOR}>canvas`;
 export const DESKTOP_ENTRIES_SELECTOR = `${DESKTOP_SELECTOR}>ol>li`;
+export const DESKTOP_ENTRIES_RENAMING_SELECTOR = `${DESKTOP_ENTRIES_SELECTOR}>button>figure>textarea`;
 export const SELECTION_SELECTOR = `${DESKTOP_SELECTOR}>ol>span`;
 export const TASKBAR_SELECTOR = `${DESKTOP_SELECTOR}>nav:not([style])`;
 export const TASKBAR_ENTRIES_SELECTOR = `${TASKBAR_SELECTOR}>ol`;
@@ -159,6 +165,7 @@ export const FLY_SELECTOR = `${DESKTOP_SELECTOR}>canvas#desktop-fly`;
 export const CALENDAR_LABEL = /^Date and Time Information$/;
 export const CLOCK_LABEL = /^System Clock/;
 export const FILE_EXPLORER_ADDRESS_BAR_LABEL = /^Address$/;
+export const TALOS_LABEL = /^Talos$/;
 
 export const ACCESSIBILITY_EXCEPTION_IDS = [
   "aria-allowed-role",
@@ -225,9 +232,11 @@ export const DESKTOP_MENU_ITEMS: MenuItems = {
 
 export const CLOCK_MENU_ITEMS = [/^Local time$/, /^Server time$/];
 
+export const SHOW_TALOS_MENU_ITEM = /^Show Talos button$/;
+
 export const TASKBAR_ENTRIES_MENU_ITEMS = (hasAI: boolean): RegExp[] => [
   /^Enter full screen$/,
-  ...(hasAI ? [/^Show Talos button$/] : []),
+  ...(hasAI ? [SHOW_TALOS_MENU_ITEM] : []),
   /^Show the desktop$/,
 ];
 
@@ -306,6 +315,8 @@ export const TEST_SEARCH_RESULT_TITLE = /^\/CREDITS.md/;
 export const NEW_FOLDER_LABEL = /^New folder$/;
 export const NEW_FILE_LABEL = /^New Text Document.txt$/;
 export const NEW_FILE_LABEL_TEXT = "New Text Document.txt";
+export const RICH_TEXT_FILE_LABEL = /^Note.whtml$/;
+export const RICH_TEXT_FILE_LABEL_TEXT = "Note.whtml";
 
 export const CLOCK_REGEX = /^(1[0-2]|0?[1-9])(?::[0-5]\d){2}\s?(AM|PM)$/;
 

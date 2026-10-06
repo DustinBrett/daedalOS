@@ -1,4 +1,4 @@
-import { memo, useId, useMemo, useState } from "react";
+import { useId, useState } from "react";
 import { MAX_SUGGESTIONS } from "components/apps/Messenger/constants";
 import {
   dataToProfile,
@@ -35,26 +35,20 @@ const To: FC<ToProps> = ({ knownKeys, setRecipientKey }) => {
   const statusId = useId();
   const follows = useFollows();
   const { profiles } = useHistoryContext();
-  const candidateKeys = useMemo(
-    () => [...new Set([...knownKeys, ...follows])],
-    [follows, knownKeys]
-  );
-  const suggestions = useMemo(() => {
-    const term = search.trim().toLowerCase();
+  const candidateKeys = [...new Set([...knownKeys, ...follows])];
+  const term = search.trim().toLowerCase();
+  const suggestions = candidateKeys
+    .filter((key) => {
+      const { nip05 = "", npub = "", userName = "" } = profiles[key] || {};
 
-    return candidateKeys
-      .filter((key) => {
-        const { nip05 = "", npub = "", userName = "" } = profiles[key] || {};
-
-        return (
-          !term ||
-          [nip05, npub, userName].some((value) =>
-            value.toLowerCase().includes(term)
-          )
-        );
-      })
-      .slice(0, MAX_SUGGESTIONS);
-  }, [candidateKeys, profiles, search]);
+      return (
+        !term ||
+        [nip05, npub, userName].some((value) =>
+          value.toLowerCase().includes(term)
+        )
+      );
+    })
+    .slice(0, MAX_SUGGESTIONS);
 
   useProfiles(candidateKeys);
 
@@ -120,4 +114,4 @@ const To: FC<ToProps> = ({ knownKeys, setRecipientKey }) => {
   );
 };
 
-export default memo(To);
+export default To;

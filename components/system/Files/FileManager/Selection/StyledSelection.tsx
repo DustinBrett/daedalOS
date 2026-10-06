@@ -1,4 +1,3 @@
-import { memo } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 
 const NoGlobalPointerEvents = createGlobalStyle`
@@ -21,4 +20,4 @@ const StyledSelection: FC<React.HTMLAttributes<HTMLSpanElement>> = (props) => (
   </>
 );
 
-export default memo(StyledSelection);
+export default StyledSelection;

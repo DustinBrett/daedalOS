@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
@@ -28,6 +28,14 @@ declare global {
   }
 }
 
+const focusCanvas = (focusedWindow: Window): void => {
+  if (focusedWindow?.ioq3?.canvas) {
+    focusedWindow.ioq3.canvas.focus(PREVENT_SCROLL);
+  } else {
+    requestAnimationFrame(() => focusCanvas(focusedWindow));
+  }
+};
+
 const useQuake3 = ({
   containerRef,
   id,
@@ -50,13 +58,6 @@ const useQuake3 = ({
   const wasMaximized = useRef(false);
   const mountEmFs = useEmscriptenMount();
   const { size } = useWindowState(id);
-  const focusCanvas = useCallback((focusedWindow: Window) => {
-    if (focusedWindow?.ioq3?.canvas) {
-      focusedWindow.ioq3.canvas.focus(PREVENT_SCROLL);
-    } else {
-      requestAnimationFrame(() => focusCanvas(focusedWindow));
-    }
-  }, []);
   const getContentWindow = useIsolatedContentWindow(
     id,
     containerRef,
@@ -167,10 +168,14 @@ const useQuake3 = ({
 
   useEffect(
     () => () => {
-      try {
-        contentWindow?.ioq3?.exit();
-      } catch {
-        // Ignore error on exit
+      const ioq3 = contentWindow?.ioq3;
+
+      if (ioq3) {
+        try {
+          ioq3.exit();
+        } catch {
+          // Ignore error on exit
+        }
       }
 
       contentWindow?.AL?.contexts.forEach(({ ctx }) => ctx.close());

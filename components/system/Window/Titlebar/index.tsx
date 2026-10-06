@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef } from "react";
+import { useRef } from "react";
 import rndDefaults from "components/system/Window/RndWindow/rndDefaults";
 import StyledTitlebar from "components/system/Window/Titlebar/StyledTitlebar";
 import useTitlebarContextMenu from "components/system/Window/Titlebar/useTitlebarContextMenu";
@@ -44,85 +44,70 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
   const { setMenu } = useMenuActions();
-  const resetMenu = useCallback(
-    () => setMenu(Object.create(null) as MenuState),
-    [setMenu]
-  );
+  const resetMenu = (): void => setMenu(Object.create(null) as MenuState);
   const menuIsOpenRef = useRef<boolean>(false);
-  const clickCloseCallback = useCallback(() => {
+  const clickCloseCallback = (): void => {
     if (menuIsOpenRef.current) resetMenu();
     onClose();
-  }, [onClose, resetMenu]);
+  };
   const onClickClose = useDoubleClick(clickCloseCallback);
   const onClickMaximize = useDoubleClick(onMaximize);
   const titlebarContextMenu = useTitlebarContextMenu(id);
   const touchStartTimeRef = useRef<number>(0);
   const touchStartPositionRef = useRef<DOMRect>(undefined);
   const touchesRef = useRef<TouchList>(undefined);
-  const onTouchEnd = useCallback<React.TouchEventHandler<HTMLButtonElement>>(
-    (event) => {
-      const { x, y } = componentWindow?.getBoundingClientRect() || {};
+  const onTouchEnd: React.TouchEventHandler<HTMLButtonElement> = (event) => {
+    const { x, y } = componentWindow?.getBoundingClientRect() || {};
 
-      if (
-        Date.now() - touchStartTimeRef.current >= LONG_PRESS_DELAY_MS &&
-        touchStartPositionRef.current &&
-        touchStartPositionRef.current.x === x &&
-        touchStartPositionRef.current.y === y
-      ) {
-        titlebarContextMenu.onContextMenuCapture(
-          Object.assign(event, {
-            touches: touchesRef.current,
-          })
-        );
-      }
-    },
-    [componentWindow, titlebarContextMenu]
-  );
-  const onTouchStart = useCallback<React.TouchEventHandler<HTMLButtonElement>>(
-    ({ touches }) => {
-      if (componentWindow) {
-        componentWindow.blur();
-        componentWindow.focus(PREVENT_SCROLL);
-        touchStartTimeRef.current = Date.now();
-        touchStartPositionRef.current = componentWindow.getBoundingClientRect();
-        touchesRef.current = touches as unknown as TouchList;
-      }
-    },
-    [componentWindow]
-  );
-  const onMouseDownCapture = useCallback<
-    React.MouseEventHandler<HTMLButtonElement>
-  >(
-    ({ button }) => {
-      if (button === 0 && menuIsOpen()) resetMenu();
-    },
-    [resetMenu]
-  );
-  const onMouseUpCapture = useCallback<
-    React.MouseEventHandler<HTMLButtonElement>
-  >(() => {
+    if (
+      Date.now() - touchStartTimeRef.current >= LONG_PRESS_DELAY_MS &&
+      touchStartPositionRef.current &&
+      touchStartPositionRef.current.x === x &&
+      touchStartPositionRef.current.y === y
+    ) {
+      titlebarContextMenu.onContextMenuCapture(
+        Object.assign(event, {
+          touches: touchesRef.current,
+        })
+      );
+    }
+  };
+  const onTouchStart: React.TouchEventHandler<HTMLButtonElement> = ({
+    touches,
+  }) => {
+    if (componentWindow) {
+      componentWindow.blur();
+      componentWindow.focus(PREVENT_SCROLL);
+      touchStartTimeRef.current = Date.now();
+      touchStartPositionRef.current = componentWindow.getBoundingClientRect();
+      touchesRef.current = touches as unknown as TouchList;
+    }
+  };
+  const onMouseDownCapture: React.MouseEventHandler<HTMLButtonElement> = ({
+    button,
+  }) => {
+    if (button === 0 && menuIsOpen()) resetMenu();
+  };
+  const onMouseUpCapture: React.MouseEventHandler<HTMLButtonElement> = () => {
     if (componentWindow && componentWindow !== document.activeElement) {
       setForegroundId(id);
       componentWindow?.focus(PREVENT_SCROLL);
     }
-  }, [componentWindow, id, setForegroundId]);
-  const onIconClick = useCallback<React.MouseEventHandler<HTMLImageElement>>(
-    (event) => {
-      if (menuIsOpenRef.current) resetMenu();
-      else titlebarContextMenu.onContextMenuCapture(event);
+  };
+  const onIconClick: React.MouseEventHandler<HTMLImageElement> = (event) => {
+    if (menuIsOpenRef.current) resetMenu();
+    else titlebarContextMenu.onContextMenuCapture(event);
 
-      menuIsOpenRef.current = !menuIsOpenRef.current;
+    menuIsOpenRef.current = !menuIsOpenRef.current;
 
-      onClickClose.onClick(event);
-    },
-    [onClickClose, resetMenu, titlebarContextMenu]
-  );
-  const triggerMinimize = useCallback(() => onMinimize(), [onMinimize]);
-  const onIconMouseDownCapture = useCallback<
-    React.MouseEventHandler<HTMLImageElement>
-  >(() => {
+    onClickClose.onClick(event);
+  };
+  const triggerMinimize = (): void => onMinimize();
+  const onIconMouseDownCapture: React.MouseEventHandler<
+    HTMLImageElement
+  > = () => {
     menuIsOpenRef.current = menuIsOpen();
-  }, []);
+  };
 
   return (
     <StyledTitlebar
@@ -188,4 +173,4 @@ const Titlebar: FC<TitlebarProps> = ({ id }) => {
   );
 };
 
-export default memo(Titlebar);
+export default Titlebar;

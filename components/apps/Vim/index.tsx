@@ -1,5 +1,5 @@
 import { basename, dirname, extname } from "path";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StyledVim from "components/apps/Vim/StyledVim";
 import { type QueueItem } from "components/apps/Vim/types";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -19,7 +19,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   const { libs = [], url = "" } = useProcess(id);
   const [updateQueue, setUpdateQueue] = useState<QueueItem[]>([]);
   const loading = useRef(false);
-  const loadVim = useCallback(async () => {
+  const loadVim = async (): Promise<void> => {
     const saveUrl = url || DEFAULT_TEXT_FILE_SAVE_PATH;
     const [, ...pathParts] = saveUrl.split("/");
     let prependPath = "";
@@ -53,29 +53,29 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
         () => {
           let walkedPath = "";
 
-          [prependPath, ...pathParts].forEach(
-            (pathPart, index, { [index + 1]: nextPart }) => {
-              if (nextPart && index + 1 !== pathParts.length) {
-                window.VimWrapperModule?.VimModule?.FS_createPath?.(
-                  walkedPath,
-                  nextPart,
-                  true,
-                  true
-                );
-                walkedPath += `/${nextPart}`;
-              } else if (walkedPath) {
-                window.VimWrapperModule?.VimModule?.FS_createDataFile?.(
-                  walkedPath,
-                  pathPart,
-                  fileData,
-                  true,
-                  true
-                );
-              } else {
-                walkedPath = pathPart;
-              }
+          [prependPath, ...pathParts].forEach((pathPart, index, parts) => {
+            const nextPart = parts[index + 1];
+
+            if (nextPart && index + 1 !== pathParts.length) {
+              window.VimWrapperModule?.VimModule?.FS_createPath?.(
+                walkedPath,
+                nextPart,
+                true,
+                true
+              );
+              walkedPath += `/${nextPart}`;
+            } else if (walkedPath) {
+              window.VimWrapperModule?.VimModule?.FS_createDataFile?.(
+                walkedPath,
+                pathPart,
+                fileData,
+                true,
+                true
+              );
+            } else {
+              walkedPath = pathPart;
             }
-          );
+          });
         },
       ],
       print: console.info,
@@ -93,15 +93,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
     });
 
     prependFileToTitle(basename(saveUrl));
-  }, [
-    closeWithTransition,
-    id,
-    libs,
-    mountEmFs,
-    prependFileToTitle,
-    readFile,
-    url,
-  ]);
+  };
 
   useEffect(() => {
     if (updateQueue.length > 0) {
@@ -109,6 +101,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
         writeFile(saveUrl, buffer, true);
         updateFolder(dirname(saveUrl), basename(saveUrl));
       });
+      // eslint-disable-next-line react/set-state-in-effect -- Drains saves queued by Vim's write callback
       setUpdateQueue([]);
     }
   }, [updateFolder, updateQueue, writeFile]);
@@ -144,4 +137,4 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Vim);
+export default Vim;

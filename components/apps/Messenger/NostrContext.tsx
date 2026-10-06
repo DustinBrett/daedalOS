@@ -2,16 +2,7 @@ import { type Filter } from "nostr-tools/filter";
 import { type Event } from "nostr-tools/pure";
 import { Relay } from "nostr-tools/relay";
 import { normalizeURL } from "nostr-tools/utils";
-import {
-  createContext,
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   BASE_RW_RELAYS,
   RECONNECT_DELAYS_MS,
@@ -45,7 +36,7 @@ const publishWithAuth = (
     return relay.publish(event);
   });
 
-const NostrProviderFC: FC<{ signer: Signer }> = ({ children, signer }) => {
+export const NostrProvider: FC<{ signer: Signer }> = ({ children, signer }) => {
   const [relays, setRelays] = useState<Record<string, Relay>>({});
   const [connecting, setConnecting] = useState<string[]>([]);
   const openRelaysRef = useRef(new Set<Relay>());
@@ -85,9 +76,13 @@ const NostrProviderFC: FC<{ signer: Signer }> = ({ children, signer }) => {
           // eslint-disable-next-line unicorn/prefer-add-event-listener
           relay.onclose = () => {
             openRelays.delete(relay);
-            setRelays(
-              ({ [url]: _closedRelay, ...currentRelays }) => currentRelays
-            );
+            setRelays((currentRelays) => {
+              const remainingRelays = { ...currentRelays };
+
+              delete remainingRelays[url];
+
+              return remainingRelays;
+            });
             retry(1);
           };
           setRelays((currentRelays) => ({ ...currentRelays, [url]: relay }));
@@ -121,37 +116,32 @@ const NostrProviderFC: FC<{ signer: Signer }> = ({ children, signer }) => {
     };
   }, []);
 
-  const connectToRelay = useCallback(
-    (url: string) => connectRef.current?.(url),
-    []
-  );
-  const publish = useCallback(
-    async (event: Event, urls = BASE_RW_RELAYS): Promise<boolean> => {
-      const results = await Promise.allSettled(
-        [...new Set(urls.map(normalizeURL))].map(async (url) => {
-          const connectedRelay = [...openRelaysRef.current].find(
-            (relay) => relay.url === url
-          );
+  const connectToRelay = (url: string): void => connectRef.current?.(url);
+  const publish = async (
+    event: Event,
+    urls = BASE_RW_RELAYS
+  ): Promise<boolean> => {
+    const results = await Promise.allSettled(
+      [...new Set(urls.map(normalizeURL))].map(async (url) => {
+        const connectedRelay = [...openRelaysRef.current].find(
+          (relay) => relay.url === url
+        );
 
-          if (connectedRelay) {
-            return publishWithAuth(connectedRelay, event, signer);
-          }
+        if (connectedRelay) {
+          return publishWithAuth(connectedRelay, event, signer);
+        }
 
-          const relay = await Relay.connect(url, { timeout: RELAY_TIMEOUT_MS });
+        const relay = await Relay.connect(url, { timeout: RELAY_TIMEOUT_MS });
 
-          try {
-            return await publishWithAuth(relay, event, signer);
-          } finally {
-            relay.close();
-          }
-        })
-      );
+        return publishWithAuth(relay, event, signer).finally(() =>
+          relay.close()
+        );
+      })
+    );
 
-      return results.some(({ status }) => status === "fulfilled");
-    },
-    [signer]
-  );
-  const query = useCallback(async (filter: Filter): Promise<Event[]> => {
+    return results.some(({ status }) => status === "fulfilled");
+  };
+  const query = async (filter: Filter): Promise<Event[]> => {
     await initialConnections.current;
 
     return new Promise((resolve) => {
@@ -178,38 +168,30 @@ const NostrProviderFC: FC<{ signer: Signer }> = ({ children, signer }) => {
         });
       });
     });
-  }, []);
+  };
 
   return (
     <NostrContext
-      value={useMemo(
-        () => ({
-          connectToRelay,
-          publish,
-          query,
-          relays: Object.values(relays),
-          relayStatus: {
-            ...Object.fromEntries(
-              connecting.map((url): [string, RelayStatus] => [
-                url,
-                "connecting",
-              ])
-            ),
-            ...Object.fromEntries(
-              Object.keys(relays).map((url): [string, RelayStatus] => [
-                url,
-                "connected",
-              ])
-            ),
-          },
-          signer,
-        }),
-        [connecting, connectToRelay, publish, query, relays, signer]
-      )}
+      value={{
+        connectToRelay,
+        publish,
+        query,
+        relays: Object.values(relays),
+        relayStatus: {
+          ...Object.fromEntries(
+            connecting.map((url): [string, RelayStatus] => [url, "connecting"])
+          ),
+          ...Object.fromEntries(
+            Object.keys(relays).map((url): [string, RelayStatus] => [
+              url,
+              "connected",
+            ])
+          ),
+        },
+        signer,
+      }}
     >
       {children}
     </NostrContext>
   );
 };
-
-export const NostrProvider = memo(NostrProviderFC);

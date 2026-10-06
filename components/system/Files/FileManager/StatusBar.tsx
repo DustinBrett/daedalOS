@@ -1,12 +1,5 @@
 import { join } from "path";
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import StyledStatusBar from "components/system/Files/FileManager/StyledStatusBar";
 import { type FileDrop } from "components/system/Files/FileManager/useFileDrop";
@@ -41,11 +34,8 @@ const StatusBar: FC<StatusBarProps> = ({
   const [selectedSize, setSelectedSize] = useState(UNKNOWN_SIZE);
   const [showSelected, setShowSelected] = useState(false);
   const { sizes } = useTheme();
-  const updateShowSelected = useCallback(
-    (width: number): void =>
-      setShowSelected(width > sizes.fileExplorer.minimumStatusBarWidth),
-    [sizes.fileExplorer.minimumStatusBarWidth]
-  );
+  const updateShowSelected = (width: number): void =>
+    setShowSelected(width > sizes.fileExplorer.minimumStatusBarWidth);
   const statusBarRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -91,12 +81,8 @@ const StatusBar: FC<StatusBarProps> = ({
     }
   }, [updateShowSelected]);
 
-  useResizeObserver(
-    statusBarRef.current,
-    useCallback<ResizeObserverCallback>(
-      ([{ contentRect: { width = 0 } = {} }]) => updateShowSelected(width),
-      [updateShowSelected]
-    )
+  useResizeObserver(statusBarRef, ([{ contentRect: { width = 0 } = {} }]) =>
+    updateShowSelected(width)
   );
 
   return (
@@ -152,4 +138,4 @@ const StatusBar: FC<StatusBarProps> = ({
   );
 };
 
-export default memo(StatusBar);
+export default StatusBar;

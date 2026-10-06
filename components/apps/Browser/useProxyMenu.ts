@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { OLD_NET_SUPPORTED_YEARS } from "components/apps/Browser/config";
 import { useMenuActions } from "contexts/menu";
 import { type ContextMenuCapture } from "contexts/menu/useMenuContextState";
@@ -12,36 +11,32 @@ const useProxyMenu = (
 ): ContextMenuCapture => {
   const { contextMenu } = useMenuActions();
 
-  return useMemo(
-    () =>
-      contextMenu?.(() => [
-        {
-          action: () => setProxyState("ALL_ORIGINS"),
-          label: "allOrigins",
-          toggle: proxyState === "ALL_ORIGINS",
-        },
-        {
-          action: () => setProxyState("CORS"),
-          label: "Local w/CORS",
-          toggle: proxyState === "CORS",
-        },
-        {
-          action: () => setProxyState("WAYBACK_MACHINE"),
-          label: "Wayback Machine",
-          toggle: proxyState === "WAYBACK_MACHINE",
-        },
-        {
-          label: "The Old Net",
-          menu: OLD_NET_SUPPORTED_YEARS.map((year) => ({
-            action: () => setProxyState(`OLD_NET_${year}`),
-            checked: proxyState === `OLD_NET_${year}`,
-            label: year.toString(),
-          })),
-          toggle: proxyState.startsWith("OLD_NET_"),
-        },
-      ]),
-    [contextMenu, proxyState, setProxyState]
-  );
+  return contextMenu(() => [
+    {
+      action: () => setProxyState("ALL_ORIGINS"),
+      label: "allOrigins",
+      toggle: proxyState === "ALL_ORIGINS",
+    },
+    {
+      action: () => setProxyState("CORS"),
+      label: "Local w/CORS",
+      toggle: proxyState === "CORS",
+    },
+    {
+      action: () => setProxyState("WAYBACK_MACHINE"),
+      label: "Wayback Machine",
+      toggle: proxyState === "WAYBACK_MACHINE",
+    },
+    {
+      label: "The Old Net",
+      menu: OLD_NET_SUPPORTED_YEARS.map((year) => ({
+        action: () => setProxyState(`OLD_NET_${year}`),
+        checked: proxyState === `OLD_NET_${year}`,
+        label: year.toString(),
+      })),
+      toggle: proxyState.startsWith("OLD_NET_"),
+    },
+  ]);
 };
 
 export default useProxyMenu;

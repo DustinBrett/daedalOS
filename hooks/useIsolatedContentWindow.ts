@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useMenuIsOpen } from "contexts/menu";
 import { useProcess } from "contexts/process";
@@ -85,7 +79,7 @@ const useIsolatedContentWindow = (
   const { setForegroundId } = useSessionActions();
   const foregroundId = useForegroundId();
   const isContextMenuOpen = useMenuIsOpen();
-  const createContentWindow = useCallback((): ContentWindow | undefined => {
+  const createContentWindow = (): ContentWindow | undefined => {
     if (!container) return undefined;
 
     container.querySelector("iframe")?.remove();
@@ -115,7 +109,7 @@ const useIsolatedContentWindow = (
     setContentWindow(newContentWindow);
 
     return newContentWindow;
-  }, [container, id, onDragOver, onDrop, setForegroundId, styles, withCanvas]);
+  };
 
   useLayoutEffect(() => {
     if (contentWindow && foregroundId === id && !isContextMenuOpen) {
@@ -128,13 +122,13 @@ const useIsolatedContentWindow = (
         } else contentWindow.focus();
       });
     }
-    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [
     contentWindow,
     focusFunction,
     foregroundId,
     id,
     isContextMenuOpen,
+    // eslint-disable-next-line react/exhaustive-effect-dependencies
     maximized,
     withCanvas,
   ]);
@@ -155,10 +149,7 @@ const useIsolatedContentWindow = (
     }
   }, [container, containerRef]);
 
-  return useMemo(
-    () => (container ? createContentWindow : undefined),
-    [container, createContentWindow]
-  );
+  return container ? createContentWindow : undefined;
 };
 
 export default useIsolatedContentWindow;

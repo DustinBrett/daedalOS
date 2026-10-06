@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from "react";
 import { useMenuActions } from "contexts/menu";
 import {
   type ContextMenuCapture,
@@ -17,47 +16,40 @@ const useCanvasContextMenu = (
   const { contextMenu } = useMenuActions();
   const { setWallpaper } = useSessionActions();
   const { createSnapshot } = useSnapshots();
-  const saveCanvasImage = useCallback(
-    async (savePath: string): Promise<string> => {
-      if (canvasRef.current) {
-        return createSnapshot(
-          `${prompt}.png`,
-          canvasToBuffer(canvasRef.current),
-          undefined,
-          false,
-          savePath
-        );
-      }
+  const saveCanvasImage = async (savePath: string): Promise<string> => {
+    if (canvasRef.current) {
+      return createSnapshot(
+        `${prompt}.png`,
+        canvasToBuffer(canvasRef.current),
+        undefined,
+        false,
+        savePath
+      );
+    }
 
-      return "";
-    },
-    [canvasRef, createSnapshot, prompt]
-  );
+    return "";
+  };
 
-  return useMemo(
-    () =>
-      contextMenu?.(() => {
-        const menuItems: MenuItem[] = [
-          {
-            action: () => saveCanvasImage(DESKTOP_PATH),
-            disabled: !isImageReady,
-            label: "Save to desktop",
-          },
-          {
-            action: () =>
-              saveCanvasImage(SAVE_PATH).then((newFileName) => {
-                if (newFileName) {
-                  setWallpaper(`${SAVE_PATH}/${newFileName}`);
-                }
-              }),
-            disabled: !isImageReady,
-            label: "Set as background",
-          },
-        ];
-        return menuItems;
-      }),
-    [contextMenu, isImageReady, saveCanvasImage, setWallpaper]
-  );
+  return contextMenu(() => {
+    const menuItems: MenuItem[] = [
+      {
+        action: () => saveCanvasImage(DESKTOP_PATH),
+        disabled: !isImageReady,
+        label: "Save to desktop",
+      },
+      {
+        action: () =>
+          saveCanvasImage(SAVE_PATH).then((newFileName) => {
+            if (newFileName) {
+              setWallpaper(`${SAVE_PATH}/${newFileName}`);
+            }
+          }),
+        disabled: !isImageReady,
+        label: "Set as background",
+      },
+    ];
+    return menuItems;
+  });
 };
 
 export default useCanvasContextMenu;

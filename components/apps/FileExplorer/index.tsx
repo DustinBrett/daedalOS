@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Navigation from "components/apps/FileExplorer/Navigation";
 import StyledFileExplorer from "components/apps/FileExplorer/StyledFileExplorer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
@@ -26,12 +26,12 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const { closing, componentWindow, icon = "", url = "" } = useProcess(id);
   const fs = useFs();
   const rootFs = useRootFs();
-  const [currentUrl, setCurrentUrl] = useState(url);
+  const currentUrl = useRef(url);
   const addressBarRef = useRef<HTMLInputElement | null>(null);
   const searchBarRef = useRef<HTMLInputElement | null>(null);
   const directoryName = basename(url);
   const mountUrl = getMountUrl(url, rootFs?.mntMap || {});
-  const onKeyDown = useCallback((event: KeyboardEvent): void => {
+  const onKeyDown = (event: KeyboardEvent): void => {
     const eventKey = event.key.toUpperCase();
 
     if (event.altKey && eventKey === "D") {
@@ -58,7 +58,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
         })
       );
     }
-  }, []);
+  };
 
   useEffect(() => {
     if (url) {
@@ -66,7 +66,7 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
 
       if (
         !icon ||
-        url !== currentUrl ||
+        url !== currentUrl.current ||
         (mountUrl && icon !== MOUNTED_FOLDER_ICON) ||
         icon === FOLDER_ICON
       ) {
@@ -87,11 +87,10 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
           });
         }
 
-        setCurrentUrl(url);
+        currentUrl.current = url;
       }
     }
   }, [
-    currentUrl,
     directoryName,
     fs,
     icon,
@@ -135,4 +134,4 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   null;
 };
 
-export default memo(FileExplorer);
+export default FileExplorer;

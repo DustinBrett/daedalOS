@@ -1,6 +1,6 @@
 import { AnimatePresence } from "motion/react";
 import dynamic from "next/dynamic";
-import { memo, useCallback, useState } from "react";
+import { useState } from "react";
 import Clock from "components/system/Taskbar/Clock";
 import {
   importAIButton,
@@ -30,30 +30,16 @@ const Taskbar: FC = () => {
   const [aiVisible, setAIVisible] = useState(false);
   const [clockWidth, setClockWidth] = useState(CLOCK_CANVAS_BASE_WIDTH);
   const hasAI = useShowAI();
-  const toggleStartMenu = useCallback(
-    (showMenu?: boolean): void =>
-      setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState),
-    []
-  );
-  const toggleSearch = useCallback(
-    (showSearch?: boolean): void =>
-      setSearchVisible(
-        (currentSearchState) => showSearch ?? !currentSearchState
-      ),
-    []
-  );
-  const toggleCalendar = useCallback(
-    (showCalendar?: boolean): void =>
-      setCalendarVisible(
-        (currentCalendarState) => showCalendar ?? !currentCalendarState
-      ),
-    []
-  );
-  const toggleAI = useCallback(
-    (showAI?: boolean): void =>
-      setAIVisible((currentAIState) => showAI ?? !currentAIState),
-    []
-  );
+  const toggleStartMenu = (showMenu?: boolean): void =>
+    setStartMenuVisible((currentMenuState) => showMenu ?? !currentMenuState);
+  const toggleSearch = (showSearch?: boolean): void =>
+    setSearchVisible((currentSearchState) => showSearch ?? !currentSearchState);
+  const toggleCalendar = (showCalendar?: boolean): void =>
+    setCalendarVisible(
+      (currentCalendarState) => showCalendar ?? !currentCalendarState
+    );
+  const toggleAI = (showAI?: boolean): void =>
+    setAIVisible((currentAIState) => showAI ?? !currentAIState);
 
   return (
     <>
@@ -96,4 +82,4 @@ const Taskbar: FC = () => {
   );
 };
 
-export default memo(Taskbar);
+export default Taskbar;

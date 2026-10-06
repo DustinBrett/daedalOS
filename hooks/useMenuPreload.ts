@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export const useMenuPreload = (
   preloadCallback: () => Promise<unknown>
@@ -9,13 +9,13 @@ export const useMenuPreload = (
 } => {
   const [preloaded, setPreloaded] = useState(false);
   const initalizedPreload = useRef(false);
-  const preloadMenu = useCallback((): void => {
+  const preloadMenu = (): void => {
     if (initalizedPreload.current) return;
 
     initalizedPreload.current = true;
 
     preloadCallback().then(() => setPreloaded(true));
-  }, [preloadCallback]);
+  };
 
   return preloaded ? {} : { onMouseOverCapture: preloadMenu };
 };

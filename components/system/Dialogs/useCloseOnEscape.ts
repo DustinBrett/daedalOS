@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { useProcessesActions } from "contexts/process";
 import { FOCUSABLE_ELEMENT } from "utils/constants";
 
@@ -11,10 +10,7 @@ const useCloseOnEscape = (
   const { closeWithTransition } = useProcessesActions();
 
   return {
-    onKeyDownCapture: useCallback<React.KeyboardEventHandler<HTMLElement>>(
-      ({ key }) => key === "Escape" && closeWithTransition(id),
-      [closeWithTransition, id]
-    ),
+    onKeyDownCapture: ({ key }) => key === "Escape" && closeWithTransition(id),
     ...FOCUSABLE_ELEMENT,
   };
 };

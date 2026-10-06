@@ -3,6 +3,7 @@ import directory from "contexts/process/directory";
 import { TEST_APP_URL } from "e2e/constants";
 import {
   captureConsoleLogs,
+  closePage,
   disableWallpaper,
   loadApp,
   taskbarEntriesAreVisible,
@@ -12,6 +13,7 @@ import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 
 test.beforeEach(captureConsoleLogs("apps"));
 test.beforeEach(disableWallpaper);
+test.afterEach(closePage);
 
 test.describe("can open app", () => {
   const apps = Object.entries(directory).filter(

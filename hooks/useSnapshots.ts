@@ -1,5 +1,4 @@
 import { dirname, join } from "path";
-import { useCallback } from "react";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { ICON_CACHE, ICON_CACHE_EXTENSION, SAVE_PATH } from "utils/constants";
 
@@ -13,51 +12,45 @@ type Snapshot = {
   ) => Promise<string>;
 };
 
-export const useSnapshots = (): Snapshot => {
-  const { createPath, updateFolder } = useFileSystemActions();
+// Outside the hook, as value blocks in a try block can't be compiled
+const createSnapshotWith =
+  ({
+    createPath,
+    updateFolder,
+  }: ReturnType<typeof useFileSystemActions>): Snapshot["createSnapshot"] =>
+  async (name, data, icon, overwrite = true, savePath = SAVE_PATH) => {
+    let saveName = "";
 
-  return {
-    createSnapshot: useCallback(
-      async (name, data, icon, overwrite = true, savePath = SAVE_PATH) => {
-        let saveName = "";
+    try {
+      saveName = await createPath(name, savePath, data, undefined, overwrite);
 
+      if (saveName && icon) {
         try {
-          saveName = await createPath(
-            name,
-            savePath,
-            data,
-            undefined,
-            overwrite
-          );
+          const cacheIcon = typeof icon === "function" ? await icon() : icon;
 
-          if (saveName && icon) {
-            try {
-              const cacheIcon =
-                typeof icon === "function" ? await icon() : icon;
-
-              if (cacheIcon) {
-                await createPath(
-                  `${join(savePath, saveName)}${ICON_CACHE_EXTENSION}`,
-                  ICON_CACHE,
-                  cacheIcon,
-                  undefined,
-                  overwrite
-                );
-              }
-            } catch {
-              // Ignore failure to save icon
-            }
+          if (cacheIcon) {
+            await createPath(
+              `${join(savePath, saveName)}${ICON_CACHE_EXTENSION}`,
+              ICON_CACHE,
+              cacheIcon,
+              undefined,
+              overwrite
+            );
           }
-
-          updateFolder(dirname(savePath));
-          updateFolder(savePath, saveName);
         } catch {
-          // Ignore failure to save snapshot
+          // Ignore failure to save icon
         }
+      }
 
-        return saveName;
-      },
-      [createPath, updateFolder]
-    ),
+      updateFolder(dirname(savePath));
+      updateFolder(savePath, saveName);
+    } catch {
+      // Ignore failure to save snapshot
+    }
+
+    return saveName;
   };
-};
+
+export const useSnapshots = (): Snapshot => ({
+  createSnapshot: createSnapshotWith(useFileSystemActions()),
+});

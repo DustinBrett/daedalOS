@@ -7,6 +7,7 @@ import {
   clickContextMenuEntry,
   clickDesktop,
   clickFileExplorerEntry,
+  closePage,
   contextMenuIsVisible,
   desktopIsVisible,
   disableWallpaper,
@@ -19,6 +20,7 @@ import {
 } from "e2e/functions";
 
 test.beforeEach(captureConsoleLogs());
+test.afterEach(closePage);
 
 test("has background", loadAppWithCanvas);
 

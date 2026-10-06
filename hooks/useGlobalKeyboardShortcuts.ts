@@ -4,7 +4,11 @@ import {
   START_BUTTON_TITLE,
 } from "components/system/Taskbar/functions";
 import useWindowActions from "components/system/Window/Titlebar/useWindowActions";
-import { useProcessesActions, useProcessesRef } from "contexts/process";
+import {
+  getProcess,
+  getProcesses,
+  useProcessesActions,
+} from "contexts/process";
 import { useForegroundId, useStackOrder } from "contexts/session";
 import { useViewport } from "contexts/viewport";
 import { KEYPRESS_DEBOUNCE_MS } from "utils/constants";
@@ -60,7 +64,6 @@ const updateKeyStates = (event: KeyboardEvent): void => {
 
 const useGlobalKeyboardShortcuts = (): void => {
   const { closeWithTransition, minimize, open } = useProcessesActions();
-  const processesRef = useProcessesRef();
   const foregroundId = useForegroundId();
   const stackOrder = useStackOrder();
   const { fullscreenElement, toggleFullscreen } = useViewport();
@@ -180,7 +183,7 @@ const useGlobalKeyboardShortcuts = (): void => {
           hideMinimizeButton = false,
           maximized,
           minimized,
-        } = processesRef.current[foregroundId] || {};
+        } = getProcess(foregroundId) || {};
 
         if (maximized) {
           onMaximize();
@@ -194,7 +197,7 @@ const useGlobalKeyboardShortcuts = (): void => {
           hideMaximizeButton = false,
           maximized,
           minimized,
-        } = processesRef.current[foregroundId] || {};
+        } = getProcess(foregroundId) || {};
 
         if (minimized) {
           onMinimize(true);
@@ -202,16 +205,9 @@ const useGlobalKeyboardShortcuts = (): void => {
           onMaximize();
         }
       },
-      D: () => toggleShowDesktop(processesRef.current, stackOrder, minimize),
+      D: () => toggleShowDesktop(getProcesses(), stackOrder, minimize),
     };
-  }, [
-    foregroundId,
-    minimize,
-    onMaximize,
-    onMinimize,
-    processesRef,
-    stackOrder,
-  ]);
+  }, [foregroundId, minimize, onMaximize, onMinimize, stackOrder]);
 };
 
 export default useGlobalKeyboardShortcuts;

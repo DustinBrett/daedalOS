@@ -1,5 +1,4 @@
 import { type FeatureBundle, LazyMotion } from "motion/react";
-import { memo } from "react";
 import { StyleSheetManager, ThemeProvider } from "styled-components";
 import { useThemeName } from "contexts/session";
 import GlobalStyle from "styles/GlobalStyle";
@@ -29,4 +28,4 @@ const StyledApp: FC = ({ children }) => {
   );
 };
 
-export default memo(StyledApp);
+export default StyledApp;

@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import { Send } from "components/apps/Messenger/Icons";
 import {
@@ -17,7 +17,7 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [canSend, setCanSend] = useState(false);
   const isUnknownKey = recipientPublicKey === UNKNOWN_PUBLIC_KEY;
-  const updateHeight = useCallback(() => {
+  const updateHeight = (): void => {
     if (inputRef.current) {
       inputRef.current.style.height = "0px";
       inputRef.current.style.height = `${Math.max(
@@ -25,8 +25,8 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
         inputRef.current.scrollHeight + 4
       )}px`;
     }
-  }, []);
-  const send = useCallback(async () => {
+  };
+  const send = async (): Promise<void> => {
     const input = inputRef.current;
     const message = input?.value.trim();
 
@@ -44,7 +44,7 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
       setCanSend(true);
       updateHeight();
     }
-  }, [legacy, recipientPublicKey, sendMessage, updateHeight]);
+  };
 
   return (
     <StyledSendMessage>
@@ -77,4 +77,4 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
   );
 };
 
-export default memo(SendMessage);
+export default SendMessage;

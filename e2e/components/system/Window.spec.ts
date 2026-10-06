@@ -11,6 +11,7 @@ import {
   clickCloseWindow,
   clickMaximizeWindow,
   clickMinimizeWindow,
+  closePage,
   disableWallpaper,
   doubleClickWindowTitlebar,
   doubleClickWindowTitlebarIcon,
@@ -35,6 +36,7 @@ test.beforeEach(loadTestApp);
 test.beforeEach(windowsAreVisible);
 test.beforeEach(windowAnimationIsFinished);
 test.beforeEach(fileExplorerEntriesAreVisible);
+test.afterEach(closePage);
 
 test("has title", async ({ page }) =>
   windowTitlebarTextIsVisible(TEST_APP_TITLE_TEXT, { page }));

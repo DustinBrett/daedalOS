@@ -1,6 +1,6 @@
 import { basename, extname } from "path";
 import { type Unzipped } from "fflate";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { getConfig } from "components/apps/BoxedWine/config";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useEmscriptenMount from "components/system/Files/FileManager/useEmscriptenMount";
@@ -9,6 +9,7 @@ import { useFileSystemActions } from "contexts/fileSystem";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 import { useProcess, useProcessesActions } from "contexts/process";
 import { getExtension, isCanvasDrawn, loadFiles } from "utils/functions";
+import { loadZipFunctions } from "utils/loaders";
 
 type WineFS = EmscriptenFS & {
   close: (stream: { path?: string }) => void;
@@ -27,13 +28,13 @@ declare global {
   }
 }
 
-const getExeName = (files: Unzipped): string | undefined => {
+const getExeName = (files: Unzipped): string => {
   const fileList = Object.entries(files);
   const [[fileName] = []] = fileList
     .filter(([name]) => name.toLowerCase().endsWith(".exe"))
     .sort(([, aFile], [, bFile]) => bFile.length - aFile.length);
 
-  return fileName;
+  return fileName || "";
 };
 
 const useBoxedWine = ({
@@ -49,26 +50,29 @@ const useBoxedWine = ({
   const mountEmFs = useEmscriptenMount();
   const loadedUrl = useRef<string>(undefined);
   const blankCanvasCheckerTimer = useRef(0);
-  const loadEmulator = useCallback(async (): Promise<void> => {
+  const loadEmulator = async (): Promise<void> => {
     let dynamicConfig = {};
     const [initialPayload, { zipAsync }] = await Promise.all([
       url ? readFile(url) : Promise.resolve(Buffer.from("")),
-      import("utils/zipFunctions"),
+      loadZipFunctions(),
     ]);
     let appPayload = initialPayload;
     const extension = getExtension(url);
     const isExecutable = extension === ".exe";
     let appName = basename(url, extension);
-    const zippedPayload = async (): Promise<Buffer> =>
-      Buffer.from(await zipAsync({ [basename(url)]: appPayload }));
+    const zippedPayload = async (): Promise<Buffer> => {
+      const fileName = basename(url);
+
+      return Buffer.from(await zipAsync({ [fileName]: appPayload }));
+    };
 
     if (isExecutable) {
       appPayload = await zippedPayload();
     } else if (url) {
-      const { unzip } = await import("utils/zipFunctions");
+      const { unzip } = await loadZipFunctions();
 
       try {
-        appName = getExeName(await unzip(appPayload)) || "";
+        appName = getExeName(await unzip(appPayload));
       } catch {
         appPayload = await zippedPayload();
         appName = "";
@@ -145,17 +149,7 @@ const useBoxedWine = ({
         // Ignore BoxedWine errors
       }
     });
-  }, [
-    appendFileToTitle,
-    closeWithTransition,
-    containerRef,
-    id,
-    libs,
-    mountEmFs,
-    readFile,
-    setLoading,
-    url,
-  ]);
+  };
 
   useEffect(() => {
     if (loadedUrl.current !== url && (url || !loadedUrl.current)) {

@@ -37,16 +37,10 @@ const useUrlLoader = (): void => {
     const loadInitialApp = async (initialApp: string): Promise<void> => {
       if (!initialApp) return;
 
-      let urlExists = false;
-
-      try {
-        urlExists =
-          (initialApp === "Browser" && isBrowserUrl(url)) ||
-          (initialApp === "VideoPlayer" && isYouTubeUrl(url)) ||
-          (await exists(url));
-      } catch {
-        // Ignore error checking if url exists
-      }
+      const urlExists =
+        (initialApp === "Browser" && isBrowserUrl(url)) ||
+        (initialApp === "VideoPlayer" && isYouTubeUrl(url)) ||
+        (await exists(url).catch(() => false));
 
       if (initialApp === "FileExplorer" && url && !urlExists) return;
 

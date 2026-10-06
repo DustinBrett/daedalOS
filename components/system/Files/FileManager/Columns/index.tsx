@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { memo, useCallback, useRef } from "react";
+import { useRef } from "react";
 import { useTheme } from "styled-components";
 import {
   type ColumnName,
@@ -37,46 +37,47 @@ const Columns: FC<ColumnsProps> = ({
   const lastClientX = useRef(0);
   const { setSortOrder, setWindowStates } = useSessionActions();
   const [, sortedBy = "name", ascending] = useSortOrder(directory);
-  const onPointerDownCapture = useCallback(
-    (name: string) => (event: React.PointerEvent<HTMLLIElement>) => {
-      if (event.button !== 0) return;
+  const onPointerDownCapture = (
+    event: React.PointerEvent<HTMLLIElement>
+  ): void => {
+    if (event.button !== 0) return;
 
-      draggingRef.current =
-        (event.target as HTMLElement).className === "resize" ? name : "";
-      lastClientX.current = event.clientX;
-    },
-    []
-  );
-  const onPointerMoveCapture = useCallback(
-    (event: React.PointerEvent<HTMLLIElement>) => {
-      const dragName = draggingRef.current as ColumnName;
-      const movement = event.clientX - lastClientX.current;
+    draggingRef.current =
+      (event.target as HTMLElement).className === "resize"
+        ? (event.currentTarget.dataset.column as string)
+        : "";
+    lastClientX.current = event.clientX;
+  };
+  const onPointerMoveCapture = (
+    event: React.PointerEvent<HTMLLIElement>
+  ): void => {
+    const dragName = draggingRef.current as ColumnName;
+    const movement = event.clientX - lastClientX.current;
 
-      if (
-        !dragName ||
-        Math.abs(movement) > MAX_STEPS_PER_RESIZE ||
-        columns[dragName].width + movement < sizes.fileManager.columnMinWidth
-      ) {
-        return;
-      }
+    if (
+      !dragName ||
+      Math.abs(movement) > MAX_STEPS_PER_RESIZE ||
+      columns[dragName].width + movement < sizes.fileManager.columnMinWidth
+    ) {
+      return;
+    }
 
-      lastClientX.current = event.clientX;
+    lastClientX.current = event.clientX;
 
-      setColumns(
-        (currentColumns) =>
-          currentColumns && {
-            ...currentColumns,
-            [dragName]: {
-              ...currentColumns[dragName],
-              width: currentColumns[dragName].width + movement,
-            },
-          }
-      );
-    },
-    [columns, setColumns, sizes.fileManager.columnMinWidth]
-  );
-  const onPointerUpCapture = useCallback(
-    (name: string) => (event: React.PointerEvent<HTMLLIElement>) => {
+    setColumns(
+      (currentColumns) =>
+        currentColumns && {
+          ...currentColumns,
+          [dragName]: {
+            ...currentColumns[dragName],
+            width: currentColumns[dragName].width + movement,
+          },
+        }
+    );
+  };
+  const onPointerUpCapture =
+    (name: string) =>
+    (event: React.PointerEvent<HTMLLIElement>): void => {
       if (event.button !== 0) return;
 
       if (draggingRef.current) {
@@ -99,9 +100,7 @@ const Columns: FC<ColumnsProps> = ({
           !ascending
         );
       }
-    },
-    [ascending, columns, directory, files, id, setSortOrder, setWindowStates]
-  );
+    };
 
   return (
     <StyledColumns>
@@ -109,7 +108,8 @@ const Columns: FC<ColumnsProps> = ({
         {DEFAULT_COLUMN_ORDER.map((name) => (
           <li
             key={columns[name].name}
-            onPointerDownCapture={onPointerDownCapture(name)}
+            data-column={name}
+            onPointerDownCapture={onPointerDownCapture}
             onPointerMoveCapture={onPointerMoveCapture}
             onPointerUpCapture={onPointerUpCapture(name)}
             style={{ width: `${columns[name].width}px` }}
@@ -124,4 +124,4 @@ const Columns: FC<ColumnsProps> = ({
   );
 };
 
-export default memo(Columns);
+export default Columns;

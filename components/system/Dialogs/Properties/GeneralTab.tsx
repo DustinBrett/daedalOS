@@ -1,5 +1,5 @@
 import { basename, dirname, extname, join } from "path";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Buttons from "components/system/Dialogs/Properties/Buttons";
 import useStats from "components/system/Dialogs/Properties/useStats";
 import {
@@ -24,6 +24,7 @@ import {
   getExtension,
   getFormattedSize,
   haltEvent,
+  omitEntry,
   saveUnpositionedDesktopIcons,
 } from "utils/functions";
 
@@ -46,7 +47,7 @@ const dateTimeString = (date?: Date): string =>
 const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const { closeWithTransition, icon: setIcon } = useProcessesActions();
   const { setIconPositions } = useSessionActions();
-  const extension = useMemo(() => getExtension(url || ""), [url]);
+  const extension = getExtension(url || "");
   const extType = getFileType(extension);
   const inputRef = useRef<HTMLInputElement>(null);
   const { readdir, rename, stat, updateFolder } = useFileSystemActions();
@@ -55,12 +56,12 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   const [fileCount, setFileCount] = useState(0);
   const [folderCount, setFolderCount] = useState(0);
   const [folderSize, setFolderSize] = useState(0);
-  const isDirectory = useMemo(() => stats?.isDirectory(), [stats]);
+  const isDirectory = stats?.isDirectory();
   const entrySize = folderSize || (isDirectory ? 0 : stats?.size);
   const checkedFileCounts = useRef(false);
   const abortControllerRef = useRef<AbortController>(undefined);
   const [folderIcon, setFolderIcon] = useState(FOLDER_ICON);
-  const okAction = useCallback(async (): Promise<void> => {
+  const okAction = async (): Promise<void> => {
     if (inputRef.current && url && inputRef.current.value !== basename(url)) {
       let newName = removeInvalidFilenameCharacters(
         inputRef.current.value
@@ -86,7 +87,8 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
 
         if (dirname(url) === DESKTOP_PATH) {
           setIconPositions((currentPositions) => {
-            const { [url]: iconPosition, ...newPositions } = currentPositions;
+            const iconPosition = currentPositions[url];
+            const newPositions = omitEntry(currentPositions, url);
 
             if (iconPosition) {
               newPositions[renamedPath] = iconPosition;
@@ -99,15 +101,7 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
     }
 
     closeWithTransition(id);
-  }, [
-    closeWithTransition,
-    id,
-    isShortcut,
-    rename,
-    setIconPositions,
-    updateFolder,
-    url,
-  ]);
+  };
 
   useEffect(() => {
     if (isDirectory && fs) {
@@ -265,4 +259,4 @@ const GeneralTab: FC<TabProps> = ({ icon, id, isShortcut, pid, url }) => {
   );
 };
 
-export default memo(GeneralTab);
+export default GeneralTab;

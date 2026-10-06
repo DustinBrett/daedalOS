@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getInfoWithExtension,
   getInfoWithoutExtension,
@@ -32,10 +32,10 @@ const useFileInfo = (
 ): [FileInfo, React.Dispatch<React.SetStateAction<FileInfo>>] => {
   const [info, setInfo] = useState<FileInfo>(INITIAL_FILE_INFO);
   const updatingInfo = useRef(false);
-  const updateInfo = useCallback((newInfo: FileInfo): void => {
+  const updateInfo = (newInfo: FileInfo): void => {
     setInfo(newInfo);
     updatingInfo.current = false;
-  }, []);
+  };
   const fs = useFs();
   const rootFs = useRootFs();
 

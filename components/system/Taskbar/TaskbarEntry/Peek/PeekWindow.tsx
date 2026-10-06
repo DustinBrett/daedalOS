@@ -1,11 +1,4 @@
-import {
-  memo,
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import StyledPeekWindow from "components/system/Taskbar/TaskbarEntry/Peek/StyledPeekWindow";
 import usePeekTransition, {
   type PeekPosition,
@@ -31,7 +24,7 @@ const PEEK_DELAY_MS = 400;
 
 let shownPeek: ShownPeek | undefined;
 
-const Pause = memo(() => (
+const Pause: FC = () => (
   <svg
     aria-hidden="true"
     viewBox="0 0 32 32"
@@ -39,9 +32,9 @@ const Pause = memo(() => (
   >
     <path d="M8 29.328V2.672h2.672v26.656H8zM21.328 2.672H24v26.656h-2.672V2.672z" />
   </svg>
-));
+);
 
-const Play = memo(() => (
+const Play: FC = () => (
   <svg
     aria-hidden="true"
     viewBox="0 0 32 32"
@@ -49,7 +42,7 @@ const Play = memo(() => (
   >
     <path d="M28 16 8 30V2z" />
   </svg>
-));
+);
 
 const PeekWindow: FC<PeekWindowProps> = ({ id, onHide }) => {
   const { minimize } = useProcessesActions();
@@ -60,22 +53,22 @@ const PeekWindow: FC<PeekWindowProps> = ({ id, onHide }) => {
   const [hidden, setHidden] = useState(false);
   const [position, setPosition] = useState<PeekPosition>();
   const ready = useWindowPeek(id, canvas, shownPeek ? 0 : PEEK_DELAY_MS);
-  const showControls = useMemo(() => Boolean(play && pause), [pause, play]);
+  const showControls = Boolean(play && pause);
   const peekTransition = usePeekTransition(showControls);
   const peekRef = useRef<HTMLDivElement | null>(null);
   const replacedPeekRef = useRef<ShownPeek>(undefined);
-  const onClick = useCallback((): void => {
+  const onClick = (): void => {
     if (minimized) minimize(id);
 
     setForegroundId(id);
-  }, [id, minimize, minimized, setForegroundId]);
-  const hide = useCallback((): void => {
+  };
+  const hide = (): void => {
     if (shownPeek?.element === peekRef.current) shownPeek = undefined;
 
     setHidden(true);
-  }, []);
+  };
   // The replaced peek hides on the first slide frame, so no frame is empty
-  const hideReplacedPeek = useCallback((): void => {
+  const hideReplacedPeek = (): void => {
     const replacedPeek = replacedPeekRef.current;
 
     if (replacedPeek) {
@@ -83,15 +76,12 @@ const PeekWindow: FC<PeekWindowProps> = ({ id, onHide }) => {
       replacedPeek.hide();
       replacedPeekRef.current = undefined;
     }
-  }, []);
-  const onCloseClick = useCallback(
-    (event: React.MouseEvent): void => {
-      haltEvent(event);
-      hide();
-      onClose();
-    },
-    [hide, onClose]
-  );
+  };
+  const onCloseClick = (event: React.MouseEvent): void => {
+    haltEvent(event);
+    hide();
+    onClose();
+  };
 
   useLayoutEffect(() => {
     const peek = peekRef.current;
@@ -100,20 +90,13 @@ const PeekWindow: FC<PeekWindowProps> = ({ id, onHide }) => {
       const { left, right, width } = peek.getBoundingClientRect();
       const vw = viewWidth();
       const x = left < 0 ? -left : right > vw ? vw - right : 0;
-      const previous = shownPeek;
 
-      shownPeek = {
-        element: peek,
-        hide: () => {
-          hide();
-          onHide();
-        },
-      };
+      // Read before reassigning, as React Compiler 1.0 swaps a local copy of a
+      // module variable for the variable itself
+      if (shownPeek) {
+        const rect = shownPeek.element.getBoundingClientRect();
 
-      if (previous) {
-        const rect = previous.element.getBoundingClientRect();
-
-        replacedPeekRef.current = previous;
+        replacedPeekRef.current = shownPeek;
         setPosition({
           from: {
             height: rect.height,
@@ -124,6 +107,14 @@ const PeekWindow: FC<PeekWindowProps> = ({ id, onHide }) => {
       } else {
         setPosition({ x });
       }
+
+      shownPeek = {
+        element: peek,
+        hide: () => {
+          hide();
+          onHide();
+        },
+      };
     } else {
       setPosition(undefined);
     }
@@ -186,4 +177,4 @@ const PeekWindow: FC<PeekWindowProps> = ({ id, onHide }) => {
   );
 };
 
-export default memo(PeekWindow);
+export default PeekWindow;

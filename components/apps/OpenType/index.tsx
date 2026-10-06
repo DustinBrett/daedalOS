@@ -1,5 +1,6 @@
+import type * as OpenTypeJs from "opentype.js";
 import { type Font, type LocalizedName } from "opentype.js";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StyledOpenType from "components/apps/OpenType/StyledOpenType";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
@@ -7,6 +8,9 @@ import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess, useProcessesActions } from "contexts/process";
 import processDirectory from "contexts/process/directory";
 import { haltEvent } from "utils/functions";
+
+const loadOpenType = (): Promise<{ default: typeof OpenTypeJs }> =>
+  import("opentype.js");
 
 type FontCanvasProps = {
   font?: Font;
@@ -59,45 +63,37 @@ const FontCanvas: FC<FontCanvasProps> = ({
   );
 };
 
-const MemoizedFontCanvas = memo(FontCanvas);
-
 const OpenType: FC<ComponentProcessProps> = ({ id }) => {
   const { title, url: setUrl } = useProcessesActions();
   const { url = "" } = useProcess(id);
   const { readFile } = useFileSystemActions();
   const [font, setFont] = useState<Font>();
-  const loadFont = useCallback(
-    async (fontUrl: string) => {
-      const [{ default: openType }, { buffer }] = await Promise.all([
-        import("opentype.js"),
-        readFile(fontUrl),
-      ]);
+  const loadFont = async (fontUrl: string): Promise<void> => {
+    const [{ default: openType }, { buffer }] = await Promise.all([
+      loadOpenType(),
+      readFile(fontUrl),
+    ]);
 
-      try {
-        setFont(openType.parse(buffer));
-      } catch {
-        setUrl(id, "");
-        setFont(undefined);
-      }
-    },
-    [id, readFile, setUrl]
-  );
-  const { name, types, version } = useMemo(() => {
-    const supportedTypes = [];
-
-    if (font?.supported) supportedTypes.push("OpenType Layout");
-    if (font?.outlinesFormat === "truetype") {
-      supportedTypes.push("TrueType Outlines");
+    try {
+      setFont(openType.parse(buffer));
+    } catch {
+      setUrl(id, "");
+      setFont(undefined);
     }
+  };
+  const name = extractTextValue(font?.names.fullName);
+  const version = extractTextValue(font?.names.version);
+  const supportedTypes = [];
 
-    return {
-      name: extractTextValue(font?.names.fullName),
-      types: supportedTypes.join(", "),
-      version: extractTextValue(font?.names.version),
-    };
-  }, [font]);
+  if (font?.supported) supportedTypes.push("OpenType Layout");
+  if (font?.outlinesFormat === "truetype") {
+    supportedTypes.push("TrueType Outlines");
+  }
+
+  const types = supportedTypes.join(", ");
 
   useEffect(() => {
+    // eslint-disable-next-line react/set-state-in-effect -- False positive: state is only set after an await
     if (url) loadFont(url);
   }, [loadFont, url]);
 
@@ -127,7 +123,7 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
           </ol>
           <ol>
             <li>
-              <MemoizedFontCanvas
+              <FontCanvas
                 font={font}
                 fontSize={15}
                 text={ALPHABETS}
@@ -135,7 +131,7 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
               />
             </li>
             <li>
-              <MemoizedFontCanvas
+              <FontCanvas
                 font={font}
                 fontSize={15}
                 text={NUMBERS_SYMBOLS}
@@ -146,7 +142,7 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
           <ol>
             {FONT_SIZES.map((size) => (
               <li key={size}>
-                <MemoizedFontCanvas font={font} fontSize={size} />
+                <FontCanvas font={font} fontSize={size} />
               </li>
             ))}
           </ol>
@@ -156,4 +152,4 @@ const OpenType: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(OpenType);
+export default OpenType;

@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   MAX_RES_ICON_OVERRIDE,
@@ -99,52 +99,31 @@ const Icon: FCWithRef<
   ...componentProps
 }) => {
   const [loaded, setLoaded] = useState(false);
-  const isDynamic = isDynamicIcon(src);
-  const imgSrc = useMemo(
-    () =>
-      isDynamic && !supportsWebp()
-        ? src.replace(getExtension(src), ".png")
-        : src,
-    [isDynamic, src]
-  );
-  const srcExt = getExtension(imgSrc);
-  const dimensionProps = useMemo(() => {
-    const size = displaySize > imgSize ? imgSize : displaySize || imgSize;
-    const $offset = displaySize > imgSize ? `${displaySize - imgSize}px` : 0;
-
-    return {
-      $height: size,
-      $offset,
-      $width: size,
-    };
-  }, [displaySize, imgSize]);
+  const size = displaySize > imgSize ? imgSize : displaySize || imgSize;
+  const dimensionProps = {
+    $height: size,
+    $offset: displaySize > imgSize ? `${displaySize - imgSize}px` : 0,
+    $width: size,
+  };
   const [failedUrls, setFailedUrls] = useState<string[]>([]);
-  const onError: React.ReactEventHandler<HTMLImageElement> = useCallback(
-    ({ target }) => {
-      const { currentSrc = "" } = (target as HTMLImageElement) || {};
+  const onError: React.ReactEventHandler<HTMLImageElement> = ({ target }) => {
+    const { currentSrc = "" } = (target as HTMLImageElement) || {};
+    let pathname = "";
 
-      try {
-        const { pathname } = new URL(currentSrc);
+    try {
+      pathname = new URL(currentSrc).pathname;
+    } catch {
+      // Ignore failure to log failed url
+    }
 
-        if (pathname && !failedUrls.includes(pathname)) {
-          setFailedUrls((currentFailedUrls) => [
-            ...currentFailedUrls,
-            pathname,
-          ]);
-        }
-      } catch {
-        // Ignore failure to log failed url
-      }
-    },
-    [failedUrls]
-  );
-  const onLoadHandler: React.ReactEventHandler<HTMLImageElement> = useCallback(
-    (event) => {
-      setLoaded(true);
-      onLoad?.(event);
-    },
-    [onLoad]
-  );
+    if (pathname && !failedUrls.includes(pathname)) {
+      setFailedUrls((currentFailedUrls) => [...currentFailedUrls, pathname]);
+    }
+  };
+  const onLoadHandler: React.ReactEventHandler<HTMLImageElement> = (event) => {
+    setLoaded(true);
+    onLoad?.(event);
+  };
 
   useEffect(
     () => () => {
@@ -152,6 +131,11 @@ const Icon: FCWithRef<
     },
     [loaded, src]
   );
+
+  const isDynamic = isDynamicIcon(src);
+  const imgSrc =
+    isDynamic && !supportsWebp() ? src.replace(getExtension(src), ".png") : src;
+  const srcExt = getExtension(imgSrc);
 
   return (
     <picture>
@@ -206,4 +190,4 @@ const Icon: FCWithRef<
   );
 };
 
-export default memo(Icon);
+export default Icon;

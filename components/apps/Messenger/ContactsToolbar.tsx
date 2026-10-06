@@ -1,4 +1,3 @@
-import { memo } from "react";
 import Button from "styles/common/Button";
 
 type ContactsToolbarProps = {
@@ -57,4 +56,4 @@ const ContactsToolbar: FC<ContactsToolbarProps> = ({
   );
 };
 
-export default memo(ContactsToolbar);
+export default ContactsToolbar;

@@ -1,5 +1,5 @@
 import type Stats from "browserfs/dist/node/core/node_fs_stats";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import {
   getDateModified,
@@ -25,7 +25,7 @@ const ColumnRow: FC<{
 }> = ({ columns, isDirectory, path, stats }) => {
   const { stat } = useFileSystemActions();
   const { formats } = useTheme();
-  const getColumnData = useCallback(async (): Promise<ColumnDataProps> => {
+  const getColumnData = async (): Promise<ColumnDataProps> => {
     const fullStats = stats.size === UNKNOWN_SIZE ? await stat(path) : stats;
 
     return {
@@ -33,7 +33,7 @@ const ColumnRow: FC<{
       size: isDirectory ? "" : getFormattedSize(fullStats.size, true),
       type: isDirectory ? "File folder" : getFileType(getExtension(path)),
     };
-  }, [formats.dateModified, isDirectory, path, stat, stats]);
+  };
   const [columnData, setColumnData] = useState<ColumnDataProps>();
   const creatingRef = useRef(false);
 
@@ -56,4 +56,4 @@ const ColumnRow: FC<{
   );
 };
 
-export default memo(ColumnRow);
+export default ColumnRow;

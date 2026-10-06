@@ -1,5 +1,5 @@
 import { basename, extname } from "path";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type Options } from "webamp";
 import {
   cleanBufferOnSkinLoad,
@@ -26,15 +26,12 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   const [loadedUrl, setLoadedUrl] = useState(url);
   const { initWebamp, webampCI } = useWebamp(id);
   const windowTransitions = useWindowTransitions(id, undefined, true);
-  const focusEvents = useMemo(
-    () => ({
-      onBlurCapture: () => webampCI && unFocus(webampCI),
-      onFocusCapture: () => webampCI && focusWindow(webampCI, "main"),
-    }),
-    [webampCI]
-  );
+  const focusEvents = {
+    onBlurCapture: () => webampCI && unFocus(webampCI),
+    onFocusCapture: () => webampCI && focusWindow(webampCI, "main"),
+  };
   const { zIndex, ...focusableProps } = useFocusable(id, focusEvents);
-  const getUrlOptions = useCallback(async (): Promise<Options> => {
+  const getUrlOptions = async (): Promise<Options> => {
     if (url) {
       const extension = getExtension(url);
 
@@ -60,8 +57,8 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
     }
 
     return {};
-  }, [readFile, url]);
-  const loadWebampUrl = useCallback(async () => {
+  };
+  const loadWebampUrl = async (): Promise<void> => {
     if (webampCI) {
       const { initialSkin, initialTracks } = await getUrlOptions();
 
@@ -71,13 +68,14 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
         webampCI.setSkinFromUrl(initialSkin.url);
       }
     }
-  }, [getUrlOptions, webampCI]);
+  };
   const loadingWebamp = useRef(false);
 
   useEffect(() => {
     if (containerRef.current && !webampCI) {
       loadFiles(libs).then(async () => {
-        if (window.Webamp && !loadingWebamp.current) {
+        // Without Web Audio (Playwright's Windows WebKit) its constructor throws
+        if (window.Webamp?.browserIsSupported() && !loadingWebamp.current) {
           loadingWebamp.current = true;
 
           initWebamp(
@@ -92,6 +90,7 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   useEffect(() => {
     if (url !== loadedUrl) {
       loadWebampUrl();
+      // eslint-disable-next-line react/set-state-in-effect -- Consumes each new url once
       setLoadedUrl(url);
     } else if (url) {
       setUrl(id, "");
@@ -110,4 +109,4 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Webamp);
+export default Webamp;

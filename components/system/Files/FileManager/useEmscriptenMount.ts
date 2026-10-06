@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { type EmscriptenFS } from "contexts/fileSystem/useAsyncFs";
 
@@ -25,25 +25,22 @@ const useEmscriptenMount = (): EmscriptenMounter => {
     [unMapFs, updateFolder]
   );
 
-  return useCallback(
-    async (FS?: EmscriptenFS, fsName?: string): Promise<void> => {
-      if (!FS) return;
+  return async (FS?: EmscriptenFS, fsName?: string): Promise<void> => {
+    if (!FS) return;
 
-      let name = "";
+    let name = "";
 
-      try {
-        name = await mountEmscriptenFs(FS, fsName);
-      } catch {
-        // Ignore error during mounting
-      }
+    try {
+      name = await mountEmscriptenFs(FS, fsName);
+    } catch {
+      // Ignore error during mounting
+    }
 
-      if (name) {
-        updateFolder("/", name);
-        mountName.current = name;
-      }
-    },
-    [mountEmscriptenFs, updateFolder]
-  );
+    if (name) {
+      updateFolder("/", name);
+      mountName.current = name;
+    }
+  };
 };
 
 export default useEmscriptenMount;

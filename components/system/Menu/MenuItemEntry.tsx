@@ -1,12 +1,4 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { type Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import Menu, { topLeftPosition } from "components/system/Menu";
@@ -52,11 +44,11 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   const { sizes } = useTheme();
   const showSubMenuTimerRef = useRef<number>(0);
   const [mouseOver, setMouseOver] = useState(false);
-  const canMouseOver = useMemo(
-    () => window.matchMedia("(hover: hover)").matches,
-    []
+  // eslint-disable-next-line react/hook-use-state
+  const [canMouseOver] = useState(
+    () => window.matchMedia("(hover: hover)").matches
   );
-  const setDelayedShowSubMenu = useCallback((show: boolean) => {
+  const setDelayedShowSubMenu = (show: boolean): void => {
     if (showSubMenuTimerRef.current) {
       window.clearTimeout(showSubMenuTimerRef.current);
       showSubMenuTimerRef.current = 0;
@@ -66,51 +58,41 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
       () => setShowSubMenu(show),
       TRANSITIONS_IN_MILLISECONDS.MOUSE_IN_OUT
     );
-  }, []);
-  const onMouseEnter: React.MouseEventHandler = useCallback(() => {
+  };
+  const onMouseEnter: React.MouseEventHandler = () => {
     setMouseOver(true);
     if (menu) setDelayedShowSubMenu(true);
-  }, [menu, setDelayedShowSubMenu]);
-  const onMouseLeave: React.MouseEventHandler = useCallback(
-    ({ relatedTarget, type }) => {
-      if (
-        !(relatedTarget instanceof HTMLElement) ||
-        !entryRef.current?.contains(relatedTarget)
-      ) {
-        setMouseOver(false);
+  };
+  const onMouseLeave: React.MouseEventHandler = ({ relatedTarget, type }) => {
+    if (
+      !(relatedTarget instanceof HTMLElement) ||
+      !entryRef.current?.contains(relatedTarget)
+    ) {
+      setMouseOver(false);
 
-        if (type === "mouseleave") {
-          setDelayedShowSubMenu(false);
-        } else {
-          setShowSubMenu(false);
-        }
+      if (type === "mouseleave") {
+        setDelayedShowSubMenu(false);
+      } else {
+        setShowSubMenu(false);
       }
-    },
-    [setDelayedShowSubMenu]
-  );
-  const subMenuEvents = useMemo(
-    () =>
-      menu
-        ? {
-            onBlur: onMouseLeave as unknown as React.FocusEventHandler,
-            onMouseEnter,
-            onMouseLeave,
-          }
-        : {},
-    [menu, onMouseEnter, onMouseLeave]
-  );
-  const triggerAction = useCallback<React.MouseEventHandler>(
-    (event) => {
-      haltEvent(event);
+    }
+  };
+  const subMenuEvents = menu
+    ? {
+        onBlur: onMouseLeave as unknown as React.FocusEventHandler,
+        onMouseEnter,
+        onMouseLeave,
+      }
+    : {};
+  const triggerAction: React.MouseEventHandler = (event) => {
+    haltEvent(event);
 
-      if (menu) setShowSubMenu(true);
-      else {
-        action?.();
-        resetMenu();
-      }
-    },
-    [action, menu, resetMenu]
-  );
+    if (menu) setShowSubMenu(true);
+    else {
+      action?.();
+      resetMenu();
+    }
+  };
 
   useEffect(() => {
     const menuEntryElement = entryRef.current;
@@ -194,4 +176,4 @@ const MenuItemEntry: FC<MenuItemEntryProps> = ({
   );
 };
 
-export default memo(MenuItemEntry);
+export default MenuItemEntry;

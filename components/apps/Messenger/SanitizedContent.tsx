@@ -1,5 +1,4 @@
 import DOMPurify from "dompurify";
-import { memo, useMemo } from "react";
 import {
   convertImageLinksToHtml,
   convertNewLinesToBreaks,
@@ -13,18 +12,12 @@ const SanitizedContent: FC<{ content: string }> = ({ content }) => (
   <div
     // eslint-disable-next-line react/no-danger
     dangerouslySetInnerHTML={{
-      __html: useMemo(
-        () =>
-          DOMPurify.sanitize(
-            convertImageLinksToHtml(
-              convertNewLinesToBreaks(escapeHtml(content))
-            ),
-            { ALLOWED_ATTR: ["alt", "src"], ALLOWED_TAGS: ["br", "img"] }
-          ),
-        [content]
+      __html: DOMPurify.sanitize(
+        convertImageLinksToHtml(convertNewLinesToBreaks(escapeHtml(content))),
+        { ALLOWED_ATTR: ["alt", "src"], ALLOWED_TAGS: ["br", "img"] }
       ),
     }}
   />
 );
 
-export default memo(SanitizedContent);
+export default SanitizedContent;

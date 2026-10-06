@@ -4,13 +4,7 @@ import {
   type PDFDocumentProxy,
   type PDFWorker,
 } from "pdfjs-dist/types/src/display/api";
-import {
-  type RefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 import { type MetadataInfo } from "components/apps/PDF/types";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
@@ -45,49 +39,46 @@ const usePDF = (
   const { libs = [], scale, url: processUrl } = useProcess(id);
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
   const pdfWorker = useRef<null | PDFWorker>(null);
-  const renderPage = useCallback(
-    async (
-      pageNumber: number,
-      doc: PDFDocumentProxy
-    ): Promise<HTMLCanvasElement> => {
-      const canvas = document.createElement("canvas");
-      const canvasContext = canvas.getContext(
-        "2d",
-        BASE_2D_CONTEXT_OPTIONS
-      ) as CanvasRenderingContext2D;
-      const page = await doc.getPage(pageNumber);
-      let viewport: PdfjsLib.PageViewport;
+  const renderPage = async (
+    pageNumber: number,
+    doc: PDFDocumentProxy
+  ): Promise<HTMLCanvasElement> => {
+    const canvas = document.createElement("canvas");
+    const canvasContext = canvas.getContext(
+      "2d",
+      BASE_2D_CONTEXT_OPTIONS
+    ) as CanvasRenderingContext2D;
+    const page = await doc.getPage(pageNumber);
+    let viewport: PdfjsLib.PageViewport;
 
-      if (scale) {
-        viewport = page.getViewport({ scale });
-      } else {
-        const pageWidth = page.getViewport().viewBox[2];
-        const initialScale = getInitialScale(
-          containerRef.current?.clientWidth,
-          pageWidth
-        );
+    if (scale) {
+      viewport = page.getViewport({ scale });
+    } else {
+      const pageWidth = page.getViewport().viewBox[2];
+      const initialScale = getInitialScale(
+        containerRef.current?.clientWidth,
+        pageWidth
+      );
 
-        argument(id, "scale", initialScale);
+      argument(id, "scale", initialScale);
 
-        viewport = page.getViewport({ scale: initialScale });
-      }
+      viewport = page.getViewport({ scale: initialScale });
+    }
 
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-      canvas.setAttribute("role", "img");
-      canvas.setAttribute("aria-label", `Page ${pageNumber}`);
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label", `Page ${pageNumber}`);
 
-      await page.render({ canvas, canvasContext, viewport }).promise;
+    await page.render({ canvas, canvasContext, viewport }).promise;
 
-      return canvas;
-    },
-    [argument, containerRef, id, scale]
-  );
+    return canvas;
+  };
   const { prependFileToTitle } = useTitle(id);
   const currentUrlRef = useRef("");
   const renderingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const resetApp = useCallback(() => {
+  const resetApp = (): void => {
     abortControllerRef.current?.abort();
     pdfWorker.current?.destroy();
 
@@ -98,76 +89,73 @@ const usePDF = (
       // eslint-disable-next-line no-param-reassign
       containerRef.current.scrollTop = 0;
     }
-  }, [argument, containerRef, id]);
-  const renderPages = useCallback(
-    async (url: string): Promise<void> => {
-      if (containerRef.current) {
-        setPages([]);
+  };
+  const renderPages = async (url: string): Promise<void> => {
+    if (containerRef.current) {
+      setPages([]);
 
-        if (url) {
-          containerRef.current.classList.remove("drop");
+      if (url) {
+        containerRef.current.classList.remove("drop");
 
-          if (window.pdfjsLib && !renderingRef.current) {
-            renderingRef.current = true;
-            argument(id, "rendering", true);
+        if (window.pdfjsLib && !renderingRef.current) {
+          renderingRef.current = true;
+          argument(id, "rendering", true);
 
-            // eslint-disable-next-line no-param-reassign
-            containerRef.current.scrollTop = 0;
+          // eslint-disable-next-line no-param-reassign
+          containerRef.current.scrollTop = 0;
 
-            const fileData = await readFile(url);
+          const fileData = await readFile(url);
 
-            if (fileData.length === 0) throw new Error("File is empty");
+          if (fileData.length === 0) throw new Error("File is empty");
 
-            const loader = window.pdfjsLib.getDocument({ data: fileData });
-            const doc = await loader.promise;
-            const { info } = await doc.getMetadata();
+          const loader = window.pdfjsLib.getDocument({ data: fileData });
+          const doc = await loader.promise;
+          const { info } = await doc.getMetadata();
 
-            pdfWorker.current = (
-              loader as unknown as { _worker: PDFWorker }
-            )._worker;
+          pdfWorker.current = (
+            loader as unknown as { _worker: PDFWorker }
+          )._worker;
 
-            const { Title } = info as MetadataInfo;
+          const { Title } = info as MetadataInfo;
 
-            argument(id, "subTitle", Title);
-            argument(id, "count", doc.numPages);
-            prependFileToTitle(Title || basename(url));
+          argument(id, "subTitle", Title);
+          argument(id, "count", doc.numPages);
+          prependFileToTitle(Title || basename(url));
 
-            abortControllerRef.current = new AbortController();
+          abortControllerRef.current = new AbortController();
 
-            for (let i = 0; i < doc.numPages; i += 1) {
-              if (
-                abortControllerRef.current.signal.aborted ||
-                url !== currentUrlRef.current
-              ) {
-                break;
-              }
-
-              // eslint-disable-next-line no-await-in-loop
-              const page = await renderPage(i + 1, doc);
-
-              if (
-                abortControllerRef.current.signal.aborted ||
-                url !== currentUrlRef.current
-              ) {
-                break;
-              }
-
-              setPages((currentPages) => [...currentPages, page]);
+          for (let i = 0; i < doc.numPages; i += 1) {
+            if (
+              abortControllerRef.current.signal.aborted ||
+              url !== currentUrlRef.current
+            ) {
+              break;
             }
 
-            argument(id, "rendering", false);
-            renderingRef.current = false;
+            // eslint-disable-next-line no-await-in-loop
+            const page = await renderPage(i + 1, doc);
+
+            if (
+              abortControllerRef.current.signal.aborted ||
+              url !== currentUrlRef.current
+            ) {
+              break;
+            }
+
+            setPages((currentPages) => [...currentPages, page]);
           }
-        } else {
-          containerRef.current.classList.add("drop");
-          argument(id, "subTitle", "");
-          argument(id, "count", 0);
-          prependFileToTitle("");
+
+          argument(id, "rendering", false);
+          renderingRef.current = false;
         }
+      } else {
+        containerRef.current.classList.add("drop");
+        argument(id, "subTitle", "");
+        argument(id, "count", 0);
+        prependFileToTitle("");
       }
-    },
-    [argument, containerRef, id, prependFileToTitle, readFile, renderPage]
-  );
+    }
+  };
 
   useEffect(() => {
     loadFiles(libs).then(() => {

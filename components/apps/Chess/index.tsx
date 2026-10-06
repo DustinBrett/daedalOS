@@ -3,9 +3,8 @@ import { Chessboard2 } from "@chrisoakman/chessboard2/dist/chessboard2.min.mjs";
 import { Chess as ChessGame } from "chess.js";
 import {
   type ChangeEvent,
-  memo,
-  useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -27,6 +26,7 @@ import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess } from "contexts/process";
 import useResizeObserver from "hooks/useResizeObserver";
+import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { clsx, loadFiles } from "utils/functions";
 
 const PIECE_THEME = "/Program Files/Chess/img/{piece}.svg";
@@ -99,14 +99,16 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
   const reviewRef = useRef(false);
   const orientationRef = useRef(orientation);
 
-  modeRef.current = mode;
-  playerSideRef.current = playerSide;
-  skillRef.current = skill;
-  reviewRef.current = pgnMoves.length > 0;
-  orientationRef.current = orientation;
-  selectedSquareRef.current = selectedSquare;
+  useLayoutEffect(() => {
+    modeRef.current = mode;
+    playerSideRef.current = playerSide;
+    skillRef.current = skill;
+    reviewRef.current = pgnMoves.length > 0;
+    orientationRef.current = orientation;
+    selectedSquareRef.current = selectedSquare;
+  });
 
-  const isHumanTurn = useCallback((): boolean => {
+  const isHumanTurn = (): boolean => {
     const chess = chessRef.current;
 
     if (!chess) return false;
@@ -114,9 +116,9 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
     if (modeRef.current === "cvc") return false;
 
     return chess.turn() === playerSideRef.current;
-  }, []);
+  };
 
-  const computeStatus = useCallback((): Status => {
+  const computeStatus = (): Status => {
     const chess = chessRef.current;
 
     if (!chess) return { text: "Loading..." };
@@ -143,9 +145,9 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
     }
 
     return { text: `${sideName(chess.turn())} to move` };
-  }, [isHumanTurn]);
+  };
 
-  const refreshStatus = useCallback(() => {
+  const refreshStatus = (): void => {
     setStatus((prev) => {
       const next = computeStatus();
 
@@ -153,9 +155,9 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
         ? prev
         : next;
     });
-  }, [computeStatus]);
+  };
 
-  const requestEngineMove = useCallback(() => {
+  const requestEngineMove = (): void => {
     const chess = chessRef.current;
     const worker = workerRef.current;
 
@@ -171,77 +173,73 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
     worker.postMessage(`setoption name Skill Level value ${skillRef.current}`);
     worker.postMessage(`position fen ${chess.fen()}`);
     worker.postMessage(`go movetime ${skillToMovetimeMs(skillRef.current)}`);
-  }, [refreshStatus]);
+  };
 
-  const applyEngineMove = useCallback(
-    (uci: string) => {
-      const chess = chessRef.current;
-      const board = boardRef.current;
+  const applyEngineMove = (uci: string): void => {
+    const chess = chessRef.current;
+    const board = boardRef.current;
 
-      if (!chess || !board) return;
+    if (!chess || !board) return;
 
-      try {
-        chess.move({
-          from: uci.slice(0, 2),
-          promotion: uci.length > 4 ? uci[4] : "q",
-          to: uci.slice(2, 4),
-        });
-      } catch {
-        thinkingRef.current = false;
-        refreshStatus();
-        return;
-      }
+    const move = {
+      from: uci.slice(0, 2),
+      promotion: uci.length > 4 ? uci[4] : "q",
+      to: uci.slice(2, 4),
+    };
 
-      board.position(chess.fen(), false);
+    try {
+      chess.move(move);
+    } catch {
       thinkingRef.current = false;
       refreshStatus();
+      return;
+    }
 
-      if (
-        !chess.isGameOver() &&
-        modeRef.current === "cvc" &&
-        moveSeqRef.current
-      ) {
-        const seq = moveSeqRef.current;
+    board.position(chess.fen(), false);
+    thinkingRef.current = false;
+    refreshStatus();
 
-        cvcTimerRef.current = window.setTimeout(() => {
-          if (seq === moveSeqRef.current) requestEngineMove();
-        }, 250);
-      } else if (!chess.isGameOver() && !isHumanTurn()) {
-        requestEngineMove();
-      }
-    },
-    [isHumanTurn, refreshStatus, requestEngineMove]
-  );
+    if (
+      !chess.isGameOver() &&
+      modeRef.current === "cvc" &&
+      moveSeqRef.current
+    ) {
+      const seq = moveSeqRef.current;
 
-  const onEngineMessage = useCallback(
-    (event: MessageEvent<string>) => {
-      const line = typeof event.data === "string" ? event.data : "";
+      cvcTimerRef.current = window.setTimeout(() => {
+        if (seq === moveSeqRef.current) requestEngineMove();
+      }, 250);
+    } else if (!chess.isGameOver() && !isHumanTurn()) {
+      requestEngineMove();
+    }
+  };
 
-      if (!line.startsWith("bestmove ")) return;
+  const onEngineMessage = (event: MessageEvent<string>): void => {
+    const line = typeof event.data === "string" ? event.data : "";
 
-      const [, move] = line.split(" ");
+    if (!line.startsWith("bestmove ")) return;
 
-      if (!move || move === "(none)") {
-        thinkingRef.current = false;
-        refreshStatus();
-        return;
-      }
+    const [, move] = line.split(" ");
 
-      applyEngineMove(move);
-    },
-    [applyEngineMove, refreshStatus]
-  );
+    if (!move || move === "(none)") {
+      thinkingRef.current = false;
+      refreshStatus();
+      return;
+    }
 
-  const stopEngine = useCallback(() => {
+    applyEngineMove(move);
+  };
+
+  const stopEngine = (): void => {
     if (cvcTimerRef.current !== undefined) {
       window.clearTimeout(cvcTimerRef.current);
       cvcTimerRef.current = undefined;
     }
     workerRef.current?.postMessage("stop");
     thinkingRef.current = false;
-  }, []);
+  };
 
-  const newGame = useCallback(() => {
+  const newGame = (): void => {
     const chess = chessRef.current;
     const board = boardRef.current;
 
@@ -268,26 +266,23 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
     refreshStatus();
 
     if (!isHumanTurn()) requestEngineMove();
-  }, [isHumanTurn, refreshStatus, requestEngineMove, stopEngine]);
+  };
 
-  const jumpTo = useCallback(
-    (target: number) => {
-      const chess = chessRef.current;
-      const board = boardRef.current;
+  const jumpTo = (target: number): void => {
+    const chess = chessRef.current;
+    const board = boardRef.current;
 
-      if (!chess || !board) return;
+    if (!chess || !board) return;
 
-      const clamped = Math.max(-1, Math.min(target, pgnMoves.length - 1));
+    const clamped = Math.max(-1, Math.min(target, pgnMoves.length - 1));
 
-      chess.reset();
-      for (let i = 0; i <= clamped; i += 1) chess.move(pgnMoves[i]);
+    chess.reset();
+    for (let i = 0; i <= clamped; i += 1) chess.move(pgnMoves[i]);
 
-      board.position(chess.fen(), false);
-      setPgnIndex(clamped);
-      refreshStatus();
-    },
-    [pgnMoves, refreshStatus]
-  );
+    board.position(chess.fen(), false);
+    setPgnIndex(clamped);
+    refreshStatus();
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -589,10 +584,14 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
       detachClickRef.current = undefined;
       workerRef.current?.terminate();
       workerRef.current = undefined;
-      try {
-        boardRef.current?.destroy();
-      } catch {
-        // chessboard2 may already be torn down
+      const board = boardRef.current;
+
+      if (board) {
+        try {
+          board.destroy();
+        } catch {
+          // chessboard2 may already be torn down
+        }
       }
       boardRef.current = undefined;
       chessRef.current = undefined;
@@ -601,20 +600,33 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
     [stopEngine]
   );
 
-  const onBoardResize = useCallback<ResizeObserverCallback>((entries) => {
-    const rect = entries[0]?.contentRect;
+  const fitFrameRef = useRef(0);
+  const onBoardResize: ResizeObserverCallback = ([entry]) => {
+    if (!entry) return;
 
-    if (!rect) return;
+    const start = performance.now();
+    let lastWidth = 0;
+    // chessboard2 sizes the squares from its on-screen width, so keep resizing
+    // until that settles, as the window may still be scaling in
+    const fit = (): void => {
+      const { width } = entry.target.getBoundingClientRect();
 
-    boardRef.current?.resize();
-    // chessboard2 sets the squares-container height to its measured width;
-    // measurement can lag by one frame during a window-resize storm,
-    // leaving a thin gap between the last rank and the .board-frame border.
-    // A second resize after the next layout pass catches up.
-    requestAnimationFrame(() => boardRef.current?.resize());
-  }, []);
+      boardRef.current?.resize();
 
-  useResizeObserver(ready ? boardElRef.current : undefined, onBoardResize);
+      if (
+        width !== lastWidth &&
+        performance.now() - start < TRANSITIONS_IN_MILLISECONDS.WINDOW * 2
+      ) {
+        lastWidth = width;
+        fitFrameRef.current = requestAnimationFrame(fit);
+      }
+    };
+
+    cancelAnimationFrame(fitFrameRef.current);
+    fit();
+  };
+
+  useResizeObserver(ready ? boardElRef : undefined, onBoardResize);
 
   useEffect(() => {
     if (ready) boardRef.current?.orientation(orientation);
@@ -706,32 +718,26 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
     };
   }, [prependFileToTitle, readFile, ready, refreshStatus, stopEngine, url]);
 
-  const onModeChange = useCallback(
-    (event: ChangeEvent<HTMLSelectElement>) => {
-      setMode(event.target.value as GameMode);
-      window.setTimeout(newGame, 0);
-    },
-    [newGame]
-  );
+  const onModeChange = (event: ChangeEvent<HTMLSelectElement>): void => {
+    setMode(event.target.value as GameMode);
+    window.setTimeout(newGame, 0);
+  };
 
-  const onSideChange = useCallback(
-    (event: ChangeEvent<HTMLSelectElement>) => {
-      setPlayerSide(event.target.value as Side);
-      window.setTimeout(newGame, 0);
-    },
-    [newGame]
-  );
+  const onSideChange = (event: ChangeEvent<HTMLSelectElement>): void => {
+    setPlayerSide(event.target.value as Side);
+    window.setTimeout(newGame, 0);
+  };
 
-  const onSkillChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+  const onSkillChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     const next = Number(event.target.value);
 
     setSkill(next);
     workerRef.current?.postMessage(`setoption name Skill Level value ${next}`);
-  }, []);
+  };
 
-  const onFlip = useCallback(() => {
+  const onFlip = (): void => {
     setOrientation((prev) => (prev === "white" ? "black" : "white"));
-  }, []);
+  };
 
   const controlId = id.replace(/\s/g, "_");
 
@@ -853,4 +859,4 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(Chess);
+export default Chess;

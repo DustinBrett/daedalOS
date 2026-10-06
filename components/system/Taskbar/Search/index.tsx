@@ -1,7 +1,7 @@
 import { basename, extname } from "path";
 import { m as motion } from "motion/react";
 import dynamic from "next/dynamic";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { Search as SearchIcon } from "components/apps/FileExplorer/NavigationIcons";
 import {
@@ -121,14 +121,13 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   );
   const inputTransition = useSearchInputTransition();
   const [showCaret, setShowCaret] = useState(false);
-  const focusOnRenderCallback = useCallback(
-    (element: HTMLInputElement | null) => {
-      element?.focus(PREVENT_SCROLL);
-      setTimeout(() => setShowCaret(true), 400);
-      inputRef.current = element;
-    },
-    []
-  );
+
+  // Before motion starts the slide-in, as focusing forces a layout
+  useLayoutEffect(() => {
+    inputRef.current?.focus(PREVENT_SCROLL);
+    setTimeout(() => setShowCaret(true), 400);
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
   const results = useSearch(searchTerm);
   const [bestMatch, setBestMatch] = useState("");
@@ -137,60 +136,33 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const [subResults, setSubResults] = useState<[string, lunr.Index.Result[]][]>(
     []
   );
-  const firstResult = useMemo(
-    () =>
-      activeTab === "All"
-        ? results[0]
-        : Object.fromEntries(subResults)[activeTab]?.[0],
-    [activeTab, results, subResults]
-  );
-  const listRef = useRef<HTMLDivElement | null>(null);
-  const changeTab = useCallback(
-    (tab: TabName) => {
-      if (inputRef.current) {
-        inputRef.current.value = (
-          tab === "All"
-            ? inputRef.current.value
-            : `${tab}: ${inputRef.current.value}`
-        ).replace(`${activeTab}: `, "");
-        listRef.current?.scrollTo(0, 0);
-      }
 
-      setActiveItem("");
-      setActiveTab(tab);
-    },
-    [activeTab]
-  );
-  const openApp = useCallback(
-    (pid: string, args?: ProcessArguments) => {
-      toggleSearch(false);
-      open(pid, args);
-    },
-    [open, toggleSearch]
-  );
-  const visibleTabs = useMemo(
-    () =>
-      TABS.filter(
-        (tab) =>
-          !(menuWidth < 325 && tab === "Videos") &&
-          !(menuWidth < 260 && tab === "Photos")
-      ),
-    [menuWidth]
-  );
+  if (results.length === 0 && subResults.length > 0) setSubResults([]);
+
+  const firstResult =
+    activeTab === "All"
+      ? results[0]
+      : Object.fromEntries(subResults)[activeTab]?.[0];
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const openApp = (pid: string, args?: ProcessArguments): void => {
+    toggleSearch(false);
+    open(pid, args);
+  };
   const searchTimeoutRef = useRef(0);
   const preloadedSearch = useRef(false);
-  const preloadSearch = useCallback(() => {
+  const preloadSearch = (): void => {
     if (!preloadedSearch.current) {
       preloadedSearch.current = true;
       preloadLibs([SEARCH_LIB, FILE_INDEX]);
     }
-  }, []);
+  };
 
   useEffect(() => {
     if (
       firstResult?.ref &&
       (!bestMatch || bestMatch !== firstResult?.ref || !activeItem)
     ) {
+      // eslint-disable-next-line react/set-state-in-effect -- Picks the best match after measuring the menu width
       setBestMatch(firstResult.ref);
 
       if (menuRef.current && menuRef.current.clientWidth > MIN_MULTI_LINE) {
@@ -207,7 +179,8 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     if (document.activeElement === document.body) {
       menuRef.current?.focus(PREVENT_SCROLL);
     }
-  }, [/* effect dep */ activeItem]);
+    // eslint-disable-next-line react/exhaustive-effect-dependencies
+  }, [activeItem]);
 
   useEffect(() => {
     const updateMenuWidth = (): void =>
@@ -221,10 +194,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   }, []);
 
   useEffect(() => {
-    if (results.length === 0) {
-      setSubResults([]);
-      return;
-    }
+    if (results.length === 0) return;
 
     Promise.all(
       results.map(async (result) => {
@@ -260,6 +230,25 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
       setSubResults(Object.entries(newResults));
     });
   }, [lstat, readFile, results]);
+
+  const changeTab = (tab: TabName): void => {
+    if (inputRef.current) {
+      inputRef.current.value = (
+        tab === "All"
+          ? inputRef.current.value
+          : `${tab}: ${inputRef.current.value}`
+      ).replace(`${activeTab}: `, "");
+      listRef.current?.scrollTo(0, 0);
+    }
+
+    setActiveItem("");
+    setActiveTab(tab);
+  };
+  const visibleTabs = TABS.filter(
+    (tab) =>
+      !(menuWidth < 325 && tab === "Videos") &&
+      !(menuWidth < 260 && tab === "Photos")
+  );
 
   return (
     <StyledSearch
@@ -481,7 +470,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
         <motion.div className="search" {...inputTransition}>
           <SearchIcon />
           <input
-            ref={focusOnRenderCallback}
+            ref={inputRef}
             onChange={() => {
               const tabAppend = activeTab === "All" ? "" : `${activeTab}: `;
               const value = inputRef.current?.value.startsWith(tabAppend)
@@ -494,7 +483,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 searchTimeoutRef.current > 0 ? KEYPRESS_DEBOUNCE_MS : 0
               );
             }}
-            onClick={preloadedSearch.current ? undefined : preloadSearch}
+            onClick={preloadSearch}
             onKeyDown={({ key }) => {
               preloadSearch();
 
@@ -519,4 +508,4 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   );
 };
 
-export default memo(Search);
+export default Search;

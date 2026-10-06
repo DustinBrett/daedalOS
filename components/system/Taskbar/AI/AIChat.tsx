@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import { readPdfText } from "components/apps/PDF/functions";
 import {
@@ -97,13 +97,68 @@ const MARKED_LIB = "/Program Files/Marked/marked.min.js";
 const MAX_WEB_LLM_SUMMARIZE_LENGTH = 8000;
 const NOTHING_TO_SUMMARIZE = "There's no text I can summarize in that file.";
 
+const withSummarizer = async (
+  summarizer: Summarizer | undefined,
+  run: () => Promise<void>
+): Promise<void> => {
+  try {
+    await run();
+  } finally {
+    summarizer?.destroy();
+  }
+};
+
+const getDroppedFilePaths = (dataTransfer: DataTransfer): unknown => {
+  try {
+    return JSON.parse(
+      dataTransfer.getData("application/json") || "[]"
+    ) as unknown;
+  } catch {
+    // Ignore failed JSON parsing
+  }
+
+  return [];
+};
+
+const writeClipboardText = (text: string): boolean => {
+  try {
+    navigator.clipboard?.writeText(text);
+  } catch {
+    // Ignore failure to write to clipboard
+    return false;
+  }
+
+  return true;
+};
+
+const transferCanvasToWorker = (
+  canvas: HTMLCanvasElement,
+  worker: React.RefObject<undefined | Worker>,
+  id: number,
+  imagePrompt: string
+): void => {
+  try {
+    const offscreenCanvas = canvas.transferControlToOffscreen();
+
+    worker.current?.postMessage({ id, imagePrompt, offscreenCanvas }, [
+      offscreenCanvas,
+    ]);
+  } catch {
+    // Ignore failure to transfer control to offscreen
+  }
+};
+
 const markdownCache = new Map<string, string>();
 
-const formatMarkdown = (markdown: string, cache = true): string => {
+const formatMarkdown = (
+  markdown: string,
+  markedLoaded: boolean,
+  cache = true
+): string => {
   const cachedHtml = markdownCache.get(markdown);
 
   if (cachedHtml !== undefined) return cachedHtml;
-  if (!window.marked) return escapeHtml(markdown);
+  if (!markedLoaded || !window.marked) return escapeHtml(markdown);
 
   const html = DOMPurify.sanitize(
     window.marked.parse(markdown, { breaks: true })
@@ -126,6 +181,7 @@ const BlobImage: FC<{ blob: Blob }> = ({ blob }) => {
   useEffect(() => {
     const url = URL.createObjectURL(blob);
 
+    // eslint-disable-next-line react/set-state-in-effect -- The object URL lives only as long as this blob is shown
     setSrc(url);
 
     return () => URL.revokeObjectURL(url);
@@ -140,10 +196,8 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     colors: { taskbar: taskbarColor },
     sizes: { taskbar: taskbarSize },
   } = useTheme();
-  const getFullWidth = useCallback(
-    () => Math.min(taskbarSize.ai.chatWidth, viewWidth()),
-    [taskbarSize.ai.chatWidth]
-  );
+  const getFullWidth = (): number =>
+    Math.min(taskbarSize.ai.chatWidth, viewWidth());
   const [fullWidth, setFullWidth] = useState(getFullWidth);
   const aiTransition = useAITransition(fullWidth);
   const [convoStyle, setConvoStyle] = useState(DEFAULT_CONVO_STYLE);
@@ -156,17 +210,14 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const typing = promptText.length > 0 || attachments.length > 0;
   const [conversation, setConversation] = useState<Message[]>([]);
-  const lastAiMessageIndex = useMemo(
-    () =>
-      conversation.length -
-      [...conversation].reverse().findIndex(({ type }) => type === "ai") -
-      1,
-    [conversation]
-  );
+  const lastAiMessageIndex =
+    conversation.length -
+    [...conversation].reverse().findIndex(({ type }) => type === "ai") -
+    1;
   const [responding, setResponding] = useState(false);
   const [responseError, setResponseError] = useState<ResponseError>();
   const [progressMessage, setProgressMessage] = useState("");
-  const [, setMarkedLoaded] = useState(false);
+  const [markedLoaded, setMarkedLoaded] = useState(false);
   const windowAI = useWindowAI();
   const builtInAI = windowAI !== "unavailable";
   const [imageInput, setImageInput] = useState(false);
@@ -174,7 +225,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   const requestIdRef = useRef(0);
   const requestAbortRef = useRef<AbortController>(undefined);
   const sessionRef = useRef<Session>(undefined);
-  const updateResponse = useCallback((id: number, text: string): void => {
+  const updateResponse = (id: number, text: string): void => {
     if (id !== requestIdRef.current) return;
 
     setProgressMessage("");
@@ -185,29 +236,23 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
         ? [...messages.slice(0, -1), { ...lastMessage, text }]
         : [...messages, { text, type: "ai" }];
     });
-  }, []);
-  const finishResponse = useCallback(
-    (id: number, error?: ResponseError): void => {
-      if (id !== requestIdRef.current) return;
+  };
+  const finishResponse = (id: number, error?: ResponseError): void => {
+    if (id !== requestIdRef.current) return;
 
-      requestIdRef.current = 0;
-      setProgressMessage("");
-      setResponding(false);
-      if (error) setResponseError(error);
-    },
-    []
-  );
-  const onWorkerMessage = useCallback(
-    ({ data }: MessageEvent<WorkerResponse>): void => {
-      if ("progress" in data) {
-        setProgressMessage(formatWebLlmProgress(data.progress));
-      } else if ("text" in data) updateResponse(data.id, data.text);
-      else finishResponse(data.id, data.error);
-    },
-    [finishResponse, updateResponse]
-  );
+    requestIdRef.current = 0;
+    setProgressMessage("");
+    setResponding(false);
+    if (error) setResponseError(error);
+  };
+  const onWorkerMessage = ({ data }: MessageEvent<WorkerResponse>): void => {
+    if ("progress" in data) {
+      setProgressMessage(formatWebLlmProgress(data.progress));
+    } else if ("text" in data) updateResponse(data.id, data.text);
+    else finishResponse(data.id, data.error);
+  };
   const aiWorker = useWorker(AI_WORKER, onWorkerMessage);
-  const cancelResponse = useCallback((): void => {
+  const cancelResponse = (): void => {
     const id = requestIdRef.current;
 
     if (!id) return;
@@ -217,41 +262,41 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     aiWorker.current?.postMessage({ cancel: id });
     setProgressMessage("");
     setResponding(false);
-  }, [aiWorker]);
-  const resetSession = useCallback((): void => {
+  };
+  const resetSession = (): void => {
     sessionRef.current?.controller.abort();
     sessionRef.current = undefined;
-  }, []);
-  const getSession = useCallback(
-    (history: Message[], withImages: boolean): Promise<LanguageModel> => {
-      if (sessionRef.current && withImages && !sessionRef.current.imageInput) {
-        resetSession();
-      }
+  };
+  const getSession = (
+    history: Message[],
+    withImages: boolean
+  ): Promise<LanguageModel> => {
+    if (sessionRef.current && withImages && !sessionRef.current.imageInput) {
+      resetSession();
+    }
 
-      if (!sessionRef.current) {
-        const controller = new AbortController();
-        const session = createSession(
-          convoStyle,
-          withImages,
-          toChatHistory(history),
-          controller.signal,
-          setProgressMessage
-        );
+    if (!sessionRef.current) {
+      const controller = new AbortController();
+      const session = createSession(
+        convoStyle,
+        withImages,
+        toChatHistory(history),
+        controller.signal,
+        setProgressMessage
+      );
 
-        sessionRef.current = { controller, imageInput: withImages, session };
-        session.catch(() => {
-          if (sessionRef.current?.session === session) {
-            sessionRef.current = undefined;
-          }
-        });
-      }
+      sessionRef.current = { controller, imageInput: withImages, session };
+      session.catch(() => {
+        if (sessionRef.current?.session === session) {
+          sessionRef.current = undefined;
+        }
+      });
+    }
 
-      return sessionRef.current.session;
-    },
-    [convoStyle, resetSession]
-  );
+    return sessionRef.current.session;
+  };
   const [hiddenThoughts, setHiddenThoughts] = useState<number[]>([]);
-  const toggleThought = useCallback((index: number) => {
+  const toggleThought = (index: number): void => {
     setHiddenThoughts((prevHiddenThoughts) => {
       if (prevHiddenThoughts.includes(index)) {
         return prevHiddenThoughts.filter((i) => i !== index);
@@ -259,27 +304,26 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
 
       return [...prevHiddenThoughts, index];
     });
-  }, []);
-  const canvasRefs = useRef<Record<number, HTMLCanvasElement>>({});
-  const newTopic = useCallback(() => {
+  };
+  // Not a ref, as writing one from the conversation list stops memoization
+  // eslint-disable-next-line react/hook-use-state
+  const [canvases] = useState(() => new Map<number, HTMLCanvasElement>());
+  const newTopic = (): void => {
     cancelResponse();
     resetSession();
     markdownCache.clear();
-    canvasRefs.current = {};
+    canvases.clear();
     setConversation([]);
     setHiddenThoughts([]);
     setResponseError(undefined);
-  }, [cancelResponse, resetSession]);
-  const changeConvoStyle = useCallback(
-    (newConvoStyle: ConvoStyles) => {
-      if (convoStyle !== newConvoStyle) {
-        newTopic();
-        setConvoStyle(newConvoStyle);
-        textAreaRef.current?.focus(PREVENT_SCROLL);
-      }
-    },
-    [convoStyle, newTopic]
-  );
+  };
+  const changeConvoStyle = (newConvoStyle: ConvoStyles): void => {
+    if (convoStyle !== newConvoStyle) {
+      newTopic();
+      setConvoStyle(newConvoStyle);
+      textAreaRef.current?.focus(PREVENT_SCROLL);
+    }
+  };
   const [containerElement, setContainerElement] =
     useState<HTMLElement | null>();
   const { removeFromStack, setWallpaper } = useSessionActions();
@@ -290,7 +334,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   );
   const [scrollbarVisible, setScrollbarVisible] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(-1);
-  const autoSizeText = useCallback(() => {
+  const autoSizeText = (): void => {
     const textArea = textAreaRef.current;
 
     if (!textArea) return;
@@ -301,158 +345,144 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       "--composer-height",
       textArea.style.height
     );
-  }, []);
+  };
   const { exists, readFile, stat } = useFileSystemActions();
-  const readDocument = useCallback(
-    async (path: string): Promise<string> => {
-      if (!(await exists(path)) || (await stat(path)).isDirectory()) return "";
+  const readDocument = async (path: string): Promise<string> => {
+    if (!(await exists(path)) || (await stat(path)).isDirectory()) return "";
 
-      const contents = await readFile(path);
-      const extension = getExtension(path);
+    const contents = await readFile(path);
+    const extension = getExtension(path);
 
-      if (extension === ".pdf") return readPdfText(contents);
-      if (![".htm", ".html", ".whtml"].includes(extension)) {
-        return contents.toString();
-      }
+    if (extension === ".pdf") return readPdfText(contents);
+    if (![".htm", ".html", ".whtml"].includes(extension)) {
+      return contents.toString();
+    }
 
-      const { body } = new DOMParser().parseFromString(
-        contents.toString(),
-        "text/html"
-      );
+    const { body } = new DOMParser().parseFromString(
+      contents.toString(),
+      "text/html"
+    );
 
-      body
-        .querySelectorAll("noscript, script, style, template")
-        .forEach((element) => element.remove());
+    body
+      .querySelectorAll("noscript, script, style, template")
+      .forEach((element) => element.remove());
 
-      return body.textContent || "";
-    },
-    [exists, readFile, stat]
-  );
-  const sendRequest = useCallback(
-    async (messages: Message[]): Promise<void> => {
-      const { images = [], text } = messages[messages.length - 1];
-      const history = messages.slice(0, -1);
-      const imagePrompt = GENERATE_COMMAND.exec(text)?.[1].trim();
-      const [, documentPath] = SUMMARIZE_COMMAND.exec(text) || [];
-      const controller = new AbortController();
-      const { signal } = controller;
-      const id = ++requestCountRef.current;
-      const onText = (newText: string): void => updateResponse(id, newText);
+    return body.textContent || "";
+  };
+  const sendRequest = async (messages: Message[]): Promise<void> => {
+    const { images = [], text } = messages[messages.length - 1];
+    const history = messages.slice(0, -1);
+    const imagePrompt = GENERATE_COMMAND.exec(text)?.[1].trim();
+    const [, documentPath] = SUMMARIZE_COMMAND.exec(text) || [];
+    const controller = new AbortController();
+    const { signal } = controller;
+    const id = ++requestCountRef.current;
+    const onText = (newText: string): void => updateResponse(id, newText);
 
-      requestIdRef.current = id;
-      requestAbortRef.current = controller;
-      setResponding(true);
-      setResponseError(undefined);
+    requestIdRef.current = id;
+    requestAbortRef.current = controller;
+    setResponding(true);
+    setResponseError(undefined);
 
-      if (imagePrompt) {
-        // The session is rebuilt from history since it never sees this exchange
+    if (imagePrompt) {
+      // The session is rebuilt from history since it never sees this exchange
+      resetSession();
+      setConversation([
+        ...messages,
+        { text: imagePrompt, type: "ai", withCanvas: true },
+      ]);
+
+      return;
+    }
+
+    const respond = async (): Promise<void> => {
+      if (builtInAI && documentPath) {
         resetSession();
-        setConversation([
-          ...messages,
-          { text: imagePrompt, type: "ai", withCanvas: true },
-        ]);
 
-        return;
-      }
+        // Created before reading the document to keep the user activation
+        const summarizer = await createSummarizer(signal, setProgressMessage);
 
-      try {
-        if (builtInAI && documentPath) {
-          resetSession();
-
-          // Created before reading the document to keep the user activation
-          const summarizer = await createSummarizer(signal, setProgressMessage);
-
-          try {
-            const documentText = await readDocument(documentPath);
-
-            setProgressMessage("");
-
-            if (!documentText) onText(NOTHING_TO_SUMMARIZE);
-            else if (summarizer) {
-              await summarize(summarizer, documentText, signal, onText);
-            } else {
-              await summarizeWithSession(
-                await getSession(history, false),
-                documentText,
-                signal,
-                onText
-              );
-            }
-          } finally {
-            summarizer?.destroy();
-          }
-
-          finishResponse(id);
-        } else if (builtInAI) {
-          const session = await getSession(history, images.length > 0);
+        await withSummarizer(summarizer, async () => {
+          const documentText = await readDocument(documentPath);
 
           setProgressMessage("");
-          await readStream(
-            session.promptStreaming(toPrompt(text, images), { signal }),
-            onText
-          );
-          finishResponse(id);
-        } else {
-          const documentText = documentPath
-            ? await readDocument(documentPath)
-            : "";
 
-          if (documentPath && !documentText) {
-            onText(NOTHING_TO_SUMMARIZE);
-            finishResponse(id);
-          } else if (!signal.aborted) {
-            aiWorker.current?.postMessage({
-              id,
-              messages: [
-                { content: SYSTEM_PROMPT, role: "system" },
-                ...toChatHistory(history),
-                {
-                  content: documentText
-                    ? `Summarize:\n\n${documentText.slice(0, MAX_WEB_LLM_SUMMARIZE_LENGTH)}`
-                    : text,
-                  role: "user",
-                },
-              ],
-              style: convoStyle,
-            });
+          if (!documentText) onText(NOTHING_TO_SUMMARIZE);
+          else if (summarizer) {
+            await summarize(summarizer, documentText, signal, onText);
+          } else {
+            await summarizeWithSession(
+              await getSession(history, false),
+              documentText,
+              signal,
+              onText
+            );
           }
-        }
-      } catch (error) {
-        if (!signal.aborted) {
-          console.error("Failed to create response.", error);
-          finishResponse(
+        });
+
+        finishResponse(id);
+      } else if (builtInAI) {
+        const session = await getSession(history, images.length > 0);
+
+        setProgressMessage("");
+        await readStream(
+          session.promptStreaming(toPrompt(text, images), { signal }),
+          onText
+        );
+        finishResponse(id);
+      } else {
+        const documentText = documentPath
+          ? await readDocument(documentPath)
+          : "";
+
+        if (documentPath && !documentText) {
+          onText(NOTHING_TO_SUMMARIZE);
+          finishResponse(id);
+        } else if (!signal.aborted) {
+          aiWorker.current?.postMessage({
             id,
-            (error as Error).name === "QuotaExceededError"
-              ? "context"
-              : "failed"
-          );
+            messages: [
+              { content: SYSTEM_PROMPT, role: "system" },
+              ...toChatHistory(history),
+              {
+                content: documentText
+                  ? `Summarize:\n\n${documentText.slice(0, MAX_WEB_LLM_SUMMARIZE_LENGTH)}`
+                  : text,
+                role: "user",
+              },
+            ],
+            style: convoStyle,
+          });
         }
       }
-    },
-    [
-      aiWorker,
-      builtInAI,
-      convoStyle,
-      finishResponse,
-      getSession,
-      readDocument,
-      resetSession,
-      updateResponse,
-    ]
-  );
-  const submitPrompt = useCallback(
-    (text: string, images: Blob[], history: Message[]): void => {
-      const messages: Message[] = [
-        ...history,
-        { ...(images.length > 0 && { images }), text, type: "user" },
-      ];
+    };
 
-      setConversation(messages);
-      sendRequest(messages);
-    },
-    [sendRequest]
-  );
-  const addUserPrompt = useCallback(() => {
+    try {
+      await respond();
+    } catch (error) {
+      if (!signal.aborted) {
+        console.error("Failed to create response.", error);
+        finishResponse(
+          id,
+          (error as Error).name === "QuotaExceededError" ? "context" : "failed"
+        );
+      }
+    }
+  };
+  const submitPrompt = (
+    text: string,
+    images: Blob[],
+    history: Message[]
+  ): void => {
+    const messages: Message[] = [
+      ...history,
+      { ...(images.length > 0 && { images }), text, type: "user" },
+    ];
+
+    setConversation(messages);
+    sendRequest(messages);
+  };
+  const addUserPrompt = (): void => {
     const text = promptText.trim();
 
     if (responding || (!text && attachments.length === 0)) return;
@@ -461,8 +491,8 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
     (textAreaRef.current as HTMLTextAreaElement).value = "";
     setPromptText("");
     setAttachments([]);
-  }, [attachments, conversation, promptText, responding, submitPrompt]);
-  const retry = useCallback(() => {
+  };
+  const retry = (): void => {
     const messages =
       conversation[conversation.length - 1]?.type === "ai"
         ? conversation.slice(0, -1)
@@ -472,78 +502,66 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
 
     setConversation(messages);
     sendRequest(messages);
-  }, [conversation, sendRequest]);
-  const addImages = useCallback((images: Blob[]): void => {
+  };
+  const addImages = (images: Blob[]): void => {
     const supportedImages = images.filter(isSupportedImage);
 
     if (supportedImages.length > 0) {
       setAttachments((currentImages) => [...currentImages, ...supportedImages]);
     }
-  }, []);
-  const dropImages = useCallback(
-    async ({ dataTransfer }: React.DragEvent<HTMLElement>): Promise<void> => {
-      let filePaths: unknown = [];
+  };
+  const dropImages = async ({
+    dataTransfer,
+  }: React.DragEvent<HTMLElement>): Promise<void> => {
+    const filePaths = getDroppedFilePaths(dataTransfer);
 
-      try {
-        filePaths = JSON.parse(
-          dataTransfer.getData("application/json") || "[]"
-        );
-      } catch {
-        // Ignore failed JSON parsing
-      }
+    addImages([...dataTransfer.files]);
 
-      addImages([...dataTransfer.files]);
-
-      if (Array.isArray(filePaths)) {
-        addImages(
-          await Promise.all(
-            (filePaths as string[])
-              .filter((filePath) =>
-                SUPPORTED_IMAGE_TYPES.test(getMimeType(filePath))
-              )
-              .map(async (filePath) =>
-                bufferToBlob(await readFile(filePath), getMimeType(filePath))
-              )
-          )
-        );
-      }
-    },
-    [addImages, readFile]
-  );
+    if (Array.isArray(filePaths)) {
+      addImages(
+        await Promise.all(
+          (filePaths as string[])
+            .filter((filePath) =>
+              SUPPORTED_IMAGE_TYPES.test(getMimeType(filePath))
+            )
+            .map(async (filePath) =>
+              bufferToBlob(await readFile(filePath), getMimeType(filePath))
+            )
+        )
+      );
+    }
+  };
   const openLink = useLinkHandler();
-  const onConversationClick = useCallback(
-    ({ nativeEvent, target }: React.MouseEvent<HTMLElement>): void => {
-      const link = (target as HTMLElement).closest("a");
+  const onConversationClick = ({
+    nativeEvent,
+    target,
+  }: React.MouseEvent<HTMLElement>): void => {
+    const link = (target as HTMLElement).closest("a");
 
-      if (link) {
-        openLink(nativeEvent, link.href, link.pathname, link.textContent || "");
-      }
-    },
-    [openLink]
-  );
+    if (link) {
+      openLink(nativeEvent, link.href, link.pathname, link.textContent || "");
+    }
+  };
   const { createSnapshot } = useSnapshots();
-  const saveCanvasImage = useCallback(
-    async (
-      index: number,
-      saveName: string,
-      savePath: string
-    ): Promise<string> => {
-      const canvas = canvasRefs.current[index];
+  const saveCanvasImage = async (
+    index: number,
+    saveName: string,
+    savePath: string
+  ): Promise<string> => {
+    const canvas = canvases.get(index);
 
-      if (canvas) {
-        return createSnapshot(
-          `${saveName}.png`,
-          canvasToBuffer(canvas),
-          undefined,
-          false,
-          savePath
-        );
-      }
+    if (canvas) {
+      return createSnapshot(
+        `${saveName}.png`,
+        canvasToBuffer(canvas),
+        undefined,
+        false,
+        savePath
+      );
+    }
 
-      return "";
-    },
-    [createSnapshot]
-  );
+    return "";
+  };
 
   useEffect(() => {
     textAreaRef.current?.focus(PREVENT_SCROLL);
@@ -595,7 +613,8 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
 
   useEffect(() => {
     requestAnimationFrame(autoSizeText);
-  }, [/* effect dep */ attachments, autoSizeText]);
+    // eslint-disable-next-line react/exhaustive-effect-dependencies
+  }, [attachments, autoSizeText]);
 
   useEffect(() => {
     let timer = 0;
@@ -758,7 +777,11 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   <div
                     // eslint-disable-next-line react/no-danger
                     dangerouslySetInnerHTML={{
-                      __html: formatMarkdown(thoughts as string, !isResponding),
+                      __html: formatMarkdown(
+                        thoughts as string,
+                        markedLoaded,
+                        !isResponding
+                      ),
                     }}
                     className="thoughts markdown"
                   />
@@ -770,7 +793,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                       __html: withCanvas
                         ? GENERATE_RESPONSE
                         : type === "ai"
-                          ? formatMarkdown(answer, !isResponding)
+                          ? formatMarkdown(answer, markedLoaded, !isResponding)
                           : escapeHtml(answer),
                     }}
                     className={clsx({ markdown: type === "ai", message: true })}
@@ -795,12 +818,9 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   <button
                     className="control"
                     onClick={() => {
-                      try {
-                        navigator.clipboard?.writeText(answer);
+                      if (writeClipboardText(answer)) {
                         setCopiedIndex(index);
                         setTimeout(() => setCopiedIndex(-1), 5000);
-                      } catch {
-                        // Ignore failure to write to clipboard
                       }
                     }}
                     type="button"
@@ -829,7 +849,9 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                     <button
                       className="control"
                       onClick={() =>
-                        speakMessage(htmlToText(formatMarkdown(answer)))
+                        speakMessage(
+                          htmlToText(formatMarkdown(answer, markedLoaded))
+                        )
                       }
                       type="button"
                       {...label("Read aloud")}
@@ -876,28 +898,19 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                       ref={(canvas) => {
                         if (
                           !(canvas instanceof HTMLCanvasElement) ||
-                          canvasRefs.current[index] === canvas
+                          canvases.get(index) === canvas
                         ) {
                           return;
                         }
 
-                        canvasRefs.current[index] = canvas;
+                        canvases.set(index, canvas);
 
-                        try {
-                          const offscreenCanvas =
-                            canvas.transferControlToOffscreen();
-
-                          aiWorker.current?.postMessage(
-                            {
-                              id: requestIdRef.current,
-                              imagePrompt: text,
-                              offscreenCanvas,
-                            },
-                            [offscreenCanvas]
-                          );
-                        } catch {
-                          // Ignore failure to transfer control to offscreen
-                        }
+                        transferCanvasToWorker(
+                          canvas,
+                          aiWorker,
+                          requestIdRef.current,
+                          text
+                        );
                       }}
                       aria-label={text}
                       height={512}
@@ -1040,4 +1053,4 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   );
 };
 
-export default memo(AIChat);
+export default AIChat;

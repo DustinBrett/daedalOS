@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledOpenWith from "components/system/Dialogs/OpenWith/StyledOpenWith";
 import StyledOpenWithList from "components/system/Dialogs/OpenWith/StyledOpenWithList";
@@ -68,30 +68,24 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
   const [selectedPid, setSelectedPid] = useState(primaryExtensionProcesses);
   const [closeOnBlur, setCloseOnBlur] = useState(false);
   const recentlySelectedPid = useRef("");
-  const runApp = useCallback(
-    (pid: string): void => {
-      open(pid, { url });
-      closeWithTransition(id);
-      if (url && pid) updateRecentFiles(url, pid);
-    },
-    [closeWithTransition, id, open, updateRecentFiles, url]
-  );
-  const updateSelectedPid = useCallback(
-    (pid: string) => {
-      if (recentlySelectedPid.current === pid) {
-        runApp(pid);
-      } else {
-        recentlySelectedPid.current = pid;
+  const runApp = (pid: string): void => {
+    open(pid, { url });
+    closeWithTransition(id);
+    if (url && pid) updateRecentFiles(url, pid);
+  };
+  const updateSelectedPid = (pid: string): void => {
+    if (recentlySelectedPid.current === pid) {
+      runApp(pid);
+    } else {
+      recentlySelectedPid.current = pid;
 
-        setTimeout(() => {
-          recentlySelectedPid.current = "";
-        }, TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK);
+      setTimeout(() => {
+        recentlySelectedPid.current = "";
+      }, TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK);
 
-        setSelectedPid(pid);
-      }
-    },
-    [runApp]
-  );
+      setSelectedPid(pid);
+    }
+  };
   const closeOnEscape = useCloseOnEscape(id);
 
   useEffect(() => {
@@ -174,4 +168,4 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
   );
 };
 
-export default memo(OpenWith);
+export default OpenWith;

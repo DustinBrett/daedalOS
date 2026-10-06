@@ -1,5 +1,5 @@
 import { type Variant } from "motion/react";
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTheme } from "styled-components";
 import FileManager from "components/system/Files/FileManager";
 import Sidebar from "components/system/StartMenu/Sidebar";
@@ -34,26 +34,21 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
     sizes: { startMenu },
   } = useTheme();
   const [showScrolling, setShowScrolling] = useState(false);
-  const canCustomizeScrollbarWidth = useMemo(
-    () => CSS.supports("selector(::-webkit-scrollbar)"),
-    []
+  // eslint-disable-next-line react/hook-use-state
+  const [canCustomizeScrollbarWidth] = useState(() =>
+    CSS.supports("selector(::-webkit-scrollbar)")
   );
-  const startMenuWidth = useMemo(
-    () =>
-      startMenu.size -
-      (canCustomizeScrollbarWidth
-        ? THIN_SCROLLBAR_WIDTH
-        : THIN_SCROLLBAR_WIDTH_NON_WEBKIT),
-    [canCustomizeScrollbarWidth, startMenu.size]
-  );
-  const revealScrolling: React.MouseEventHandler = useCallback(
-    ({ clientX = 0 }) => setShowScrolling(clientX > startMenuWidth),
-    [startMenuWidth]
-  );
-  const focusOnRenderCallback = useCallback((element: HTMLElement | null) => {
+  const startMenuWidth =
+    startMenu.size -
+    (canCustomizeScrollbarWidth
+      ? THIN_SCROLLBAR_WIDTH
+      : THIN_SCROLLBAR_WIDTH_NON_WEBKIT);
+  const revealScrolling: React.MouseEventHandler = ({ clientX = 0 }) =>
+    setShowScrolling(clientX > startMenuWidth);
+  const focusOnRenderCallback = (element: HTMLElement | null): void => {
     element?.focus(PREVENT_SCROLL);
     menuRef.current = element;
-  }, []);
+  };
   const startMenuTransition = useTaskbarItemTransition(startMenu.maxHeight);
   const { height } =
     (startMenuTransition.variants?.active as StyleVariant) ?? {};
@@ -93,7 +88,7 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
                 updateInputValueOnReactElement(searchInput, key);
               }
 
-              if (searchInput || ++tries > 10) {
+              if (searchInput || (tries += 1) > 10) {
                 window.clearInterval(openSearchTimerRef);
               }
             }, 50);
@@ -121,4 +116,4 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   );
 };
 
-export default memo(StartMenu);
+export default StartMenu;

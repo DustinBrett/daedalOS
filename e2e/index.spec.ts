@@ -3,6 +3,7 @@ import {
   backgroundCanvasMaybeIsVisible,
   captureConsoleLogs,
   clockCanvasMaybeIsVisible,
+  closePage,
   desktopEntriesAreVisible,
   loadApp,
   scanPasses,
@@ -17,5 +18,6 @@ test.beforeEach(taskbarIsVisible);
 test.beforeEach(startButtonIsVisible);
 test.beforeEach(clockCanvasMaybeIsVisible);
 test.beforeEach(backgroundCanvasMaybeIsVisible);
+test.afterEach(closePage);
 
 test("can pass accessibility scan", async ({ page }) => scanPasses(page));

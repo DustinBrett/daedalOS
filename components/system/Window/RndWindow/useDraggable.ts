@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useLayoutEffect, useState } from "react";
 import { type Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import {
@@ -9,7 +9,7 @@ import {
 } from "components/system/Window/functions";
 import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
-import { useProcess, useProcessesRef } from "contexts/process";
+import { getProcesses, useProcess } from "contexts/process";
 import { useStackOrder, useWindowState } from "contexts/session";
 import { calcInitialPosition, getWindowViewport } from "utils/functions";
 
@@ -23,51 +23,39 @@ const useDraggable = (id: string, size: Size): Draggable => {
   } = useTheme();
   const { autoSizing, closing, componentWindow, initialRelativePosition } =
     useProcess(id);
-  const processesRef = useProcessesRef();
   const stackOrder = useStackOrder();
   const windowState = useWindowState(id);
   const { position: sessionPosition, size: sessionSize } = windowState;
-  const isOffscreen = useMemo(
-    () => isWindowOutsideBounds(windowState, getWindowViewport()),
-    [windowState]
-  );
   const [position, setPosition] = useState<Position>(
     () =>
-      (!isOffscreen && sessionPosition) ||
-      cascadePosition(id, processesRef.current, stackOrder, cascadeOffset) ||
+      (!isWindowOutsideBounds(windowState, getWindowViewport()) &&
+        sessionPosition) ||
+      cascadePosition(id, getProcesses(), stackOrder, cascadeOffset) ||
       centerPosition(size)
   );
-  const positionRef = useRef(position);
-  const sizeRef = useRef(size);
   const blockAutoPositionRef = useMinMaxRef(id);
+  const monitorViewportResize = useEffectEvent((): void => {
+    const vwSize = getWindowViewport();
 
-  positionRef.current = position;
-  sizeRef.current = size;
+    if (isWindowOutsideBounds({ position, size }, vwSize, true)) {
+      setPosition(({ x, y }) => {
+        const xOffset = vwSize.x - WINDOW_OFFSCREEN_BUFFER_PX.RIGHT;
+        const yOffset = vwSize.y - WINDOW_OFFSCREEN_BUFFER_PX.BOTTOM;
+
+        return {
+          x: Math.min(x, xOffset),
+          y: Math.min(y, yOffset),
+        };
+      });
+    }
+  });
 
   useEffect(() => {
-    const monitorViewportResize = (): void => {
-      const vwSize = getWindowViewport();
-      const windowBounds = {
-        position: positionRef.current,
-        size: sizeRef.current,
-      };
+    const onResize = (): void => monitorViewportResize();
 
-      if (isWindowOutsideBounds(windowBounds, vwSize, true)) {
-        setPosition(({ x, y }) => {
-          const xOffset = vwSize.x - WINDOW_OFFSCREEN_BUFFER_PX.RIGHT;
-          const yOffset = vwSize.y - WINDOW_OFFSCREEN_BUFFER_PX.BOTTOM;
+    window.addEventListener("resize", onResize, { passive: true });
 
-          return {
-            x: Math.min(x, xOffset),
-            y: Math.min(y, yOffset),
-          };
-        });
-      }
-    };
-
-    window.addEventListener("resize", monitorViewportResize, { passive: true });
-
-    return () => window.removeEventListener("resize", monitorViewportResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   useLayoutEffect(() => {
@@ -84,6 +72,7 @@ const useDraggable = (id: string, size: Size): Draggable => {
 
   useLayoutEffect(() => {
     if (initialRelativePosition && componentWindow && size) {
+      // eslint-disable-next-line react/set-state-in-effect -- Positions the window from its measured size once mounted
       setPosition(
         calcInitialPosition(componentWindow, initialRelativePosition, size)
       );

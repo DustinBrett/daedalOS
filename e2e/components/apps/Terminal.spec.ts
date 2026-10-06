@@ -7,6 +7,7 @@ import {
 } from "e2e/constants";
 import {
   captureConsoleLogs,
+  closePage,
   disableWallpaper,
   flyIsHidden,
   flyIsVisible,
@@ -31,6 +32,7 @@ test.beforeEach(disableWallpaper);
 test.beforeEach(async ({ page }) => loadApp({ app: "Terminal" })({ page }));
 test.beforeEach(windowsAreVisible);
 test.beforeEach(terminalHasRows);
+test.afterEach(closePage);
 
 test.describe("has file system access", () => {
   test.describe("has current directory", () => {

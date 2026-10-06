@@ -3,6 +3,7 @@ import { TEST_SEARCH, TEST_SEARCH_RESULT_TITLE } from "e2e/constants";
 import {
   captureConsoleLogs,
   clickSearchButton,
+  closePage,
   disableWallpaper,
   loadApp,
   searchMenuIsHidden,
@@ -16,6 +17,7 @@ test.beforeEach(disableWallpaper);
 test.beforeEach(loadApp());
 test.beforeEach(async ({ page }) => clickSearchButton({ page }));
 test.beforeEach(searchMenuIsVisible);
+test.afterEach(closePage);
 
 test.describe("can close", () => {
   test("via button", async ({ page }) => {

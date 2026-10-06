@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { type ContainerHookProps } from "components/system/Apps/AppContainer";
 import useTitle from "components/system/Window/useTitle";
 import { useFileSystemActions } from "contexts/fileSystem";
@@ -35,12 +35,9 @@ const useMarked = ({
   const { prependFileToTitle } = useTitle(id);
   const { libs = [] } = useProcess(id);
   const openLink = useLinkHandler();
-  const getContainer = useCallback(
-    (): HTMLElement | null =>
-      containerRef.current?.querySelector("article") as HTMLElement,
-    [containerRef]
-  );
-  const loadFile = useCallback(async () => {
+  const getContainer = (): HTMLElement | null =>
+    containerRef.current?.querySelector("article") as HTMLElement;
+  const loadFile = async (): Promise<void> => {
     const markdownFile = await readFile(url);
     const container = getContainer();
 
@@ -68,7 +65,7 @@ const useMarked = ({
     }
 
     prependFileToTitle(basename(url));
-  }, [getContainer, openLink, prependFileToTitle, readFile, url]);
+  };
 
   useEffect(() => {
     if (loading) {

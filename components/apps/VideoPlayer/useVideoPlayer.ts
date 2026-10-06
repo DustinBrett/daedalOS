@@ -1,5 +1,5 @@
 import { basename, join } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   config,
   CONTROL_BAR_HEIGHT,
@@ -57,7 +57,7 @@ const useVideoPlayer = ({
   const [ytPlayer, setYtPlayer] = useState<YouTubePlayer>();
   const { prependFileToTitle } = useTitle(id);
   const { toggleFullscreen: switchFullscreen } = useViewport();
-  const cleanUpSource = useCallback((): void => {
+  const cleanUpSource = (): void => {
     const { src: sources = [] } = player?.getMedia() || {};
 
     if (Array.isArray(sources) && sources.length > 0) {
@@ -67,9 +67,11 @@ const useVideoPlayer = ({
         cleanUpBufferUrl(src);
       }
     }
-  }, [closing, player, url]);
-  const isYT = useMemo(() => isYouTubeUrl(url), [url]);
-  const getSource = useCallback(async () => {
+  };
+  const isYT = isYouTubeUrl(url);
+  const getSource = async (): Promise<
+    SourceObjectWithUrl & { buffer?: Buffer }
+  > => {
     cleanUpSource();
 
     let type = isYT ? YT_TYPE : getMimeType(url) || VIDEO_FALLBACK_MIME_TYPE;
@@ -82,59 +84,59 @@ const useVideoPlayer = ({
       : bufferToUrl(buffer as Buffer, isSafari() ? type : undefined);
 
     return { buffer, src, type, url };
-  }, [cleanUpSource, isYT, readFile, url]);
+  };
   const initializedUrlRef = useRef(false);
   const playerInitialized = useRef(false);
   const codecBox = useRef<CodecBox>(undefined);
   const failedToDecodeUrlRef = useRef("");
-  const canvasMode = useCallback(
-    (enable: boolean, videoPlayer?: VideoPlayer & ControlBar): void => {
-      if (!enable) codecBox.current?.exit?.();
+  const canvasMode = (
+    enable: boolean,
+    videoPlayer?: VideoPlayer & ControlBar
+  ): void => {
+    if (!enable) codecBox.current?.exit?.();
 
-      const videoElement = containerRef.current?.querySelector(
-        "video"
-      ) as HTMLVideoElement;
-      const canvasElement = containerRef.current?.querySelector(
-        "canvas"
-      ) as HTMLCanvasElement;
+    const videoElement = containerRef.current?.querySelector(
+      "video"
+    ) as HTMLVideoElement;
+    const canvasElement = containerRef.current?.querySelector(
+      "canvas"
+    ) as HTMLCanvasElement;
 
-      if (videoElement) {
-        videoElement.style.visibility = enable ? "hidden" : "visible";
-      }
-      if (canvasElement) {
-        canvasElement.style.visibility = enable ? "visible" : "hidden";
-      }
+    if (videoElement) {
+      videoElement.style.visibility = enable ? "hidden" : "visible";
+    }
+    if (canvasElement) {
+      canvasElement.style.visibility = enable ? "visible" : "hidden";
+    }
 
-      if (videoPlayer) {
-        videoPlayer.reset();
+    if (videoPlayer) {
+      videoPlayer.reset();
 
-        if (enable) {
-          videoPlayer.controlBar.playToggle.hide();
-          videoPlayer.controlBar.pictureInPictureToggle.hide();
-          videoPlayer.controlBar.fullscreenToggle.hide();
-        } else {
-          videoPlayer.controlBar.playToggle.show();
-          videoPlayer.controlBar.pictureInPictureToggle.show();
-          videoPlayer.controlBar.fullscreenToggle.show();
-        }
-
-        argument(id, "play", enable ? false : () => videoPlayer.play());
-        argument(id, "pause", enable ? false : () => videoPlayer.pause());
+      if (enable) {
+        videoPlayer.controlBar.playToggle.hide();
+        videoPlayer.controlBar.pictureInPictureToggle.hide();
+        videoPlayer.controlBar.fullscreenToggle.hide();
+      } else {
+        videoPlayer.controlBar.playToggle.show();
+        videoPlayer.controlBar.pictureInPictureToggle.show();
+        videoPlayer.controlBar.fullscreenToggle.show();
       }
 
-      linkElement(
-        id,
-        "peekElement",
-        enable
-          ? canvasElement
-          : isYT
-            ? (containerRef.current as HTMLDivElement)
-            : videoElement
-      );
-    },
-    [argument, containerRef, id, isYT, linkElement]
-  );
-  const loadPlayer = useCallback(() => {
+      argument(id, "play", enable ? false : () => videoPlayer.play());
+      argument(id, "pause", enable ? false : () => videoPlayer.pause());
+    }
+
+    linkElement(
+      id,
+      "peekElement",
+      enable
+        ? canvasElement
+        : isYT
+          ? (containerRef.current as HTMLDivElement)
+          : videoElement
+    );
+  };
+  const loadPlayer = (): void => {
     if (playerInitialized.current) return;
 
     playerInitialized.current = true;
@@ -358,92 +360,60 @@ const useVideoPlayer = ({
       videoPlayer.on("pause", () => argument(id, "paused", true));
       videoPlayer.on("play", () => argument(id, "paused", false));
     });
-  }, [
-    addFile,
-    argument,
-    canvasMode,
-    containerRef,
-    createPath,
-    getSource,
-    id,
-    isYT,
-    linkElement,
-    setLoading,
-    setUrl,
-    switchFullscreen,
-    updateFolder,
-    updateWindowSize,
-    url,
-  ]);
-  const maybeHideControlbar = useCallback(
-    (type?: string): void => {
-      const controlBar =
-        containerRef.current?.querySelector(".vjs-control-bar");
+  };
+  const maybeHideControlbar = (type?: string): void => {
+    const controlBar = containerRef.current?.querySelector(".vjs-control-bar");
 
-      if (controlBar instanceof HTMLElement) {
-        controlBar.classList.toggle("no-interaction", type === YT_TYPE);
-      }
-    },
-    [containerRef]
-  );
-  const loadVideo = useCallback(async () => {
+    if (controlBar instanceof HTMLElement) {
+      controlBar.classList.toggle("no-interaction", type === YT_TYPE);
+    }
+  };
+  const loadVideo = async (): Promise<void> => {
     canvasMode(false, player as VideoPlayer & ControlBar);
 
     if (player && url) {
-      try {
-        const { buffer, ...source } = await getSource();
+      await getSource()
+        .then(({ buffer, ...source }) => {
+          initializedUrlRef.current = false;
+          player.poster("");
+          player.src(source);
+          maybeHideControlbar(source.type);
 
-        initializedUrlRef.current = false;
-        player.poster("");
-        player.src(source);
-        maybeHideControlbar(source.type);
-        prependFileToTitle(
-          isYT ? ytPlayer?.videoTitle || "YouTube" : basename(url)
-        );
+          // Read off the player so a title change doesn't reload the video
+          const { videoTitle } = ytPlayer || {};
 
-        const extension = getExtension(source.url);
-        const isAudio =
-          extension === ".mp3" || AUDIO_FILE_EXTENSIONS.has(extension);
-        const videoElement = containerRef.current?.querySelector(
-          "video"
-        ) as HTMLVideoElement;
+          prependFileToTitle(isYT ? videoTitle || "YouTube" : basename(url));
 
-        linkElement(
-          id,
-          "peekElement",
-          isYT || isAudio ? (componentWindow as HTMLElement) : videoElement
-        );
-        argument(id, "peekImage", "");
+          const extension = getExtension(source.url);
+          const isAudio =
+            extension === ".mp3" || AUDIO_FILE_EXTENSIONS.has(extension);
+          const videoElement = containerRef.current?.querySelector(
+            "video"
+          ) as HTMLVideoElement;
 
-        if (buffer && isAudio) {
-          getCoverArt(source.url, buffer).then((coverPicture) => {
-            if (coverPicture) {
-              const coverUrl = bufferToUrl(coverPicture);
+          linkElement(
+            id,
+            "peekElement",
+            isYT || isAudio ? (componentWindow as HTMLElement) : videoElement
+          );
+          argument(id, "peekImage", "");
 
-              player.poster(coverUrl);
-              argument(id, "peekImage", coverUrl);
-            }
-          });
-        }
-      } catch {
-        // Ignore player errors
-      }
+          if (buffer && isAudio) {
+            getCoverArt(source.url, buffer).then((coverPicture) => {
+              if (coverPicture) {
+                const coverUrl = bufferToUrl(coverPicture);
+
+                player.poster(coverUrl);
+                argument(id, "peekImage", coverUrl);
+              }
+            });
+          }
+        })
+        .catch(() => {
+          // Ignore player errors
+        });
     }
-  }, [
-    argument,
-    canvasMode,
-    componentWindow,
-    containerRef,
-    getSource,
-    id,
-    isYT,
-    linkElement,
-    maybeHideControlbar,
-    player,
-    prependFileToTitle,
-    url,
-    ytPlayer,
-  ]);
+  };
 
   useEffect(() => {
     if (loading && !player) {

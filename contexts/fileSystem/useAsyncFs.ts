@@ -4,7 +4,7 @@ import type EmscriptenFileSystem from "browserfs/dist/node/backend/Emscripten";
 import type MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
 import { type FSModule } from "browserfs/dist/node/core/FS";
 import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isExistingFile } from "components/system/Files/FileEntry/functions";
 import {
   get9pSize,
@@ -87,192 +87,177 @@ const runQueuedFsCalls = (fs: FSModule): void => {
   }
 };
 
+export const resetStorageAndReload = (rootFs?: RootFileSystem): Promise<void> =>
+  import("contexts/fileSystem/functions").then(({ resetStorage }) =>
+    resetStorage(rootFs).finally(() => window.location.reload())
+  );
+
 const useAsyncFs = (): AsyncFSModule => {
   const [fs, setFs] = useState<FSModule>();
   const fsRef = useRef<FSModule>(undefined);
   const [rootFs, setRootFs] = useState<RootFileSystem>();
-  const asyncFs: AsyncFS = useMemo(
-    () => ({
-      exists: (path) =>
-        new Promise((resolve) => {
-          fs?.exists(path, resolve);
-        }),
-      lstat: (path) =>
-        new Promise((resolve, reject) => {
-          fs?.lstat(path, (error, stats = Object.create(null) as Stats) =>
-            error ? reject(error) : resolve(stats)
-          );
-        }),
-      mkdir: (path, overwrite = false) =>
-        new Promise((resolve, reject) => {
-          fs?.mkdir(path, { flag: overwrite ? "w" : "wx" }, (error) =>
-            error ? reject(error) : resolve(true)
-          );
-        }),
-      readdir: (path) =>
-        new Promise((resolve, reject) => {
-          fs?.readdir(path, (error, data = []) =>
-            error ? reject(error) : resolve(data)
-          );
-        }),
-      readFile: (path) =>
-        new Promise((resolve, reject) => {
-          fs?.readFile(path, (error, data = Buffer.from("")) => {
-            if (!error || UNKNOWN_STATE_CODES.has(error.code)) {
-              return resolve(data);
-            }
+  const asyncFs: AsyncFS = {
+    exists: (path) =>
+      new Promise((resolve) => {
+        fs?.exists(path, resolve);
+      }),
+    lstat: (path) =>
+      new Promise((resolve, reject) => {
+        fs?.lstat(path, (error, stats = Object.create(null) as Stats) =>
+          error ? reject(error) : resolve(stats)
+        );
+      }),
+    mkdir: (path, overwrite = false) =>
+      new Promise((resolve, reject) => {
+        fs?.mkdir(path, { flag: overwrite ? "w" : "wx" }, (error) =>
+          error ? reject(error) : resolve(true)
+        );
+      }),
+    readdir: (path) =>
+      new Promise((resolve, reject) => {
+        fs?.readdir(path, (error, data = []) =>
+          error ? reject(error) : resolve(data)
+        );
+      }),
+    readFile: (path) =>
+      new Promise((resolve, reject) => {
+        fs?.readFile(path, (error, data = Buffer.from("")) => {
+          if (!error || UNKNOWN_STATE_CODES.has(error.code)) {
+            return resolve(data);
+          }
 
-            if (error.code === "EISDIR" && rootFs?.mntMap[path]) {
-              const mountData =
-                rootFs.mntMap[path]._data || rootFs.mntMap[path].data;
+          if (error.code === "EISDIR" && rootFs?.mntMap[path]) {
+            const mountData =
+              rootFs.mntMap[path]._data || rootFs.mntMap[path].data;
 
-              if (mountData) return resolve(mountData);
-            }
+            if (mountData) return resolve(mountData);
+          }
 
-            return reject(error);
-          });
-        }),
-      rename: (oldPath, newPath) =>
-        new Promise((resolve, reject) => {
-          fs?.rename(oldPath, newPath, (renameError) => {
-            if (!renameError) {
-              resolve(true);
-            } else if (renameError.code === "ENOTSUP") {
-              fs.lstat(
-                oldPath,
-                (_statsError, stats = Object.create(null) as Stats) => {
-                  if (stats.isDirectory()) {
-                    reject(new Error("Renaming directories is not supported."));
-                  } else {
-                    fs.readFile(oldPath, (readError, data) =>
-                      fs.writeFile(newPath, data, (writeError) =>
-                        readError || writeError
-                          ? reject(
-                              readError ||
-                                writeError ||
-                                new Error("Failed to rename file.")
-                            )
-                          : resolve(false)
-                      )
-                    );
-                  }
-                }
-              );
-            } else if (
-              renameError.code === "EISDIR" &&
-              rootFs?.mntMap[oldPath]
-            ) {
-              rootFs.umount(oldPath);
-              asyncFs.rename(oldPath, newPath).then(resolve).catch(reject);
-            } else if (renameError.code === "EISDIR") {
-              // Directory across file systems, source may be read-only (ZIP/ISO)
-              asyncFs
-                .mkdir(newPath)
-                .then(() => asyncFs.readdir(oldPath))
-                .then((entries) =>
-                  Promise.all(
-                    entries.map((entry) =>
-                      asyncFs.rename(join(oldPath, entry), join(newPath, entry))
+          return reject(error);
+        });
+      }),
+    rename: (oldPath, newPath) =>
+      new Promise((resolve, reject) => {
+        fs?.rename(oldPath, newPath, (renameError) => {
+          if (!renameError) {
+            resolve(true);
+          } else if (renameError.code === "ENOTSUP") {
+            fs.lstat(
+              oldPath,
+              (_statsError, stats = Object.create(null) as Stats) => {
+                if (stats.isDirectory()) {
+                  reject(new Error("Renaming directories is not supported."));
+                } else {
+                  fs.readFile(oldPath, (readError, data) =>
+                    fs.writeFile(newPath, data, (writeError) =>
+                      readError || writeError
+                        ? reject(
+                            readError ||
+                              writeError ||
+                              new Error("Failed to rename file.")
+                          )
+                        : resolve(false)
                     )
-                  )
-                )
-                .then((moved) =>
-                  moved.every(Boolean)
-                    ? asyncFs.rmdir(oldPath).catch(() => false)
-                    : false
-                )
-                .then(resolve)
-                .catch(reject);
-            } else if (UNKNOWN_STATE_CODES.has(renameError.code)) {
-              resolve(false);
-            } else {
-              reject(renameError);
-            }
-          });
-        }),
-      rmdir: (path) =>
-        new Promise((resolve, reject) => {
-          fs?.rmdir(path, (error) => (error ? reject(error) : resolve(true)));
-        }),
-      stat: (path) =>
-        new Promise((resolve, reject) => {
-          fs?.stat(path, (error, stats = Object.create(null) as Stats) => {
-            if (error) {
-              return UNKNOWN_STATE_CODES.has(error.code)
-                ? resolve(new Stats(FileType.FILE, -1))
-                : reject(error);
-            }
-
-            return resolve(
-              stats.size === -1 && isExistingFile(stats)
-                ? new Stats(
-                    FileType.FILE,
-                    get9pSize(path),
-                    stats.mode,
-                    stats.atimeMs,
-                    stats.mtimeMs,
-                    stats.ctimeMs,
-                    stats.birthtimeMs
-                  )
-                : stats
-            );
-          });
-        }),
-      unlink: (path) =>
-        new Promise((resolve, reject) => {
-          fs?.unlink(path, (error) => {
-            if (error) {
-              return UNKNOWN_STATE_CODES.has(error.code)
-                ? resolve(false)
-                : reject(error);
-            }
-
-            return resolve(true);
-          });
-        }),
-      writeFile: (path, data, overwrite = false) =>
-        new Promise((resolve, reject) => {
-          fs?.writeFile(
-            path,
-            data,
-            { flag: overwrite ? "w" : "wx" },
-            (error) => {
-              if (error && (!overwrite || error.code !== "EEXIST")) {
-                if (error.code === "ENOENT" && error.path === "/") {
-                  import("contexts/fileSystem/functions").then(
-                    ({ resetStorage }) =>
-                      resetStorage(rootFs).finally(() =>
-                        window.location.reload()
-                      )
                   );
                 }
-
-                reject(error);
-              } else {
-                resolve(!error);
-
-                try {
-                  if (path !== SESSION_FILE) {
-                    const cachedIconPath = join(
-                      ICON_CACHE,
-                      `${path}${ICON_CACHE_EXTENSION}`
-                    );
-
-                    fs?.exists(
-                      cachedIconPath,
-                      (exists) => exists && fs?.unlink(cachedIconPath)
-                    );
-                  }
-                } catch {
-                  // Ignore icon cache issues
-                }
               }
-            }
+            );
+          } else if (renameError.code === "EISDIR" && rootFs?.mntMap[oldPath]) {
+            rootFs.umount(oldPath);
+            asyncFs.rename(oldPath, newPath).then(resolve).catch(reject);
+          } else if (renameError.code === "EISDIR") {
+            // Directory across file systems, source may be read-only (ZIP/ISO)
+            asyncFs
+              .mkdir(newPath)
+              .then(() => asyncFs.readdir(oldPath))
+              .then((entries) =>
+                Promise.all(
+                  entries.map((entry) =>
+                    asyncFs.rename(join(oldPath, entry), join(newPath, entry))
+                  )
+                )
+              )
+              .then((moved) =>
+                moved.every(Boolean)
+                  ? asyncFs.rmdir(oldPath).catch(() => false)
+                  : false
+              )
+              .then(resolve)
+              .catch(reject);
+          } else if (UNKNOWN_STATE_CODES.has(renameError.code)) {
+            resolve(false);
+          } else {
+            reject(renameError);
+          }
+        });
+      }),
+    rmdir: (path) =>
+      new Promise((resolve, reject) => {
+        fs?.rmdir(path, (error) => (error ? reject(error) : resolve(true)));
+      }),
+    stat: (path) =>
+      new Promise((resolve, reject) => {
+        fs?.stat(path, (error, stats = Object.create(null) as Stats) => {
+          if (error) {
+            return UNKNOWN_STATE_CODES.has(error.code)
+              ? resolve(new Stats(FileType.FILE, -1))
+              : reject(error);
+          }
+
+          return resolve(
+            stats.size === -1 && isExistingFile(stats)
+              ? new Stats(
+                  FileType.FILE,
+                  get9pSize(path),
+                  stats.mode,
+                  stats.atimeMs,
+                  stats.mtimeMs,
+                  stats.ctimeMs,
+                  stats.birthtimeMs
+                )
+              : stats
           );
-        }),
-    }),
-    [fs, rootFs]
-  );
+        });
+      }),
+    unlink: (path) =>
+      new Promise((resolve, reject) => {
+        fs?.unlink(path, (error) => {
+          if (error) {
+            return UNKNOWN_STATE_CODES.has(error.code)
+              ? resolve(false)
+              : reject(error);
+          }
+
+          return resolve(true);
+        });
+      }),
+    writeFile: (path, data, overwrite = false) =>
+      new Promise((resolve, reject) => {
+        fs?.writeFile(path, data, { flag: overwrite ? "w" : "wx" }, (error) => {
+          if (error && (!overwrite || error.code !== "EEXIST")) {
+            if (error.code === "ENOENT" && error.path === "/") {
+              resetStorageAndReload(rootFs);
+            }
+
+            reject(error);
+          } else {
+            resolve(!error);
+
+            if (fs && path !== SESSION_FILE) {
+              const cachedIconPath = join(
+                ICON_CACHE,
+                `${path}${ICON_CACHE_EXTENSION}`
+              );
+
+              fs.exists(
+                cachedIconPath,
+                (exists) => exists && fs.unlink(cachedIconPath)
+              );
+            }
+          }
+        });
+      }),
+  };
 
   useEffect(() => {
     if (!fs) {
@@ -315,14 +300,11 @@ const useAsyncFs = (): AsyncFSModule => {
     }
   }, [fs]);
 
-  return useMemo(
-    () => ({
-      ...asyncFs,
-      fs,
-      rootFs,
-    }),
-    [asyncFs, fs, rootFs]
-  );
+  return {
+    ...asyncFs,
+    fs,
+    rootFs,
+  };
 };
 
 export default useAsyncFs;

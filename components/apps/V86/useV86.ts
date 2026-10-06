@@ -1,5 +1,5 @@
 import { basename, join } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BOOT_CD_FD_HD,
   BOOT_FD_CD_HD,
@@ -50,55 +50,55 @@ const useV86 = ({
     Record<string, undefined | V86Starter>
   >({});
   const { exists, readFile } = useFileSystemActions();
-  const saveStateAsync = useCallback(
-    (diskImageUrl: string): Promise<ArrayBuffer> =>
-      new Promise((resolve, reject) => {
-        emulator[diskImageUrl]?.save_state().then(resolve).catch(reject);
-      }),
-    [emulator]
-  );
+  const saveStateAsync = (diskImageUrl: string): Promise<ArrayBuffer> =>
+    new Promise((resolve, reject) => {
+      emulator[diskImageUrl]?.save_state().then(resolve).catch(reject);
+    });
   const { createSnapshot } = useSnapshots();
-  const closeDiskImage = useCallback(
-    async (diskImageUrl: string, screenshot?: Buffer): Promise<void> => {
-      await createSnapshot(
-        `${basename(diskImageUrl)}${saveExtension}`,
-        Buffer.from(await saveStateAsync(diskImageUrl)),
-        screenshot
-      );
+  const closeDiskImage = async (
+    diskImageUrl: string,
+    screenshot?: Buffer
+  ): Promise<void> => {
+    await createSnapshot(
+      `${basename(diskImageUrl)}${saveExtension}`,
+      Buffer.from(await saveStateAsync(diskImageUrl)),
+      screenshot
+    );
 
+    if (emulator[diskImageUrl]) {
       try {
-        emulator[diskImageUrl]?.destroy();
+        emulator[diskImageUrl].destroy();
       } catch {
         // Ignore failures on destroy
       }
-    },
-    [createSnapshot, emulator, saveStateAsync]
-  );
-  const takeScreenshot = useCallback(
-    async (fileUrl: string): Promise<Buffer | undefined> => {
-      let screenshot: string | undefined;
+    }
+  };
+  const takeScreenshot = async (
+    fileUrl: string
+  ): Promise<Buffer | undefined> => {
+    let screenshot: string | undefined;
 
-      if (emulator[fileUrl]?.v86.cpu.devices.vga.graphical_mode) {
-        screenshot = (
-          containerRef.current?.querySelector("canvas") as HTMLCanvasElement
-        )?.toDataURL("image/png");
-      } else if (containerRef.current instanceof HTMLElement) {
-        const htmlToImage = await getHtmlToImage();
+    if (emulator[fileUrl]?.v86.cpu.devices.vga.graphical_mode) {
+      screenshot = (
+        containerRef.current?.querySelector("canvas") as HTMLCanvasElement
+      )?.toDataURL("image/png");
+    } else if (containerRef.current instanceof HTMLElement) {
+      const htmlToImage = await getHtmlToImage();
 
+      if (htmlToImage) {
         try {
-          screenshot = await htmlToImage?.toPng(containerRef.current, {
+          screenshot = await htmlToImage.toPng(containerRef.current, {
             skipAutoScale: true,
           });
         } catch {
           // Ignore failure to capture
         }
       }
+    }
 
-      return screenshot ? dataUrlToBuffer("image/png", screenshot) : undefined;
-    },
-    [containerRef, emulator]
-  );
-  const loadDiskImage = useCallback(async () => {
+    return screenshot ? dataUrlToBuffer("image/png", screenshot) : undefined;
+  };
+  const loadDiskImage = async (): Promise<void> => {
     const [currentUrl] = Object.keys(emulator);
 
     if (typeof currentUrl === "string") {
@@ -114,8 +114,9 @@ const useV86 = ({
     const ext = getExtension(url);
     const isISO = ext === ".iso";
     const bufferUrl = bufferToUrl(imageContents);
+    const imageType = isISO ? "cdrom" : getImageType(ext, imageContents.length);
     const v86ImageConfig: V86ImageConfig = {
-      [isISO ? "cdrom" : getImageType(ext, imageContents.length)]: {
+      [imageType]: {
         async: false,
         size: imageContents.length,
         url: bufferUrl,
@@ -168,16 +169,7 @@ const useV86 = ({
 
       setEmulator({ [url]: v86 });
     });
-  }, [
-    appendFileToTitle,
-    closeDiskImage,
-    containerRef,
-    emulator,
-    exists,
-    readFile,
-    takeScreenshot,
-    url,
-  ]);
+  };
 
   useV86ScreenSize(id, containerRef, emulator[url]);
 
@@ -199,6 +191,7 @@ const useV86 = ({
 
   useEffect(() => {
     if (hasProcess(process) && !closing && !loading && !(url in emulator)) {
+      // eslint-disable-next-line react/set-state-in-effect -- False positive: state is only set after an await
       loadDiskImage();
     }
 
