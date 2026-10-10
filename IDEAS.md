@@ -5,7 +5,6 @@
 ### High Priority
 
 - 3rd Party App Support
-- Accessibility (Structure & Markup)
 - Screen Savers (.scr)
   - [After Dark](https://www.bryanbraun.com/after-dark-css/)
   - [Bouncing DVD Logo](https://www.bouncingdvdlogo.com/)
