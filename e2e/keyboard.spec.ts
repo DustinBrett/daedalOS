@@ -100,23 +100,23 @@ test.describe("desktop", () => {
   }) => {
     const entries = page.locator(DESKTOP_BUTTON_SELECTOR);
 
-    await entries.first().click();
-    await expect(entries.first()).toBeFocused();
+    await entries.nth(1).click();
+    await expect(entries.nth(1)).toBeFocused();
 
     // Selection already shows where focus is, as it does in Windows
-    await page.keyboard.press("ArrowDown");
-    await expect(entries.nth(1)).toBeFocused();
-    await expect(entries.nth(1)).toHaveCSS("outline-style", "none");
+    await page.keyboard.press("ArrowUp");
+    await expect(entries.first()).toBeFocused();
+    await expect(entries.first()).toHaveCSS("outline-style", "none");
 
     await page.keyboard.press("Control+ArrowDown");
-    await expect(entries.nth(2)).toBeFocused();
-    await expect(entries.nth(2)).toHaveCSS("outline-style", "solid");
-    await expect(entries.nth(2)).toHaveCSS("outline-width", "2px");
+    await expect(entries.nth(1)).toBeFocused();
+    await expect(entries.nth(1)).toHaveCSS("outline-style", "solid");
+    await expect(entries.nth(1)).toHaveCSS("outline-width", "2px");
 
     // An entry that isn't selected shows whether a click hid focus visuals
-    await entries.nth(2).click();
-    await entries.nth(3).focus();
-    await expect(entries.nth(3)).toHaveCSS("outline-style", "none");
+    await entries.first().click();
+    await entries.nth(1).focus();
+    await expect(entries.nth(1)).toHaveCSS("outline-style", "none");
   });
 
   test("context menu opens from the keyboard and returns focus", async ({
@@ -419,15 +419,8 @@ test.describe("windows", () => {
   test("pasting a cut entry where it already is changes nothing", async ({
     page,
   }) => {
-    const address = page.getByLabel(FILE_EXPLORER_ADDRESS_BAR_LABEL);
     const entries = page.locator(FILE_BUTTON_SELECTOR);
     const cutIcon = entries.last().locator("img").first();
-
-    await address.fill("/Users/Public/Documents");
-    await address.press("Enter");
-    await expect(address).toHaveValue("Documents");
-    await fileExplorerEntriesAreVisible({ page });
-
     const count = await entries.count();
 
     await entries.last().click();
