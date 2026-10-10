@@ -11,6 +11,7 @@ import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
 import { PREVENT_SCROLL, TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
 import { getExtension, haltEvent } from "utils/functions";
+import { focusByKey } from "utils/keyboard";
 
 const INCLUDED_PROCESSES = new Set([
   "BoxedWine",
@@ -32,6 +33,7 @@ const INCLUDED_PROCESSES = new Set([
 type OpenWithEntryProps = {
   icon: string;
   onClick: () => void;
+  onRun: () => void;
   selected: boolean;
   title: string;
 };
@@ -39,11 +41,22 @@ type OpenWithEntryProps = {
 const OpenWithEntry: FC<OpenWithEntryProps> = ({
   icon,
   onClick,
+  onRun,
   selected,
   title,
 }) => (
   <li className={selected ? "selected" : ""}>
-    <Button aria-pressed={selected} onClick={onClick}>
+    <Button
+      aria-label={title}
+      aria-pressed={selected}
+      onClick={onClick}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          haltEvent(event);
+          onRun();
+        }
+      }}
+    >
       <figure>
         <Icon alt="" displaySize={24} imgSize={32} src={icon} />
         <figcaption>{title}</figcaption>
@@ -111,9 +124,35 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
   return (
     <StyledOpenWith
       ref={(element) => {
-        element?.focus(PREVENT_SCROLL);
+        // Like Windows, the chosen app has focus
+        (
+          element?.querySelector<HTMLElement>("li.selected > button") || element
+        )?.focus(PREVENT_SCROLL);
       }}
       onContextMenu={haltEvent}
+      onKeyDown={(event) => {
+        const { activeElement } = document;
+        const entries = [
+          ...event.currentTarget.querySelectorAll<HTMLButtonElement>(
+            "li > button"
+          ),
+        ];
+
+        if (
+          (event.target === event.currentTarget ||
+            entries.includes(event.target as HTMLButtonElement)) &&
+          focusByKey(event.key, entries, { horizontal: false, wrap: false })
+        ) {
+          haltEvent(event);
+
+          // Like the Windows list, selection follows the arrow keys
+          if (document.activeElement !== activeElement) {
+            (document.activeElement as HTMLButtonElement).click();
+            // Only a second click opens it, not Space after an arrow key
+            recentlySelectedPid.current = "";
+          }
+        }
+      }}
       {...closeOnEscape}
     >
       <h2>How do you want to open this file?</h2>
@@ -123,14 +162,12 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
             <h4 aria-level={3} id={primaryLabelId}>
               Keep using this app
             </h4>
-            <StyledOpenWithList
-              aria-labelledby={primaryLabelId}
-              {...closeOnEscape}
-            >
+            <StyledOpenWithList aria-labelledby={primaryLabelId}>
               <OpenWithEntry
                 key={primaryTitle}
                 icon={primaryIcon}
                 onClick={() => updateSelectedPid(primaryExtensionProcesses)}
+                onRun={() => runApp(primaryExtensionProcesses)}
                 selected={selectedPid === primaryExtensionProcesses}
                 title={primaryTitle}
               />
@@ -155,6 +192,7 @@ const OpenWith: FC<ComponentProcessProps> = ({ id }) => {
                 key={title}
                 icon={icon}
                 onClick={() => updateSelectedPid(pid)}
+                onRun={() => runApp(pid)}
                 selected={selectedPid === pid}
                 title={title}
               />

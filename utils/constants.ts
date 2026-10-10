@@ -49,12 +49,6 @@ export const FOCUSABLE_ELEMENT = { tabIndex: -1 };
 // button whose popup closes on blur needs one to keep click-to-focus uniform
 export const CLICK_FOCUSABLE_ELEMENT = { tabIndex: 0 };
 
-export const DIV_BUTTON_PROPS = {
-  as: "div",
-  role: "button",
-  ...FOCUSABLE_ELEMENT,
-};
-
 export const FS_HANDLES = "FileSystemAccessHandles";
 
 export const HOME = "/Users/Public";
@@ -76,6 +70,9 @@ export const ICON_GIF_SECONDS = 2;
 export const ICON_GIF_FPS = 24;
 
 export const PEEK_MAX_WIDTH = 200;
+
+// Windows' default mouse hover time, which taskbar thumbnails wait for
+export const PEEK_DELAY_MS = 400;
 
 export const LIST_VIEW_ANIMATION = {
   animate: { opacity: 1 },
@@ -168,6 +165,8 @@ export const EDITABLE_IMAGE_FILE_EXTENSIONS = new Set([
 ]);
 
 export const MENU_SEPERATOR = { seperator: true };
+
+export const SYSTEM_MENU = "System";
 
 export const MILLISECONDS_IN_SECOND = 1000;
 

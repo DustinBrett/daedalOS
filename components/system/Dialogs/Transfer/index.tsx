@@ -10,7 +10,7 @@ import {
 } from "components/system/Dialogs/Transfer/useTransferDialog";
 import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import { hasProcess, useProcess, useProcessesActions } from "contexts/process";
-import { ONE_TIME_PASSIVE_EVENT } from "utils/constants";
+import { ONE_TIME_PASSIVE_EVENT, PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
 
 const MAX_TITLE_LENGTH = 37;
@@ -49,26 +49,26 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
     processing.current = false;
     closeWithTransition(id);
   };
-  const processObjectReader = ([
-    reader,
-    ...remainingReaders
-  ]: ObjectReaders): void => {
-    const isComplete = remainingReaders.length === 0;
+  const processObjectReader = (readers: ObjectReaders): void => {
+    Promise.allSettled(
+      readers.map((reader, index) =>
+        reader.read().then(() => {
+          setProgress((currentProgress) => currentProgress + 1);
 
-    reader.read().then(() => {
-      setProgress((currentProgress) => currentProgress + 1);
+          const nextReader = readers[index + 1];
 
-      if (isComplete) {
-        reader.done?.();
-        completeTransfer();
-      } else {
-        const [{ directory, name: nextName }] = remainingReaders;
-
-        setCurrentTransfer([directory, { name: nextName } as File]);
-      }
+          if (nextReader) {
+            setCurrentTransfer([
+              nextReader.directory,
+              { name: nextReader.name } as File,
+            ]);
+          }
+        })
+      )
+    ).then(() => {
+      readers[readers.length - 1].done?.();
+      completeTransfer();
     });
-
-    if (!isComplete) processObjectReader(remainingReaders);
   };
   const processFileReader = ([
     [file, directory, reader],
@@ -106,6 +106,9 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
     ? fileReaders.reduce((acc, [{ size = 0 }]) => acc + size, 0)
     : fileReaders?.length || Number.POSITIVE_INFINITY;
   const closeOnEscape = useCloseOnEscape(id);
+  const transferRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => transferRef.current?.focus(PREVENT_SCROLL), []);
 
   useEffect(() => {
     if (!processing.current) {
@@ -165,7 +168,14 @@ const Transfer: FC<ComponentProcessProps> = ({ id }) => {
   );
 
   return (
-    <StyledTransfer onContextMenu={haltEvent} {...closeOnEscape}>
+    <StyledTransfer
+      ref={transferRef}
+      // Named by what it does, as the file it is on keeps changing
+      aria-label={actionName}
+      onContextMenu={haltEvent}
+      role="group"
+      {...closeOnEscape}
+    >
       <h1 id={titleId}>
         {name
           ? `${actionName} '${

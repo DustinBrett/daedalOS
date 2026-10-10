@@ -16,6 +16,13 @@ import {
   ROOT_NAME,
 } from "utils/constants";
 import { haltEvent } from "utils/functions";
+import { isEditableElement } from "utils/keyboard";
+
+const NAVIGATION_BUTTONS: Record<string, string> = {
+  ARROWLEFT: "back",
+  ARROWRIGHT: "forward",
+  ARROWUP: "up",
+};
 
 const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const {
@@ -33,8 +40,18 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
   const mountUrl = getMountUrl(url, rootFs?.mntMap || {});
   const onKeyDown = (event: KeyboardEvent): void => {
     const eventKey = event.key.toUpperCase();
+    // Text boxes keep these, which move by word on a Mac
+    const navigationButton =
+      event.altKey &&
+      !isEditableElement(event.target) &&
+      NAVIGATION_BUTTONS[eventKey];
 
-    if (event.altKey && eventKey === "D") {
+    if (navigationButton) {
+      haltEvent(event);
+      componentWindow
+        ?.querySelector<HTMLButtonElement>(`nav > button.${navigationButton}`)
+        ?.click();
+    } else if (event.altKey && eventKey === "D") {
       haltEvent(event);
       addressBarRef.current?.focus(PREVENT_SCROLL);
     } else if (
@@ -43,20 +60,26 @@ const FileExplorer: FC<ComponentProcessProps> = ({ id }) => {
     ) {
       haltEvent(event);
       searchBarRef.current?.focus(PREVENT_SCROLL);
-    } else {
-      const fileManagerEntry = (event?.target as HTMLElement)?.querySelector(
-        "ol li button"
-      );
-
-      fileManagerEntry?.dispatchEvent(
+    } else if (
+      event.target === componentWindow &&
+      // The Menu key on the window already opens the menu of its items
+      eventKey !== "CONTEXTMENU" &&
+      // Like Explorer, keys on the window go to its items
+      componentWindow.querySelector("ol[tabindex]")?.dispatchEvent(
         new KeyboardEvent("keydown", {
+          altKey: event.altKey,
           bubbles: true,
           cancelable: true,
+          code: event.code,
           ctrlKey: event.ctrlKey,
           key: event.key,
+          metaKey: event.metaKey,
           shiftKey: event.shiftKey,
         })
-      );
+      ) === false
+    ) {
+      // What the items did with a key, like F5, the page mustn't do too
+      event.preventDefault();
     }
   };
 

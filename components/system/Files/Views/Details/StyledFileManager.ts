@@ -10,6 +10,10 @@ const StyledFileManager = styled.ol<StyledFileManagerProps>`
   overflow: ${({ $isEmptyFolder, $scrollable }) =>
     !$isEmptyFolder && $scrollable ? undefined : "hidden"};
   pointer-events: ${({ $selecting }) => ($selecting ? "auto" : undefined)};
+
+  /* Keyboard scrolling keeps entries below the column headers & their gap */
+  scroll-padding-top: ${({ theme }) =>
+    theme.sizes.fileManager.columnHeight + 6}px;
   scrollbar-gutter: auto;
 
   picture:not(:first-of-type) {

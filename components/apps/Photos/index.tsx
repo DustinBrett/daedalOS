@@ -30,7 +30,17 @@ import {
 } from "utils/functions";
 import { loadImageDecoder } from "utils/loaders";
 
-const { maxScale, minScale } = panZoomConfig;
+const { maxScale, minScale, step } = panZoomConfig;
+
+const ZOOM_KEYS = new Set(["-", "+", "="]);
+
+// Like Photos, a zoomed in photo moves the opposite way of the arrow key
+const PAN_STEPS: Record<string, [number, number]> = {
+  ArrowDown: [0, -1],
+  ArrowLeft: [1, 0],
+  ArrowRight: [-1, 0],
+  ArrowUp: [0, 1],
+};
 
 const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const { url: setUrl } = useProcessesActions();
@@ -42,7 +52,7 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
   const [container, setContainer] = useState<HTMLDivElement | null>();
   const [image, setImage] = useState<HTMLImageElement | null>();
   const [imageContainer, setImageContainer] = useState<HTMLElement | null>();
-  const { reset, scale, zoomIn, zoomOut, zoomToPoint } = usePanZoom(
+  const { pan, reset, scale, zoomIn, zoomOut, zoomToPoint } = usePanZoom(
     id,
     image,
     imageContainer
@@ -79,7 +89,36 @@ const Photos: FC<ComponentProcessProps> = ({ id }) => {
     });
     prependFileToTitle(basename(url));
   };
-  const onKeyDown = async ({ key }: KeyboardEvent): Promise<void> => {
+  const onKeyDown = async (event: KeyboardEvent): Promise<void> => {
+    const { altKey, ctrlKey, key, metaKey } = event;
+    const panStep = PAN_STEPS[key];
+
+    // Like the zoom buttons, while Ctrl is left for browser zoom
+    if (
+      url &&
+      !brokenImage &&
+      !altKey &&
+      !ctrlKey &&
+      !metaKey &&
+      ZOOM_KEYS.has(key)
+    ) {
+      haltEvent(event);
+      if (key === "-") zoomOut?.();
+      else zoomIn?.();
+      return;
+    }
+
+    // Zoom steps can leave the scale a hair above its minimum
+    if (panStep && scale && scale >= minScale + step) {
+      const [stepX, stepY] = panStep;
+      // Panning is scaled by the zoom, so a step is a tenth of the view
+      const distance = (container?.clientWidth || 0) / 10 / scale;
+
+      haltEvent(event);
+      pan?.(stepX * distance, stepY * distance, { relative: true });
+      return;
+    }
+
     // eslint-disable-next-line default-case
     switch (key) {
       case "ArrowRight":

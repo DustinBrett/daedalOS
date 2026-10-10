@@ -30,7 +30,7 @@ type KiwiIrcClient = {
 
 const IRC: FC<ComponentProcessProps> = ({ id }) => {
   const { linkElement, title } = useProcessesActions();
-  const { libs: [ircSrc = ""] = [] } = useProcess(id);
+  const { libs: [ircSrc = ""] = [], title: windowTitle } = useProcess(id);
   const [loaded, setLoaded] = useState(false);
   const [channels, setChannels] = useState<string[]>([]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -98,7 +98,7 @@ const IRC: FC<ComponentProcessProps> = ({ id }) => {
         height="100%"
         onLoad={() => setLoaded(true)}
         src={ircSrc}
-        title={id}
+        title={windowTitle}
         width="100%"
         {...IFRAME_CONFIG}
       />

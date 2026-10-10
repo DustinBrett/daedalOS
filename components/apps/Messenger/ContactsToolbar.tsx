@@ -1,4 +1,7 @@
+import { useEffect, useRef } from "react";
 import Button from "styles/common/Button";
+import { PREVENT_SCROLL } from "utils/constants";
+import { whenFocusLost } from "utils/keyboard";
 
 type ContactsToolbarProps = {
   actions: [string, (keys: string[]) => void][];
@@ -17,9 +20,21 @@ const ContactsToolbar: FC<ContactsToolbarProps> = ({
 }) => {
   const allSelected =
     keys.length > 0 && keys.every((key) => selectedKeys?.includes(key));
+  const toolbarRef = useRef<HTMLLIElement>(null);
+  const isSelecting = Boolean(selectedKeys);
+
+  useEffect(() => {
+    // Switching modes or views removes the focused button, so focus follows
+    whenFocusLost(() =>
+      toolbarRef.current
+        ?.querySelector<HTMLElement>("input, button")
+        ?.focus(PREVENT_SCROLL)
+    );
+    // eslint-disable-next-line react/exhaustive-effect-dependencies
+  }, [isSelecting, title]);
 
   return (
-    <li className="toolbar">
+    <li ref={toolbarRef} className="toolbar">
       {selectedKeys ? (
         <>
           <label>

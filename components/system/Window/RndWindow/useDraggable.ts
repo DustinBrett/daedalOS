@@ -1,4 +1,10 @@
-import { useEffect, useEffectEvent, useLayoutEffect, useState } from "react";
+import {
+  useEffect,
+  useEffectEvent,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { type Position } from "react-rnd";
 import { useTheme } from "styled-components";
 import {
@@ -11,7 +17,11 @@ import useMinMaxRef from "components/system/Window/RndWindow/useMinMaxRef";
 import { type Size } from "components/system/Window/RndWindow/useResizable";
 import { getProcesses, useProcess } from "contexts/process";
 import { useStackOrder, useWindowState } from "contexts/session";
-import { calcInitialPosition, getWindowViewport } from "utils/functions";
+import {
+  calcInitialPosition,
+  getWindowViewport,
+  pxToNum,
+} from "utils/functions";
 
 type Draggable = [Position, React.Dispatch<React.SetStateAction<Position>>];
 
@@ -34,20 +44,26 @@ const useDraggable = (id: string, size: Size): Draggable => {
       centerPosition(size)
   );
   const blockAutoPositionRef = useMinMaxRef(id);
+  const viewportRef = useRef(getWindowViewport());
+  // Like Windows after a display change, windows in the work area stay in it
+  // (top left first), while others are only kept from being lost
   const monitorViewportResize = useEffectEvent((): void => {
-    const vwSize = getWindowViewport();
+    const lastViewport = viewportRef.current;
+    const viewport = getWindowViewport();
+    const fit = (
+      axis: keyof Position,
+      length: number,
+      buffer: number
+    ): number =>
+      position[axis] >= 0 && position[axis] + length <= lastViewport[axis]
+        ? Math.max(0, Math.min(position[axis], viewport[axis] - length))
+        : Math.min(position[axis], viewport[axis] - buffer);
+    const x = fit("x", pxToNum(size.width), WINDOW_OFFSCREEN_BUFFER_PX.RIGHT);
+    const y = fit("y", pxToNum(size.height), WINDOW_OFFSCREEN_BUFFER_PX.BOTTOM);
 
-    if (isWindowOutsideBounds({ position, size }, vwSize, true)) {
-      setPosition(({ x, y }) => {
-        const xOffset = vwSize.x - WINDOW_OFFSCREEN_BUFFER_PX.RIGHT;
-        const yOffset = vwSize.y - WINDOW_OFFSCREEN_BUFFER_PX.BOTTOM;
+    viewportRef.current = viewport;
 
-        return {
-          x: Math.min(x, xOffset),
-          y: Math.min(y, yOffset),
-        };
-      });
-    }
+    if (x !== position.x || y !== position.y) setPosition({ x, y });
   });
 
   useEffect(() => {

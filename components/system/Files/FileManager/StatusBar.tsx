@@ -91,11 +91,15 @@ const StatusBar: FC<StatusBarProps> = ({
       onContextMenuCapture={haltEvent}
       {...fileDrop}
     >
-      <div {...label("Total item count")}>
+      <div role="group" {...label("Total item count")}>
         {count} item{count === 1 ? "" : "s"}
       </div>
       {showSelected && selected.length > 0 && (
-        <div className="selected" {...label("Selected item count and size")}>
+        <div
+          className="selected"
+          role="group"
+          {...label("Selected item count and size")}
+        >
           {selected.length} item{selected.length === 1 ? "" : "s"} selected
           {selectedSize !== UNKNOWN_SIZE && selectedSize !== UNCALCULATED_SIZE
             ? `\u00A0\u00A0${getFormattedSize(selectedSize)}`

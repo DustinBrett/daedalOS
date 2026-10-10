@@ -19,6 +19,15 @@ import {
   THIN_SCROLLBAR_WIDTH,
   THIN_SCROLLBAR_WIDTH_NON_WEBKIT,
 } from "utils/constants";
+import { haltEvent } from "utils/functions";
+import {
+  focusByCharacter,
+  focusByKey,
+  isKeyboardNavigating,
+  isPrintableKey,
+  isVisibleElement,
+  restoreFocus,
+} from "utils/keyboard";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -28,8 +37,15 @@ type StyleVariant = Variant & {
   height?: string;
 };
 
+const getEntries = (list?: Element | null): HTMLButtonElement[] =>
+  [...(list?.querySelectorAll<HTMLButtonElement>("li > button") || [])].filter(
+    isVisibleElement
+  );
+
 const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   const menuRef = useRef<HTMLElement | null>(null);
+  const returnFocusRef = useRef<Element | null>(null);
+  const closingRef = useRef(false);
   const {
     sizes: { startMenu },
   } = useTheme();
@@ -46,8 +62,65 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
   const revealScrolling: React.MouseEventHandler = ({ clientX = 0 }) =>
     setShowScrolling(clientX > startMenuWidth);
   const focusOnRenderCallback = (element: HTMLElement | null): void => {
+    if (element && !element.contains(document.activeElement)) {
+      returnFocusRef.current = document.activeElement;
+    }
+
     element?.focus(PREVENT_SCROLL);
     menuRef.current = element;
+  };
+  const openSearch = (key: string): void => {
+    toggleStartMenu(false);
+
+    const searchButton = getNavButtonByTitle(SEARCH_BUTTON_TITLE);
+
+    if (searchButton) {
+      searchButton.click();
+
+      let tries = 0;
+      const openSearchTimerRef = window.setInterval(() => {
+        const searchInput = document.querySelector<HTMLInputElement>(
+          "#searchMenu .search > input"
+        );
+
+        if (searchInput) {
+          updateInputValueOnReactElement(searchInput, key);
+        }
+
+        if (searchInput || (tries += 1) > 10) {
+          window.clearInterval(openSearchTimerRef);
+        }
+      }, 50);
+    }
+  };
+  const onKeyDown: React.KeyboardEventHandler<HTMLElement> = (event) => {
+    const { key, target } = event;
+    const menuElement = menuRef.current;
+    const appList = menuElement?.querySelector(":scope > ol");
+    // Arrows, Home & End on the menu itself go to its apps
+    const list =
+      target === menuElement
+        ? appList
+        : (target as Element).closest("#startMenu > nav, #startMenu > ol");
+    const isPrintable = isPrintableKey(event);
+
+    if (key === "Escape") {
+      event.preventDefault();
+      closingRef.current = true;
+      toggleStartMenu(false);
+      restoreFocus(returnFocusRef.current, menuElement);
+      closingRef.current = false;
+    } else if (
+      list &&
+      (focusByKey(key, getEntries(list), { horizontal: false }) ||
+        // Like Windows, a letter jumps through the apps while navigating them
+        (appList?.contains(target as Node) &&
+          isPrintable &&
+          isKeyboardNavigating() &&
+          focusByCharacter(key, getEntries(list))))
+    ) {
+      haltEvent(event);
+    } else if (isPrintable) openSearch(key);
   };
   const startMenuTransition = useTaskbarItemTransition(startMenu.maxHeight);
   const { height } =
@@ -59,42 +132,18 @@ const StartMenu: FC<StartMenuProps> = ({ toggleStartMenu }) => {
       $showScrolling={showScrolling}
       aria-label="Start"
       id="startMenu"
-      onBlurCapture={(event) =>
-        maybeCloseTaskbarMenu(
-          event,
-          menuRef.current,
-          toggleStartMenu,
-          undefined,
-          START_BUTTON_TITLE
-        )
-      }
-      onKeyDown={({ key }) => {
-        if (key === "Escape") toggleStartMenu(false);
-        else if (key.length === 1) {
-          toggleStartMenu(false);
-
-          const searchButton = getNavButtonByTitle(SEARCH_BUTTON_TITLE);
-
-          if (searchButton) {
-            searchButton.click();
-
-            let tries = 0;
-            const openSearchTimerRef = window.setInterval(() => {
-              const searchInput = document.querySelector<HTMLInputElement>(
-                "#searchMenu .search > input"
-              );
-
-              if (searchInput) {
-                updateInputValueOnReactElement(searchInput, key);
-              }
-
-              if (searchInput || (tries += 1) > 10) {
-                window.clearInterval(openSearchTimerRef);
-              }
-            }, 50);
-          }
+      onBlurCapture={(event) => {
+        if (!closingRef.current) {
+          maybeCloseTaskbarMenu(
+            event,
+            menuRef.current,
+            toggleStartMenu,
+            undefined,
+            START_BUTTON_TITLE
+          );
         }
       }}
+      onKeyDown={onKeyDown}
       onMouseLeave={() => setShowScrolling(false)}
       onMouseMove={revealScrolling}
       role="dialog"

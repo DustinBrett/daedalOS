@@ -13,7 +13,8 @@ const StyledSidebar = styled.nav`
   width: ${({ theme }) => theme.sizes.startMenu.sideBar.width}px;
   z-index: 1;
 
-  &:hover:not(&.collapsed) {
+  &:hover:not(.collapsed),
+  :root[data-keyboard] &:focus-within:not(.collapsed) {
     background-color: hsl(0 0% 10% / 95%);
     box-shadow: 8px 0 5px -5px hsl(0 0% 10% / 50%);
     transition:

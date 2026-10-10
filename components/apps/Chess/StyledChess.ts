@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import FocusRing from "styles/common/FocusRing";
+import VisuallyHidden from "styles/common/VisuallyHidden";
 
 const TOOLBAR_BG = "#262421";
 const STATUS_BG = "#1F1D1B";
@@ -154,6 +156,15 @@ const StyledChess = styled.div`
 
   .board .square-4b72b {
     position: relative;
+  }
+
+  :root[data-keyboard] & .board:focus .square-4b72b.square-cursor {
+    ${FocusRing};
+  }
+
+  .cursor-announcement,
+  .engine-move {
+    ${VisuallyHidden};
   }
 
   /* Light-green selection overlay on the actual chessboard2 square so

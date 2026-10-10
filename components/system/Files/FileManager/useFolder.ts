@@ -31,7 +31,7 @@ import useSortBy, {
 } from "components/system/Files/FileManager/useSortBy";
 import { useFileSystemActions, useFs, usePasteList } from "contexts/fileSystem";
 import { type CaptureTriggerEvent } from "contexts/menu/useMenuContextState";
-import { useProcessesActions } from "contexts/process";
+import { getProcesses, useProcessesActions } from "contexts/process";
 import {
   useIconPositions,
   useSessionActions,
@@ -57,6 +57,7 @@ import {
   saveUnpositionedDesktopIcons,
   updateIconPositions,
 } from "utils/functions";
+import { DESKTOP_SELECTOR } from "utils/keyboard";
 import { loadZipFunctions } from "utils/loaders";
 
 export type FileActions = {
@@ -114,6 +115,17 @@ const NO_FILES = undefined;
 const EMPTY_FILES = Object.create(null) as Files;
 
 const loadFflate = (): Promise<typeof Fflate> => import("fflate");
+
+// Id of the window an element is in, "" for the desktop or nothing, undefined
+// for anywhere else
+const getWindowId = (element: unknown): string | undefined =>
+  !(element instanceof Element) ||
+  element === document.body ||
+  element.closest(DESKTOP_SELECTOR)
+    ? ""
+    : Object.entries(getProcesses()).find(([, { componentWindow }]) =>
+        componentWindow?.contains(element)
+      )?.[0];
 
 const triggerDownload = async (
   contents: Buffer,
@@ -349,6 +361,8 @@ const useFolder = (
     await readFile(path),
   ];
   const renameFile = async (path: string, name?: string): Promise<void> => {
+    // Enter leaves the rename box focused, unlike a click or Tab elsewhere
+    const byEnter = document.activeElement instanceof HTMLTextAreaElement;
     let newName = removeInvalidFilenameCharacters(name).trim();
 
     if (newName?.endsWith(".")) {
@@ -391,6 +405,10 @@ const useFolder = (
         } else {
           await updateFolder(directory, renamedPath, path);
         }
+
+        blurEntry(basename(path));
+        // Like Explorer, a renamed entry stays selected after Enter
+        if (byEnter) focusEntry(basename(renamedPath));
       }
     }
   };
@@ -596,6 +614,9 @@ const useFolder = (
 
     const pasteEntries = Object.entries(pasteList);
     const moving = pasteEntries.some(([, operation]) => operation === "move");
+    const pastedEntries: string[] = [];
+    // Where it was pasted, which may not be where focus is
+    const pasteWindowId = getWindowId(event?.target || document.activeElement);
     const copyFiles = async (entry: string, basePath = ""): Promise<void> => {
       const newBasePath = join(basePath, basename(entry));
       let uniquePath = "";
@@ -624,7 +645,10 @@ const useFolder = (
         }
       }
 
-      if (uniquePath && !basePath) updateFolder(directory, uniquePath);
+      if (uniquePath && !basePath) {
+        pastedEntries.push(uniquePath);
+        updateFolder(directory, uniquePath);
+      }
     };
     const objectReaders = pasteEntries.map<ObjectReader>(([pasteEntry]) => {
       let aborted = false;
@@ -636,6 +660,20 @@ const useFolder = (
         directory,
         done: () => {
           if (moving) copyEntries([]);
+
+          const focusedWindowId = getWindowId(document.activeElement);
+
+          // Like Explorer, what was pasted is selected, unless focus or the
+          // window has since gone elsewhere
+          if (
+            pastedEntries.length > 0 &&
+            (focusedWindowId === pasteWindowId ||
+              Boolean(focusedWindowId?.startsWith("Transfer"))) &&
+            (!pasteWindowId || getProcesses()[pasteWindowId]?.url === directory)
+          ) {
+            blurEntry();
+            pastedEntries.forEach(focusEntry);
+          }
         },
         name: pasteEntry,
         operation: moving ? "Moving" : "Copying",
@@ -643,7 +681,11 @@ const useFolder = (
           if (aborted) return;
 
           if (moving) {
-            updateFolder(directory, await createPath(pasteEntry, directory));
+            const movedEntry = await createPath(pasteEntry, directory);
+
+            // Moving into where it already is, or into itself, pastes nothing
+            if (movedEntry) pastedEntries.push(movedEntry);
+            updateFolder(directory, movedEntry);
           } else await copyFiles(pasteEntry);
         },
       };

@@ -78,6 +78,12 @@ import {
   loadFiles,
   viewWidth,
 } from "utils/functions";
+import {
+  isComposingKey,
+  isKeyboardNavigating,
+  restoreFocus,
+  whenFocusLost,
+} from "utils/keyboard";
 
 type AIChatProps = {
   toggleAI: () => void;
@@ -210,6 +216,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const typing = promptText.length > 0 || attachments.length > 0;
   const [conversation, setConversation] = useState<Message[]>([]);
+  const latestMessage = conversation[conversation.length - 1];
   const lastAiMessageIndex =
     conversation.length -
     [...conversation].reverse().findIndex(({ type }) => type === "ai") -
@@ -326,12 +333,29 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   };
   const [containerElement, setContainerElement] =
     useState<HTMLElement | null>();
+
+  useEffect(() => {
+    // The stop, retry & start over buttons go away while they have focus
+    whenFocusLost(() => {
+      const textArea = textAreaRef.current;
+
+      (textArea?.disabled ? textArea.closest("section") : textArea)?.focus(
+        PREVENT_SCROLL
+      );
+    });
+    // eslint-disable-next-line react/exhaustive-effect-dependencies
+  }, [responding, responseError]);
   const { removeFromStack, setWallpaper } = useSessionActions();
   const { zIndex, ...focusableProps } = useFocusable(
     AI_WINDOW_ID,
     undefined,
     containerElement
   );
+  const closeAI = (returnFocus = true): void => {
+    if (returnFocus) restoreFocus(undefined, containerElement);
+    toggleAI();
+    removeFromStack(AI_WINDOW_ID);
+  };
   const [scrollbarVisible, setScrollbarVisible] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(-1);
   const autoSizeText = (): void => {
@@ -494,9 +518,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
   };
   const retry = (): void => {
     const messages =
-      conversation[conversation.length - 1]?.type === "ai"
-        ? conversation.slice(0, -1)
-        : conversation;
+      latestMessage?.type === "ai" ? conversation.slice(0, -1) : conversation;
 
     if (messages.length === 0) return;
 
@@ -656,6 +678,12 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
       $zIndex={zIndex}
       aria-label={AI_TITLE}
       id={AI_WINDOW_ID}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && !isComposingKey(event.nativeEvent)) {
+          event.preventDefault();
+          closeAI();
+        }
+      }}
       role="dialog"
       {...(imageInput && {
         onDragOver: haltEvent,
@@ -673,10 +701,7 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
           <nav role="presentation">
             <Button
               className="close"
-              onClick={() => {
-                toggleAI();
-                removeFromStack(AI_WINDOW_ID);
-              }}
+              onClick={() => closeAI(isKeyboardNavigating())}
               {...label("Close")}
             >
               <CloseIcon />
@@ -706,8 +731,8 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   "More Creative"
                 )}
               >
-                <h4>More</h4>
-                <h2>Creative</h2>
+                <h4 role="none">More</h4>
+                <h2 role="none">Creative</h2>
               </button>
               <button
                 aria-pressed={convoStyle === "balanced"}
@@ -716,8 +741,8 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                 type="button"
                 {...label("For everyday, informed chats", "More Balanced")}
               >
-                <h4>More</h4>
-                <h2>Balanced</h2>
+                <h4 role="none">More</h4>
+                <h2 role="none">Balanced</h2>
               </button>
               <button
                 aria-pressed={convoStyle === "precise"}
@@ -729,11 +754,24 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
                   "More Precise"
                 )}
               >
-                <h4>More</h4>
-                <h2>Precise</h2>
+                <h4 role="none">More</h4>
+                <h2 role="none">Precise</h2>
               </button>
             </div>
           </div>
+        </div>
+        {/* Replies stream in, so each is only told once it's complete */}
+        <div className="reply-status" role="status">
+          {!responding &&
+          latestMessage?.type === "ai" &&
+          !latestMessage.withCanvas
+            ? htmlToText(
+                formatMarkdown(
+                  splitThoughts(latestMessage.text).answer,
+                  markedLoaded
+                )
+              )
+            : ""}
         </div>
         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
         <div className="conversation" onClick={onConversationClick}>
@@ -991,7 +1029,11 @@ const AIChat: FC<AIChatProps> = ({ toggleAI }) => {
           }}
           onFocus={autoSizeText}
           onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
+            if (
+              event.key === "Enter" &&
+              !event.shiftKey &&
+              !isComposingKey(event.nativeEvent)
+            ) {
               event.preventDefault();
               addUserPrompt();
             }

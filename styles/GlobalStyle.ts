@@ -1,4 +1,5 @@
 import * as styled from "styled-components";
+import FocusRing from "styles/common/FocusRing";
 
 const GlobalStyle = styled.createGlobalStyle`
   *,
@@ -57,6 +58,24 @@ const GlobalStyle = styled.createGlobalStyle`
       background: var(--after-background);
       opacity: var(--after-background-opacity, 100%);
     }
+  }
+
+  :root[data-keyboard] {
+    a[href]:focus,
+    button:focus,
+    input[type="checkbox"]:focus,
+    select:focus,
+    [role="button"]:focus,
+    [role="slider"]:focus,
+    ol[tabindex]:not(.has-selection):focus > li:first-of-type > button {
+      ${FocusRing};
+    }
+  }
+
+  /* Older Firefox draws its own dotted rectangle inside focused buttons, whose
+     border only loses its color, as removing it would resize every button */
+  button::-moz-focus-inner {
+    border-color: transparent;
   }
 
   input::selection,

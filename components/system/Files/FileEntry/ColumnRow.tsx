@@ -17,12 +17,15 @@ type ColumnDataProps = {
   type: string;
 };
 
+const DATA_COLUMNS: (keyof ColumnDataProps)[] = ["date", "type", "size"];
+
 const ColumnRow: FC<{
   columns: Columns;
+  id: string;
   isDirectory: boolean;
   path: string;
   stats: Stats;
-}> = ({ columns, isDirectory, path, stats }) => {
+}> = ({ columns, id, isDirectory, path, stats }) => {
   const { stat } = useFileSystemActions();
   const { formats } = useTheme();
   const getColumnData = async (): Promise<ColumnDataProps> => {
@@ -48,10 +51,18 @@ const ColumnRow: FC<{
   }, [columnData, getColumnData]);
 
   return (
-    <StyledColumnRow>
-      <div style={{ width: columns?.date.width }}>{columnData?.date}</div>
-      <div style={{ width: columns?.type.width }}>{columnData?.type}</div>
-      <div style={{ width: columns?.size.width }}>{columnData?.size}</div>
+    <StyledColumnRow id={id}>
+      {DATA_COLUMNS.map((column, index) => (
+        <div key={column} style={{ width: columns?.[column].width }}>
+          {/* Like Explorer, each value is read with its column name */}
+          {columnData?.[column] && (
+            <span className="label">
+              {`${index > 0 ? ", " : ""}${columns?.[column].name}: `}
+            </span>
+          )}
+          {columnData?.[column]}
+        </div>
+      ))}
     </StyledColumnRow>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   copyKeyMenuItems,
   shortTimeStamp,
@@ -40,6 +40,7 @@ const Contact: FC<ContactProps> = ({
   const isVisible = useIsVisible(elementRef);
   const { nip05, picture, userName } = useNostrProfile(pubkey, isVisible);
   const unreadClass = unread ? "unread" : undefined;
+  const captionId = useId();
   const { contextMenu } = useMenuActions();
   const { onContextMenuCapture } = contextMenu(() => [
     {
@@ -84,8 +85,10 @@ const Contact: FC<ContactProps> = ({
           type="checkbox"
         />
       )}
-      <Button onClick={onSelect || onClick}>
+      {/* Named by its caption, as Chromium skips the text of a figure */}
+      <Button aria-labelledby={captionId} onClick={onSelect || onClick}>
         <Profile
+          captionId={captionId}
           nip05={nip05}
           picture={picture}
           pubkey={pubkey}

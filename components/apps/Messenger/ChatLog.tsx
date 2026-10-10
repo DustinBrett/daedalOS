@@ -14,7 +14,7 @@ import {
   useMessages,
 } from "components/apps/Messenger/MessageContext";
 import StyledChatLog from "components/apps/Messenger/StyledChatLog";
-import { clsx } from "utils/functions";
+import { clsx, label } from "utils/functions";
 
 const SanitizedContent = dynamic(
   () => import("components/apps/Messenger/SanitizedContent")
@@ -73,7 +73,8 @@ const ChatLog: FC<{ recipientPublicKey: string }> = ({
                         messageIndex === group.length - 1)) && (
                       <div
                         className="status"
-                        title={status ? STATUS_LABELS[status] : "Sent"}
+                        role="img"
+                        {...label(status ? STATUS_LABELS[status] : "Sent")}
                       >
                         {status ? <CheckCircle /> : <CheckFullCircle />}
                       </div>

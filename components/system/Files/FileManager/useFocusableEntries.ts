@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
+import { isKeyboardInMenu } from "utils/keyboard";
 
 type FocusedEntryProps = {
   className?: string;
@@ -50,9 +51,9 @@ const useFocusableEntries = (
       haltEvent(event);
       (target as HTMLElement)?.focus(PREVENT_SCROLL);
     } else if (
-      (!isFileManagerFocus &&
-        !fileManagerRef.current?.contains(relatedTarget)) ||
-      !(relatedTarget instanceof HTMLElement)
+      (!fileManagerRef.current?.contains(relatedTarget) ||
+        !(relatedTarget instanceof HTMLElement)) &&
+      !isKeyboardInMenu(relatedTarget)
     ) {
       blurEntry();
     }

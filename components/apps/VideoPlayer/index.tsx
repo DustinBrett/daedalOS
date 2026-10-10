@@ -5,8 +5,12 @@ import AppContainer, {
 } from "components/system/Apps/AppContainer";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 
+const SPACES = /\s/g;
+
 const VideoPlayer: FC<ComponentProcessProps> = ({ id }) => {
   const containerProps = useAppContainer(id);
+  // Video.js builds ids for its parts from this one, which can't have spaces
+  const elementId = id.replace(SPACES, "_");
 
   useVideoPlayer(containerProps);
 
@@ -16,10 +20,10 @@ const VideoPlayer: FC<ComponentProcessProps> = ({ id }) => {
       <video
         aria-label="Video Player"
         className="video-js vjs-big-play-centered"
-        id={id}
+        id={elementId}
         autoPlay
       />
-      <canvas aria-hidden="true" id={`${id}_canvas`} />
+      <canvas aria-hidden="true" id={`${elementId}_canvas`} />
     </AppContainer>
   );
 };

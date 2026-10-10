@@ -52,6 +52,27 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
     }
   }
 
+  /* Outside, as captions run past the bottom edge of the button */
+  :root[data-keyboard] & > button:focus {
+    box-shadow: 0 0 0 1px var(--focus-inner, rgb(0 0 0));
+    outline-offset: 1px;
+  }
+
+  /* Like Explorer, a lone selected entry already shows where focus is */
+  :root[data-keyboard] :not(.multi-select) > &.focus-within > button:focus {
+    box-shadow: none;
+    outline: 0;
+  }
+
+  /* Apart from the first rule, as stylelint wants ascending specificity */
+  :root[data-keyboard]
+    ol[tabindex]:not(.has-selection):focus
+    > &:first-of-type
+    > button {
+    box-shadow: 0 0 0 1px var(--focus-inner, rgb(0 0 0));
+    outline-offset: 1px;
+  }
+
   &:hover {
     background-color: ${({ theme }) => theme.colors.fileEntry.background};
     outline: ${({ $desktop, theme }) =>
@@ -66,6 +87,11 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
         ? `1px solid ${theme.colors.fileEntry.borderFocused}`
         : undefined};
     z-index: 1;
+
+    @media (forced-colors: active) {
+      outline: 1px solid highlight;
+      outline-offset: -1px;
+    }
 
     &:hover {
       background-color: ${({ $selecting, theme }) =>

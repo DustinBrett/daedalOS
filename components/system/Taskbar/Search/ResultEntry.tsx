@@ -175,10 +175,11 @@ const ResultEntry: FC<ResultEntryProps> = ({
               dangerouslySetInnerHTML={{
                 __html: name,
               }}
+              role="none"
             />
             {details && stats && (
               <>
-                <h2>
+                <h2 role="none">
                   {fileType(
                     stats,
                     extension,
@@ -188,7 +189,7 @@ const ResultEntry: FC<ResultEntryProps> = ({
                   )}
                 </h2>
                 {!isYTUrl && !isAppShortcut && !isDirectory && (
-                  <h2>{lastModified}</h2>
+                  <h2 role="none">{lastModified}</h2>
                 )}
               </>
             )}
@@ -200,7 +201,10 @@ const ResultEntry: FC<ResultEntryProps> = ({
           className="select"
           onClick={() => setActiveItem(url)}
           type="button"
-          {...label("See more information")}
+          {...label(
+            "See more information",
+            `See more information about ${baseName}`
+          )}
         >
           <RightArrow />
         </button>

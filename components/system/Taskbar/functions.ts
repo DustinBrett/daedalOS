@@ -1,4 +1,5 @@
 import { PREVENT_SCROLL } from "utils/constants";
+import { isKeyboardInMenu } from "utils/keyboard";
 
 export const START_BUTTON_TITLE = "Start";
 export const SEARCH_BUTTON_TITLE = "Type here to search";
@@ -22,7 +23,8 @@ export const maybeCloseTaskbarMenu = (
   closeOnTaskbarEntries = false
 ): void => {
   const focusedInsideMenu =
-    focusedElement && menuElement?.contains(focusedElement);
+    (focusedElement && menuElement?.contains(focusedElement)) ||
+    isKeyboardInMenu(focusedElement);
 
   if (!focusedInsideMenu) {
     const taskbarElement = menuElement?.nextSibling;

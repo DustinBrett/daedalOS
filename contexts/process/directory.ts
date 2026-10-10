@@ -140,6 +140,7 @@ const directory: Processes = {
       width: 560,
     },
     icon: "/System/Icons/marked.webp",
+    isLightBg: true,
     libs: [
       "/Program Files/Marked/marked.min.js",
       "/Program Files/Marked/purify.min.js",
@@ -192,6 +193,7 @@ const directory: Processes = {
     hideTaskbarEntry: true,
     hideTitlebar: true,
     icon: "/System/Icons/unknown.webp",
+    isLightBg: true,
     title: "Open With",
   },
   Paint: {
@@ -231,6 +233,7 @@ const directory: Processes = {
     hideMaximizeButton: true,
     hideMinimizeButton: true,
     icon: "",
+    isLightBg: true,
     title: "Properties",
   },
   Quake3: {
@@ -272,6 +275,7 @@ const directory: Processes = {
       bottom: TASKBAR_HEIGHT + 11,
       left: 15,
     },
+    isLightBg: true,
     singleton: true,
     title: "Run",
   },
@@ -306,6 +310,7 @@ const directory: Processes = {
       width: 538,
     },
     icon: "/System/Icons/stablediffusion.webp",
+    isLightBg: true,
     singleton: true,
     title: "Stable Diffusion",
   },
@@ -363,6 +368,7 @@ const directory: Processes = {
     },
     dialogProcess: true,
     icon: "/System/Icons/copying.webp",
+    isLightBg: true,
     title: "",
   },
   V86: {

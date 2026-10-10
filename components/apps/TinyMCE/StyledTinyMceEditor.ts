@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import FocusRing from "styles/common/FocusRing";
 
 const StyledTinyMceEditor = styled.div`
   height: 100%;
@@ -26,7 +27,11 @@ const StyledTinyMceEditor = styled.div`
         overflow: hidden;
         padding: 0;
         position: relative;
-        visibility: hidden;
+
+        /* Only its parts hide, as a hidden header couldn't take focus */
+        > * {
+          visibility: hidden;
+        }
 
         &::after {
           bottom: 0;
@@ -44,13 +49,21 @@ const StyledTinyMceEditor = styled.div`
           place-items: center;
           position: fixed;
           transform: translateZ(0);
-          visibility: visible;
           width: auto;
           z-index: 1;
         }
 
         &:hover::after {
           background-color: rgb(255 255 255 / 15%);
+        }
+
+        :root[data-keyboard] &:focus {
+          box-shadow: none;
+          outline: 0;
+
+          &::after {
+            ${FocusRing};
+          }
         }
 
         .tox-toolbar-overlord {

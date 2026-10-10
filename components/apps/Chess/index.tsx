@@ -27,11 +27,33 @@ import { useFileSystemActions } from "contexts/fileSystem";
 import { useProcess } from "contexts/process";
 import useResizeObserver from "hooks/useResizeObserver";
 import { TRANSITIONS_IN_MILLISECONDS } from "utils/constants";
-import { clsx, loadFiles } from "utils/functions";
+import { clsx, haltEvent, loadFiles } from "utils/functions";
 
 const PIECE_THEME = "/Program Files/Chess/img/{piece}.svg";
 
 const SKILL_LEVELS = Array.from({ length: 21 }, (_, i) => i);
+
+const FILES = "abcdefgh";
+
+// Keyboard cursor moves as seen from White's side of the board, with Home &
+// End going past the ends of the row, where moves stop
+const CURSOR_STEPS: Record<string, [number, number]> = {
+  ArrowDown: [0, -1],
+  ArrowLeft: [-1, 0],
+  ArrowRight: [1, 0],
+  ArrowUp: [0, 1],
+  End: [8, 0],
+  Home: [-8, 0],
+};
+
+const PIECE_NAMES: Record<string, string> = {
+  b: "bishop",
+  k: "king",
+  n: "knight",
+  p: "pawn",
+  q: "queen",
+  r: "rook",
+};
 
 const skillToMovetimeMs = (skill: number): number => 50 + skill * 100;
 
@@ -82,6 +104,14 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
   const selectedSquareRef = useRef<string | undefined>(undefined);
   const justSelectedRef = useRef(false);
   const [selectedSquare, setSelectedSquare] = useState<string>();
+  const squareActionsRef = useRef<{
+    clearSelection: () => void;
+    onSquare: (square: string) => void;
+  }>(undefined);
+  const [movedCursorSquare, setMovedCursorSquare] = useState<string>();
+  const [cursorAnnouncement, setCursorAnnouncement] = useState("");
+  const [boardFocused, setBoardFocused] = useState(false);
+  const [engineMove, setEngineMove] = useState("");
   const detachClickRef = useRef<(() => void) | undefined>(undefined);
   const [ready, setReady] = useState(false);
   const [mode, setMode] = useState<GameMode>("hvc");
@@ -168,6 +198,7 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
     }
 
     thinkingRef.current = true;
+    setEngineMove("");
     refreshStatus();
 
     worker.postMessage(`setoption name Skill Level value ${skillRef.current}`);
@@ -188,7 +219,11 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
     };
 
     try {
-      chess.move(move);
+      const { color, san } = chess.move(move);
+
+      setEngineMove(
+        `${sideName(color)} played ${san.replace("#", "").replace("+", ", check")}`
+      );
     } catch {
       thinkingRef.current = false;
       refreshStatus();
@@ -247,6 +282,7 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
 
     moveSeqRef.current += 1;
     stopEngine();
+    setEngineMove("");
 
     setPgnMoves([]);
     setPgnIndex(-1);
@@ -263,7 +299,8 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
         : "white"
     );
 
-    refreshStatus();
+    // Always new, as the reset board changes what the cursor is on
+    setStatus(computeStatus());
 
     if (!isHumanTurn()) requestEngineMove();
   };
@@ -433,20 +470,13 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
         }
 
         const flipped = orientationRef.current === "black";
-        const file = "abcdefgh"[flipped ? 7 - fileIdx : fileIdx];
+        const file = FILES[flipped ? 7 - fileIdx : fileIdx];
         const rank = flipped ? rankIdx + 1 : 8 - rankIdx;
 
         return `${file}${rank}`;
       };
 
-      const onSquareClick = (event: MouseEvent): void => {
-        const square = xyToSquare(event.clientX, event.clientY);
-        const justSelected = justSelectedRef.current;
-
-        justSelectedRef.current = false;
-
-        if (!square) return;
-
+      const onSquare = (square: string, justSelected = false): void => {
         const selected = selectedSquareRef.current;
 
         if (!selected) {
@@ -468,6 +498,16 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
         if (canSelectPieceAt(square)) selectSquare(square);
         else clearSelection();
       };
+      const onSquareClick = (event: MouseEvent): void => {
+        const square = xyToSquare(event.clientX, event.clientY);
+        const justSelected = justSelectedRef.current;
+
+        justSelectedRef.current = false;
+
+        if (square) onSquare(square, justSelected);
+      };
+
+      squareActionsRef.current = { clearSelection, onSquare };
 
       // chessboard2 preventDefaults touchstart/mousedown to start its own drag,
       // which suppresses the synthesized click event on both desktop and mobile
@@ -676,6 +716,7 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
 
           moveSeqRef.current += 1;
           stopEngine();
+          setEngineMove("");
 
           chess.reset();
 
@@ -740,6 +781,60 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
   };
 
   const controlId = id.replace(/\s/g, "_");
+  // Starts on the king's pawn of the side at the bottom, the usual first move
+  const cursorSquare =
+    movedCursorSquare || (orientation === "white" ? "e2" : "e7");
+  // Like a grid, arrows move a square cursor that Enter or Space activates
+  const onBoardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    const { key } = event;
+    const step = CURSOR_STEPS[key];
+
+    if (step) {
+      haltEvent(event);
+
+      const direction = orientation === "white" ? 1 : -1;
+      const file = FILES.indexOf(cursorSquare[0]) + step[0] * direction;
+      const rank = Number(cursorSquare[1]) + step[1] * direction;
+
+      setMovedCursorSquare(
+        `${FILES[Math.min(Math.max(file, 0), 7)]}${Math.min(Math.max(rank, 1), 8)}`
+      );
+    } else if (key === "Enter" || key === " ") {
+      haltEvent(event);
+      squareActionsRef.current?.onSquare(cursorSquare);
+      // Only a mousedown's own click keeps the selection it made
+      justSelectedRef.current = false;
+    } else if (key === "Escape" && selectedSquare) {
+      haltEvent(event);
+      squareActionsRef.current?.clearSelection();
+    }
+  };
+
+  useEffect(() => {
+    const squareEl = boardElRef.current?.querySelector(
+      `[data-square-coord="${cursorSquare}"]`
+    );
+    const piece = chessRef.current?.get(
+      cursorSquare as Parameters<ChessGame["get"]>[0]
+    );
+
+    squareEl?.classList.add("square-cursor");
+
+    if (ready) {
+      setCursorAnnouncement(
+        [
+          cursorSquare,
+          piece && `${sideName(piece.color)} ${PIECE_NAMES[piece.type]}`,
+          selectedSquare === cursorSquare && "selected",
+        ]
+          .filter(Boolean)
+          .join(", ")
+      );
+    }
+
+    return () => squareEl?.classList.remove("square-cursor");
+    // eslint-disable-next-line react/exhaustive-effect-dependencies -- Moves change the piece under the cursor
+  }, [cursorSquare, pgnIndex, ready, selectedSquare, status]);
 
   return (
     <StyledChess>
@@ -799,7 +894,22 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
           role="status" loader or its announcement may be withheld */}
       <div aria-busy={!ready || undefined} className="board-wrap">
         <div className="board-frame">
-          <div ref={boardElRef} className="board" />
+          {/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- An application board handles its own keys */}
+          <div
+            ref={boardElRef}
+            aria-label="Chess board"
+            className="board"
+            onBlur={() => setBoardFocused(false)}
+            onFocus={() => setBoardFocused(true)}
+            onKeyDown={onBoardKeyDown}
+            role="application"
+            tabIndex={0}
+          />
+          {/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex */}
+          {/* Only announced while the board has focus, not as it loads or flips */}
+          <div aria-live="polite" className="cursor-announcement">
+            {boardFocused && cursorAnnouncement}
+          </div>
         </div>
       </div>
       {pgnMoves.length > 0 && (
@@ -853,6 +963,8 @@ const Chess: FC<ComponentProcessProps> = ({ id }) => {
         })}
         role="status"
       >
+        {/* The engine's move only shows on the board, so it's also read out */}
+        {engineMove && <span className="engine-move">{`${engineMove}. `}</span>}
         {status.text}
       </div>
     </StyledChess>

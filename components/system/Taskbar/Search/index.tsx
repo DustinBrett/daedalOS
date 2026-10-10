@@ -48,6 +48,14 @@ import {
 } from "utils/constants";
 import { getExtension, haltEvent, label, preloadLibs } from "utils/functions";
 import {
+  focusByKey,
+  isComposingKey,
+  isKeyboardNavigating,
+  isPrintableKey,
+  isVisibleElement,
+  restoreFocus,
+} from "utils/keyboard";
+import {
   FILE_INDEX,
   SEARCH_INPUT_PROPS,
   SEARCH_LIB,
@@ -101,9 +109,18 @@ const ResultSection = dynamic(
   () => import("components/system/Taskbar/Search/ResultSection")
 );
 
+const getResultButtons = (menu: HTMLElement | null): HTMLElement[] =>
+  [
+    ...(menu?.querySelectorAll<HTMLElement>(
+      ".content .list li > button:not(.select), .content section li > button"
+    ) || []),
+  ].filter(isVisibleElement);
+
 const Search: FC<SearchProps> = ({ toggleSearch }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const menuRef = useRef<HTMLElement | null>(null);
+  const returnFocusRef = useRef<Element | null>(null);
+  const closingRef = useRef(false);
   const { updateRecentFiles } = useSessionActions();
   const recentFiles = useRecentFiles();
   const { lstat, readFile } = useFileSystemActions();
@@ -124,6 +141,9 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
 
   // Before motion starts the slide-in, as focusing forces a layout
   useLayoutEffect(() => {
+    if (!menuRef.current?.contains(document.activeElement)) {
+      returnFocusRef.current = document.activeElement;
+    }
     inputRef.current?.focus(PREVENT_SCROLL);
     setTimeout(() => setShowCaret(true), 400);
   }, []);
@@ -139,10 +159,32 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
 
   if (results.length === 0 && subResults.length > 0) setSubResults([]);
 
-  const firstResult =
+  const [resultsStatus, setResultsStatus] = useState("");
+  const resultsStatusTimeoutRef = useRef(0);
+  const tabResults =
     activeTab === "All"
-      ? results[0]
-      : Object.fromEntries(subResults)[activeTab]?.[0];
+      ? results
+      : Object.fromEntries(subResults)[activeTab] || [];
+  const shownResults = tabResults.length;
+
+  useEffect(() => {
+    // Waits for typing & results to settle so only the final count is told
+    resultsStatusTimeoutRef.current = window.setTimeout(
+      () =>
+        setResultsStatus(
+          searchTerm
+            ? shownResults > 0
+              ? `${shownResults} result${shownResults === 1 ? "" : "s"}`
+              : `No results found for '${searchTerm}'`
+            : ""
+        ),
+      MILLISECONDS_IN_SECOND / 2
+    );
+
+    return () => window.clearTimeout(resultsStatusTimeoutRef.current);
+  }, [searchTerm, shownResults]);
+
+  const firstResult = tabResults[0];
   const listRef = useRef<HTMLDivElement | null>(null);
   const openApp = (pid: string, args?: ProcessArguments): void => {
     toggleSearch(false);
@@ -174,13 +216,13 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
   }, [activeItem, bestMatch, firstResult]);
 
   useEffect(() => {
-    // The select/back buttons unmount on activation, dropping focus to body,
-    // which would leave Escape and blur-close inoperable
+    // The select/back buttons and stale results unmount while focused,
+    // dropping focus to body, which would leave Escape and blur-close inoperable
     if (document.activeElement === document.body) {
       menuRef.current?.focus(PREVENT_SCROLL);
     }
     // eslint-disable-next-line react/exhaustive-effect-dependencies
-  }, [activeItem]);
+  }, [activeItem, results]);
 
   useEffect(() => {
     const updateMenuWidth = (): void =>
@@ -244,11 +286,76 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
     setActiveItem("");
     setActiveTab(tab);
   };
+  const closeSearch = (returnFocus = true): void => {
+    closingRef.current = true;
+    toggleSearch(false);
+    if (returnFocus) restoreFocus(returnFocusRef.current, menuRef.current);
+    closingRef.current = false;
+  };
+  const onKeyDown: React.KeyboardEventHandler<HTMLElement> = (event) => {
+    const { ctrlKey, key, shiftKey, target } = event;
+
+    if (isComposingKey(event.nativeEvent)) return;
+
+    // Its own shortcut closes it too, the same as Escape
+    if (
+      key === "Escape" ||
+      (ctrlKey && shiftKey && key.toUpperCase() === "S")
+    ) {
+      haltEvent(event);
+      closeSearch();
+      return;
+    }
+
+    // From the box, only Down needs the results, so typing skips finding them
+    const resultButtons =
+      target === inputRef.current && key !== "ArrowDown"
+        ? []
+        : getResultButtons(menuRef.current);
+    const resultIndex = resultButtons.indexOf(target as HTMLElement);
+
+    if (
+      (target === inputRef.current || target === menuRef.current) &&
+      key === "ArrowDown" &&
+      focusByKey(key, resultButtons)
+    ) {
+      haltEvent(event);
+    } else if (
+      resultIndex === 0 &&
+      (key === "ArrowUp" || key === "ArrowLeft")
+    ) {
+      haltEvent(event);
+      inputRef.current?.focus(PREVENT_SCROLL);
+    } else if (
+      resultIndex !== -1 &&
+      focusByKey(key, resultButtons, { wrap: false })
+    ) {
+      haltEvent(event);
+    } else if (
+      isKeyboardNavigating() &&
+      target !== inputRef.current &&
+      (isPrintableKey(event) || key === "Backspace")
+    ) {
+      // Typing goes back to the search box, as it does in Windows
+      inputRef.current?.focus(PREVENT_SCROLL);
+    }
+  };
   const visibleTabs = TABS.filter(
     (tab) =>
       !(menuWidth < 325 && tab === "Videos") &&
       !(menuWidth < 260 && tab === "Photos")
   );
+  // Narrow menus hide some tabs, so then the panel names itself
+  const labelledBy = visibleTabs.includes(activeTab)
+    ? `search-tab-${activeTab}`
+    : undefined;
+  const tabPanel = {
+    "aria-label": labelledBy ? undefined : activeTab,
+    "aria-labelledby": labelledBy,
+    id: "search-results",
+    role: "tabpanel",
+  };
+  const hasTabPanel = !searchTerm || !singleLineView || !activeItem;
 
   return (
     <StyledSearch
@@ -256,23 +363,26 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
       $singleLine={singleLineView}
       aria-label="Search"
       id="searchMenu"
-      onBlurCapture={(event) =>
-        maybeCloseTaskbarMenu(
-          event,
-          menuRef.current,
-          toggleSearch,
-          inputRef.current,
-          SEARCH_BUTTON_TITLE,
-          true
-        )
-      }
-      onKeyDown={({ key }) => {
-        if (key === "Escape") toggleSearch(false);
+      onBlurCapture={(event) => {
+        if (!closingRef.current) {
+          maybeCloseTaskbarMenu(
+            event,
+            menuRef.current,
+            toggleSearch,
+            inputRef.current,
+            SEARCH_BUTTON_TITLE,
+            true
+          );
+        }
       }}
+      onKeyDown={onKeyDown}
       role="dialog"
       {...searchTransition}
       {...FOCUSABLE_ELEMENT}
     >
+      <div className="results-status" role="status">
+        {resultsStatus}
+      </div>
       <div>
         <div className="content" onContextMenu={haltEvent}>
           <StyledTabs role="tablist">
@@ -288,10 +398,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                   onClick={() => changeTab(tab)}
                   role="tab"
                   type="button"
-                  {...(searchTerm &&
-                    (!singleLineView || !activeItem) && {
-                      "aria-controls": "search-results",
-                    })}
+                  {...(hasTabPanel && { "aria-controls": tabPanel.id })}
                   {...label(
                     tab === "All"
                       ? "Find the most relevant results"
@@ -307,7 +414,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           <nav role="presentation">
             <Button
               className="close-button"
-              onClick={() => toggleSearch(false)}
+              onClick={() => closeSearch(isKeyboardNavigating())}
               {...label("Close Search")}
             >
               <CloseIcon />
@@ -317,6 +424,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
             <StyledSections
               $singleLine={singleLineView}
               className={singleLineView ? "single-line" : undefined}
+              {...tabPanel}
             >
               <section>
                 <figure>
@@ -324,7 +432,11 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                   <StyledSuggestions>
                     {SUGGESTED.map((app) => (
                       <li key={app} title={directory[app].title}>
-                        <button onClick={() => openApp(app)} type="button">
+                        <button
+                          aria-label={directory[app].title}
+                          onClick={() => openApp(app)}
+                          type="button"
+                        >
                           <figure>
                             <Icon
                               alt=""
@@ -366,7 +478,9 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                               imgSize={16}
                               src={directory[pid]?.icon}
                             />
-                            <h2>{title || basename(file, extname(file))}</h2>
+                            <h2 role="none">
+                              {title || basename(file, extname(file))}
+                            </h2>
                           </button>
                         </li>
                       ))}
@@ -394,7 +508,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                                 imgSize={96}
                                 src={directory[game].icon}
                               />
-                              <h4 aria-level={2}>{directory[game].title}</h4>
+                              <h4 role="none">{directory[game].title}</h4>
                             </button>
                           </li>
                         )
@@ -405,7 +519,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
             </StyledSections>
           )}
           {!searchTerm && activeTab !== "All" && (
-            <div className="tab">
+            <div className="tab" {...tabPanel}>
               {METADATA[activeTab].icon}
               <h1>Search {METADATA[activeTab].title.toLowerCase()}</h1>
               <h3 aria-level={2}>
@@ -418,13 +532,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
           {searchTerm && (
             <StyledResults>
               {(!singleLineView || !activeItem) && (
-                <div
-                  ref={listRef}
-                  aria-labelledby={`search-tab-${activeTab}`}
-                  className="list"
-                  id="search-results"
-                  role="tabpanel"
-                >
+                <div ref={listRef} className="list" {...tabPanel}>
                   <ResultSection
                     activeItem={activeItem}
                     activeTab={activeTab}
@@ -477,6 +585,7 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
                 ? inputRef.current?.value.replace(tabAppend, "")
                 : inputRef.current?.value;
 
+              window.clearTimeout(resultsStatusTimeoutRef.current);
               window.clearTimeout(searchTimeoutRef.current);
               searchTimeoutRef.current = window.setTimeout(
                 () => setSearchTerm(value ?? ""),
@@ -484,10 +593,14 @@ const Search: FC<SearchProps> = ({ toggleSearch }) => {
               );
             }}
             onClick={preloadSearch}
-            onKeyDown={({ key }) => {
+            onKeyDown={({ key, nativeEvent }) => {
               preloadSearch();
 
-              if (key === "Enter" && firstResult?.ref) {
+              if (
+                key === "Enter" &&
+                firstResult?.ref &&
+                !isComposingKey(nativeEvent)
+              ) {
                 const bestMatchElement = menuRef.current?.querySelector(
                   ".list li:first-child > button"
                 );

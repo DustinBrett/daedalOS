@@ -78,12 +78,15 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
 
       getItems()
         .then((items) => {
+          // Results arriving after leaving the box leave other menus be
+          if (document.activeElement !== searchBarRef.current) return;
+
           if (items.length === 0) {
             contextMenu(() => []).onContextMenuCapture();
           } else if (searchBarRef.current?.value) {
             const searchBarRect = searchBarRef.current.getBoundingClientRect();
 
-            contextMenu(() => items).onContextMenuCapture(
+            contextMenu(() => items, "Search suggestions").onContextMenuCapture(
               undefined,
               searchBarRect,
               {
@@ -111,6 +114,7 @@ const SearchBar: FCWithRef<HTMLInputElement, SearchBarProps> = ({
     <StyledSearch>
       <input
         ref={searchBarRef}
+        aria-haspopup="menu"
         onChange={({ target }) => {
           hasUsedSearch.current = true;
           setSearchTerm(target.value);

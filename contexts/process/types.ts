@@ -59,6 +59,7 @@ type BaseProcessArguments = {
   hideTitlebar?: boolean;
   hideTitlebarIcon?: boolean;
   initialRelativePosition?: RelativePosition;
+  isLightBg?: boolean;
   libs?: string[];
   lockAspectRatio?: boolean;
   peekImage?: string;

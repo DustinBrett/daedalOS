@@ -9,7 +9,7 @@ import { CloseIcon } from "components/system/Window/Titlebar/WindowActionIcons";
 import { useProcess, useProcessesActions } from "contexts/process";
 import { useSessionActions } from "contexts/session";
 import Button from "styles/common/Button";
-import { FOCUSABLE_ELEMENT } from "utils/constants";
+import { FOCUSABLE_ELEMENT, PEEK_DELAY_MS } from "utils/constants";
 import { haltEvent, label, viewWidth } from "utils/functions";
 
 type PeekWindowProps = {
@@ -18,9 +18,6 @@ type PeekWindowProps = {
 };
 
 type ShownPeek = { element: HTMLElement; hide: () => void };
-
-// Windows' default mouse hover time, which taskbar thumbnails wait for
-const PEEK_DELAY_MS = 400;
 
 let shownPeek: ShownPeek | undefined;
 
@@ -142,7 +139,12 @@ const PeekWindow: FC<PeekWindowProps> = ({ id, onHide }) => {
       {...FOCUSABLE_ELEMENT}
     >
       <canvas ref={setCanvas} />
-      <Button className="close" onClick={onCloseClick} {...label("Close")}>
+      <Button
+        className="close"
+        onClick={onCloseClick}
+        {...label("Close")}
+        {...FOCUSABLE_ELEMENT}
+      >
         <CloseIcon />
       </Button>
       {showControls && (

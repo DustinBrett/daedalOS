@@ -5,9 +5,13 @@ type StyledSidebarButtonProps = {
   $active?: boolean;
 };
 
-const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
+const StyledSidebarButton = styled.button.attrs({
+  type: "button",
+})<StyledSidebarButtonProps>`
+  background-color: transparent;
   border: 1px solid transparent;
   display: flex;
+  font: inherit;
   height: ${({ theme }) => theme.sizes.startMenu.sideBar.buttonHeight}px;
   place-content: center;
   place-items: center;
@@ -53,7 +57,8 @@ const StyledSidebarButton = styled.li<StyledSidebarButtonProps>`
     }
   }
 
-  ${StyledSidebar}:hover:not(${StyledSidebar}.collapsed) & {
+  ${StyledSidebar}:hover:not(.collapsed) &,
+  :root[data-keyboard] ${StyledSidebar}:focus-within:not(.collapsed) & {
     transition: width 300ms;
     transition-timing-function: cubic-bezier(0.15, 1, 0.5, 1);
     width: ${({ theme }) => theme.sizes.startMenu.sideBar.expandedWidth};

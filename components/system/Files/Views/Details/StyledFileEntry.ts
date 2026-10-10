@@ -45,6 +45,17 @@ const StyledFileEntry = styled.li<StyledFileEntryProps>`
     background-color: ${({ theme }) =>
       theme.colors.fileEntry.backgroundFocused};
 
+    /* Like Explorer, a lone selected entry already shows where focus is */
+    :root[data-keyboard] :not(.multi-select) > & > button:focus {
+      box-shadow: none;
+      outline: 0;
+    }
+
+    @media (forced-colors: active) {
+      outline: 1px solid highlight;
+      outline-offset: -1px;
+    }
+
     &:hover {
       background-color: ${({ $selecting, theme }) =>
         $selecting

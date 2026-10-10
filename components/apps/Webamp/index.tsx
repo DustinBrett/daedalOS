@@ -103,6 +103,8 @@ const Webamp: FC<ComponentProcessProps> = ({ id }) => {
       ref={containerRef}
       $minimized={minimized}
       $zIndex={zIndex}
+      aria-hidden={minimized || undefined}
+      inert={minimized || undefined}
       {...focusableProps}
       {...windowTransitions}
     />

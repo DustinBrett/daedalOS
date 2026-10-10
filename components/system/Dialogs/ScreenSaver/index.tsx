@@ -7,6 +7,7 @@ import {
   FOCUSABLE_ELEMENT,
   TRANSITIONS_IN_MILLISECONDS,
 } from "utils/constants";
+import { restoreFocus } from "utils/keyboard";
 
 const ONE_TIME_PASSIVE_CAPTURE_EVENT = {
   capture: true,
@@ -30,21 +31,30 @@ const triggerEvents = [
   "touchmove",
 ];
 
+// Like Windows, the key or tap that wakes it does nothing else
+const CANCELED_EVENTS = new Set(["keydown", "touchstart"]);
+
 const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
   const { close } = useProcessesActions();
   const { title = "", url = "" } = useProcess(id);
   const { readFile } = useFileSystemActions();
   const [srcDoc, setSrcDoc] = useState<Record<string, string>>({});
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  // eslint-disable-next-line react/hook-use-state
+  const [focusedElement] = useState(() => document.activeElement);
   const loadScreenSaver = async (): Promise<void> =>
     setSrcDoc({
       [url]: (await readFile(url)).toString(),
     });
+  const closedRef = useRef(false);
   const closeScreenSaver = (event?: Event): void => {
-    // Stops the tap from also clicking what was under the screen saver
-    if (event?.type === "touchstart" && event.cancelable) {
+    if (event?.cancelable && CANCELED_EVENTS.has(event.type)) {
       event.preventDefault();
     }
+
+    if (closedRef.current) return;
+
+    closedRef.current = true;
 
     if (iframeRef.current) {
       iframeRef.current.style.display = "none";
@@ -52,6 +62,17 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
 
     close(id);
   };
+
+  useEffect(
+    () => () => {
+      // Waking up returns focus to where it was before the screen saver, once
+      // its frame is gone, as Firefox ignores focus moves while it has focus
+      if (closedRef.current && focusedElement !== document.body) {
+        requestAnimationFrame(() => restoreFocus(focusedElement));
+      }
+    },
+    [focusedElement]
+  );
 
   useEffect(() => {
     // eslint-disable-next-line react/set-state-in-effect -- False positive: state is only set after an await
@@ -62,6 +83,9 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
     <StyledScreenSaver
       ref={iframeRef}
       onLoad={(event) => {
+        // Closing drops the srcdoc, and that blank load must not take focus
+        if (closedRef.current) return;
+
         const { contentWindow: iframeWindow } = event?.currentTarget || {};
 
         if (iframeWindow) {
@@ -73,7 +97,7 @@ const ScreenSaver: FC<ComponentProcessProps> = ({ id }) => {
                 triggerEvents.forEach((eventName) =>
                   iframeWindow.addEventListener(eventName, closeScreenSaver, {
                     ...ONE_TIME_PASSIVE_CAPTURE_EVENT,
-                    passive: eventName !== "touchstart",
+                    passive: !CANCELED_EVENTS.has(eventName),
                   })
                 ),
               TRANSITIONS_IN_MILLISECONDS.DOUBLE_CLICK

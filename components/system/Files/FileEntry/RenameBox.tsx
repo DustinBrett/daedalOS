@@ -6,6 +6,7 @@ import StyledRenameBox from "components/system/Files/FileEntry/StyledRenameBox";
 import { type FileManagerViewNames } from "components/system/Files/Views";
 import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
+import { isComposingKey } from "utils/keyboard";
 
 type RenameBoxProps = {
   isDesktop?: boolean;
@@ -73,9 +74,13 @@ const RenameBox: FC<RenameBoxProps> = ({
       onBlurCapture={saveRename}
       onClick={haltEvent}
       onDragStart={haltEvent}
-      onKeyDown={({ key }) => {
-        if (key === "Enter") saveRename();
-        else if (key === "Escape") setRenaming("");
+      onKeyDown={(event) => {
+        if (isComposingKey(event.nativeEvent)) return;
+        if (event.key === "Enter") saveRename();
+        else if (event.key === "Escape") {
+          event.preventDefault();
+          setRenaming("");
+        }
       }}
       onKeyUp={(event) => {
         updateDimensions(event.target);

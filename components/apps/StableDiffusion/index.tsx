@@ -120,6 +120,7 @@ const StableDiffusion: FC<ComponentProcessProps> = () => {
           height={512}
           onContextMenuCapture={onContextMenuCapture}
           role="img"
+          tabIndex={generatedPrompt ? 0 : undefined}
           width={512}
         />
         <div className="status" role="status">

@@ -10,8 +10,13 @@ import { useProcess, useProcessesActions } from "contexts/process";
 import { useForegroundId, useSessionActions } from "contexts/session";
 import Button from "styles/common/Button";
 import Icon from "styles/common/Icon";
-import { CLICK_FOCUSABLE_ELEMENT, PROCESS_DELIMITER } from "utils/constants";
+import {
+  CLICK_FOCUSABLE_ELEMENT,
+  PEEK_DELAY_MS,
+  PROCESS_DELIMITER,
+} from "utils/constants";
 import { label } from "utils/functions";
+import { focusWithin, isKeyboardNavigating } from "utils/keyboard";
 
 const PeekWindow = dynamic(
   () => import("components/system/Taskbar/TaskbarEntry/Peek/PeekWindow")
@@ -29,13 +34,14 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
   const foregroundId = useForegroundId();
   const isForeground = id === foregroundId;
   const { linkElement, minimize, open } = useProcessesActions();
-  const { minimized, progress, singleton } = useProcess(id);
+  const { componentWindow, minimized, progress, singleton } = useProcess(id);
   const isPresent = useIsPresent();
   const linkTaskbarEntry = (taskbarEntry: HTMLButtonElement | null): void => {
     if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);
   };
   const [isPeekVisible, setIsPeekVisible] = useState(false);
   const hidePeekTimerRef = useRef(0);
+  const focusPeekTimerRef = useRef(0);
   const hidePeek = ({ currentTarget }: React.MouseEvent<HTMLElement>): void => {
     hidePeekTimerRef.current = window.setTimeout(
       () => setIsPeekVisible(false),
@@ -64,7 +70,10 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
     } else {
       if (minimized || isForeground) minimize(id);
 
-      setForegroundId(isForeground ? nextFocusableId : id);
+      // Still in front after Ctrl+Shift+Down, so only its focus comes back
+      if (minimized && isForeground) {
+        requestAnimationFrame(() => focusWithin(componentWindow));
+      } else setForegroundId(isForeground ? nextFocusableId : id);
     }
   };
   useEffect(() => {
@@ -105,7 +114,29 @@ const TaskbarEntry: FC<TaskbarEntryProps> = ({ icon, id, title }) => {
       <Button
         ref={linkTaskbarEntry}
         aria-pressed={isForeground}
+        onBlur={({ currentTarget, relatedTarget }) => {
+          const entry = currentTarget.parentElement;
+
+          window.clearTimeout(focusPeekTimerRef.current);
+
+          if (!entry?.contains(relatedTarget) && !entry?.matches(":hover")) {
+            closePeek();
+          }
+        }}
         onClick={onClick}
+        // Like Win+T, keyboard focus resting on an entry previews its window,
+        // but not when it's from minimizing that window
+        onFocus={({ relatedTarget }) => {
+          if (
+            isKeyboardNavigating() &&
+            !componentWindow?.contains(relatedTarget)
+          ) {
+            focusPeekTimerRef.current = window.setTimeout(
+              showPeek,
+              PEEK_DELAY_MS
+            );
+          }
+        }}
         {...CLICK_FOCUSABLE_ELEMENT}
         {...label(title, `${title} - 1 running window`)}
       >

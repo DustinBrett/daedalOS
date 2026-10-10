@@ -16,6 +16,7 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
     backgroundColor,
     Component,
     hideTitlebar,
+    isLightBg,
     minimized,
     peekElement,
     title,
@@ -37,6 +38,7 @@ const Window: FC<ComponentProcessProps> = ({ children, id }) => {
         $backgroundBlur={backgroundBlur}
         $backgroundColor={backgroundColor}
         $isForeground={isForeground}
+        $isLightBg={isLightBg}
         aria-hidden={minimized || undefined}
         aria-label={title}
         inert={minimized || undefined}

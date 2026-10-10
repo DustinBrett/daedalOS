@@ -103,7 +103,8 @@ const Columns: FC<ColumnsProps> = ({
     };
 
   return (
-    <StyledColumns>
+    // Sorting is also in the context menu & each entry describes its details
+    <StyledColumns aria-hidden>
       <ol>
         {DEFAULT_COLUMN_ORDER.map((name) => (
           <li
@@ -116,7 +117,7 @@ const Columns: FC<ColumnsProps> = ({
           >
             {sortedBy === name && <Down flip={ascending} />}
             <div className="name">{columns[name].name}</div>
-            <span aria-hidden="true" className="resize" />
+            <span className="resize" />
           </li>
         ))}
       </ol>

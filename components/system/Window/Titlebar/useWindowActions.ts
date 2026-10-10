@@ -1,7 +1,7 @@
 import useNextFocusable from "components/system/Window/useNextFocusable";
 import { getProcess, useProcessesActions } from "contexts/process";
 import { useSessionActions } from "contexts/session";
-import { PREVENT_SCROLL } from "utils/constants";
+import { focusDesktop, focusWithin } from "utils/keyboard";
 
 type WindowActions = {
   onClose: () => void;
@@ -15,10 +15,19 @@ const useWindowActions = (id: string): WindowActions => {
     useSessionActions();
   const { closeWithTransition, maximize, minimize } = useProcessesActions();
   const onMinimize = (keepForegroundId?: boolean): void => {
+    const { componentWindow, minimized } = getProcess(id) || {};
+
     minimize(id);
-    if (!keepForegroundId) setForegroundId(nextFocusableId);
+    // Once no longer inert, a restored window gets its focus back, like Windows
+    if (minimized) requestAnimationFrame(() => focusWithin(componentWindow));
+
+    if (!keepForegroundId) {
+      setForegroundId(nextFocusableId);
+      if (!nextFocusableId) focusDesktop();
+    }
   };
   const onMaximize = (): void => {
+    const { componentWindow } = getProcess(id) || {};
     const triggerMaximize = (): void => {
       const maximized = !getProcess(id)?.maximized;
 
@@ -28,10 +37,10 @@ const useWindowActions = (id: string): WindowActions => {
         [id]: { ...currentWindowStates[id], maximized },
       }));
       setForegroundId(id);
-      getProcess(id)?.componentWindow?.focus(PREVENT_SCROLL);
+      focusWithin(componentWindow);
     };
-    const [currentAnimation] =
-      getProcess(id)?.componentWindow?.getAnimations() || [];
+    // Missing before Chrome 84 & Firefox 75
+    const [currentAnimation] = componentWindow?.getAnimations?.() || [];
 
     if (currentAnimation?.finished) {
       currentAnimation.finished.then(triggerMaximize);
@@ -43,6 +52,7 @@ const useWindowActions = (id: string): WindowActions => {
     removeFromStack(id);
     closeWithTransition(id);
     setForegroundId(nextFocusableId);
+    if (!nextFocusableId) focusDesktop();
   };
 
   return { onClose, onMaximize, onMinimize };

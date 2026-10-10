@@ -39,6 +39,12 @@ const StyledButton = styled.button`
     color: #808080;
     line-height: ${BASE_LINE_HEIGHT}px;
   }
+
+  :root[data-keyboard] &:focus {
+    box-shadow: none;
+    outline: 1px dotted rgb(0 0 0);
+    outline-offset: -4px;
+  }
 `;
 
 export default StyledButton;

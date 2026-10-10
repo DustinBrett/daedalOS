@@ -17,10 +17,10 @@ import { useHistoryContext } from "components/apps/Messenger/HistoryContext";
 import { useNostrProfile } from "components/apps/Messenger/hooks";
 import { Back, Write } from "components/apps/Messenger/Icons";
 import { useNostr } from "components/apps/Messenger/NostrContext";
-import Profile from "components/apps/Messenger/Profile";
+import Profile, { PROFILE } from "components/apps/Messenger/Profile";
 import StyledProfileBanner from "components/apps/Messenger/StyledProfileBanner";
 import { type ProfileData, type Signer } from "components/apps/Messenger/types";
-import { useMenuActions } from "contexts/menu";
+import { useMenu, useMenuActions } from "contexts/menu";
 import Button from "styles/common/Button";
 import { MENU_SEPERATOR } from "utils/constants";
 import { haltEvent, toSorted } from "utils/functions";
@@ -68,6 +68,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     ? { background: `${GRADIENT}, url(${banner}) ${STYLING}` }
     : {};
   const { contextMenu } = useMenuActions();
+  const { label: openMenu } = useMenu();
   const { blockedKeys, setBlockedKeys, setProfiles } = useHistoryContext();
   const updateProfile = async (
     newProfile: Partial<ProfileData>
@@ -186,7 +187,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
           ]
         : [{ action: () => switchSigner(false), label: "Sign Out" }]),
     ];
-  });
+  }, PROFILE);
   /* eslint-enable no-alert */
 
   return (
@@ -225,6 +226,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
         </div>
       )}
       <Profile
+        expanded={openMenu === PROFILE}
         nip05={nip05}
         onClick={onContextMenuCapture}
         picture={picture}

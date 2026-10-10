@@ -18,13 +18,13 @@ import {
   MILLISECONDS_IN_SECOND,
   ONE_TIME_PASSIVE_EVENT,
   PACKAGE_DATA,
-  PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SUPPORTED_ICON_SIZES,
   TASKBAR_HEIGHT,
   TIMESTAMP_DATE_FORMAT,
   USER_ICON_PATH,
 } from "utils/constants";
+import { focusDesktop, focusWithin } from "utils/keyboard";
 
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
   new Blob([buffer as BlobPart], type ? { type } : undefined);
@@ -133,9 +133,9 @@ export const toggleShowDesktop = (
 
   if (restoreWindows) {
     requestAnimationFrame(() =>
-      processes[windows[0]]?.componentWindow?.focus(PREVENT_SCROLL)
+      focusWithin(processes[windows[0]]?.componentWindow)
     );
-  }
+  } else focusDesktop();
 };
 
 const imageSrcMap = new Map<string, string>();

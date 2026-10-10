@@ -1,8 +1,15 @@
 import { basename, dirname, extname, join } from "path";
 import { m as motion } from "motion/react";
 import dynamic from "next/dynamic";
-// eslint-disable-next-line no-restricted-imports -- FileManager re-maps every entry on any file, focus or selection change
-import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  // eslint-disable-next-line no-restricted-imports -- FileManager re-maps every entry on any file, focus or selection change
+  memo,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useTheme } from "styled-components";
 import {
   getCachedIconUrl,
@@ -63,6 +70,7 @@ import {
   isYouTubeUrl,
   preloadImage,
 } from "utils/functions";
+import { isKeyboardNavigating, whenFocusLost } from "utils/keyboard";
 import { spotlightEffect } from "utils/spotlightEffect";
 
 const ColumnRow = dynamic(
@@ -480,6 +488,28 @@ const FileEntry: FC<FileEntryProps> = ({
 
   useEffect(() => () => getIconAbortController.current?.abort(), []);
 
+  const columnRowId = useId();
+
+  // Ending a rename removes the focused text box from the entry
+  useEffect(
+    () =>
+      renaming
+        ? () => whenFocusLost(() => buttonRef.current?.focus(PREVENT_SCROLL))
+        : undefined,
+    [renaming]
+  );
+
+  useLayoutEffect(() => {
+    const button = buttonRef.current;
+
+    return () => {
+      // Deleting the focused entry keeps focus in its list, as in Explorer
+      if (button?.contains(document.activeElement)) {
+        whenFocusLost(() => fileManagerRef.current?.focus(PREVENT_SCROLL));
+      }
+    };
+  }, [fileManagerRef]);
+
   useLayoutEffect(() => {
     if (buttonRef.current && fileManagerRef.current) {
       const inFocusedEntries = focusedEntries.includes(fileName);
@@ -527,8 +557,13 @@ const FileEntry: FC<FileEntryProps> = ({
     <>
       <Button
         ref={buttonRef}
+        aria-describedby={showColumn ? columnRowId : undefined}
         aria-label={name}
-        aria-pressed={focusedEntries.includes(fileName)}
+        aria-pressed={listView ? undefined : focusedEntries.includes(fileName)}
+        onFocusCapture={() => {
+          // Keyboard focus gets what hovering gives, like the tooltip
+          if (isKeyboardNavigating()) onMouseOverButton();
+        }}
         onMouseOverCapture={onMouseOverButton}
         title={tooltip}
         {...(listView &&
@@ -600,6 +635,7 @@ const FileEntry: FC<FileEntryProps> = ({
         {showColumn && columns && (
           <ColumnRow
             columns={columns}
+            id={columnRowId}
             isDirectory={isDirectory}
             path={path}
             stats={stats}

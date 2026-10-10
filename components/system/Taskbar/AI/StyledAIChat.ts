@@ -1,5 +1,6 @@
 import { m as motion } from "motion/react";
 import styled from "styled-components";
+import VisuallyHidden from "styles/common/VisuallyHidden";
 import { TASKBAR_HEIGHT } from "utils/constants";
 
 type StyledAIChatProps = {
@@ -24,6 +25,10 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
   position: absolute;
   right: 0;
   z-index: ${({ $zIndex }) => $zIndex};
+
+  .reply-status {
+    ${VisuallyHidden};
+  }
 
   .attachments {
     bottom: calc(16px + var(--composer-height, 90px) - 66px);
@@ -596,7 +601,8 @@ const StyledAIChat = styled(motion.section)<StyledAIChatProps>`
         }
 
         &:hover,
-        &.last {
+        &.last,
+        :root[data-keyboard] & {
           .control {
             visibility: visible;
           }

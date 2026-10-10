@@ -16,6 +16,8 @@ import TaskbarEntries from "components/system/Taskbar/TaskbarEntries";
 import useTaskbarContextMenu from "components/system/Taskbar/useTaskbarContextMenu";
 import { useShowAI } from "hooks/useWindowAI";
 import { CLOCK_CANVAS_BASE_WIDTH, FOCUSABLE_ELEMENT } from "utils/constants";
+import { haltEvent } from "utils/functions";
+import { focusByKey } from "utils/keyboard";
 
 const AIButton = dynamic(importAIButton);
 const AIChat = dynamic(importAIChat);
@@ -51,6 +53,21 @@ const Taskbar: FC = () => {
       </AnimatePresence>
       <StyledTaskbar
         aria-label="Taskbar"
+        onKeyDown={(event) => {
+          if (
+            focusByKey(
+              event.key,
+              [
+                ...event.currentTarget.querySelectorAll<HTMLElement>(
+                  ":scope > button, :scope > ol > li > button"
+                ),
+              ],
+              { vertical: false }
+            )
+          ) {
+            haltEvent(event);
+          }
+        }}
         {...useTaskbarContextMenu()}
         {...FOCUSABLE_ELEMENT}
       >

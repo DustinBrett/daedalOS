@@ -5,6 +5,7 @@ import { parseCommand } from "components/apps/Terminal/functions";
 import { type ComponentProcessProps } from "components/system/Apps/RenderComponent";
 import StyledRun from "components/system/Dialogs/Run/StyledRun";
 import StyledButton from "components/system/Dialogs/StyledButton";
+import useCloseOnEscape from "components/system/Dialogs/useCloseOnEscape";
 import {
   getProcessByFileExtension,
   getShortcutInfo,
@@ -28,6 +29,7 @@ import {
 } from "utils/constants";
 import { getExtension, haltEvent, notFound } from "utils/functions";
 import { getIpfsFileName, getIpfsResource } from "utils/ipfs";
+import { isComposingKey } from "utils/keyboard";
 import { spawnFly } from "utils/spawnFly";
 import { spawnSheep } from "utils/spawnSheep";
 
@@ -64,6 +66,7 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
   const [isInputFocused, setIsInputFocused] = useState(true);
   const [isEmptyInput, setIsEmptyInput] = useState(!runHistory[0]);
   const [running, setRunning] = useState(false);
+  const { onKeyDownCapture: closeOnEscape } = useCloseOnEscape(id);
   const checkIsEmpty: React.ChangeEventHandler | React.KeyboardEventHandler = ({
     target,
   }: React.ChangeEvent | React.KeyboardEvent): void =>
@@ -192,6 +195,7 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
     setRunning(false);
 
     if (closeOnExecute) closeWithTransition(id);
+    else requestAnimationFrame(() => inputRef.current?.focus(PREVENT_SCROLL));
   };
 
   useLayoutEffect(() => {
@@ -212,6 +216,7 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
 
   return (
     <StyledRun
+      onKeyDownCapture={closeOnEscape}
       {...useFileDrop({ id })}
       onContextMenu={(event) => {
         if (!(event.target instanceof HTMLInputElement)) {
@@ -241,12 +246,8 @@ const Run: FC<ComponentProcessProps> = ({ id }) => {
             }
             onFocusCapture={() => setIsInputFocused(true)}
             onKeyDownCapture={(event) => {
-              const { key } = event;
-
-              if (key === "Enter") runResource(inputRef.current?.value.trim());
-              if (key === "Escape") {
-                haltEvent(event);
-                closeWithTransition(id);
+              if (event.key === "Enter" && !isComposingKey(event.nativeEvent)) {
+                runResource(inputRef.current?.value.trim());
               }
             }}
             onKeyUp={

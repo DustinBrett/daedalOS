@@ -22,6 +22,8 @@ import Button from "styles/common/Button";
 import { ROOT_NAME } from "utils/constants";
 import { haltEvent, label } from "utils/functions";
 
+const RECENT_LOCATIONS = "Recent locations";
+
 type NavigationProps = {
   addressBarRef: React.RefObject<HTMLInputElement | null>;
   hideSearch: boolean;
@@ -52,7 +54,10 @@ const Navigation: FC<NavigationProps> = ({
       primary: position === index,
     }))
     .reverse();
-  const { onContextMenuCapture } = contextMenu(() => recentItemsMenu);
+  const { onContextMenuCapture } = contextMenu(
+    () => recentItemsMenu,
+    RECENT_LOCATIONS
+  );
   const [isRecentMenuOpen, setIsRecentMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement | null>(null);
   const [removeSearch, setRemoveSearch] = useState(false);
@@ -82,6 +87,7 @@ const Navigation: FC<NavigationProps> = ({
       onDrop={haltEvent}
     >
       <Button
+        className="back"
         disabled={!canGoBack}
         onClick={() => moveHistory(-1)}
         {...label(
@@ -93,6 +99,7 @@ const Navigation: FC<NavigationProps> = ({
         <Back />
       </Button>
       <Button
+        className="forward"
         disabled={!canGoForward}
         onClick={() => moveHistory(1)}
         {...label(
@@ -104,6 +111,8 @@ const Navigation: FC<NavigationProps> = ({
         <Forward />
       </Button>
       <Button
+        aria-expanded={isRecentMenuOpen}
+        aria-haspopup="menu"
         disabled={history.length === 1}
         onClick={(event) => {
           event.preventDefault();
@@ -126,11 +135,12 @@ const Navigation: FC<NavigationProps> = ({
             );
           }
         }}
-        {...label("Recent locations")}
+        {...label(RECENT_LOCATIONS)}
       >
         <Down />
       </Button>
       <Button
+        className="up"
         disabled={url === "/"}
         onClick={() => changeUrl(id, dirname(url))}
         {...label(

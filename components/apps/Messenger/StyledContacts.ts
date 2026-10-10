@@ -83,8 +83,7 @@ const StyledContacts = styled(motion.ol)`
       background-color: #3a3b3c;
     }
 
-    &:focus,
-    &.selected {
+    :root[data-keyboard] &:not(.toolbar):focus-within {
       background-color: rgb(45 136 255 / 20%);
     }
 

@@ -2,6 +2,7 @@ import { m as motion } from "motion/react";
 import styled from "styled-components";
 import { SINGLE_LINE_HEIGHT_ADDITION } from "components/system/Taskbar/Search";
 import TaskbarPanel from "components/system/Taskbar/TaskbarPanel";
+import VisuallyHidden from "styles/common/VisuallyHidden";
 
 type StyledSearchProps = {
   $singleLine: boolean;
@@ -18,6 +19,10 @@ const StyledSearch = styled(motion.section)<StyledSearchProps>`
     )}
 
   backdrop-filter: ${({ theme }) => `blur(${theme.sizes.taskbar.panelBlur})`};
+
+  .results-status {
+    ${VisuallyHidden};
+  }
 
   @keyframes fade-in {
     0% {

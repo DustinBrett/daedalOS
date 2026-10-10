@@ -1,4 +1,4 @@
-import { type FeatureBundle, LazyMotion } from "motion/react";
+import { type FeatureBundle, LazyMotion, MotionConfig } from "motion/react";
 import { StyleSheetManager, ThemeProvider } from "styled-components";
 import { useThemeName } from "contexts/session";
 import GlobalStyle from "styles/GlobalStyle";
@@ -21,7 +21,7 @@ const StyledApp: FC = ({ children }) => {
       <ThemeProvider theme={themes[themeName] || themes[DEFAULT_THEME]}>
         <GlobalStyle />
         <LazyMotion features={motionFeatures} strict>
-          {children}
+          <MotionConfig reducedMotion="user">{children}</MotionConfig>
         </LazyMotion>
       </ThemeProvider>
     </StyleSheetManager>

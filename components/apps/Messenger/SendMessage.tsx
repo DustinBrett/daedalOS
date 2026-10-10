@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UNKNOWN_PUBLIC_KEY } from "components/apps/Messenger/constants";
 import { Send } from "components/apps/Messenger/Icons";
 import {
@@ -7,7 +7,9 @@ import {
 } from "components/apps/Messenger/MessageContext";
 import StyledSendMessage from "components/apps/Messenger/StyledSendMessage";
 import Button from "styles/common/Button";
+import { PREVENT_SCROLL } from "utils/constants";
 import { haltEvent } from "utils/functions";
+import { isComposingKey, whenFocusLost } from "utils/keyboard";
 
 const SendMessage: FC<{ recipientPublicKey: string }> = ({
   recipientPublicKey,
@@ -26,6 +28,14 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
       )}px`;
     }
   };
+
+  useEffect(() => {
+    // Picking a recipient removes the To box that had focus
+    if (!isUnknownKey) {
+      whenFocusLost(() => inputRef.current?.focus(PREVENT_SCROLL));
+    }
+  }, [isUnknownKey]);
+
   const send = async (): Promise<void> => {
     const input = inputRef.current;
     const message = input?.value.trim();
@@ -57,7 +67,11 @@ const SendMessage: FC<{ recipientPublicKey: string }> = ({
           updateHeight();
         }}
         onKeyDown={(event) => {
-          if (event.key === "Enter" && !event.shiftKey) {
+          if (
+            event.key === "Enter" &&
+            !event.shiftKey &&
+            !isComposingKey(event.nativeEvent)
+          ) {
             event.preventDefault();
             send();
           }

@@ -19,6 +19,13 @@ const StyledDetailsTab = styled.div`
     overflow-y: scroll;
     text-align: left;
 
+    /* Outside, as the sticky header covers the inside edge */
+    :root[data-keyboard] &:focus {
+      box-shadow: 0 0 0 1px var(--focus-inner, rgb(0 0 0));
+      outline: 2px solid var(--focus-outer, rgb(255 255 255));
+      outline-offset: 1px;
+    }
+
     thead {
       background-color: #fff;
       display: flex;

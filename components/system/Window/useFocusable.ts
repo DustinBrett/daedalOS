@@ -6,6 +6,7 @@ import {
   useStackOrder,
 } from "contexts/session";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "utils/constants";
+import { focusWithin, isKeyboardInMenu } from "utils/keyboard";
 
 type Events = {
   onBlurCapture: (event: React.FocusEvent<HTMLElement>) => void;
@@ -44,7 +45,8 @@ const useFocusable = (
     const focusedOnTaskbarPeek =
       focusedElement && taskbarEntry?.previousSibling?.contains(focusedElement);
     const focusedOnInsideWindow =
-      focusedElement && componentWindow?.contains(focusedElement);
+      (focusedElement && componentWindow?.contains(focusedElement)) ||
+      isKeyboardInMenu(focusedElement);
 
     setForegroundId((currentForegroundId) => {
       if (
@@ -76,7 +78,7 @@ const useFocusable = (
       !relatedTarget ||
       (document.activeElement as HTMLElement) === taskbarEntry
     ) {
-      componentWindow?.focus(PREVENT_SCROLL);
+      focusWithin(componentWindow);
       callbackEvents?.onFocusCapture?.(event as React.FocusEvent<HTMLElement>);
     }
   };

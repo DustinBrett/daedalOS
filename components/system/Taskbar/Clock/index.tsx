@@ -24,6 +24,13 @@ type ClockWorkerResponse = "source" | LocaleTimeDate;
 
 const EASTER_EGG_CLICK_COUNT = 7;
 
+const SECONDS = /:\d{2}(?=\D*$)/;
+
+// Screen readers say a focused name again whenever it changes, so it only
+// changes each minute
+const clockLabel = (time: string): string =>
+  `System Clock, ${time.replace(SECONDS, "")}`;
+
 const LARGEST_CLOCK_TEXT = "44:44:44 AM";
 
 let triggerEasterEggCountdown = EASTER_EGG_CLICK_COUNT;
@@ -97,10 +104,7 @@ const Clock: FC<ClockProps> = ({
     } else {
       // The offscreen canvas path skips re-rendering on time changes, so
       // the accessible name must be kept current imperatively
-      clockButtonRef.current?.setAttribute(
-        "aria-label",
-        `System Clock, ${data.time}`
-      );
+      clockButtonRef.current?.setAttribute("aria-label", clockLabel(data.time));
       setNow((currentNow) =>
         !offScreenClockCanvas.current || currentNow.date !== data.date
           ? data
@@ -204,7 +208,7 @@ const Clock: FC<ClockProps> = ({
       $width={width}
       aria-expanded={calendarVisible}
       aria-haspopup="dialog"
-      aria-label={`System Clock, ${time}`}
+      aria-label={clockLabel(time)}
       id="clock"
       {...(calendarVisible && { "aria-controls": "calendar" })}
       onClick={onClockClick}

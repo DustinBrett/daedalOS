@@ -20,7 +20,7 @@ export const panZoomConfig = {
 type PanZoomEvent = Event & { detail: PanzoomEventDetail };
 
 type PanZoom = Partial<
-  Pick<PanzoomObject, "reset" | "zoomIn" | "zoomOut" | "zoomToPoint">
+  Pick<PanzoomObject, "pan" | "reset" | "zoomIn" | "zoomOut" | "zoomToPoint">
 > & { scale?: number };
 
 const usePanZoom = (
@@ -29,7 +29,8 @@ const usePanZoom = (
   containerElement?: HTMLElement | null
 ): PanZoom => {
   const [panZoom, setPanZoom] = useState<ReturnType<typeof Panzoom>>();
-  const { reset, zoomIn, zoomOut, zoomToPoint, zoomWithWheel } = panZoom || {};
+  const { pan, reset, zoomIn, zoomOut, zoomToPoint, zoomWithWheel } =
+    panZoom || {};
   const [currentScale, setCurrentScale] = useState<number>();
   const { closing, componentWindow, url = "" } = useProcess(id);
   const { prependFileToTitle } = useTitle(id);
@@ -83,7 +84,7 @@ const usePanZoom = (
     return () => panZoom?.destroy();
   }, [imgElement, panZoom]);
 
-  return { reset, scale: currentScale, zoomIn, zoomOut, zoomToPoint };
+  return { pan, reset, scale: currentScale, zoomIn, zoomOut, zoomToPoint };
 };
 
 export default usePanZoom;

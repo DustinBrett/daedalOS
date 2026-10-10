@@ -20,6 +20,8 @@ type CalendarProps = {
   toggleCalendar: (showCalendar?: boolean) => void;
 };
 
+const CLOCK_SELECTOR = "main>nav #clock";
+
 const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
   const [date, setDate] = useState(() => new Date());
   const [calendar, setCalendar] = useState<ICalendar>(() =>
@@ -67,7 +69,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
       if (relatedTarget instanceof HTMLElement) {
         if (calendarElement?.contains(relatedTarget)) return;
 
-        const clockElement = document.querySelector("main>nav #clock");
+        const clockElement = document.querySelector(CLOCK_SELECTOR);
 
         if (
           clockElement instanceof HTMLElement &&
@@ -94,6 +96,18 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
         aria-label="Date and Time Information"
         id="calendar"
         onContextMenu={haltEvent}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            toggleCalendar(false);
+            document
+              .querySelector<HTMLElement>(CLOCK_SELECTOR)
+              ?.focus(PREVENT_SCROLL);
+          } else if (event.key === "PageUp" || event.key === "PageDown") {
+            haltEvent(event);
+            changeMonth(event.key === "PageUp" ? -1 : 1);
+          }
+        }}
         role="dialog"
         {...calendarTransition}
         {...FOCUSABLE_ELEMENT}
@@ -103,7 +117,7 @@ const Calendar: FC<CalendarProps> = ({ toggleCalendar }) => {
             <tr>
               <td colSpan={DAY_NAMES.length}>
                 <div>
-                  <header>
+                  <header aria-live="polite">
                     {`${date.toLocaleString("default", {
                       month: "long",
                     })}, ${date.getFullYear()}`}

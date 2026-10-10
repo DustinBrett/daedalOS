@@ -60,6 +60,13 @@ const StyledRun = styled.div`
           border: 1px solid rgb(122 122 122);
           opacity: 100%;
         }
+
+        /* Like the input, as only the arrow of the combo box shows */
+        :root[data-keyboard] &:focus {
+          border-color: rgb(0 120 215);
+          box-shadow: none;
+          outline: 0;
+        }
       }
 
       input {

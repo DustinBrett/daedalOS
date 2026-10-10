@@ -114,7 +114,7 @@ const Vim: FC<ComponentProcessProps> = ({ id }) => {
 
     return () => {
       if (
-        !loading &&
+        !loading.current &&
         window.VimWrapperModule?.VimModule?.asmLibraryArg?._vimjs_prepare_exit()
       ) {
         window.VimWrapperModule?.VimModule?.exit?.();

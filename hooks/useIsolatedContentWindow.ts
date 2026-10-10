@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import useFileDrop from "components/system/Files/FileManager/useFileDrop";
 import { useMenuIsOpen } from "contexts/menu";
-import { useProcess } from "contexts/process";
+import { getProcess, useProcess } from "contexts/process";
 import { useForegroundId, useSessionActions } from "contexts/session";
 import { PREVENT_SCROLL } from "utils/constants";
 import { keepCanvasesReadable } from "utils/readableCanvas";
@@ -30,7 +30,7 @@ const createIframe = (
 ): HTMLIFrameElement => {
   const iframe = document.createElement("iframe");
 
-  iframe.title = id;
+  iframe.title = getProcess(id)?.title || id;
 
   iframe.style.backgroundColor = "transparent";
   iframe.style.border = "0";
