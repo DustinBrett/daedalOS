@@ -55,13 +55,14 @@ export type WallpaperHandler = (props: {
 }) => Promise<WallpaperData> | WallpaperData;
 
 export type ApodResponse = {
-  date: string;
   hdurl?: string;
-  url?: string;
 };
 
 export type ArtInstituteOfChicagoResponse = {
-  data: { image_id: string }[];
+  data: {
+    image_id: string;
+    thumbnail: { height: number; width: number } | null;
+  }[];
 };
 
 export type MetMuseumSearchResponse = {

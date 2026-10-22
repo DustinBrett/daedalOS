@@ -1030,18 +1030,6 @@ export const isYouTubeUrl = (url: string): boolean =>
   !url.includes("/channel/") &&
   !url.includes("/c/");
 
-export const getYouTubeUrlId = (url: string): string => {
-  try {
-    const { pathname, searchParams } = new URL(url);
-
-    return searchParams.get("v") || pathname.split("/").pop() || "";
-  } catch {
-    // URL parsing failed
-  }
-
-  return "";
-};
-
 export const getMimeType = (url: string, ext?: string): string => {
   switch (ext ? ext.toLowerCase() : getExtension(url)) {
     case ".ani":
@@ -1260,7 +1248,7 @@ export const getGifJs = async (): Promise<GIFWithWorkers> => {
   }) as GIFWithWorkers;
 };
 
-export const jsonFetch = async <T extends Record<string, unknown>>(
+export const jsonFetch = async <T extends Record<string, unknown> | unknown[]>(
   url: string,
   options?: RequestInit
 ): Promise<T> => {

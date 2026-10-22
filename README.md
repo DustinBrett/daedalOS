@@ -101,7 +101,7 @@ In fullscreen the Windows key opens the Start Menu, Windows key combos work in p
 - Set via image/video (Fill, Fit, Stretch, Tile, Center)
 - Picture Slideshow
 - Online image sources
-  - [NASA Astronomy Picture of the Day](https://api.nasa.gov/#apod)
+  - [NASA Astronomy Picture of the Day](https://science.nasa.gov/apod/)
   - [Art Institute of Chicago](https://api.artic.edu/docs/)
   - [Metropolitan Museum of Art](https://metmuseum.github.io/)
   - [Lorem Picsum](https://picsum.photos/)
